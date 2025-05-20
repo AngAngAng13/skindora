@@ -12,7 +12,7 @@ databaseService.connect().then(() => {
 })
 
 app.get('/', (req, res) => {
-  res.send('hello skindora')
+  res.send('hello skindora develop branch')
 })
 
 app.use('/users', usersRouter)
