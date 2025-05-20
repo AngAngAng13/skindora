@@ -1,0 +1,18 @@
+FROM node:24-alpine AS builder
+
+USER node
+WORKDIR /app
+
+COPY --chown=node:node package.json package-lock.json ./
+RUN npm ci
+
+COPY --chown=node:node . .
+
+RUN npm run build
+
+FROM caddy:2-alpine AS final
+
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY --from=builder /app/dist /srv
+
+EXPOSE 80
