@@ -1,0 +1,113 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+:root {
+  --radius: 0.5rem;
+  --background: oklch(1 0 0); /* White - #ffffff */
+  --foreground: oklch(0.145 0 0); /* Black - #000000 */
+  --card: oklch(1 0 0); /* White - #ffffff */
+  --card-foreground: oklch(0.145 0 0); /* Black - #000000 */
+  --popover: oklch(1 0 0); /* White - #ffffff */
+  --popover-foreground: oklch(0.145 0 0); /* Black - #000000 */
+  --primary: oklch(0.606 0.137 284.76); /* Purple - approx #7355cd */
+  --primary-foreground: oklch(
+    0.985 0.005 255.32
+  ); /* Light Blue - approx #fefeff */
+  --secondary: oklch(0.88 0.07 285); /* Light Purple - approx #d6bcfa */
+  --secondary-foreground: oklch(0.145 0 0); /* Black - #000000 */
+  --accent: oklch(0.72 0.24 197); /* Bright Blue - approx #1eaedb */
+  --accent-foreground: oklch(1 0 0); /* White - #ffffff */
+  --muted: oklch(0.97 0 0); /* Light Gray - approx #f1f1f1 */
+  --muted-foreground: oklch(0.145 0 0); /* Black - #000000 */
+  --destructive: oklch(0.577 0.245 27.325); /* Red-Orange - approx #d84c2f */
+  --border: oklch(0.922 0 0); /* Gray - approx #ebebeb */
+  --input: oklch(0.922 0 0); /* Gray - approx #ebebeb */
+  --ring: oklch(
+    0.606 0.137 284.76 / 50%
+  ); /* Semi-transparent Purple - approx #7355cd80 */
+}
+
+.dark {
+  --background: oklch(0.145 0 0); /* Black - #000000 */
+  --foreground: oklch(0.985 0 0); /* White - #ffffff */
+  --card: oklch(0.205 0 0); /* Very Dark Gray - approx #2d2d2d */
+  --card-foreground: oklch(0.985 0 0); /* White - #ffffff */
+  --popover: oklch(0.205 0 0); /* Very Dark Gray - approx #2d2d2d */
+  --popover-foreground: oklch(0.985 0 0); /* White - #ffffff */
+  --primary: oklch(0.65 0.14 284.76); /* Light Purple - approx #8a6bdb */
+  --primary-foreground: oklch(0.145 0 0); /* Black - #000000 */
+  --secondary: oklch(0.35 0.1 285); /* Dark Purple - approx #3d2a4e */
+  --secondary-foreground: oklch(0.985 0 0); /* White - #ffffff */
+  --accent: oklch(0.75 0.23 197); /* Light Blue - approx #3fc3ef */
+  --accent-foreground: oklch(0.145 0 0); /* Black - #000000 */
+  --muted: oklch(0.269 0 0); /* Dim Gray - approx #434343 */
+  --muted-foreground: oklch(0.708 0 0); /* Gray - approx #b4b4b4 */
+  --destructive: oklch(0.704 0.191 22.216); /* Red - approx #db5c4c */
+  --border: oklch(1 0 0 / 10%); /* Transparent White - #ffffff1a */
+  --input: oklch(1 0 0 / 15%); /* Transparent White - #ffffff26 */
+  --ring: oklch(
+    0.65 0.14 284.76 / 50%
+  ); /* Semi-transparent Purple - #8a6bdb80 */
+}
+
+@theme inline {
+  --container-center: true;
+  --container-padding: 2rem;
+  --breakpoint-2xl: 1400px;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-DEFAULT: var(--radius);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --animation-accordion-down: accordion-down 0.2s ease-out;
+  --animation-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@source "./pages/**/*.{ts,tsx}";
+@source "./components/**/*.{ts,tsx}";
+@source "./app/**/*.{ts,tsx}";
+@source "./src/**/*.{ts,tsx}";
