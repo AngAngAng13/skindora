@@ -1,0 +1,17 @@
+
+networks:
+  default:
+    driver: bridge
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: dockerfile
+    volumes:
+      - ./uploads:/srv/uploads
+    networks:
+      - default
+  
+       
+    

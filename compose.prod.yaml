@@ -1,0 +1,68 @@
+
+networks:
+  traefik-public:
+    driver: bridge
+  portainer-network:
+    driver: bridge
+volumes:
+  portainer_data:
+    
+services:
+  traefik:
+    image: traefik:v3.4
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - traefik-public
+    ports:
+      - "80:80"
+      - "443:443/tcp"
+      - "443:443/udp"
+    environment:
+      - CF_API_EMAIL=${CF_API_EMAIL}
+      - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN}
+      - TRAEFIK_DASHBOARD_USERS=${TRAEFIK_DASHBOARD_USERS}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro 
+      - ./letsencrypt:/etc/traefik 
+      - ./traefik/config.yaml:/etc/traefik/traefik.yaml:ro #
+      - ./traefik/logs:/var/log/traefik 
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.skindora.site`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=default" 
+      - "traefik.http.routers.traefik-dashboard.middlewares=dashboard-auth"
+      - "traefik.http.middlewares.dashboard-auth.basicauth.users=${TRAEFIK_DASHBOARD_USERS}"
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: dockerfile
+    volumes:
+      - ./uploads:/srv/uploads
+    networks:
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`www.skindora.site`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=default"
+      - "traefik.http.services.client.loadbalancer.server.port=80"
+  portainer:
+    image: portainer/portainer-ce:2.30.1-alpine
+    restart: unless-stopped
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - portainer-network
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.skindora.site`)"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
+      - "traefik.http.routers.portainer.tls.certresolver=default"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
