@@ -44,19 +44,12 @@ services:
       - ./uploads:/srv/uploads
     networks:
       - traefik-public
-    ports:
-      - "443"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`www.skindora.site`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=default"
-       
-      - "traefik.http.services.frontend.loadbalancer.server.port=443"
-      - "traefik.http.middlewares.frontend-redirect.redirectscheme.scheme=https"
-      - "traefik.http.services.frontend.loadbalancer.server.protocol=h2"
-      - "traefik.http.services.frontend.loadbalancer.insecureSkipVerify=true"
-
+      - "traefik.http.services.client.loadbalancer.server.port=80"
   portainer:
     image: portainer/portainer-ce:2.30.1-alpine
     restart: unless-stopped
