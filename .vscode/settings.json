@@ -12,5 +12,6 @@
             "../traefik/config.yaml",
             "file:///home/nguyentuanan/Desktop/workspace/skindora/traefik/config.yaml"
         ]
-    }
+    },
+    "caddyfile.executable": "../frontend/Caddyfile"
 }
