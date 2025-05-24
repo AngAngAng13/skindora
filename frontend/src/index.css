@@ -19,7 +19,7 @@
   --card-foreground: oklch(0.145 0 0); /* Black - #000000 */
   --popover: oklch(1 0 0); /* White - #ffffff */
   --popover-foreground: oklch(0.145 0 0); /* Black - #000000 */
-  --primary: oklch(0.606 0.137 284.76); /* Purple - approx #7355cd */
+  --primary: oklch(0.6889 0.1581 289.96); /* Purple - approx #7355cd */
   --primary-foreground: oklch(
     0.985 0.005 255.32
   ); /* Light Blue - approx #fefeff */
@@ -44,7 +44,7 @@
   --card-foreground: oklch(0.985 0 0); /* White - #ffffff */
   --popover: oklch(0.205 0 0); /* Very Dark Gray - approx #2d2d2d */
   --popover-foreground: oklch(0.985 0 0); /* White - #ffffff */
-  --primary: oklch(0.65 0.14 284.76); /* Light Purple - approx #8a6bdb */
+  --primary: oklch(0.6889 0.1581 289.96); /* Light Purple - approx #8a6bdb */
   --primary-foreground: oklch(0.145 0 0); /* Black - #000000 */
   --secondary: oklch(0.35 0.1 285); /* Dark Purple - approx #3d2a4e */
   --secondary-foreground: oklch(0.985 0 0); /* White - #ffffff */

@@ -1,5 +1,4 @@
-import React from "react";
-
+import Hero from "@/components/Hero";
 import Topbar from "@/components/Topbar";
 
 export default function Homepage() {
@@ -14,7 +13,7 @@ export default function Homepage() {
           { displayText: "Contact", path: "contact" },
         ]}
       />
-      <h1 className="prose">hello world</h1>
+      <Hero />
     </>
   );
 }
