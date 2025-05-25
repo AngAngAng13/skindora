@@ -2,8 +2,7 @@ import { ShoppingCart } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import { Button } from "./ui/button";
-
+import { Button } from "@/components/ui/button";
 interface TopbarProps {
   branding?: string;
   navItems?: {
@@ -11,10 +10,7 @@ interface TopbarProps {
     path: string;
   }[];
 }
-export default function Topbar({
-  branding,
-  navItems = [],
-}: TopbarProps = {}): React.JSX.Element {
+export default function Topbar({ branding, navItems = [] }: TopbarProps = {}): React.JSX.Element {
   const location = useLocation();
 
   return (
@@ -23,9 +19,7 @@ export default function Topbar({
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <h1 className="text-primary prose-h1: text-xl font-bold">
-              {branding}
-            </h1>
+            <h1 className="text-primary prose-h1: text-xl font-bold">{branding}</h1>
           </div>
           <nav className="hidden space-x-8 md:flex">
             {navItems.map((item, index) => {
@@ -36,11 +30,7 @@ export default function Topbar({
                 <Link
                   key={index}
                   to={path}
-                  className={`p prose-a ${
-                    isActive
-                      ? "text-primary"
-                      : "hover:text-primary text-gray-600"
-                  }`}
+                  className={`p prose-a ${isActive ? "text-primary" : "hover:text-primary text-gray-600"}`}
                 >
                   {item.displayText}
                 </Link>

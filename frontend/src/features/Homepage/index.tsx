@@ -1,5 +1,5 @@
-import Hero from "@/components/Hero";
-import Topbar from "@/components/Topbar";
+import Hero from "@/features/Homepage/components/Hero";
+import Topbar from "@/features/Homepage/components/Topbar";
 
 export default function Homepage() {
   return (
