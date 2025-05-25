@@ -1,4 +1,5 @@
 import { ChartNoAxesColumnIncreasing, Home, Package, ShoppingCart, UsersRound } from "lucide-react";
+import React, { useState } from "react";
 
 import {
   Sidebar,
@@ -12,7 +13,6 @@ import {
 
 import { Button } from "../ui/button";
 
-// Menu items.
 const items = [
   {
     title: "Tổng quan",
@@ -41,7 +41,8 @@ const items = [
   },
 ];
 
-export function AppSidebar() {
+const AppSidebar: React.FC = () => {
+  const [activeItem, setActiveItem] = useState<string>("");
   return (
     <Sidebar>
       <SidebarContent>
@@ -58,27 +59,29 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="mt-17 gap-1">
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <div>
-                    <div className="">
-                      <Button
-                        variant="secondary"
-                        size="lg"
-                        className="ml-2 flex w-55 justify-start border-0 bg-transparent"
-                      >
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Button>
-                    </div>
-                  </div>
-                </SidebarMenuItem>
-              ))}
+              {items.map((item) => {
+                const isActive = activeItem === item.title;
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <Button
+                      onClick={() => setActiveItem(item.title)}
+                      variant="outline"
+                      size="lg"
+                      className={`ml-2 flex w-55 justify-start border-0 bg-transparent ${
+                        isActive ? "bg-primary/20 text-primary" : ""
+                      }`}
+                    >
+                      <item.icon className="mr-2" />
+                      <span>{item.title}</span>
+                    </Button>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
   );
-}
+};
 export default AppSidebar;
