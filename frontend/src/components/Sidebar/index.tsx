@@ -1,14 +1,4 @@
-import {
-  Calendar,
-  ChartNoAxesColumnIncreasing,
-  Home,
-  Inbox,
-  Package,
-  Search,
-  Settings,
-  ShoppingCart,
-  UsersRound,
-} from "lucide-react";
+import { ChartNoAxesColumnIncreasing, Home, Package, ShoppingCart, UsersRound } from "lucide-react";
 
 import {
   Sidebar,
@@ -17,7 +7,6 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
