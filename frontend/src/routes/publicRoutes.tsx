@@ -1,7 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 
-import Adminpage from "@/pages/Adminpage";
-import Homepage from "@/pages/Homepage";
+import Homepage from "@/features/Homepage";
+import Adminpage from "@/features/Homepage/Adminpage";
 
 const publicRoutes: RouteObject[] = [
   { index: true, path: "/", element: <Homepage /> },
