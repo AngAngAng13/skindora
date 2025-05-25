@@ -1,6 +1,8 @@
 import Hero from "@/features/Homepage/components/Hero";
 import Topbar from "@/features/Homepage/components/Topbar";
 
+import HighlightProducts from "./components/HighlightProducts";
+
 export default function Homepage() {
   return (
     <>
@@ -14,6 +16,7 @@ export default function Homepage() {
         ]}
       />
       <Hero />
+      <HighlightProducts />
     </>
   );
 }
