@@ -1,5 +1,4 @@
 import Autoplay from "embla-carousel-autoplay";
-import Fade from "embla-carousel-fade";
 import { ChevronRight } from "lucide-react";
 import { LoaderCircle } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -14,11 +13,9 @@ type products = {
   description: string;
   mainFeature: string;
 };
-interface HighlightProductsProps {
-  products: products[];
-}
-export default function HighlightProducts(props: HighlightProductsProps): React.JSX.Element {
-  const { products } = props;
+
+export default function HighlightProducts(): React.JSX.Element {
+  // const { products } = props;
 
   return (
     <section className="bg-white py-16">
