@@ -13,7 +13,7 @@ const redisClient = createClient({
     host,
     port,
     tls: true,
-    servername: 'redis.skindora.site',
+    servername: host,
     ca: [fs.readFileSync(caCertPath, 'utf-8')]
   },
   password: process.env.HOST_PASSWORD
