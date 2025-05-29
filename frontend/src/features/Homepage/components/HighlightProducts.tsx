@@ -1,11 +1,9 @@
 import Autoplay from "embla-carousel-autoplay";
-import { ChevronRight, LoaderCircle, ShoppingCart } from "lucide-react";
+import { ChevronRight, LoaderCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-
-import HighlightCatagories from "./HighlightCatagories";
 
 type products = {
   name: string;
@@ -16,6 +14,50 @@ type products = {
   catagory?: string;
 };
 
+function HighlightProductCard({ product }: { product: products }) {
+  return (
+    <Card className="hover:shadow-primary/50 h-full overflow-hidden transition-shadow hover:shadow-lg">
+      <CardHeader className="p-2">
+        <div className="relative">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="h-56 w-full object-contain transition-transform duration-400 hover:scale-125"
+          />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <h3 className="line-clamp-2 text-sm font-medium">{product.name}</h3>
+      </CardContent>
+      <CardFooter className="flex flex-col items-start px-6">
+        <p className="text-primary mt-2 text-lg font-bold">{product.price.toLocaleString()}đ</p>
+      </CardFooter>
+    </Card>
+  );
+}
+
+function HighlightProductsCarousel({ products }: { products: products[] }) {
+  if (!products.length) {
+    return <LoaderCircle className="mx-auto h-8 w-8 animate-spin text-gray-500" />;
+  }
+  return (
+    <Carousel
+      className="mb-12"
+      plugins={[Autoplay({ delay: 10000, stopOnMouseEnter: true, stopOnInteraction: false })]}
+    >
+      <CarouselContent>
+        {products.map((product, index) => (
+          <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4">
+            <HighlightProductCard product={product} />
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  );
+}
+
 export default function HighlightProducts(): React.JSX.Element {
   // const { products } = props;
 
@@ -23,47 +65,13 @@ export default function HighlightProducts(): React.JSX.Element {
     <section className="bg-white py-16">
       <div className="container mx-auto px-4">
         <div className="mb-12 flex items-center justify-between">
-          <h2 className="prose-h2 text-3xl font-bold">Sản phẩm nổi bật</h2>
+          <h2 className="prose-h2 text-2xl font-bold">Sản phẩm nổi bật</h2>
           <Link to="/store" className="text-primary flex items-center hover:underline">
             Xem tất cả
             <ChevronRight className="ml-1 inline h-4 w-4" />
           </Link>
         </div>
-        {mockProducts.length > 0 ? (
-          <Carousel
-            className="mb-12"
-            plugins={[Autoplay({ delay: 10000, stopOnMouseEnter: true, stopOnInteraction: false })]}
-          >
-            <CarouselContent>
-              {mockProducts.map((product, index) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4">
-                  <Card className="hover:shadow-primary/50 h-full overflow-hidden transition-shadow hover:shadow-lg">
-                    <CardHeader className="p-2">
-                      <div className="relative">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="h-56 w-full object-contain transition-transform duration-400 hover:scale-125"
-                        />
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <h3 className="line-clamp-2 text-sm font-medium">{product.name}</h3>
-                    </CardContent>
-                    <CardFooter className="flex flex-col items-start px-6">
-                      <p className="text-primary mt-2 text-lg font-bold">{product.price.toLocaleString()}đ</p>
-                    </CardFooter>
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
-        ) : (
-          <LoaderCircle className="mx-auto h-8 w-8 animate-spin text-gray-500" />
-        )}
-        <HighlightCatagories />
+        <HighlightProductsCarousel products={mockProducts} />
       </div>
     </section>
   );
@@ -108,7 +116,7 @@ const mockProducts: products[] = [
     image:
       "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-gel-rua-mat-tao-bot-la-roche-posay-danh-cho-da-dau-nhay-cam-200ml-1716603223_img_380x380_64adc6_fit_center.jpg",
     description:
-      "Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin là dòng sản phẩm sữa rửa mặt chuyên biệt dành cho làn da dầu, mụn, nhạy cảm đến từ thương hiệu dược mỹ phẩm La Roche-Posay nổi tiếng của Pháp, với kết cấu dạng gel tạo bọt nhẹ nhàng giúp loại bỏ bụi bẩn, tạp chất và bã nhờn dư thừa trên da hiệu quả, mang đến làn da sạch mịn, thoáng nhẹ và tươi mát. Công thức sản phẩm an toàn, lành tính, giảm thiểu tình trạng kích ứng đối với làn da nhạy cảm.\n \n\n \nGel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin Dành Cho Da Dầu, Nhạy Cảm hiện đã có mặt tại Hasaki với 4 dung tích đa dạng phù hợp với từng nhu cầu:\n\n\nDạng tuýp 50ml: thiết kế nhỏ gọn, phù hợp mang theo bên người khi đi du lịch hoặc công tác.\n\n\nDạng tuýp 200ml: phù hợp cho nhu cầu sử dụng hằng ngày tại nhà.\n\n\nDạng chai vòi nhấn 400ml: dung tích lớn hơn, tiết kiệm hơn cùng thiết kế vòi nhấn tiện lợi.\n\n\nTúi refill 400ml: thiết kế dạng túi mới tiện lợi để refill lại vào chai với mục đích bảo vệ môi trường và tiết kiệm giá thành.\n\n\n\n\n\n\n\nThông báo thay đổi bao bì sản phẩm:\nDòng sản phẩm Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có sự thay đổi về bao bì sản phẩm trong năm 2024 như sau:\n \n\n \n\n\nLưu ý: Công thức và kết cấu sản phẩm bên trong không thay đổi.\n\n\nHiện tại Hasaki đang bán song song cả hai phiên bản bao bì cũ và mới.\n\n\nLoại da phù hợp:\n\nSản phẩm phù hợp cho da dầu, da mụn, da nhạy cảm.\n\n \n\n \nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to\n\n\nDa mụn cám, đầu đen, đầu trắng và sưng viêm từ trung bình đến nặng vừa\n\n\nDa nhạy cảm, dễ kích ứng\n\n\nƯu thế nổi bật:\n La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có công thức được lựa chọn kĩ càng với các thành phần hoạt tính dịu nhẹ, phù hợp cho làn da dầu, mụn & nhạy cảm:\n\n\nNước khoáng thiên nhiên La Roche-Posay có tác dụng làm dịu da và giảm kích ứng.\n\n\nZinC PCA giúp điều tiết lượng dầu tiết ra trên da, từ đó kiểm soát bóng dầu và bã nhờn dư thừa hiệu quả, giảm hình thành mụn đầu đen.\n\n\nĐộ pH 5.5 giống với độ pH tự nhiên trên da, giúp củng cố hàng rào bảo vệ da, không gây cảm giác khô căng, khó chịu.\n\n\nKết cấu sản phẩm dạng gel tạo bọt, nhẹ nhàng loại bỏ những tạp chất, bụi bẩn và ô nhiễm trên da, mang đến cảm giác tươi mát đầy sảng khoái sau khi rửa mặt.\n\n\nHương thơm hoa cúc dịu nhẹ sẽ giúp bạn thư giãn trong suốt quá trình sử dụng.\n\n\n \n\n\n \n\nĐộ an toàn:\n\n\nKhông chứa Paraben, chất tạo màu, xà phòng, cồn, an toàn cho làn da nhạy cảm.\n\n\nCông thức không chứa dầu (oil-free) nên rất thích hợp cho da dầu.\n\n\nBảo quản:\n\n\nBảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp hoặc nơi có nhiệt độ cao / ẩm ướt.\n\n\nTránh xa tầm tay trẻ em.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\n \n \n \nThông số sản phẩm:\nThương hiệu: La Roche-Posay\nXuất xứ thương hiệu: Pháp\nSản xuất tại: Pháp\nDung tích: 50ml / 200ml / 400ml/ Túi refill 400ml/ 2x50ml/ 3x50ml/ 4x50ml.\n \nLưu ý: Tác dụng có thể khác nhau tuỳ cơ địa của người dùng",
+      "Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin là dòng sản phẩm sữa rửa mặt chuyên biệt dành cho làn da dầu, mụn, nhạy cảm đến từ thương hiệu dược mỹ phẩm La Roche-Posay nổi tiếng của Pháp, với kết cấu dạng gel tạo bọt nhẹ nhàng giúp loại bỏ bụi bẩn, tạp chất và bã nhờn dư thừa trên da hiệu quả, mang đến làn da sạch mịn, thoáng nhẹ và tươi mát. Công thức sản phẩm an toàn, lành tính, giảm thiểu tình trạng kích ứng đối với làn da nhạy cảm.\n \n\n \nGel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin Dành Cho Da Dầu, Nhạy Cảm hiện đã có mặt tại Hasaki với 4 dung tích đa dạng phù hợp với từng nhu cầu:\n\n\nDạng tuýp 50ml: thiết kế nhỏ gọn, phù hợp mang theo bên người khi đi du lịch hoặc công tác.\n\n\nDạng tuýp 200ml: phù hợp cho nhu cầu sử dụng hằng ngày tại nhà.\n\n\nDạng chai vòi nhấn 400ml: dung tích lớn hơn, tiết kiệm hơn cùng thiết kế vòi nhấn tiện lợi.\n\n\nTúi refill 400ml: thiết kế dạng túi mới tiện lợi để refill lại vào chai với mục đích bảo vệ môi trường và tiết kiệm giá thành.\n\n\n\n\n\n\n\nThông báo thay đổi bao bì sản phẩm:\nDòng sản phẩm Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có sự thay đổi về bao bì sản phẩm trong năm 2024 như sau:\n \n\n \n\n\nLưu ý: Công thức và kết cấu sản phẩm bên trong không thay đổi.\n\n\nHiện tại Hasaki đang bán song song cả hai phiên bản bao bì cũ và mới.\n\n\nLoại da phù hợp:\n\nSản phẩm phù hợp cho da dầu, da mụn, da nhạy cảm.\n\n \n\n \nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to\n\n\nDa mụn cám, đầu đen, đầu trắng và sưng viêm từ trung bình đến nặng vừa\n\n\nDa nhạy cảm, dễ kích ứng\n\n\nƯu thế nổi bật:\n La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có công thức được lựa chọn kĩ càng với các thành phần hoạt tính dịu nhẹ, phù hợp cho làn da dầu, mụn & nhạy cảm:\n\n\nNước khoáng thiên nhiên La Roche-Posay có tác dụng làm dịu da và giảm kích ứng.\n\n\nZinC PCA giúp điều tiết lượng dầu tiết ra trên da, từ đó kiểm soát bóng dầu và bã nhờn dư thừa hiệu quả, giảm hình thành mụn đầu đen.\n\n\nĐộ pH 5.5 giống với độ pH tự nhiên trên da, giúp củng cố hàng rào bảo vệ da, không gây cảm giác khô căng, khó chịu.\n\n\nKết cấu sản phẩm dạng gel tạo bọt, nhẹ nhàng loại bỏ những tạp chất, bụi bẩn và ô nhiễm trên da, mang đến cảm giác tươi mát đầy sảng khoái sau khi rửa mặt.\n\n\nHương thơm hoa cúc dịu nhẹ sẽ giúp bạn thư giãn trong suốt quá trình sử dụng.\n\n\n \n\n\n \n\nĐộ an toàn:\n\n\nKhông chứa Paraben, chất tạo màu, xà phòng, cồn, an toàn cho làn da nhạy cảm.\n\n\nCông thức không chứa dầu (oil-free) nên rất thích hợp cho da dầu.\n\n\nBảo quản:\n\n\nBảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp hoặc nơi có nhiệt độ cao / ẩm ướt.\n\n\nTránh xa tầm tay trẻ em.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\n \n \n \nThông số sản phẩm:\nThương hiệu: La Roche-Posay\nXuất xứ thương hiệu: Pháp\nSản xuất tại: Pháp\nDung tích: 50ml / 200ml / 400ml/ Túi refill 400ml/ 2x50ml/ 3x50ml/ 4x50ml.",
     mainFeature:
       "Gently cleanses and purifies oily, acne-prone, and sensitive skin. Controls excess oil and reduces blackheads with Zinc PCA. Soothes and reduces irritation with La Roche-Posay Thermal Spring Water, formulated with a physiological pH 5.5.",
     catagory: "sữa rửa mặt",
@@ -130,7 +138,7 @@ const mockProducts: products[] = [
     image:
       "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-gel-rua-mat-tao-bot-la-roche-posay-danh-cho-da-dau-nhay-cam-50ml-1729259557_img_380x380_64adc6_fit_center.jpg",
     description:
-      "Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin là dòng sản phẩm sữa rửa mặt chuyên biệt dành cho làn da dầu, mụn, nhạy cảm đến từ thương hiệu dược mỹ phẩm La Roche-Posay nổi tiếng của Pháp, với kết cấu dạng gel tạo bọt nhẹ nhàng giúp loại bỏ bụi bẩn, tạp chất và bã nhờn dư thừa trên da hiệu quả, mang đến làn da sạch mịn, thoáng nhẹ và tươi mát. Công thức sản phẩm an toàn, lành tính, giảm thiểu tình trạng kích ứng đối với làn da nhạy cảm.\n \n\n \nGel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin Dành Cho Da Dầu, Nhạy Cảm hiện đã có mặt tại Hasaki với 4 dung tích đa dạng phù hợp với từng nhu cầu:\n\n\nDạng tuýp 50ml: thiết kế nhỏ gọn, phù hợp mang theo bên người khi đi du lịch hoặc công tác.\n\n\nDạng tuýp 200ml: phù hợp cho nhu cầu sử dụng hằng ngày tại nhà.\n\n\nDạng chai vòi nhấn 400ml: dung tích lớn hơn, tiết kiệm hơn cùng thiết kế vòi nhấn tiện lợi.\n\n\nTúi refill 400ml: thiết kế dạng túi mới tiện lợi để refill lại vào chai với mục đích bảo vệ môi trường và tiết kiệm giá thành.\n\n\n\n\n\n\n\nThông báo thay đổi bao bì sản phẩm:\nDòng sản phẩm Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có sự thay đổi về bao bì sản phẩm trong năm 2024 như sau:\n \n\n \n\n\nLưu ý: Công thức và kết cấu sản phẩm bên trong không thay đổi.\n\n\nHiện tại Hasaki đang bán song song cả hai phiên bản bao bì cũ và mới.\n\n\nLoại da phù hợp:\n\nSản phẩm phù hợp cho da dầu, da mụn, da nhạy cảm.\n\n \n\n \nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to\n\n\nDa mụn cám, đầu đen, đầu trắng và sưng viêm từ trung bình đến nặng vừa\n\n\nDa nhạy cảm, dễ kích ứng\n\n\nƯu thế nổi bật:\n La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có công thức được lựa chọn kĩ càng với các thành phần hoạt tính dịu nhẹ, phù hợp cho làn da dầu, mụn & nhạy cảm:\n\n\nNước khoáng thiên nhiên La Roche-Posay có tác dụng làm dịu da và giảm kích ứng.\n\n\nZinC PCA giúp điều tiết lượng dầu tiết ra trên da, từ đó kiểm soát bóng dầu và bã nhờn dư thừa hiệu quả, giảm hình thành mụn đầu đen.\n\n\nĐộ pH 5.5 giống với độ pH tự nhiên trên da, giúp củng cố hàng rào bảo vệ da, không gây cảm giác khô căng, khó chịu.\n\n\nKết cấu sản phẩm dạng gel tạo bọt, nhẹ nhàng loại bỏ những tạp chất, bụi bẩn và ô nhiễm trên da, mang đến cảm giác tươi mát đầy sảng khoái sau khi rửa mặt.\n\n\nHương thơm hoa cúc dịu nhẹ sẽ giúp bạn thư giãn trong suốt quá trình sử dụng.\n\n\n \n\n\n \n\nĐộ an toàn:\n\n\nKhông chứa Paraben, chất tạo màu, xà phòng, cồn, an toàn cho làn da nhạy cảm.\n\n\nCông thức không chứa dầu (oil-free) nên rất thích hợp cho da dầu.\n\n\nBảo quản:\n\n\nBảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp hoặc nơi có nhiệt độ cao / ẩm ướt.\n\n\nTránh xa tầm tay trẻ em.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\n \n \n \nThông số sản phẩm:\nThương hiệu: La Roche-Posay\nXuất xứ thương hiệu: Pháp\nSản xuất tại: Pháp\nDung tích: 50ml / 200ml / 400ml/ Túi refill 400ml/ 2x50ml/ 3x50ml/ 4x50ml.\n \nLưu ý: Tác dụng có thể khác nhau tuỳ cơ địa của người dùng",
+      "Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin là dòng sản phẩm sữa rửa mặt chuyên biệt dành cho làn da dầu, mụn, nhạy cảm đến từ thương hiệu dược mỹ phẩm La Roche-Posay nổi tiếng của Pháp, với kết cấu dạng gel tạo bọt nhẹ nhàng giúp loại bỏ bụi bẩn, tạp chất và bã nhờn dư thừa trên da hiệu quả, mang đến làn da sạch mịn, thoáng nhẹ và tươi mát. Công thức sản phẩm an toàn, lành tính, giảm thiểu tình trạng kích ứng đối với làn da nhạy cảm.\n \n\n \nGel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin Dành Cho Da Dầu, Nhạy Cảm hiện đã có mặt tại Hasaki với 4 dung tích đa dạng phù hợp với từng nhu cầu:\n\n\nDạng tuýp 50ml: thiết kế nhỏ gọn, phù hợp mang theo bên người khi đi du lịch hoặc công tác.\n\n\nDạng tuýp 200ml: phù hợp cho nhu cầu sử dụng hằng ngày tại nhà.\n\n\nDạng chai vòi nhấn 400ml: dung tích lớn hơn, tiết kiệm hơn cùng thiết kế vòi nhấn tiện lợi.\n\n\nTúi refill 400ml: thiết kế dạng túi mới tiện lợi để refill lại vào chai với mục đích bảo vệ môi trường và tiết kiệm giá thành.\n\n\n\n\n\n\n\nThông báo thay đổi bao bì sản phẩm:\nDòng sản phẩm Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có sự thay đổi về bao bì sản phẩm trong năm 2024 như sau:\n \n\n \n\n\nLưu ý: Công thức và kết cấu sản phẩm bên trong không thay đổi.\n\n\nHiện tại Hasaki đang bán song song cả hai phiên bản bao bì cũ và mới.\n\n\nLoại da phù hợp:\n\nSản phẩm phù hợp cho da dầu, da mụn, da nhạy cảm.\n\n \n\n \nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to\n\n\nDa mụn cám, đầu đen, đầu trắng và sưng viêm từ trung bình đến nặng vừa\n\n\nDa nhạy cảm, dễ kích ứng\n\n\nƯu thế nổi bật:\n La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có công thức được lựa chọn kĩ càng với các thành phần hoạt tính dịu nhẹ, phù hợp cho làn da dầu, mụn & nhạy cảm:\n\n\nNước khoáng thiên nhiên La Roche-Posay có tác dụng làm dịu da và giảm kích ứng.\n\n\nZinC PCA giúp điều tiết lượng dầu tiết ra trên da, từ đó kiểm soát bóng dầu và bã nhờn dư thừa hiệu quả, giảm hình thành mụn đầu đen.\n\n\nĐộ pH 5.5 giống với độ pH tự nhiên trên da, giúp củng cố hàng rào bảo vệ da, không gây cảm giác khô căng, khó chịu.\n\n\nKết cấu sản phẩm dạng gel tạo bọt, nhẹ nhàng loại bỏ những tạp chất, bụi bẩn và ô nhiễm trên da, mang đến cảm giác tươi mát đầy sảng khoái sau khi rửa mặt.\n\n\nHương thơm hoa cúc dịu nhẹ sẽ giúp bạn thư giãn trong suốt quá trình sử dụng.\n\n\n \n\n\n \n\nĐộ an toàn:\n\n\nKhông chứa Paraben, chất tạo màu, xà phòng, cồn, an toàn cho làn da nhạy cảm.\n\n\nCông thức không chứa dầu (oil-free) nên rất thích hợp cho da dầu.\n\n\nBảo quản:\n\n\nBảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp hoặc nơi có nhiệt độ cao / ẩm ướt.\n\n\nTránh xa tầm tay trẻ em.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\n \n \n \nThông số sản phẩm:\nThương hiệu: La Roche-Posay\nXuất xứ thương hiệu: Pháp\nSản xuất tại: Pháp\nDung tích: 50ml / 200ml / 400ml/ Túi refill 400ml/ 2x50ml/ 3x50ml/ 4x50ml.",
     mainFeature:
       "Gently cleanses and purifies oily, acne-prone, and sensitive skin. Controls excess oil and reduces blackheads with Zinc PCA. Soothes and reduces irritation with La Roche-Posay Thermal Spring Water, formulated with a physiological pH 5.5.",
     catagory: "sữa rửa mặt",
@@ -141,7 +149,7 @@ const mockProducts: products[] = [
     image:
       "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-combo-8-gel-rua-mat-la-roche-posay-danh-cho-da-dau-nhay-cam-50mlx8-1738576731_img_380x380_64adc6_fit_center.jpg",
     description:
-      "Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin là dòng sản phẩm sữa rửa mặt chuyên biệt dành cho làn da dầu, mụn, nhạy cảm đến từ thương hiệu dược mỹ phẩm La Roche-Posay nổi tiếng của Pháp, với kết cấu dạng gel tạo bọt nhẹ nhàng giúp loại bỏ bụi bẩn, tạp chất và bã nhờn dư thừa trên da hiệu quả, mang đến làn da sạch mịn, thoáng nhẹ và tươi mát. Công thức sản phẩm an toàn, lành tính, giảm thiểu tình trạng kích ứng đối với làn da nhạy cảm.\n \n\n \nGel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin Dành Cho Da Dầu, Nhạy Cảm hiện đã có mặt tại Hasaki với 4 dung tích đa dạng phù hợp với từng nhu cầu:\n\n\nDạng tuýp 50ml: thiết kế nhỏ gọn, phù hợp mang theo bên người khi đi du lịch hoặc công tác.\n\n\nDạng tuýp 200ml: phù hợp cho nhu cầu sử dụng hằng ngày tại nhà.\n\n\nDạng chai vòi nhấn 400ml: dung tích lớn hơn, tiết kiệm hơn cùng thiết kế vòi nhấn tiện lợi.\n\n\nTúi refill 400ml: thiết kế dạng túi mới tiện lợi để refill lại vào chai với mục đích bảo vệ môi trường và tiết kiệm giá thành.\n\n\n\n\n\n\n\nThông báo thay đổi bao bì sản phẩm:\nDòng sản phẩm Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có sự thay đổi về bao bì sản phẩm trong năm 2024 như sau:\n \n\n \n\n\nLưu ý: Công thức và kết cấu sản phẩm bên trong không thay đổi.\n\n\nHiện tại Hasaki đang bán song song cả hai phiên bản bao bì cũ và mới.\n\n\nLoại da phù hợp:\n\nSản phẩm phù hợp cho da dầu, da mụn, da nhạy cảm.\n\n \n\n \nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to\n\n\nDa mụn cám, đầu đen, đầu trắng và sưng viêm từ trung bình đến nặng vừa\n\n\nDa nhạy cảm, dễ kích ứng\n\n\nƯu thế nổi bật:\n La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có công thức được lựa chọn kĩ càng với các thành phần hoạt tính dịu nhẹ, phù hợp cho làn da dầu, mụn & nhạy cảm:\n\n\nNước khoáng thiên nhiên La Roche-Posay có tác dụng làm dịu da và giảm kích ứng.\n\n\nZinC PCA giúp điều tiết lượng dầu tiết ra trên da, từ đó kiểm soát bóng dầu và bã nhờn dư thừa hiệu quả, giảm hình thành mụn đầu đen.\n\n\nĐộ pH 5.5 giống với độ pH tự nhiên trên da, giúp củng cố hàng rào bảo vệ da, không gây cảm giác khô căng, khó chịu.\n\n\nKết cấu sản phẩm dạng gel tạo bọt, nhẹ nhàng loại bỏ những tạp chất, bụi bẩn và ô nhiễm trên da, mang đến cảm giác tươi mát đầy sảng khoái sau khi rửa mặt.\n\n\nHương thơm hoa cúc dịu nhẹ sẽ giúp bạn thư giãn trong suốt quá trình sử dụng.\n\n\n \n\n\n \n\nĐộ an toàn:\n\n\nKhông chứa Paraben, chất tạo màu, xà phòng, cồn, an toàn cho làn da nhạy cảm.\n\n\nCông thức không chứa dầu (oil-free) nên rất thích hợp cho da dầu.\n\n\nBảo quản:\n\n\nBảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp hoặc nơi có nhiệt độ cao / ẩm ướt.\n\n\nTránh xa tầm tay trẻ em.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\n \n \n \nThông số sản phẩm:\nThương hiệu: La Roche-Posay\nXuất xứ thương hiệu: Pháp\nSản xuất tại: Pháp\nDung tích: 50ml / 200ml / 400ml/ Túi refill 400ml/ 2x50ml/ 3x50ml/ 4x50ml.\n \nLưu ý: Tác dụng có thể khác nhau tuỳ cơ địa của người dùng",
+      "Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin là dòng sản phẩm sữa rửa mặt chuyên biệt dành cho làn da dầu, mụn, nhạy cảm đến từ thương hiệu dược mỹ phẩm La Roche-Posay nổi tiếng của Pháp, với kết cấu dạng gel tạo bọt nhẹ nhàng giúp loại bỏ bụi bẩn, tạp chất và bã nhờn dư thừa trên da hiệu quả, mang đến làn da sạch mịn, thoáng nhẹ và tươi mát. Công thức sản phẩm an toàn, lành tính, giảm thiểu tình trạng kích ứng đối với làn da nhạy cảm.\n \n\n \nGel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin Dành Cho Da Dầu, Nhạy Cảm hiện đã có mặt tại Hasaki với 4 dung tích đa dạng phù hợp với từng nhu cầu:\n\n\nDạng tuýp 50ml: thiết kế nhỏ gọn, phù hợp mang theo bên người khi đi du lịch hoặc công tác.\n\n\nDạng tuýp 200ml: phù hợp cho nhu cầu sử dụng hằng ngày tại nhà.\n\n\nDạng chai vòi nhấn 400ml: dung tích lớn hơn, tiết kiệm hơn cùng thiết kế vòi nhấn tiện lợi.\n\n\nTúi refill 400ml: thiết kế dạng túi mới tiện lợi để refill lại vào chai với mục đích bảo vệ môi trường và tiết kiệm giá thành.\n\n\n\n\n\n\n\nThông báo thay đổi bao bì sản phẩm:\nDòng sản phẩm Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có sự thay đổi về bao bì sản phẩm trong năm 2024 như sau:\n \n\n \n\n\nLưu ý: Công thức và kết cấu sản phẩm bên trong không thay đổi.\n\n\nHiện tại Hasaki đang bán song song cả hai phiên bản bao bì cũ và mới.\n\n\nLoại da phù hợp:\n\nSản phẩm phù hợp cho da dầu, da mụn, da nhạy cảm.\n\n \n\n \nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to\n\n\nDa mụn cám, đầu đen, đầu trắng và sưng viêm từ trung bình đến nặng vừa\n\n\nDa nhạy cảm, dễ kích ứng\n\n\nƯu thế nổi bật:\n La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có công thức được lựa chọn kĩ càng với các thành phần hoạt tính dịu nhẹ, phù hợp cho làn da dầu, mụn & nhạy cảm:\n\n\nNước khoáng thiên nhiên La Roche-Posay có tác dụng làm dịu da và giảm kích ứng.\n\n\nZinC PCA giúp điều tiết lượng dầu tiết ra trên da, từ đó kiểm soát bóng dầu và bã nhờn dư thừa hiệu quả, giảm hình thành mụn đầu đen.\n\n\nĐộ pH 5.5 giống với độ pH tự nhiên trên da, giúp củng cố hàng rào bảo vệ da, không gây cảm giác khô căng, khó chịu.\n\n\nKết cấu sản phẩm dạng gel tạo bọt, nhẹ nhàng loại bỏ những tạp chất, bụi bẩn và ô nhiễm trên da, mang đến cảm giác tươi mát đầy sảng khoái sau khi rửa mặt.\n\n\nHương thơm hoa cúc dịu nhẹ sẽ giúp bạn thư giãn trong suốt quá trình sử dụng.\n\n\n \n\n\n \n\nĐộ an toàn:\n\n\nKhông chứa Paraben, chất tạo màu, xà phòng, cồn, an toàn cho làn da nhạy cảm.\n\n\nCông thức không chứa dầu (oil-free) nên rất thích hợp cho da dầu.\n\n\nBảo quản:\n\n\nBảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp hoặc nơi có nhiệt độ cao / ẩm ướt.\n\n\nTránh xa tầm tay trẻ em.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\n \n \n \nThông số sản phẩm:\nThương hiệu: La Roche-Posay\nXuất xứ thương hiệu: Pháp\nSản xuất tại: Pháp\nDung tích: 50ml / 200ml / 400ml/ Túi refill 400ml/ 2x50ml/ 3x50ml/ 4x50ml.",
     mainFeature:
       "Gently cleanses and purifies oily, acne-prone, and sensitive skin. Controls excess oil and reduces blackheads with Zinc PCA. Soothes and reduces irritation with La Roche-Posay Thermal Spring Water, formulated with a physiological pH 5.5.",
     catagory: "sữa rửa mặt",

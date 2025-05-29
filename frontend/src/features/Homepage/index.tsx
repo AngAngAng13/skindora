@@ -2,12 +2,13 @@ import Hero from "@/features/Homepage/components/Hero";
 import Topbar from "@/features/Homepage/components/Topbar";
 
 import HighlightProducts from "./components/HighlightProducts";
+import HighlightCatagories from "./components/HighlightCatagories";
 
 export default function Homepage() {
   return (
     <>
       <Topbar
-        branding="DMZ shop"
+        branding="Skindora"
         navItems={[
           { displayText: "Home", path: "" },
           { displayText: "Products", path: "products" },
@@ -17,6 +18,7 @@ export default function Homepage() {
       />
       <Hero />
       <HighlightProducts />
+      <HighlightCatagories />
     </>
   );
 }
