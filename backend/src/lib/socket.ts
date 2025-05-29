@@ -2,12 +2,14 @@ import { Server, Socket } from 'socket.io'
 import http from 'http'
 import express, { Application } from 'express'
 import { config } from 'dotenv'
+import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from '~/types/socketTypes'
 config()
 
 const app: Application = express()
 const server = http.createServer(app)
 
-const io = new Server(server, {
+//Set up server
+const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(server, {
   cors: {
     origin: [process.env.FRONTEND_URL as string, 'http://localhost:5173']
   }
@@ -17,33 +19,25 @@ interface UserSocketMap {
   [userId: string]: string
 }
 
+//Map userId với socketId
 const userSocketMap: UserSocketMap = {}
+let onlineStaffIds: string[] = []
 
 export function getReceiverSocketId(userId: string): string | undefined {
   return userSocketMap[userId]
 }
 
-io.on('connection', (socket: Socket) => {
-  console.log('User connected with id:', socket.id)
-
-  const userId = socket.handshake.query.userId as string
-
-  if (userId) {
-    userSocketMap[userId] = socket.id;
-    (socket as any).userId = userId
+io.on('connection', (socket) => {
+  const { userId, role } = socket.handshake.query as { userId: string; role: 'customer' | 'staff' }
+  if (!userId || !['customer', 'staff'].includes(role)) {
+    socket.disconnect(true)
+    return
   }
+  socket.data.userId = userId
+  socket.data.role = role
+  userSocketMap[userId] = socket.id
 
-  io.emit('getOnlineUser', Object.keys(userSocketMap))
-
-  socket.on('disconnect', () => {
-    const disconnectedUserId = (socket as any).userId
-    console.log('User disconnected with id:', socket.id)
-
-    if (disconnectedUserId) {
-      delete userSocketMap[disconnectedUserId]
-      io.emit('getOnlineUser', Object.keys(userSocketMap))
-    }
-  })
+  console.log(`[${role}] ${userId} connected`)
 })
 
 export { io, server, app }
