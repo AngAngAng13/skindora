@@ -2,10 +2,10 @@ import Autoplay from "embla-carousel-autoplay";
 import { ChevronRight, LoaderCircle, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
-import { CardContent } from "@/components/ui/card";
-import { Card, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+
+import HighlightCatagories from "./HighlightCatagories";
 
 type products = {
   name: string;
@@ -32,32 +32,26 @@ export default function HighlightProducts(): React.JSX.Element {
         {mockProducts.length > 0 ? (
           <Carousel
             className="mb-12"
-            plugins={[Autoplay({ delay: 4000, stopOnMouseEnter: true, stopOnInteraction: false })]}
+            plugins={[Autoplay({ delay: 10000, stopOnMouseEnter: true, stopOnInteraction: false })]}
           >
             <CarouselContent>
               {mockProducts.map((product, index) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                  <Card className="hover:shadow-primary/50 overflow-hidden transition-shadow hover:shadow-lg">
-                    <CardHeader className="p-0">
+                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4">
+                  <Card className="hover:shadow-primary/50 h-full overflow-hidden transition-shadow hover:shadow-lg">
+                    <CardHeader className="p-2">
                       <div className="relative">
-                        <img src={product.image} alt={product.name} className="h-64 w-full object-contain" />
-                        <div className="bg-primary prose absolute top-2 right-2 rounded px-2 py-1 text-xs text-white">
-                          {product.catagory || "Sản phẩm"}
-                        </div>
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="h-56 w-full object-contain transition-transform duration-400 hover:scale-125"
+                        />
                       </div>
                     </CardHeader>
-                    <CardContent className="px-6">
-                      <h3 className="mb-2 text-lg font-medium">{product.name}</h3>
-                      <p className="mb-3 line-clamp-2 text-sm text-gray-500">{product.description}</p>
+                    <CardContent>
+                      <h3 className="line-clamp-2 text-sm font-medium">{product.name}</h3>
                     </CardContent>
-                    <CardFooter className="px-6">
-                      <div className="relative flex w-full items-center justify-between">
-                        <p className="text-primary font-bold">{product.price.toLocaleString()}₫</p>
-                        <Button size={"lg"}>
-                          <ShoppingCart className="mr-2 h-4 w-4" />
-                          Thêm vào giỏ
-                        </Button>
-                      </div>
+                    <CardFooter className="flex flex-col items-start px-6">
+                      <p className="text-primary mt-2 text-lg font-bold">{product.price.toLocaleString()}đ</p>
                     </CardFooter>
                   </Card>
                 </CarouselItem>
@@ -69,6 +63,7 @@ export default function HighlightProducts(): React.JSX.Element {
         ) : (
           <LoaderCircle className="mx-auto h-8 w-8 animate-spin text-gray-500" />
         )}
+        <HighlightCatagories />
       </div>
     </section>
   );
