@@ -2,6 +2,7 @@ import express from 'express'
 import { config } from 'dotenv'
 import databaseService from './services/database.services'
 import usersRouter from './routes/users.routes'
+import { defaultErrorHandler } from './middlewares/error.middlewares'
 import { app, server} from './lib/socket'
 
 config()
@@ -17,6 +18,8 @@ app.get('/', (req, res) => {
 
 app.use('/users', usersRouter)
 
+app.use(defaultErrorHandler)
+
 server.listen(port, ()=>{
-  console.log(`Socket.io server is running on port ${port}`)
+  console.log(`Skindora server is running on port ${port}`)
 })
