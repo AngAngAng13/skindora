@@ -2,6 +2,7 @@ import express from 'express'
 import { config } from 'dotenv'
 import databaseService from './services/database.services'
 import usersRouter from './routes/users.routes'
+import { defaultErrorHandler } from './middlewares/error.middlewares'
 
 config()
 const app = express()
@@ -16,6 +17,8 @@ app.get('/', (req, res) => {
 })
 
 app.use('/users', usersRouter)
+
+app.use(defaultErrorHandler)
 
 app.listen(port, () => {
   console.log(`Skindora đang chạy trên port ${port}`)
