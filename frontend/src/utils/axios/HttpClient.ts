@@ -90,6 +90,7 @@ export class HttpClient implements HttpClientService {
                 });
               });
             } catch (e) {
+              console.error("Error while waiting for token refresh:", e);
               return Promise.reject(new ApiError(error));
             }
           } else {
@@ -148,7 +149,7 @@ export class HttpClient implements HttpClientService {
   }
 
   private shouldRetry(error: AxiosErrorType): boolean {
-    return !error.response || (error.response.status >= 500 && error.response.status <= 599); //server code erros
+    return !error.response || (error.response.status >= 500 && error.response.status <= 599);
   }
 
   private sleep(ms: number): Promise<void> {
@@ -156,7 +157,7 @@ export class HttpClient implements HttpClientService {
   }
 
   private addRefreshSubscriber(callback: (token: string | null) => void): void {
-    this.refreshSubscribers.push(callback); // nhung request dang doi refresh token moi
+    this.refreshSubscribers.push(callback);
   }
 
   private onRefreshSuccess(token: string): void {
@@ -165,14 +166,14 @@ export class HttpClient implements HttpClientService {
   }
 
   private onRefreshFailure(): void {
-    this.refreshSubscribers.forEach((callback) => callback(null)); 
+    this.refreshSubscribers.forEach((callback) => callback(null));
     this.refreshSubscribers = [];
   }
 
   private async request<T>(
     method: string,
     url: string,
-    data?: any,
+    data?: unknown,
     options?: RequestOptions
   ): Promise<Result<ApiResponse<T>, ApiError>> {
     const requestConfig: AxiosRequestConfig = {
@@ -189,9 +190,11 @@ export class HttpClient implements HttpClientService {
 
     const retryConfig = options?.retry || this.config.defaultRetry;
     if (retryConfig) {
+      extendedConfig._retry = 0;
       extendedConfig._maxRetries = retryConfig.maxRetries;
       extendedConfig._delayMs = retryConfig.delayMs;
     } else {
+      extendedConfig._retry = -1;
     }
 
     if (options?.skipAuth) {
@@ -219,7 +222,7 @@ export class HttpClient implements HttpClientService {
     return this.request<T>("GET", url, undefined, options);
   }
 
-  public async post<T, D = any>(
+  public async post<T, D = unknown>(
     url: string,
     data?: D,
     options?: RequestOptions
@@ -227,7 +230,7 @@ export class HttpClient implements HttpClientService {
     return this.request<T>("POST", url, data, options);
   }
 
-  public async put<T, D = any>(
+  public async put<T, D = unknown>(
     url: string,
     data?: D,
     options?: RequestOptions
@@ -235,7 +238,7 @@ export class HttpClient implements HttpClientService {
     return this.request<T>("PUT", url, data, options);
   }
 
-  public async patch<T, D = any>(
+  public async patch<T, D = unknown>(
     url: string,
     data?: D,
     options?: RequestOptions
