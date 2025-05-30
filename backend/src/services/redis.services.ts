@@ -12,9 +12,8 @@ const redisClient = createClient({
   socket: {
     host,
     port,
-    tls: true,
-    servername: host,
-    ca: [fs.readFileSync(caCertPath, 'utf-8')]
+
+    servername: host
   },
   password: process.env.HOST_PASSWORD
 })
@@ -24,6 +23,7 @@ redisClient.on('error', (err) => {
 })
 ;(async () => {
   await redisClient.connect()
+  console.log('Connected')
 })() // connect redis ngay lập tức
 
 export default redisClient

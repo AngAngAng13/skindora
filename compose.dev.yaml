@@ -1,7 +1,12 @@
-
 networks:
   default:
     driver: bridge
+  redis_network:
+    driver: bridge
+  backend_network:
+    driver: bridge
+volumes:
+  redis_data:
 
 services:
   frontend:
@@ -12,6 +17,36 @@ services:
       - ./uploads:/srv/uploads
     networks:
       - default
-  
-       
-    
+    ports:
+      - "5173:80"
+  redis:
+    image: redis:8-alpine
+    networks:
+      - redis_network
+    ports:
+      - "6379:6379"
+    command:
+      - redis-server --bind 0.0.0.0 --port 6379
+    volumes:
+      - redis_data:/data
+    environment:
+      - REDIS_PASSWORD=${DEV_REDIS_PASSWORD}
+    env_file:
+      - ./backend/.env
+  backend:
+    build:
+      context: ./backend
+      dockerfile: dockerfile
+      args:
+        - APP_PORT=${PORT:-4000}
+    volumes:
+      - ./uploads:/srv/uploads
+    networks:
+      - backend_network
+      - redis_network
+    depends_on:
+      - redis
+    env_file:
+      - ./backend/.env
+    ports:
+      - ${PORT:-4000}:4000

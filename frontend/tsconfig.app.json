@@ -29,6 +29,12 @@
       "@/*": [
         "./src/*"
       ],
+      "@components": [
+        "./src/components/*"
+      ],
+      "@assets": [
+        "./src/assets/*"
+      ],
     }
   },
   "include": [
