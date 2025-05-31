@@ -16,7 +16,7 @@ type products = {
 
 function HighlightProductCard({ product }: { product: products }) {
   return (
-    <Card className="hover:shadow-primary/50 h-full overflow-hidden transition-shadow hover:shadow-lg">
+    <Card className="hover:shadow-primary/25 hover:border-primary/40 overflow-hidden transition-shadow duration-400 hover:shadow-lg">
       <CardHeader className="p-2">
         <div className="relative">
           <img
@@ -45,7 +45,7 @@ function HighlightProductsCarousel({ products }: { products: products[] }) {
       className="mb-12"
       plugins={[Autoplay({ delay: 10000, stopOnMouseEnter: true, stopOnInteraction: false })]}
     >
-      <CarouselContent>
+      <CarouselContent className="py-4">
         {products.map((product, index) => (
           <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4">
             <HighlightProductCard product={product} />
