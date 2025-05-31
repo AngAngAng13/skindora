@@ -41,11 +41,7 @@ io.on('connection', (socket) => {
 
   //emit online staff khi có staff connected
   if (role === 'staff') {
-    onlineStaffIds = Object.keys(userSocketMap).filter((id) => {
-      const userSocket = io.sockets.sockets.get(userSocketMap[id])
-      return userSocket?.data.role === 'staff'
-    })
-    io.emit('getOnlineStaff', onlineStaffIds)
+    emitOnlineStaff()
   }
 
   //start chat event
@@ -113,11 +109,7 @@ io.on('connection', (socket) => {
     console.log(`User disconnected with id: ${socket.id}, userId: ${socket.data.userId}, role: ${socket.data.role}`)
 
     //Cập nhật list online staff
-    onlineStaffIds = Object.keys(userSocketMap).filter((id) => {
-      const userSocket = io.sockets.sockets.get(userSocketMap[id])
-      return userSocket?.data.role === 'staff'
-    })
-    io.emit('getOnlineStaff', onlineStaffIds)
+    emitOnlineStaff()
 
     if (socket.data.role === 'staff' && socket.data.pairedCustomerIds && socket.data.pairedCustomerIds?.length > 0) {
       socket.data.pairedCustomerIds.forEach((customerId) => {
@@ -155,6 +147,14 @@ function pickAvailableStaff(): string | null {
 
   //Chọn staff đầu tiên
   return sortStaffList[0] || null
+}
+
+function emitOnlineStaff() {
+  onlineStaffIds = Object.keys(userSocketMap).filter((id) => {
+    const userSocket = io.sockets.sockets.get(userSocketMap[id])
+    return userSocket?.data.role === 'staff'
+  })
+  io.emit('getOnlineStaff', onlineStaffIds)
 }
 
 export { io, server, app }
