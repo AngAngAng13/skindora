@@ -81,6 +81,32 @@ io.on('connection', (socket) => {
     socket.emit('chatStarted', staffId)
     staffSocket.emit('chatStarted', socket.data.userId)
   })
+
+  //send message event
+  socket.on('sendMessage', (recipientId: string, message: string) => {
+    const recipientSocket = io.sockets.sockets.get(userSocketMap[recipientId])
+    //Nếu reipient không online
+    if (!recipientSocket) {
+      console.log(`Recipient ${recipientId} is not connected`)
+      return
+    }
+
+    //Nếu là customer mà recipient khác user đã paired
+    if (socket.data.role === 'customer' && socket.data.pairedUserId !== recipientId) {
+      console.log(`Customer ${socket.data.userId} is not paired with ${recipientId}`)
+      return
+    }
+
+    //Nếu là staff mà recipient không nằm trong list pairedCustomerIds
+    if (socket.data.role === 'staff' && !socket.data.pairedCustomerIds?.includes(recipientId)) {
+      console.log(`Staff ${socket.data.userId} is not paired with ${recipientId}`)
+      return
+    }
+
+    //Gửi message đến recipient
+    recipientSocket.emit('receiveMessage', message, socket.data.userId)
+  })
+
 })
 
 function pickAvailableStaff(): string | null {
