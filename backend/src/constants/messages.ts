@@ -16,5 +16,8 @@ export const USERS_MESSAGES = {
   CONFIRM_PASSWORD_MUST_BE_A_STRING: 'Confirm password must be a string',
   CONFIRM_PASSWORD_LENGTH_MUST_BE_FROM_8_TO_30: 'Confirm password length must be from 8 to 30 characters',
   CONFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD: 'Confirm password must be the same as password',
-  REGISTER_SUCCESS: 'Register successful'
+  REGISTER_SUCCESS: 'Register successful',
+  EMAIL_OR_PASSWORD_IS_INCORRECT: 'Email or password is incorrect',
+  LOGIN_SUCCESS: 'Login successful',
+  LOGOUT_SUCCESS: 'Logout successful'
 } as const
