@@ -40,8 +40,8 @@ io.on('connection', (socket) => {
   console.log(`[${role}] ${userId} connected`)
 
   //emit online staff khi có staff connected
-  if(role === 'staff'){
-    onlineStaffIds = Object.keys(userSocketMap).filter((id)=>{
+  if (role === 'staff') {
+    onlineStaffIds = Object.keys(userSocketMap).filter((id) => {
       const userSocket = io.sockets.sockets.get(userSocketMap[id])
       return userSocket?.data.role === 'staff'
     })
@@ -50,16 +50,16 @@ io.on('connection', (socket) => {
 
   //start chat event
   //customer là người start chat
-  socket.on('startChat', ()=>{
-    if(role !== 'customer') return
-    if(socket.data.pairedUserId){
+  socket.on('startChat', () => {
+    if (role !== 'customer') return
+    if (socket.data.pairedUserId) {
       console.log(`Customer ${userId} is already in a chat with ${socket.data.pairedUserId}`)
       return
     }
     //chọn ngẫu nhiên 1 staff online
     const staffId = pickAvailableStaff()
-    if(!staffId){
-      console.log("No available staff to chat")
+    if (!staffId) {
+      console.log('No available staff to chat')
       return
     }
     console.log(`Customer ${userId} is paired with staff ${staffId}`)
@@ -107,16 +107,47 @@ io.on('connection', (socket) => {
     recipientSocket.emit('receiveMessage', message, socket.data.userId)
   })
 
+  //disconnect event
+  socket.on('disconnect', () => {
+    delete userSocketMap[socket.data.userId]
+    console.log(`User disconnected with id: ${socket.id}, userId: ${socket.data.userId}, role: ${socket.data.role}`)
+
+    //Cập nhật list online staff
+    onlineStaffIds = Object.keys(userSocketMap).filter((id) => {
+      const userSocket = io.sockets.sockets.get(userSocketMap[id])
+      return userSocket?.data.role === 'staff'
+    })
+    io.emit('getOnlineStaff', onlineStaffIds)
+
+    if (socket.data.role === 'staff' && socket.data.pairedCustomerIds && socket.data.pairedCustomerIds?.length > 0) {
+      socket.data.pairedCustomerIds.forEach((customerId) => {
+        const customerSocket = io.sockets.sockets.get(userSocketMap[customerId])
+        if (customerSocket) {
+          customerSocket.data.pairedUserId = undefined
+          customerSocket.emit('chatEnded', socket.data.userId)
+        }
+      })
+    }
+
+    if (socket.data.role === 'customer' && socket.data.pairedUserId) {
+      const staffSocket = io.sockets.sockets.get(userSocketMap[socket.data.pairedUserId])
+      if (staffSocket) {
+        staffSocket.data.pairedCustomerIds =
+          staffSocket.data.pairedCustomerIds?.filter((id) => id !== socket.data.userId) || []
+        staffSocket.emit('chatEnded', socket.data.userId)
+      }
+    }
+  })
 })
 
 function pickAvailableStaff(): string | null {
-  if(onlineStaffIds.length === 0){
-    console.log("No available staff online")
+  if (onlineStaffIds.length === 0) {
+    console.log('No available staff online')
     return null
   }
 
   //Chọn staff đang paired với ít customer nhất
-  const sortStaffList = onlineStaffIds.sort((a,b)=>{
+  const sortStaffList = onlineStaffIds.sort((a, b) => {
     const aSocket = io.sockets.sockets.get(userSocketMap[a])
     const bSocket = io.sockets.sockets.get(userSocketMap[b])
     return (aSocket?.data.pairedCustomerIds?.length || 0) - (bSocket?.data.pairedCustomerIds?.length || 0)
