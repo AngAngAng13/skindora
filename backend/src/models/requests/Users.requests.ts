@@ -16,3 +16,8 @@ export interface RegisterReqBody {
   password: string
   confirm_password: string
 }
+
+export interface LoginReqBody {
+  email: string
+  password: string
+}

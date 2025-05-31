@@ -6,6 +6,7 @@ import { Role, TokenType, UserVerifyStatus } from '~/constants/enums'
 import User from '~/models/schemas/User.schema'
 import { hashPassword } from '~/utils/crypto'
 import RefreshToken from '~/models/schemas/RefreshToken.schemas'
+import { USERS_MESSAGES } from '~/constants/messages'
 
 class UsersService {
   private decodeRefreshToken(refresh_token: string) {
@@ -88,6 +89,24 @@ class UsersService {
     )
     //gửi mail chỗ này làm sau
     console.log(email_verify_token)
+    return { access_token, refresh_token }
+  }
+
+  async login({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+    const [access_token, refresh_token] = await this.signAccessAndRefreshTokens({
+      user_id,
+      verify
+    })
+    const { exp, iat } = await this.decodeRefreshToken(refresh_token)
+
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({
+        token: refresh_token,
+        user_id: new ObjectId(user_id),
+        exp,
+        iat
+      })
+    )
     return { access_token, refresh_token }
   }
 }
