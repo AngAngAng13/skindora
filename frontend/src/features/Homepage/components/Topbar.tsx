@@ -2,9 +2,8 @@ import { ShoppingCart } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
-
 import logo from "@/assets/logo.svg";
+import { Button } from "@/components/ui/button";
 
 interface TopbarProps {
   branding?: string;
@@ -43,7 +42,7 @@ function TopbarActions() {
           <ShoppingCart className="h-5 w-5" />
         </Button>
       </Link>
-      <Link to="/">
+      <Link to="/auth/login">
         <Button variant="outline">Đăng nhập</Button>
       </Link>
     </div>

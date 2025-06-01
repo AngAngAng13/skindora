@@ -1,6 +1,8 @@
 import type { AxiosRequestConfig } from "axios";
 import { Result } from "neverthrow";
+
 import { ApiError } from "./error";
+
 /**
  * @interface ExtendedAxiosRequestConfig
  *@extends AxiosRequestConfig
@@ -95,8 +97,20 @@ export interface HttpClientConfig {
  */
 export interface HttpClientService {
   get<T = unknown>(url: string, options?: RequestOptions): Promise<Result<ApiResponse<T>, ApiError>>;
-  post<T = unknown, D = unknown>(url: string, data?: D, options?: RequestOptions): Promise<Result<ApiResponse<T>, ApiError>>;
-  put<T = unknown, D = unknown>(url: string, data?: D, options?: RequestOptions): Promise<Result<ApiResponse<T>, ApiError>>;
-  patch<T = unknown, D = unknown>(url: string, data?: D, options?: RequestOptions): Promise<Result<ApiResponse<T>, ApiError>>;
+  post<T = unknown, D = unknown>(
+    url: string,
+    data?: D,
+    options?: RequestOptions
+  ): Promise<Result<ApiResponse<T>, ApiError>>;
+  put<T = unknown, D = unknown>(
+    url: string,
+    data?: D,
+    options?: RequestOptions
+  ): Promise<Result<ApiResponse<T>, ApiError>>;
+  patch<T = unknown, D = unknown>(
+    url: string,
+    data?: D,
+    options?: RequestOptions
+  ): Promise<Result<ApiResponse<T>, ApiError>>;
   delete<T = unknown>(url: string, options?: RequestOptions): Promise<Result<ApiResponse<T>, ApiError>>;
 }
