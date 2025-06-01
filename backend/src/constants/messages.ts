@@ -18,3 +18,13 @@ export const USERS_MESSAGES = {
   CONFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD: 'Confirm password must be the same as password',
   REGISTER_SUCCESS: 'Register successful'
 } as const
+
+export const CART_MESSAGES = {
+  ADDED_SUCCESS: 'Product added to cart successfully'
+} as const
+
+export const ORDER_MESSAGES = {
+  CREATED_SUCCESS: 'Order created successfully',
+} as const
+
+export const ORDER_DETAIL_MESSAGES = {} as const
