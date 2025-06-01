@@ -1,5 +1,7 @@
 import { Outlet } from "react-router-dom";
 
+import { AuthProvider } from "@/contexts/AuthContext";
+
 export default function RootLayout() {
   return (
     // <div className="flex min-h-screen bg-white">
@@ -12,7 +14,9 @@ export default function RootLayout() {
     //   </SidebarProvider>
     // </div>
     <div className="min-h-screen bg-white">
-      <Outlet />
+      <AuthProvider>
+        <Outlet />
+      </AuthProvider>
     </div>
   );
 }
