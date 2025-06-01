@@ -20,7 +20,14 @@ export const USERS_MESSAGES = {
 } as const
 
 export const CART_MESSAGES = {
-  ADDED_SUCCESS: 'Product added to cart successfully'
+  ADDED_SUCCESS: 'Product added to cart successfully',
+  ADDED_FAILED: 'Fail to add product to cart',
+  FETCHED_SUCCESS: 'Cart fetched successfully',
+  FETCHED_FAILED: 'Fail to fetch cart',
+  UPDATED_SUCCESS: 'Cart updated successfully',
+  UPDATED_FAILED: 'Fail to update cart',
+  REMOVED_SUCCESS: 'Product removed from cart successfully',
+  REMOVED_FAILED: 'Fail to remove product from cart',
 } as const
 
 export const ORDER_MESSAGES = {
