@@ -46,11 +46,12 @@ const apiClientConfig: HttpClientConfig = {
     onRefreshFailure: () => {
       console.warn("Token refresh failed definitively. Clearing tokens and notifying app.");
       clearTokens();
+      // redirect auth/login authcontext 
       window.dispatchEvent(new CustomEvent("auth:session_expired"));
     },
     tokenType: "Bearer",
   },
-  timeout: 15000, 
+  timeout: 60000, 
   DEBUG: import.meta.env.DEV, 
 };
 

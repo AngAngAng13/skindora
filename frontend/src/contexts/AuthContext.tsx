@@ -89,10 +89,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (response.isOk()) {
         const { access_token, refresh_token, user: loggedInUser } = response.value.data.result;
         setTokens(access_token, refresh_token);
-        await fetchUserProfile(); 
+        await fetchUserProfile();
         toast.success("Login Successful", { description: "Welcome back!" });
-        const targetUser = loggedInUser || (user ?? (await authService.getMe()).unwrapOr({ result: null }).result);
-        navigate(targetUser?.role === "Manager" ? "/admin/dashboard" : "/profile");
+        const defaultUnwrappedShape = { data: { result: null } };
+        const unwrappedApiResponse = (await authService.getMe()).unwrapOr(defaultUnwrappedShape);
+
+        const targetUser = loggedInUser || (user ?? unwrappedApiResponse.data.result);
+        navigate(targetUser?.role === "Admin" ? "/admin" : "/profile");
+        // TODO: hoi nguyen vu role
       } else {
         const errorData = response.error.data as Partial<{ message: string; [key: string]: any }>;
         const errorDescription = errorData?.message || response.error.message || "Invalid credentials.";
@@ -115,10 +119,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response = await authService.register(data);
       if (response.isOk()) {
         const { access_token, refresh_token } = response.value.data.result;
+        //oke thi set token
         setTokens(access_token, refresh_token);
+        //check lai user update roi set
         await fetchUserProfile();
         toast.success("Registration Successful", { description: "Welcome! Your account has been created." });
-        navigate("/profile");
+        navigate("/profile"); // cai nay thi tuy nguyen
       } else {
         const errorData = response.error.data as Partial<{ message: string; [key: string]: any }>;
         const errorDescription = errorData?.message || response.error.message || "Could not create account.";
@@ -138,6 +144,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         await authService.logout(currentRefreshToken);
       } catch (error) {
+        //delete locally
         console.warn("Logout API call failed, clearing tokens locally anyway.", error);
       }
     }

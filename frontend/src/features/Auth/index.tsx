@@ -17,24 +17,6 @@ export default function AuthPage() {
     FormComponentToRender = <RegisterForm />;
   }
 
-  if (!LeftPanelVariant || !FormComponentToRender) {
-    return (
-      <div className="flex min-h-screen items-center justify-center p-4 text-center">
-        <p>
-          Invalid authentication page. Please navigate to{" "}
-          <a href="/auth/login" className="text-primary underline">
-            Login
-          </a>
-          or{" "}
-          <a href="/auth/register" className="text-primary underline">
-            Register
-          </a>
-          .
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-background flex min-h-screen">
       {LeftPanelVariant}

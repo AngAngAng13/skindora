@@ -11,7 +11,7 @@ interface AuthResponse {
   result: {
     access_token: string;
     refresh_token: string;
-    user?: any;
+    user?: "user" | "admin" | "staff";
   };
 }
 
@@ -26,6 +26,7 @@ export const authService = {
   },
 
   register: async (data: RegisterFormData) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars , unused-imports/no-unused-vars
     const { confirmPassword, ...registerData } = data;
     return apiClient.post<AuthResponse, Omit<RegisterFormData, "confirmPassword">>("/users/register", registerData, {
       skipAuth: true,
@@ -45,6 +46,7 @@ export const authService = {
   },
 
   resetPassword: async (token: string, data: ResetPasswordFormData) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
     const { confirmPassword, ...resetData } = data;
     return apiClient.post<{ message: string }, Omit<ResetPasswordFormData, "confirmPassword">>(
       `/users/reset-password?forgot_password_token=${token}`,
