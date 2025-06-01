@@ -34,3 +34,9 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
   const result = await usersService.forgotPassword({ user_id: (_id as ObjectId).toString(), verify })
   res.json(result)
 }
+
+export const verifyForgotPasswordTokenController = async (req: Request, res: Response) => {
+  res.json({
+    message: USERS_MESSAGES.VERIFY_FORGOT_PASSWORD_TOKEN_SUCCESS
+  })
+}
