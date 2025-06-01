@@ -1,6 +1,18 @@
 import { Router } from 'express'
-import { forgotPasswordController, loginController, registerController, verifyForgotPasswordTokenController } from '~/controllers/users.controllers'
-import { forgotPasswordValidator, loginValidator, registerValidator, verifyForgotPasswordTokenValidator } from '~/middlewares/users.middlewares'
+import {
+  forgotPasswordController,
+  loginController,
+  registerController,
+  resetPasswordController,
+  verifyForgotPasswordTokenController
+} from '~/controllers/users.controllers'
+import {
+  forgotPasswordValidator,
+  loginValidator,
+  registerValidator,
+  resetPasswordValidator,
+  verifyForgotPasswordTokenValidator
+} from '~/middlewares/users.middlewares'
 import { wrapAsync } from '~/utils/handler'
 
 const usersRouter = Router()
@@ -13,6 +25,12 @@ usersRouter.post(
   '/verify-forgot-password',
   verifyForgotPasswordTokenValidator,
   wrapAsync(verifyForgotPasswordTokenController)
+)
+usersRouter.post(
+  '/reset-password',
+  resetPasswordValidator,
+  verifyForgotPasswordTokenValidator,
+  wrapAsync(resetPasswordController)
 )
 
 export default usersRouter

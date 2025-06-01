@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
 import { USERS_MESSAGES } from '~/constants/messages'
-import { LoginReqBody, RegisterReqBody } from '~/models/requests/Users.requests'
+import { LoginReqBody, RegisterReqBody, resetPasswordReqBody, TokenPayLoad } from '~/models/requests/Users.requests'
 import User from '~/models/schemas/User.schema'
 import usersService from '~/services/users.services'
 
@@ -39,4 +39,14 @@ export const verifyForgotPasswordTokenController = async (req: Request, res: Res
   res.json({
     message: USERS_MESSAGES.VERIFY_FORGOT_PASSWORD_TOKEN_SUCCESS
   })
+}
+
+export const resetPasswordController = async (
+  req: Request<ParamsDictionary, any, resetPasswordReqBody>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_forgot_password_token as TokenPayLoad
+  const { password } = req.body
+  const result = await usersService.resetPassword({ user_id, password })
+  res.json(result)
 }
