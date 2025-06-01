@@ -51,6 +51,14 @@ class UsersService {
     return Promise.all([this.signAccessToken({ user_id, verify }), this.signRefreshToken({ user_id, verify })])
   }
 
+  private signForgotPasswordToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+    return signToken({
+      payload: { user_id, token_type: TokenType.ForgotPasswordToken, verify },
+      options: { expiresIn: '7d' },
+      privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+    })
+  }
+
   async checkEmailExist(email: string) {
     const user = await databaseService.users.findOne({ email })
     return Boolean(user)
@@ -108,6 +116,24 @@ class UsersService {
       })
     )
     return { access_token, refresh_token }
+  }
+
+  async forgotPassword({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+    const forgot_password_token = await this.signForgotPasswordToken({
+      user_id,
+      verify
+    })
+    await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
+      {
+        $set: {
+          forgot_password_token,
+          updated_at: '$$NOW'
+        }
+      }
+    ])
+    console.log(forgot_password_token)
+    return { message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD }
+    //chỗ này làm email to reset password
   }
 }
 

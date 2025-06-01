@@ -28,3 +28,9 @@ export const registerController = async (req: Request<ParamsDictionary, any, Reg
     result
   })
 }
+
+export const forgotPasswordController = async (req: Request, res: Response) => {
+  const { _id, verify } = req.user as User
+  const result = await usersService.forgotPassword({ user_id: (_id as ObjectId).toString(), verify })
+  res.json(result)
+}

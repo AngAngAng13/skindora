@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 import { ParamSchema, checkSchema } from 'express-validator'
+import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
+import { ErrorWithStatus } from '~/models/Errors'
 import databaseService from '~/services/database.services'
 import usersService from '~/services/users.services'
 import { hashPassword } from '~/utils/crypto'
@@ -150,6 +152,36 @@ export const registerValidator = validate(
       },
       password: passwordSchema,
       confirm_password: confirmPasswordSchema
+    },
+    ['body']
+  )
+)
+
+export const forgotPasswordValidator = validate(
+  checkSchema(
+    {
+      email: {
+        notEmpty: {
+          errorMessage: USERS_MESSAGES.EMAIL_IS_REQUIRED
+        },
+        isEmail: {
+          errorMessage: USERS_MESSAGES.EMAIL_IS_INVALID
+        },
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            const user = await databaseService.users.findOne({ email: value })
+            if (user === null) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.USER_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+            req.user = user
+            return true
+          }
+        }
+      }
     },
     ['body']
   )
