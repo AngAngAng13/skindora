@@ -1,8 +1,6 @@
 import React from "react";
 
 import AppSidebar from "@/components/Sidebar";
-import AppTable from "@/components/Table";
-import Typography from "@/components/Typography";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 const Admin: React.FC = () => {
