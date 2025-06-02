@@ -31,3 +31,12 @@ export const USERS_MESSAGES = {
   EMAIL_VERIFY_TOKEN_IS_INCORRECT: 'Email verify token is incorrect',
   VERIFY_EMAIL_SUCCESS: 'Verify email successful'
 } as const
+
+export const PRODUCTS_MESSAGES = {
+  EMPTY_PRODUCT_LIST: 'Product list is empty. Please add at least one product.',
+  PRODUCT_NOT_FOUND: 'Product not found',
+  PRODUCT_ADDED_TO_WISHLIST: 'Product added to wishlist successfully',
+  PRODUCT_REMOVED_FROM_WISHLIST: 'Product removed from wishlist successfully',
+  WISHLIST_EMPTY: 'Wishlist is empty',
+  WISHLIST_FETCHED_SUCCESSFULLY: 'Wishlist fetched successfully'
+} as const

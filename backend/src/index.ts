@@ -3,11 +3,14 @@ import { config } from 'dotenv'
 import databaseService from './services/database.services'
 import usersRouter from './routes/users.routes'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
-import { app, server} from './lib/socket'
+import { app, server } from './lib/socket'
+import paymentsRouter from './routes/payments.routes'
 
 config()
 const port = process.env.PORT
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
 databaseService.connect().then(() => {
   databaseService.indexUsers()
 })
@@ -17,9 +20,10 @@ app.get('/', (req, res) => {
 })
 
 app.use('/users', usersRouter)
+app.use('/payment', paymentsRouter)
 
 app.use(defaultErrorHandler)
 
-server.listen(port, ()=>{
+server.listen(port, () => {
   console.log(`Skindora server is running on port ${port}`)
 })

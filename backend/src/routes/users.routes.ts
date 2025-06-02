@@ -15,9 +15,11 @@ import {
   resetPasswordValidator,
   verifyForgotPasswordTokenValidator
 } from '~/middlewares/users.middlewares'
+import { addToWishListController } from '~/controllers/products.controller'
 import { wrapAsync } from '~/utils/handler'
 
 const usersRouter = Router()
+usersRouter.route('/').get(loginController)
 usersRouter.route('/').get(loginController)
 
 usersRouter.post('/login', loginValidator, wrapAsync(loginController))
@@ -36,5 +38,6 @@ usersRouter.post(
 )
 
 usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapAsync(emailVerifyTokenController))
+usersRouter.post('/addToWishList', wrapAsync(addToWishListController))
 
 export default usersRouter
