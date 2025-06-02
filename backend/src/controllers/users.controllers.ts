@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
@@ -6,6 +6,7 @@ import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import {
+  ChangePasswordReqBody,
   LoginReqBody,
   RegisterReqBody,
   resetPasswordReqBody,
@@ -112,5 +113,16 @@ export const resendEmailVerifyController = async (req: Request, res: Response) =
     })
   }
   const result = await usersService.resendEmailVerify(user_id)
+  res.json(result)
+}
+
+export const changePasswordController = async (
+  req: Request<ParamsDictionary, any, ChangePasswordReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+  const { password } = req.body
+  const result = await usersService.changePassword(user_id, password)
   res.json(result)
 }
