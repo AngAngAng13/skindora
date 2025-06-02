@@ -6,6 +6,7 @@ import { Role, TokenType, UserVerifyStatus } from '~/constants/enums'
 import User from '~/models/schemas/User.schema'
 import { hashPassword } from '~/utils/crypto'
 import RefreshToken from '~/models/schemas/RefreshToken.schemas'
+import { USERS_MESSAGES } from '~/constants/messages'
 
 class UsersService {
   private decodeRefreshToken(refresh_token: string) {
@@ -50,6 +51,14 @@ class UsersService {
     return Promise.all([this.signAccessToken({ user_id, verify }), this.signRefreshToken({ user_id, verify })])
   }
 
+  private signForgotPasswordToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+    return signToken({
+      payload: { user_id, token_type: TokenType.ForgotPasswordToken, verify },
+      options: { expiresIn: '7d' },
+      privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+    })
+  }
+
   async checkEmailExist(email: string) {
     const user = await databaseService.users.findOne({ email })
     return Boolean(user)
@@ -88,6 +97,81 @@ class UsersService {
     )
     //gửi mail chỗ này làm sau
     console.log(email_verify_token)
+    return { access_token, refresh_token }
+  }
+
+  async login({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+    const [access_token, refresh_token] = await this.signAccessAndRefreshTokens({
+      user_id,
+      verify
+    })
+    const { exp, iat } = await this.decodeRefreshToken(refresh_token)
+
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({
+        token: refresh_token,
+        user_id: new ObjectId(user_id),
+        exp,
+        iat
+      })
+    )
+    return { access_token, refresh_token }
+  }
+
+  async forgotPassword({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+    const forgot_password_token = await this.signForgotPasswordToken({
+      user_id,
+      verify
+    })
+    await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
+      {
+        $set: {
+          forgot_password_token,
+          updated_at: '$$NOW'
+        }
+      }
+    ])
+    console.log(forgot_password_token)
+    return { message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD }
+    //chỗ này làm email to reset password
+  }
+
+  async resetPassword({ user_id, password }: { user_id: string; password: string }) {
+    await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
+      {
+        $set: {
+          password: hashPassword(password),
+          forgot_password_token: '',
+          updated_at: '$$NOW'
+        }
+      }
+    ])
+    return { message: USERS_MESSAGES.RESET_PASSWORD_SUCCESS }
+  }
+
+  async verifyEmail(user_id: string) {
+    await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
+      {
+        $set: {
+          verify: UserVerifyStatus.Verified,
+          email_verify_token: '',
+          updated_at: '$$NOW'
+        }
+      }
+    ])
+    const [access_token, refresh_token] = await this.signAccessAndRefreshTokens({
+      user_id,
+      verify: UserVerifyStatus.Verified
+    })
+    const { exp, iat } = await this.decodeRefreshToken(refresh_token)
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({
+        token: refresh_token,
+        user_id: new ObjectId(user_id),
+        exp,
+        iat
+      })
+    )
     return { access_token, refresh_token }
   }
 }
