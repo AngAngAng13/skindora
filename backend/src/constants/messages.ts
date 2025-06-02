@@ -35,5 +35,6 @@ export const USERS_MESSAGES = {
   RESEND_EMAIL_VERIFY_SUCCESS: 'Resend email verify successful',
   USER_IS_NOT_VERIFIED: 'User is not verified',
   OLD_PASSWORD_NOT_MATCH: 'Old password does not match',
-  CHANGE_PASSWORD_SUCCESS: 'Change password successful'
+  CHANGE_PASSWORD_SUCCESS: 'Change password successful',
+  USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist'
 } as const

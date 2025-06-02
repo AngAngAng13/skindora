@@ -37,3 +37,7 @@ export interface ChangePasswordReqBody {
   password: string
   confirm_password: string
 }
+
+export interface LogoutReqBody {
+  refresh_token: string
+}

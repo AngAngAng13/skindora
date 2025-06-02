@@ -8,6 +8,7 @@ import { ErrorWithStatus } from '~/models/Errors'
 import {
   ChangePasswordReqBody,
   LoginReqBody,
+  LogoutReqBody,
   RegisterReqBody,
   resetPasswordReqBody,
   TokenPayLoad,
@@ -124,5 +125,11 @@ export const changePasswordController = async (
   const { user_id } = req.decoded_authorization as TokenPayLoad
   const { password } = req.body
   const result = await usersService.changePassword(user_id, password)
+  res.json(result)
+}
+
+export const logoutController = async (req: Request<ParamsDictionary, any, LogoutReqBody>, res: Response) => {
+  const { refresh_token } = req.body
+  const result = await usersService.logout(refresh_token)
   res.json(result)
 }
