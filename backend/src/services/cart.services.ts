@@ -1,3 +1,4 @@
+import { ProductInCart } from '~/types/cartTypes'
 import databaseService from './database.services'
 import redisClient from './redis.services'
 
@@ -18,7 +19,7 @@ class CartService {
       cart = { Products: [] }
     }
 
-    const productIndex = cart.Products.findIndex((p) => p.ProductID.toString() === ProductID.toString())
+    const productIndex = cart.Products.findIndex((p: ProductInCart) => p.ProductID.toString() === ProductID.toString())
 
     if (productIndex > -1) {
       cart.Products[productIndex].Quantity += Quantity
@@ -49,7 +50,7 @@ class CartService {
     if (!cart) {
       throw new Error('Cart not found')
     }
-    const productIndex = cart.Products.findIndex((p) => p.ProductID.toString() === ProductID.toString())
+    const productIndex = cart.Products.findIndex((p: ProductInCart) => p.ProductID.toString() === ProductID.toString())
     if (productIndex < 0) {
       throw new Error('Product not found in cart')
     }
@@ -70,7 +71,7 @@ class CartService {
       throw new Error('Cart not found')
     }
 
-    const productIndex = cart.Products.findIndex((p) => p.ProductID.toString() === payload.ProductID.toString())
+    const productIndex = cart.Products.findIndex((p: ProductInCart) => p.ProductID.toString() === payload.ProductID.toString())
     if(productIndex < 0){
       throw new Error('Product not found in cart')
     }
@@ -80,7 +81,7 @@ class CartService {
     return cart
   }
 
-  private async getCartByUserID(userID: string) {
+  async getCartByUserID(userID: string) {
     const cartKey = `cart:${userID}`
     const existingCart = await redisClient.get(cartKey)
     if (existingCart) {
@@ -88,7 +89,7 @@ class CartService {
     }
   }
 
-  private async saveCart(cartKey: string, cartData: any) {
+  async saveCart(cartKey: string, cartData: any) {
   await redisClient.set(cartKey, JSON.stringify(cartData))
   await redisClient.expire(cartKey, 60 * 60 * 24)
 }
