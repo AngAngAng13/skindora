@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import {
+  emailVerifyTokenController,
   forgotPasswordController,
   loginController,
   registerController,
@@ -7,6 +8,7 @@ import {
   verifyForgotPasswordTokenController
 } from '~/controllers/users.controllers'
 import {
+  emailVerifyTokenValidator,
   forgotPasswordValidator,
   loginValidator,
   registerValidator,
@@ -32,5 +34,7 @@ usersRouter.post(
   verifyForgotPasswordTokenValidator,
   wrapAsync(resetPasswordController)
 )
+
+usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapAsync(emailVerifyTokenController))
 
 export default usersRouter
