@@ -32,6 +32,9 @@ export const CART_MESSAGES = {
 
 export const ORDER_MESSAGES = {
   CREATED_SUCCESS: 'Order created successfully',
+  PREPARED_SUCCESS: 'Order prepared successfully, expires in 10 minutes',
+  PREPARED_FAILED: 'Fail to prepare order',
+  CREATED_FAILED: 'Fail to create order',
 } as const
 
 export const ORDER_DETAIL_MESSAGES = {} as const
