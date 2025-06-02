@@ -2,6 +2,7 @@ import { ChartNoAxesColumnIncreasing, Home, Package, ShoppingCart, UsersRound } 
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -12,10 +13,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import { Button } from "../ui/button";
-
 const items = [
-  { title: "Tổng quan", url: "/admin", icon: Home },
+  { title: "Tổng quan", url: "/dashboard", icon: Home },
   { title: "Khách hàng", url: "/customers", icon: UsersRound },
   { title: "Sản phẩm", url: "/products", icon: Package },
   { title: "Đơn hàng", url: "/orders", icon: ShoppingCart },

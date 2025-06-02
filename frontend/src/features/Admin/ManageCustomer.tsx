@@ -3,7 +3,7 @@ import AppTable from "@/components/Table";
 import Typography from "@/components/Typography";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
-const Adminpage = () => {
+const ManageCustomer = () => {
   return (
     <div className="flex min-h-screen bg-white">
       <SidebarProvider>
@@ -20,4 +20,4 @@ const Adminpage = () => {
   );
 };
 
-export default Adminpage;
+export default ManageCustomer;

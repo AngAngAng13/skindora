@@ -1,0 +1,21 @@
+import React from "react";
+
+import AppSidebar from "@/components/Sidebar";
+import AppTable from "@/components/Table";
+import Typography from "@/components/Typography";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+
+const Admin: React.FC = () => {
+  return (
+    <div className="flex min-h-screen bg-white">
+      <SidebarProvider>
+        <AppSidebar />
+        <div className="flex-1">
+          <SidebarTrigger className="p-4" />
+        </div>
+      </SidebarProvider>
+    </div>
+  );
+};
+
+export default Admin;

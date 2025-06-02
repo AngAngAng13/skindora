@@ -1,14 +1,20 @@
 import type { RouteObject } from "react-router-dom";
 
+import Admin from "@/features/Admin";
+import ManageCustomer from "@/features/Admin/ManageCustomer";
 import Homepage from "@/features/Homepage";
-import Adminpage from "@/features/Homepage/Adminpage";
 
 const publicRoutes: RouteObject[] = [
   { index: true, path: "/", element: <Homepage /> },
   {
     index: true,
     path: "/admin",
-    element: <Adminpage />,
+    element: <Admin />,
+  },
+  {
+    index: true,
+    path: "/customers",
+    element: <ManageCustomer />,
   },
 ];
 export default publicRoutes;
