@@ -29,5 +29,8 @@ export const USERS_MESSAGES = {
   EMAIL_VERIFY_TOKEN_IS_REQUIRED: 'Email verify token is required',
   EMAIL_ALREADY_VERIFIED_BEFORE: 'Email has already been verified before',
   EMAIL_VERIFY_TOKEN_IS_INCORRECT: 'Email verify token is incorrect',
-  VERIFY_EMAIL_SUCCESS: 'Verify email successful'
+  VERIFY_EMAIL_SUCCESS: 'Verify email successful',
+  ACCESS_TOKEN_IS_REQUIRED: 'Access token is required',
+  USER_BANNED: 'User is banned',
+  RESEND_EMAIL_VERIFY_SUCCESS: 'Resend email verify successful'
 } as const
