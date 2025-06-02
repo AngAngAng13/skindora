@@ -12,7 +12,9 @@ const ManageCustomer = () => {
           <SidebarTrigger className="p-4" />
           <div className="p mx-auto bg-white px-8 py-15">
             <Typography className="text-3xl font-bold">Quản lý khách hàng</Typography>
-            <AppTable />
+            <div>
+              <AppTable />
+            </div>
           </div>
         </div>
       </SidebarProvider>
