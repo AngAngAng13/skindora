@@ -4,8 +4,13 @@ import databaseService from './services/database.services'
 import usersRouter from './routes/users.routes'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import { app, server } from './lib/socket'
-import cors from 'cors'
+import swaggerUi from 'swagger-ui-express'
+import YAML from 'yamljs'
+import path from 'path'
+
 config()
+const swaggerDocument = YAML.load(path.join(__dirname, './openAPI.yml'))
+
 const port = process.env.PORT
 app.use(
   cors({
@@ -22,6 +27,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/users', usersRouter)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use(defaultErrorHandler)
 
