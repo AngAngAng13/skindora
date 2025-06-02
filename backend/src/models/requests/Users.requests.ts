@@ -8,3 +8,22 @@ export interface TokenPayLoad extends JwtPayload {
   exp: number
   iat: number
 }
+
+export interface RegisterReqBody {
+  first_name: string
+  last_name: string
+  email: string
+  password: string
+  confirm_password: string
+}
+
+export interface LoginReqBody {
+  email: string
+  password: string
+}
+
+export interface resetPasswordReqBody {
+  forgot_password_token: string
+  password: string
+  confirm_password: string
+}

@@ -5,11 +5,15 @@ networks:
     driver: bridge
   redis-network:
     driver: bridge
+  redis-network:
+    driver: bridge
 volumes:
   portainer_data:
   redis_data:
+  redis_data:
 services:
   traefik:
+    image: traefik:v3.4.1
     image: traefik:v3.4.1
     container_name: traefik
     restart: unless-stopped
@@ -30,11 +34,16 @@ services:
       - ./letsencrypt:/etc/traefik
       - ./traefik/config.yaml:/etc/traefik/traefik.yaml:ro
       - ./traefik/logs:/var/log/traefik
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/etc/traefik
+      - ./traefik/config.yaml:/etc/traefik/traefik.yaml:ro
+      - ./traefik/logs:/var/log/traefik
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik-dashboard.rule=Host(`${TRAEFIK_DASHBOARD_HOST}`)"
       - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
       - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=default"
       - "traefik.http.routers.traefik-dashboard.tls.certresolver=default"
       - "traefik.http.routers.traefik-dashboard.middlewares=dashboard-auth"
       - "traefik.http.middlewares.dashboard-auth.basicauth.users=${TRAEFIK_DASHBOARD_USERS}"
@@ -50,6 +59,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`${FRONTEND_HOST}`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.tls.certresolver=default"
       - "traefik.http.routers.frontend.tls.domains[0].main=`${APEX_DOMAIN}`"
