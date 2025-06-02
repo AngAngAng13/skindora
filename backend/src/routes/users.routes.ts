@@ -9,8 +9,10 @@ import {
   registerController,
   resendEmailVerifyController,
   resetPasswordController,
+  updateMeController,
   verifyForgotPasswordTokenController
 } from '~/controllers/users.controllers'
+import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   accessTokenValidator,
   changePasswordValidator,
@@ -20,9 +22,11 @@ import {
   refreshTokenValidator,
   registerValidator,
   resetPasswordValidator,
+  updateMeValidator,
   verifiedUserValidator,
   verifyForgotPasswordTokenValidator
 } from '~/middlewares/users.middlewares'
+import { UpdateMeReqBody } from '~/models/requests/Users.requests'
 import { wrapAsync } from '~/utils/handler'
 
 const usersRouter = Router()
@@ -54,4 +58,18 @@ usersRouter.put(
 )
 usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapAsync(logoutController))
 usersRouter.get('/me', accessTokenValidator, wrapAsync(getMeController))
+usersRouter.patch(
+  '/me',
+  accessTokenValidator,
+  verifiedUserValidator,
+  filterMiddleware<UpdateMeReqBody>([
+    'first_name',
+    'last_name',
+    'location',
+    'username',
+    'avatar',
+  ]),
+  updateMeValidator,
+  wrapAsync(updateMeController)
+)
 export default usersRouter

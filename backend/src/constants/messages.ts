@@ -37,5 +37,11 @@ export const USERS_MESSAGES = {
   OLD_PASSWORD_NOT_MATCH: 'Old password does not match',
   CHANGE_PASSWORD_SUCCESS: 'Change password successful',
   USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist',
-  GET_ME_SUCCESS: 'Get me successful'
+  GET_ME_SUCCESS: 'Get me successful',
+  LOCATION_MUST_BE_A_STRING: 'Location must be a string',
+  LOCATION_LENGTH_MUST_BE_LESS_THAN_200: 'Location length must be less than 200 characters',
+  USERNAME_MUST_BE_A_STRING: 'Username must be a string',
+  USERNAME_ALREADY_EXISTS: 'Username already exists',
+  IMAGE_URL_MUST_BE_A_STRING: 'Image URL must be a string',
+  UPDATE_ME_SUCCESS: 'Update me successful'
 } as const
