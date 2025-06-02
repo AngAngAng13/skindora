@@ -6,12 +6,19 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), sentryVitePlugin({
-    org: "fpt-d1",
-    project: "javascript-react"
-  })],
+  plugins: [
+    react(),
+    tailwindcss(),
+    sentryVitePlugin({
+      org: "fpt-d1",
+      project: "javascript-react",
+    }),
+  ],
   build: {
     sourcemap: true,
+  },
+  preview: {
+    port: 5173,
   },
   resolve: {
     alias: {
