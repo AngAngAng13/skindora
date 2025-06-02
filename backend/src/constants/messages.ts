@@ -32,5 +32,8 @@ export const USERS_MESSAGES = {
   VERIFY_EMAIL_SUCCESS: 'Verify email successful',
   ACCESS_TOKEN_IS_REQUIRED: 'Access token is required',
   USER_BANNED: 'User is banned',
-  RESEND_EMAIL_VERIFY_SUCCESS: 'Resend email verify successful'
+  RESEND_EMAIL_VERIFY_SUCCESS: 'Resend email verify successful',
+  USER_IS_NOT_VERIFIED: 'User is not verified',
+  OLD_PASSWORD_NOT_MATCH: 'Old password does not match',
+  CHANGE_PASSWORD_SUCCESS: 'Change password successful'
 } as const
