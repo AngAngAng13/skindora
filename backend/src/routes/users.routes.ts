@@ -4,6 +4,7 @@ import {
   emailVerifyTokenController,
   forgotPasswordController,
   loginController,
+  logoutController,
   registerController,
   resendEmailVerifyController,
   resetPasswordController,
@@ -15,6 +16,7 @@ import {
   emailVerifyTokenValidator,
   forgotPasswordValidator,
   loginValidator,
+  refreshTokenValidator,
   registerValidator,
   resetPasswordValidator,
   verifiedUserValidator,
@@ -49,5 +51,6 @@ usersRouter.put(
   changePasswordValidator,
   wrapAsync(changePasswordController)
 )
+usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapAsync(logoutController))
 
 export default usersRouter
