@@ -3,6 +3,7 @@ import {
   changePasswordController,
   emailVerifyTokenController,
   forgotPasswordController,
+  getMeController,
   loginController,
   logoutController,
   registerController,
@@ -52,5 +53,5 @@ usersRouter.put(
   wrapAsync(changePasswordController)
 )
 usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapAsync(logoutController))
-
+usersRouter.get('/me', accessTokenValidator, wrapAsync(getMeController))
 export default usersRouter

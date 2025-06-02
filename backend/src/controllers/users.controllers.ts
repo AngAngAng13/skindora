@@ -133,3 +133,12 @@ export const logoutController = async (req: Request<ParamsDictionary, any, Logou
   const result = await usersService.logout(refresh_token)
   res.json(result)
 }
+
+export const getMeController = async (req: Request, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+  const user = await usersService.getMe(user_id)
+  res.json({
+    message: USERS_MESSAGES.GET_ME_SUCCESS,
+    result: user
+  })
+}
