@@ -1,9 +1,19 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
+import { UserVerifyStatus } from '~/constants/enums'
+import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
-import { LoginReqBody, RegisterReqBody, resetPasswordReqBody, TokenPayLoad } from '~/models/requests/Users.requests'
+import { ErrorWithStatus } from '~/models/Errors'
+import {
+  LoginReqBody,
+  RegisterReqBody,
+  resetPasswordReqBody,
+  TokenPayLoad,
+  VerifyEmailReqBody
+} from '~/models/requests/Users.requests'
 import User from '~/models/schemas/User.schema'
+import databaseService from '~/services/database.services'
 import usersService from '~/services/users.services'
 
 export const loginController = async (req: Request<ParamsDictionary, any, LoginReqBody>, res: Response) => {
@@ -49,4 +59,34 @@ export const resetPasswordController = async (
   const { password } = req.body
   const result = await usersService.resetPassword({ user_id, password })
   res.json(result)
+}
+
+export const emailVerifyTokenController = async (
+  req: Request<ParamsDictionary, any, VerifyEmailReqBody>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_email_verify_token as TokenPayLoad
+  const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+  if (user === null) {
+    throw new ErrorWithStatus({
+      message: USERS_MESSAGES.USER_NOT_FOUND,
+      status: 404
+    })
+  }
+  if (user.verify === UserVerifyStatus.Verified && user.email_verify_token === '') {
+    res.json({
+      message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE
+    })
+  }
+  if (user.email_verify_token !== (req.body.email_verify_token as string)) {
+    throw new ErrorWithStatus({
+      message: USERS_MESSAGES.EMAIL_VERIFY_TOKEN_IS_INCORRECT,
+      status: HTTP_STATUS.UNAUTHORIZED
+    })
+  }
+  const result = await usersService.verifyEmail(user_id)
+  res.json({
+    message: USERS_MESSAGES.VERIFY_EMAIL_SUCCESS,
+    result
+  })
 }
