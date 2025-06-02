@@ -3,11 +3,16 @@ import { config } from 'dotenv'
 import databaseService from './services/database.services'
 import usersRouter from './routes/users.routes'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
-import { app, server} from './lib/socket'
-
+import { app, server } from './lib/socket'
+import cors from 'cors'
 config()
 const port = process.env.PORT
-app.use(express.json())
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN
+  })
+),
+  app.use(express.json())
 databaseService.connect().then(() => {
   databaseService.indexUsers()
 })
@@ -20,6 +25,6 @@ app.use('/users', usersRouter)
 
 app.use(defaultErrorHandler)
 
-server.listen(port, ()=>{
+server.listen(port, () => {
   console.log(`Skindora server is running on port ${port}`)
 })

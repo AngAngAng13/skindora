@@ -49,7 +49,12 @@ export function LoginForm() {
                   <FormControl>
                     <div className="relative">
                       <Mail className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-                      <Input placeholder="you@example.com" className="pl-10" {...field} disabled={isAuthLoading} />
+                      <Input
+                        placeholder="you@example.com"
+                        className="placeholder:text-gray-500 pl-10"
+                        {...field}
+                        disabled={isAuthLoading}
+                      />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -68,7 +73,7 @@ export function LoginForm() {
                       <Input
                         type="password"
                         placeholder="••••••••"
-                        className="pl-10"
+                        className="pl-10 placeholder:text-gray-500"
                         {...field}
                         disabled={isAuthLoading}
                       />

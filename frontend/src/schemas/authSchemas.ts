@@ -9,12 +9,22 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 
 export const registerSchema = z
   .object({
-    name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+    first_name: z
+      .string()
+      .min(1, { message: "First name is required." })
+      .max(30, "First name cannot exceed 30 characters."),
+    last_name: z
+      .string()
+      .min(1, { message: "Last name is required." })
+      .max(30, "Last name cannot exceed 30 characters."),
     email: z.string().email({ message: "Please enter a valid email address." }),
-    password: z.string().min(8, { message: "Password must be at least 8 characters." }),
-    confirmPassword: z.string(),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters." })
+      .max(30, "Password cannot exceed 30 characters."),
+    confirm_password: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.password === data.confirm_password, {
     message: "Passwords don't match.",
     path: ["confirmPassword"],
   });
@@ -27,7 +37,10 @@ export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export const resetPasswordSchema = z
   .object({
-    password: z.string().min(8, { message: "Password must be at least 8 characters." }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters." })
+      .max(30, "Password cannot exceed 30 characters."),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {

@@ -26,9 +26,8 @@ export const authService = {
   },
 
   register: async (data: RegisterFormData) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars , unused-imports/no-unused-vars
-    const { confirmPassword, ...registerData } = data;
-    return apiClient.post<AuthResponse, Omit<RegisterFormData, "confirmPassword">>("/users/register", registerData, {
+    const { ...registerData } = data;
+    return apiClient.post<AuthResponse, RegisterFormData>("/users/register", registerData, {
       skipAuth: true,
     });
   },

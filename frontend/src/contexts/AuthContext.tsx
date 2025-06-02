@@ -10,7 +10,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role?: string;
+  role?: "USER" | "ADMIN" | "STAFF";
 }
 
 interface AuthContextType {
@@ -100,6 +100,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         const errorData = response.error.data as Partial<{ message: string; [key: string]: any }>;
         const errorDescription = errorData?.message || response.error.message || "Invalid credentials.";
+        console.error("Login failed:", errorData);
         toast.error("Login Failed", { description: errorDescription });
         setIsAuthenticated(false);
         setUser(null);

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, LockKeyhole, Mail, User } from "lucide-react";
+import { Loader2, LockKeyhole, Mail, UserIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
@@ -19,10 +19,11 @@ export function RegisterForm() {
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: "",
       email: "",
+      first_name: "",
+      last_name: "",
       password: "",
-      confirmPassword: "",
+      confirm_password: "",
     },
   });
 
@@ -39,22 +40,50 @@ export function RegisterForm() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <User className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-                      <Input placeholder="John Doe" className="pl-9" {...field} disabled={isAuthLoading} />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="first_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <UserIcon className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
+                        <Input
+                          placeholder="John"
+                          className="pl-9 placeholder:text-gray-500"
+                          {...field}
+                          disabled={isAuthLoading}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="last_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <UserIcon className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
+                        <Input
+                          placeholder="Doe"
+                          className="pl-9 placeholder:text-gray-500"
+                          {...field}
+                          disabled={isAuthLoading}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="email"
@@ -64,7 +93,12 @@ export function RegisterForm() {
                   <FormControl>
                     <div className="relative">
                       <Mail className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-                      <Input placeholder="you@example.com" className="pl-9" {...field} disabled={isAuthLoading} />
+                      <Input
+                        placeholder="you@example.com"
+                        className="pl-9 placeholder:text-gray-500"
+                        {...field}
+                        disabled={isAuthLoading}
+                      />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -83,7 +117,7 @@ export function RegisterForm() {
                       <Input
                         type="password"
                         placeholder="••••••••"
-                        className="pl-9"
+                        className="pl-9 placeholder:text-gray-500"
                         {...field}
                         disabled={isAuthLoading}
                       />
@@ -95,7 +129,7 @@ export function RegisterForm() {
             />
             <FormField
               control={form.control}
-              name="confirmPassword"
+              name="confirm_password"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
@@ -105,7 +139,7 @@ export function RegisterForm() {
                       <Input
                         type="password"
                         placeholder="••••••••"
-                        className="pl-9"
+                        className="pl-9 placeholder:text-gray-500"
                         {...field}
                         disabled={isAuthLoading}
                       />
