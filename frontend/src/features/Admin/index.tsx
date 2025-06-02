@@ -1,4 +1,3 @@
-import { Profiler } from "@sentry/react";
 import { Bell, Package, Plus, ShoppingCart, User, User2 } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -7,7 +6,7 @@ import AppSidebar from "@/components/Sidebar";
 import AppTable from "@/components/Table";
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 import { CardDemo } from "./components/Card";
 import { CardIcon } from "./components/CardIcon";

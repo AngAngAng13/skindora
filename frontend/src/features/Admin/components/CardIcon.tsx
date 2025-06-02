@@ -1,5 +1,3 @@
-import { CreditCard } from "lucide-react";
-
 import Typography from "@/components/Typography";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 
