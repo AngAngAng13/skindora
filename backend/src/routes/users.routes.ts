@@ -15,7 +15,7 @@ import {
   resetPasswordValidator,
   verifyForgotPasswordTokenValidator,
   addToWishListValidator,
-  getWishListValidator,
+  accessTokenValidator,
   removeFromWishListValidator
 } from '~/middlewares/users.middlewares'
 import {
@@ -45,8 +45,13 @@ usersRouter.post(
 )
 
 usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapAsync(emailVerifyTokenController))
-usersRouter.post('/addToWishList', addToWishListValidator, wrapAsync(addToWishListController))
-usersRouter.put('/:userID/removeFromWishList', removeFromWishListValidator, wrapAsync(removeFromWishListController))
-usersRouter.get('/:userID/getWishList', getWishListValidator, wrapAsync(getWishListController))
+usersRouter.post('/addToWishList', accessTokenValidator, addToWishListValidator, wrapAsync(addToWishListController))
+usersRouter.put(
+  '/removeFromWishList',
+  accessTokenValidator,
+  removeFromWishListValidator,
+  wrapAsync(removeFromWishListController)
+)
+usersRouter.get('/getWishList', accessTokenValidator, wrapAsync(getWishListController))
 
 export default usersRouter

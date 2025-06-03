@@ -30,7 +30,8 @@ export const USERS_MESSAGES = {
   EMAIL_ALREADY_VERIFIED_BEFORE: 'Email has already been verified before',
   EMAIL_VERIFY_TOKEN_IS_INCORRECT: 'Email verify token is incorrect',
   VERIFY_EMAIL_SUCCESS: 'Verify email successful',
-  USER_ID_IS_REQUIRED: 'User ID is required'
+  USER_ID_IS_REQUIRED: 'User ID is required',
+  ACCESS_TOKEN_IS_REQUIRED: 'Access Token is required'
 } as const
 
 export const PRODUCTS_MESSAGES = {

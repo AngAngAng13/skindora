@@ -2,14 +2,20 @@ import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { PRODUCTS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
+import { TokenPayLoad } from '~/models/requests/Users.requests'
 import databaseService from '~/services/database.services'
 import productService from '~/services/Products/product.services'
 
-export const addToWishListController = async (req: Request, res: Response) => {
-  const { productId, userID } = req.body
+export const addToWishListController = async (req: Request, res: Response): Promise<void> => {
+  const { productId } = req.body
+  const { user_id } = req.decoded_authorization as TokenPayLoad
 
-  const user = databaseService.users.findOne({ _id: new ObjectId(userID) })
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
 
+  const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
   if (!user) {
     res.status(404).json({ status: 404, message: USERS_MESSAGES.USER_NOT_FOUND })
     return
@@ -21,7 +27,7 @@ export const addToWishListController = async (req: Request, res: Response) => {
   }
 
   try {
-    await productService.addToWishList(userID, productId)
+    await productService.addToWishList(user_id, productId)
     res.status(200).json({ status: 200, message: PRODUCTS_MESSAGES.PRODUCT_ADDED_TO_WISHLIST })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
@@ -29,25 +35,35 @@ export const addToWishListController = async (req: Request, res: Response) => {
   }
 }
 
-export const getWishListController = async (req: Request, res: Response) => {
-  const userID = req.params.userID
+export const getWishListController = async (req: Request, res: Response): Promise<void> => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
 
   try {
-    const wistList = await productService.getWishList(userID)
-    res.status(200).json({ status: 200, data: wistList })
+    const wishList = await productService.getWishList(user_id)
+    res.status(200).json({ status: 200, data: wishList })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
     res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
   }
 }
 
-export const removeFromWishListController = async (req: Request, res: Response) => {
-  const userID = req.params.userID
+export const removeFromWishListController = async (req: Request, res: Response): Promise<void> => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
   const productID = req.body.productId
 
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
+
   try {
-    const wistList = await productService.removeFromWishList(userID, productID)
-    res.status(200).json({ status: 200, data: wistList })
+    const wishList = await productService.removeFromWishList(user_id, productID)
+    res.status(200).json({ status: 200, data: wishList })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
     res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })

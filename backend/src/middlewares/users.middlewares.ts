@@ -332,78 +332,46 @@ export const addToWishListValidator = validate(
             }
           }
         }
-      },
-      userID: {
-        trim: true,
-        custom: {
-          options: async (value: string) => {
-            if (!value) {
-              throw new ErrorWithStatus({
-                message: USERS_MESSAGES.USER_ID_IS_REQUIRED,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
-            try {
-              const user = await databaseService.users.findOne({ _id: new ObjectId(value) })
-              if (!user) {
-                throw new ErrorWithStatus({
-                  message: USERS_MESSAGES.USER_NOT_FOUND,
-                  status: HTTP_STATUS.NOT_FOUND
-                })
-              }
-            } catch (error: any) {
-              if (error instanceof ErrorWithStatus) {
-                throw error
-              }
-
-              throw new ErrorWithStatus({
-                message: error.message,
-                status: HTTP_STATUS.INTERNAL_SERVER_ERROR
-              })
-            }
-          }
-        }
       }
     },
     ['body']
   )
 )
 
-export const getWishListValidator = validate(
-  checkSchema({
-    userID: {
-      in: ['params'],
-      trim: true,
-      custom: {
-        options: async (value: string) => {
-          if (!value) {
-            throw new ErrorWithStatus({
-              message: USERS_MESSAGES.USER_ID_IS_REQUIRED,
-              status: HTTP_STATUS.BAD_REQUEST
-            })
-          }
-          try {
-            const user = await databaseService.users.findOne({ _id: new ObjectId(value) })
-            if (!user) {
+export const accessTokenValidator = validate(
+  checkSchema(
+    {
+      Authorization: {
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            const accessToken = value.split(' ')[1]
+
+            if (!accessToken) {
               throw new ErrorWithStatus({
-                message: USERS_MESSAGES.USER_NOT_FOUND,
-                status: HTTP_STATUS.NOT_FOUND
+                message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED,
+                status: HTTP_STATUS.UNAUTHORIZED
               })
             }
-          } catch (error: any) {
-            if (error instanceof ErrorWithStatus) {
-              throw error
+            try {
+              const decoded_authorization = await verifyToken({
+                token: accessToken,
+                secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN || ''
+              })
+              req.decoded_authorization = decoded_authorization
+            } catch (error: any) {
+              throw new ErrorWithStatus({
+                message: capitalize(error.message),
+                status: HTTP_STATUS.UNAUTHORIZED
+              })
             }
-
-            throw new ErrorWithStatus({
-              message: error.message,
-              status: HTTP_STATUS.INTERNAL_SERVER_ERROR
-            })
+            return true
           }
         }
       }
-    }
-  })
+    },
+    ['headers']
+  )
 )
 
 export const removeFromWishListValidator = validate(
@@ -435,38 +403,6 @@ export const removeFromWishListValidator = validate(
                     status: HTTP_STATUS.NOT_FOUND
                   })
                 }
-              }
-            } catch (error: any) {
-              if (error instanceof ErrorWithStatus) {
-                throw error
-              }
-
-              throw new ErrorWithStatus({
-                message: error.message,
-                status: HTTP_STATUS.INTERNAL_SERVER_ERROR
-              })
-            }
-          }
-        }
-      },
-      userID: {
-        in: ['params'],
-        trim: true,
-        custom: {
-          options: async (value: string) => {
-            if (!value) {
-              throw new ErrorWithStatus({
-                message: USERS_MESSAGES.USER_ID_IS_REQUIRED,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
-            try {
-              const user = await databaseService.users.findOne({ _id: new ObjectId(value) })
-              if (!user) {
-                throw new ErrorWithStatus({
-                  message: USERS_MESSAGES.USER_NOT_FOUND,
-                  status: HTTP_STATUS.NOT_FOUND
-                })
               }
             } catch (error: any) {
               if (error instanceof ErrorWithStatus) {
