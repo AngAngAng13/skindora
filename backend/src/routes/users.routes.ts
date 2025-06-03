@@ -6,6 +6,7 @@ import {
   getMeController,
   loginController,
   logoutController,
+  refreshController,
   registerController,
   resendEmailVerifyController,
   resetPasswordController,
@@ -65,4 +66,5 @@ usersRouter.patch(
   updateMeValidator,
   wrapAsync(updateMeController)
 )
+usersRouter.post('/refresh-token', refreshTokenValidator, wrapAsync(refreshController))
 export default usersRouter

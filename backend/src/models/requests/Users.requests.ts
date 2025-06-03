@@ -49,3 +49,7 @@ export interface UpdateMeReqBody {
   username?: string
   avatar?: string
 }
+
+export interface RefreshTokenReqBody {
+  refresh_token: string
+}

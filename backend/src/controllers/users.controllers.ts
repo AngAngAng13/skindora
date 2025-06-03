@@ -9,6 +9,7 @@ import {
   ChangePasswordReqBody,
   LoginReqBody,
   LogoutReqBody,
+  RefreshTokenReqBody,
   RegisterReqBody,
   resetPasswordReqBody,
   TokenPayLoad,
@@ -149,6 +150,20 @@ export const updateMeController = async (req: Request, res: Response) => {
   const result = await usersService.updateMe(user_id, body)
   res.json({
     message: USERS_MESSAGES.UPDATE_ME_SUCCESS,
+    result
+  })
+}
+
+export const refreshController = async (
+  req: Request<ParamsDictionary, any, RefreshTokenReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { refresh_token } = req.body
+  const { user_id, verify, exp } = req.decoded_refresh_token as TokenPayLoad
+  const result = await usersService.refreshToken({ user_id, verify, refresh_token, exp })
+  res.json({
+    message: USERS_MESSAGES.REFRESH_TOKEN_SUCCESS,
     result
   })
 }
