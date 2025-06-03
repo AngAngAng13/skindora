@@ -43,5 +43,6 @@ export const USERS_MESSAGES = {
   USERNAME_MUST_BE_A_STRING: 'Username must be a string',
   USERNAME_ALREADY_EXISTS: 'Username already exists',
   IMAGE_URL_MUST_BE_A_STRING: 'Image URL must be a string',
-  UPDATE_ME_SUCCESS: 'Update me successful'
+  UPDATE_ME_SUCCESS: 'Update me successful',
+  REFRESH_TOKEN_SUCCESS: 'Refresh token successful',
 } as const
