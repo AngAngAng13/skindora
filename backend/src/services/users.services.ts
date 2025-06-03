@@ -1,4 +1,4 @@
-import { RegisterReqBody } from '~/models/requests/Users.requests'
+import { RegisterReqBody, UpdateMeReqBody } from '~/models/requests/Users.requests'
 import databaseService from './database.services'
 import { ObjectId } from 'mongodb'
 import { signToken, verifyToken } from '~/utils/jwt'
@@ -217,6 +217,30 @@ class UsersService {
     const user = await databaseService.users.findOne(
       { _id: new ObjectId(user_id) },
       {
+        projection: {
+          password: 0,
+          email_verify_token: 0,
+          forgot_password_token: 0
+        }
+      }
+    )
+    return user
+  }
+
+  async updateMe(user_id: string, payload: UpdateMeReqBody) {
+    const _payload = payload
+    const user = await databaseService.users.findOneAndUpdate(
+      { _id: new ObjectId(user_id) },
+      [
+        {
+          $set: {
+            ..._payload,
+            updated_at: '$$NOW'
+          }
+        }
+      ],
+      {
+        returnDocument: 'after',
         projection: {
           password: 0,
           email_verify_token: 0,

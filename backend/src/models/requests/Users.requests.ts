@@ -41,3 +41,11 @@ export interface ChangePasswordReqBody {
 export interface LogoutReqBody {
   refresh_token: string
 }
+
+export interface UpdateMeReqBody {
+  first_name?: string
+  last_name?: string
+  location?: string
+  username?: string
+  avatar?: string
+}
