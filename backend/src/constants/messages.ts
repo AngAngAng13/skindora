@@ -45,4 +45,6 @@ export const USERS_MESSAGES = {
   IMAGE_URL_MUST_BE_A_STRING: 'Image URL must be a string',
   UPDATE_ME_SUCCESS: 'Update me successful',
   REFRESH_TOKEN_SUCCESS: 'Refresh token successful',
+  EMAIL_NOT_VERIFIED: 'Email is not verified',
+  IMAGE_URL_MUST_BE_VALID: 'Image URL must be a valid URL'
 } as const
