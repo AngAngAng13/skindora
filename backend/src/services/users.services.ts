@@ -7,8 +7,50 @@ import User from '~/models/schemas/User.schema'
 import { hashPassword } from '~/utils/crypto'
 import RefreshToken from '~/models/schemas/RefreshToken.schemas'
 import { USERS_MESSAGES } from '~/constants/messages'
+import axios from 'axios'
+import { ErrorWithStatus } from '~/models/Errors'
+import HTTP_STATUS from '~/constants/httpStatus'
 
 class UsersService {
+  private async getOAuthGoogleToken(code: string) {
+    const body = {
+      code,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+      grant_type: 'authorization_code'
+    }
+    const { data } = await axios.post(`https://oauth2.googleapis.com/token`, body, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    return data as {
+      access_token: string
+      id_token: string
+    }
+  }
+
+  private async getGoogleUserInfo(access_token: string, id_token: string) {
+    const { data } = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo`, {
+      params: {
+        access_token,
+        alt: 'json'
+      },
+      headers: {
+        Authorization: `Bearer ${id_token}`
+      }
+    })
+    return data as {
+      id: string
+      email: string
+      email_verified: boolean
+      given_name: string
+      family_name: string
+      picture: string
+    }
+  }
+
   private decodeRefreshToken(refresh_token: string) {
     return verifyToken({
       token: refresh_token,
@@ -251,7 +293,7 @@ class UsersService {
     return user
   }
 
-   async refreshToken({
+  async refreshToken({
     user_id,
     verify,
     refresh_token,
@@ -272,6 +314,49 @@ class UsersService {
       new RefreshToken({ user_id: new ObjectId(user_id), token: new_refresh_token, exp, iat })
     )
     return { access_token: access_token, refresh_token: new_refresh_token }
+  }
+
+  async oAuth(code: string) {
+    const { access_token, id_token } = await this.getOAuthGoogleToken(code)
+    const userInfor = await this.getGoogleUserInfo(access_token, id_token)
+    if (!userInfor.email_verified) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.EMAIL_NOT_VERIFIED,
+        status: HTTP_STATUS.BAD_REQUEST
+      })
+    }
+    const user = await databaseService.users.findOne({ email: userInfor.email })
+    if (user) {
+      const [access_token, refresh_token] = await this.signAccessAndRefreshTokens({
+        user_id: user._id.toString(),
+        verify: user.verify
+      })
+      const { exp, iat } = await this.decodeRefreshToken(refresh_token)
+      await databaseService.refreshTokens.insertOne(
+        new RefreshToken({ user_id: user._id, token: refresh_token, exp, iat })
+      )
+      return {
+        access_token,
+        refresh_token,
+        new_user: 0,
+        verify: user.verify
+      }
+    } else {
+      const password = hashPassword(Math.random().toString(36).slice(1, 15))
+      const data = await this.register({
+        email: userInfor.email,
+        first_name: userInfor.given_name,
+        last_name: userInfor.family_name,
+        password: password,
+        confirm_password: password,
+        avatar: userInfor.picture
+      })
+      return {
+        ...data,
+        new_user: 1,
+        verify: UserVerifyStatus.Unverified
+      }
+    }
   }
 }
 
