@@ -158,7 +158,17 @@ export const registerValidator = validate(
         }
       },
       password: passwordSchema,
-      confirm_password: confirmPasswordSchema
+      confirm_password: confirmPasswordSchema,
+      avatar: {
+        optional: true,
+        isString: {
+          errorMessage: USERS_MESSAGES.IMAGE_URL_MUST_BE_A_STRING
+        },
+        trim: true,
+        isURL: {
+          errorMessage: USERS_MESSAGES.IMAGE_URL_MUST_BE_VALID
+        }
+      }
     },
     ['body']
   )
@@ -468,7 +478,7 @@ export const updateMeValidator = validate(
         isString: {
           errorMessage: USERS_MESSAGES.IMAGE_URL_MUST_BE_A_STRING
         },
-        trim: true,
+        trim: true
       }
     },
     ['body']

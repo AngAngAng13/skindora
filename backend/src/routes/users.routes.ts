@@ -6,6 +6,7 @@ import {
   getMeController,
   loginController,
   logoutController,
+  oAuthController,
   refreshController,
   registerController,
   resendEmailVerifyController,
@@ -67,4 +68,5 @@ usersRouter.patch(
   wrapAsync(updateMeController)
 )
 usersRouter.post('/refresh-token', refreshTokenValidator, wrapAsync(refreshController))
+usersRouter.get('/oauth/google', wrapAsync(oAuthController))
 export default usersRouter
