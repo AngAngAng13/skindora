@@ -29,7 +29,8 @@ export const USERS_MESSAGES = {
   EMAIL_VERIFY_TOKEN_IS_REQUIRED: 'Email verify token is required',
   EMAIL_ALREADY_VERIFIED_BEFORE: 'Email has already been verified before',
   EMAIL_VERIFY_TOKEN_IS_INCORRECT: 'Email verify token is incorrect',
-  VERIFY_EMAIL_SUCCESS: 'Verify email successful'
+  VERIFY_EMAIL_SUCCESS: 'Verify email successful',
+  USER_ID_IS_REQUIRED: 'User ID is required'
 } as const
 
 export const PRODUCTS_MESSAGES = {
@@ -38,5 +39,8 @@ export const PRODUCTS_MESSAGES = {
   PRODUCT_ADDED_TO_WISHLIST: 'Product added to wishlist successfully',
   PRODUCT_REMOVED_FROM_WISHLIST: 'Product removed from wishlist successfully',
   WISHLIST_EMPTY: 'Wishlist is empty',
-  WISHLIST_FETCHED_SUCCESSFULLY: 'Wishlist fetched successfully'
+  WISHLIST_FETCHED_SUCCESSFULLY: 'Wishlist fetched successfully',
+  PRODUCT_ID_IS_REQUIRED: 'Product ID is required',
+  PRODUCT_ID_NOT_ARRAY: 'Product ID must be an array',
+  PRODUCT_NOT_IN_WISH_LIST: 'Product not in wish list'
 } as const
