@@ -61,14 +61,7 @@ usersRouter.get('/me', accessTokenValidator, wrapAsync(getMeController))
 usersRouter.patch(
   '/me',
   accessTokenValidator,
-  verifiedUserValidator,
-  filterMiddleware<UpdateMeReqBody>([
-    'first_name',
-    'last_name',
-    'location',
-    'username',
-    'avatar',
-  ]),
+  filterMiddleware<UpdateMeReqBody>(['first_name', 'last_name', 'location', 'username', 'avatar']),
   updateMeValidator,
   wrapAsync(updateMeController)
 )
