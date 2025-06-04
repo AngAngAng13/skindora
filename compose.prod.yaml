@@ -41,7 +41,12 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: dockerfile
+      dockerfile: dockerfile 
+      args:
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+        - VITE_SENTRY_DSN_FRONTEND=${VITE_SENTRY_DSN_FRONTEND}
+        - VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID}
+        - VITE_GOOGLE_REDIRECT_URI=${VITE_GOOGLE_REDIRECT_URI}
     volumes:
       - ./uploads:/srv/uploads
     networks:
