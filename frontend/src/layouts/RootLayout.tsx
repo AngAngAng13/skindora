@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 
 import { Toaster } from "@/components/ui/sonner";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/contexts/auth.context";
 
 export default function RootLayout() {
   return (
@@ -22,14 +22,12 @@ export default function RootLayout() {
             classNames: {
               title: "text-sm font-semibold",
               description: "!text-gray-500 text-sm",
-
-              error:
-                "!border-red-200 !text-red-700  [&>[data-icon]]:text-red-500",
+              error: "!border-red-500 !bg-red-200/80 !text-red-700 dark:text-red-400 [&>[data-icon]]:text-red-500",
               success:
-                "border-green-500 bg-green-500/10 text-green-700 dark:text-green-400 [&>[data-icon]]:text-green-500",
-              info: "border-[var(--primary)] bg-[var(--primary)]/10 text-[var(--primary-foreground)] dark:text-[var(--primary)] [&>[data-icon]]:text-[var(--primary)]", // Example using var()
+                "!border-green-500 !bg-green-200/80 !text-green-700 dark:text-green-400 [&>[data-icon]]:text-green-500",
+              info: "!border-blue-500 !bg-blue-200/80 !text-blue-700 dark:text-blue-400 [&>[data-icon]]:text-blue-500",
               warning:
-                "border-yellow-500 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 [&>[data-icon]]:text-yellow-500",
+                "!border-yellow-500 !bg-yellow-200/80 !text-yellow-700 dark:text-yellow-400 [&>[data-icon]]:text-yellow-500",
 
               actionButton: "bg-primary text-primary-foreground hover:bg-primary/90",
               cancelButton: "bg-muted text-muted-foreground hover:bg-muted/80",

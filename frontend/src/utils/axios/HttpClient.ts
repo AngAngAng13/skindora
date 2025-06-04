@@ -1,21 +1,9 @@
-import type {
-  AxiosError as AxiosErrorType,
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from "axios";
+import type { AxiosError as AxiosErrorType, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import axios from "axios";
 import { Result, err, ok } from "neverthrow";
 
 import { ApiError } from "./error";
-import type {
-  ApiResponse,
-  ExtendedAxiosRequestConfig,
-  HttpClientConfig,
-  HttpClientService,
-  RequestOptions,
-} from "./types";
+import type { ApiResponse, ExtendedAxiosRequestConfig, HttpClientConfig, HttpClientService, RequestOptions } from "./types";
 
 export class HttpClient implements HttpClientService {
   private client: AxiosInstance;
@@ -61,13 +49,7 @@ export class HttpClient implements HttpClientService {
       },
       async (error: AxiosErrorType) => {
         const originalRequest = error.config as ExtendedAxiosRequestConfig;
-        if (
-          error.response?.status === 401 &&
-          this.config.auth?.refreshToken &&
-          originalRequest &&
-          !originalRequest.skipAuth &&
-          originalRequest._retry !== -1
-        ) {
+        if (error.response?.status === 401 && this.config.auth?.refreshToken && originalRequest && !originalRequest.skipAuth && originalRequest._retry !== -1) {
           originalRequest._retry = -1;
 
           if (this.config.DEBUG) {
@@ -134,10 +116,7 @@ export class HttpClient implements HttpClientService {
             const delayMultiplier = originalRequest._delayMs || this.config.defaultRetry?.delayMs || 1000;
             const delay = delayMultiplier * Math.pow(2, originalRequest._retry - 1);
             if (this.config.DEBUG) {
-              console.warn(
-                `Retrying request, attempt ${originalRequest._retry}/${maxRetries} after ${delay}ms...`,
-                originalRequest.url
-              );
+              console.warn(`Retrying request, attempt ${originalRequest._retry}/${maxRetries} after ${delay}ms...`, originalRequest.url);
             }
             await this.sleep(delay);
             return this.client(originalRequest);
@@ -170,12 +149,7 @@ export class HttpClient implements HttpClientService {
     this.refreshSubscribers = [];
   }
 
-  private async request<T>(
-    method: string,
-    url: string,
-    data?: unknown,
-    options?: RequestOptions
-  ): Promise<Result<ApiResponse<T>, ApiError>> {
+  private async request<T>(method: string, url: string, data?: unknown, options?: RequestOptions): Promise<Result<ApiResponse<T>, ApiError>> {
     const requestConfig: AxiosRequestConfig = {
       method,
       url,
@@ -190,6 +164,7 @@ export class HttpClient implements HttpClientService {
 
     const retryConfig = options?.retry || this.config.defaultRetry;
     if (retryConfig) {
+      console.log(`Retry configuration: maxRetries=${retryConfig.maxRetries}, delayMs=${retryConfig.delayMs}`);
       extendedConfig._retry = 0;
       extendedConfig._maxRetries = retryConfig.maxRetries;
       extendedConfig._delayMs = retryConfig.delayMs;
@@ -222,27 +197,15 @@ export class HttpClient implements HttpClientService {
     return this.request<T>("GET", url, undefined, options);
   }
 
-  public async post<T, D = unknown>(
-    url: string,
-    data?: D,
-    options?: RequestOptions
-  ): Promise<Result<ApiResponse<T>, ApiError>> {
+  public async post<T, D = unknown>(url: string, data?: D, options?: RequestOptions): Promise<Result<ApiResponse<T>, ApiError>> {
     return this.request<T>("POST", url, data, options);
   }
 
-  public async put<T, D = unknown>(
-    url: string,
-    data?: D,
-    options?: RequestOptions
-  ): Promise<Result<ApiResponse<T>, ApiError>> {
+  public async put<T, D = unknown>(url: string, data?: D, options?: RequestOptions): Promise<Result<ApiResponse<T>, ApiError>> {
     return this.request<T>("PUT", url, data, options);
   }
 
-  public async patch<T, D = unknown>(
-    url: string,
-    data?: D,
-    options?: RequestOptions
-  ): Promise<Result<ApiResponse<T>, ApiError>> {
+  public async patch<T, D = unknown>(url: string, data?: D, options?: RequestOptions): Promise<Result<ApiResponse<T>, ApiError>> {
     return this.request<T>("PATCH", url, data, options);
   }
 

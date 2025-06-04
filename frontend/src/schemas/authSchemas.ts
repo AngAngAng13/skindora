@@ -48,3 +48,18 @@ export const resetPasswordSchema = z
     path: ["confirmPassword"],
   });
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
+export const profileUpdateSchema = z.object({
+  first_name: z.string().max(50, "First name cannot exceed 50 characters.").optional().or(z.literal("")),
+  last_name: z.string().max(50, "Last name cannot exceed 50 characters.").optional().or(z.literal("")),
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters.")
+    .max(30, "Username cannot exceed 30 characters.")
+    .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores.")
+    .optional()
+    .or(z.literal("")),
+  location: z.string().max(200, "Location cannot exceed 200 characters.").optional().or(z.literal("")),
+  avatar: z.string().url({ message: "Please enter a valid URL for the avatar." }).optional().or(z.literal("")),
+});
+
+export type ProfileUpdateFormData = z.infer<typeof profileUpdateSchema>;
