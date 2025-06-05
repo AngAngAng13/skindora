@@ -544,3 +544,129 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorServerResponse'
+  /users/change-password:
+    put:
+      tags:
+        - Users
+      summary: Change password
+      description: >
+        Allows an authenticated and verified user to change their password.
+        Requires providing the old password and a new password.
+        Bearer token authentication is required.
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: User's old password and new password information.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                  description: The user's current password.
+                  example: 'oldPassword123'
+                password:
+                  type: string
+                  description: The user's new password (must be strong).
+                  example: 'newStrongPassword123!'
+                confirm_password:
+                  type: string
+                  description: Confirmation of the new password.
+                  example: 'newStrongPassword123!'
+              required:
+                - old_password
+                - password
+                - confirm_password
+      responses:
+        '200':
+          description: Change password successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              examples:
+                success:
+                  value:
+                    message: 'Change password success'
+        '401':
+          description: >
+            Unauthorized. Can occur due to:
+            - Access token is missing, invalid, or expired.
+            - Old password does not match.
+            - User associated with the token not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorStatusResponse'
+              examples:
+                missingToken:
+                  value:
+                    message: 'Access token is required'
+                invalidToken:
+                  value:
+                    message: 'JsonWebTokenError: invalid signature'
+                passwordMismatch:
+                  value:
+                    message: 'Old password not match'
+                userNotFound:
+                   value:
+                    message: 'User not found'
+        '403':
+          description: Forbidden. The user has not verified their email address yet.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorStatusResponse'
+              example:
+                message: 'User is not verified'
+        '422':
+          description: >
+            Unprocessable Entity. The request body is invalid.
+            This can happen if passwords don't meet complexity requirements or if the confirmation password doesn't match.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    example:
+                      confirm_password:
+                        msg: 'Password confirmation does not match password'
+                      password:
+                        msg: 'Password must be at least 6 characters long'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorServerResponse'
+
+components:
+  schemas:
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Operation successful'
+    ErrorStatusResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'An error occurred'
+    ErrorServerResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Internal Server Error'
+        
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
