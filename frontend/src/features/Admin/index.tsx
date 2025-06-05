@@ -25,12 +25,12 @@ const Admin: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <div className="cursor-pointer rounded-lg bg-white p-2 hover:bg-gray-100">
-                    <Bell size={20} />
-                  </div>
-                  <div className="bg-white-50 cursor-pointer rounded-3xl border-2 p-2 hover:bg-gray-100">
-                    <User size={20} />
-                  </div>
+                  <Button className="text-ba cursor-pointer" variant="ghost" size="icon">
+                    <Bell size={18} />
+                  </Button>
+                  <Button className="cursor-pointer rounded-3xl" variant="outline" size="icon">
+                    <User size={18} />
+                  </Button>
                 </div>
               </div>
             </div>
