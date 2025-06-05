@@ -3,9 +3,12 @@ import { ParamSchema, checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
 import { ObjectId } from 'mongodb'
+import { UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
+import { REGEX_USERNAME } from '~/constants/regex'
 import { ErrorWithStatus } from '~/models/Errors'
+import { TokenPayLoad } from '~/models/requests/Users.requests'
 import databaseService from '~/services/database.services'
 import usersService from '~/services/users.services'
 import { hashPassword } from '~/utils/crypto'
@@ -155,7 +158,17 @@ export const registerValidator = validate(
         }
       },
       password: passwordSchema,
-      confirm_password: confirmPasswordSchema
+      confirm_password: confirmPasswordSchema,
+      avatar: {
+        optional: true,
+        isString: {
+          errorMessage: USERS_MESSAGES.IMAGE_URL_MUST_BE_A_STRING
+        },
+        trim: true,
+        isURL: {
+          errorMessage: USERS_MESSAGES.IMAGE_URL_MUST_BE_VALID
+        }
+      }
     },
     ['body']
   )
@@ -290,63 +303,14 @@ export const emailVerifyTokenValidator = validate(
   )
 )
 
-export const addToWishListValidator = validate(
-  checkSchema(
-    {
-      productId: {
-        trim: true,
-        custom: {
-          options: async (value: string) => {
-            if (!value) {
-              throw new ErrorWithStatus({
-                message: PRODUCTS_MESSAGES.PRODUCT_ID_IS_REQUIRED,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
-
-            if (!Array.isArray(value)) {
-              throw new ErrorWithStatus({
-                message: PRODUCTS_MESSAGES.PRODUCT_ID_NOT_ARRAY,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
-            try {
-              for (const id of value) {
-                const product = await databaseService.products.findOne({ _id: new ObjectId(id) })
-                if (!product) {
-                  throw new ErrorWithStatus({
-                    message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND,
-                    status: HTTP_STATUS.NOT_FOUND
-                  })
-                }
-              }
-            } catch (error: any) {
-              if (error instanceof ErrorWithStatus) {
-                throw error
-              }
-
-              throw new ErrorWithStatus({
-                message: error.message,
-                status: HTTP_STATUS.INTERNAL_SERVER_ERROR
-              })
-            }
-          }
-        }
-      }
-    },
-    ['body']
-  )
-)
-
 export const accessTokenValidator = validate(
   checkSchema(
     {
       Authorization: {
         trim: true,
         custom: {
-          options: async (value, { req }) => {
+          options: async (value: string, { req }) => {
             const accessToken = value.split(' ')[1]
-
             if (!accessToken) {
               throw new ErrorWithStatus({
                 message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED,
@@ -356,12 +320,12 @@ export const accessTokenValidator = validate(
             try {
               const decoded_authorization = await verifyToken({
                 token: accessToken,
-                secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN || ''
+                secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
               })
-              req.decoded_authorization = decoded_authorization
-            } catch (error: any) {
+              ;(req as Request).decoded_authorization = decoded_authorization
+            } catch (error) {
               throw new ErrorWithStatus({
-                message: capitalize(error.message),
+                message: capitalize((error as JsonWebTokenError).message),
                 status: HTTP_STATUS.UNAUTHORIZED
               })
             }
@@ -374,48 +338,147 @@ export const accessTokenValidator = validate(
   )
 )
 
-export const removeFromWishListValidator = validate(
+export const verifiedUserValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { verify } = req.decoded_authorization as TokenPayLoad
+  if (verify !== UserVerifyStatus.Verified) {
+    return next(
+      new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_IS_NOT_VERIFIED,
+        status: HTTP_STATUS.FORBIDDEN
+      })
+    )
+  }
+  next()
+}
+
+export const changePasswordValidator = validate(
   checkSchema(
     {
-      productId: {
-        trim: true,
+      old_password: {
+        ...passwordSchema,
         custom: {
-          options: async (value: string) => {
-            if (!value) {
+          options: async (value, { req }) => {
+            const { user_id } = req.decoded_authorization as TokenPayLoad
+            const user = await databaseService.users.findOne({
+              _id: new ObjectId(user_id)
+            })
+            if (user === null) {
               throw new ErrorWithStatus({
-                message: PRODUCTS_MESSAGES.PRODUCT_ID_IS_REQUIRED,
-                status: HTTP_STATUS.BAD_REQUEST
+                message: USERS_MESSAGES.USER_NOT_FOUND,
+                status: HTTP_STATUS.UNAUTHORIZED
               })
             }
-
-            if (!Array.isArray(value)) {
+            const { password } = user
+            if (password !== hashPassword(value)) {
               throw new ErrorWithStatus({
-                message: PRODUCTS_MESSAGES.PRODUCT_ID_NOT_ARRAY,
-                status: HTTP_STATUS.BAD_REQUEST
+                message: USERS_MESSAGES.OLD_PASSWORD_NOT_MATCH,
+                status: HTTP_STATUS.UNAUTHORIZED
               })
             }
-            try {
-              for (const id of value) {
-                const product = await databaseService.products.findOne({ _id: new ObjectId(id) })
-                if (!product) {
-                  throw new ErrorWithStatus({
-                    message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND,
-                    status: HTTP_STATUS.NOT_FOUND
-                  })
-                }
-              }
-            } catch (error: any) {
-              if (error instanceof ErrorWithStatus) {
-                throw error
-              }
-
-              throw new ErrorWithStatus({
-                message: error.message,
-                status: HTTP_STATUS.INTERNAL_SERVER_ERROR
-              })
-            }
+            return true
           }
         }
+      },
+      password: passwordSchema,
+      confirm_password: confirmPasswordSchema
+    },
+    ['body']
+  )
+)
+
+export const refreshTokenValidator = validate(
+  checkSchema(
+    {
+      refresh_token: {
+        trim: true,
+        custom: {
+          options: async (value: string, { req }) => {
+            try {
+              const [decoded_refresh_token, refresh_token] = await Promise.all([
+                verifyToken({ token: value, secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string }),
+                databaseService.refreshTokens.findOne({
+                  token: value
+                })
+              ])
+
+              if (refresh_token === null) {
+                throw new ErrorWithStatus({
+                  message: USERS_MESSAGES.USED_REFRESH_TOKEN_OR_NOT_EXIST,
+                  status: HTTP_STATUS.UNAUTHORIZED
+                })
+              }
+              ;(req as Request).decoded_refresh_token = decoded_refresh_token
+            } catch (error) {
+              if (error instanceof JsonWebTokenError) {
+                throw new ErrorWithStatus({
+                  message: capitalize((error as JsonWebTokenError).message),
+                  status: HTTP_STATUS.UNAUTHORIZED
+                })
+              }
+              throw error
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const updateMeValidator = validate(
+  checkSchema(
+    {
+      first_name: {
+        optional: true,
+        ...firstNameSchema,
+        notEmpty: undefined
+      },
+      last_name: {
+        optional: true,
+        ...lastNameSchema,
+        notEmpty: undefined
+      },
+      location: {
+        optional: true,
+        isString: {
+          errorMessage: USERS_MESSAGES.LOCATION_MUST_BE_A_STRING
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 1,
+            max: 200
+          },
+          errorMessage: USERS_MESSAGES.LOCATION_LENGTH_MUST_BE_LESS_THAN_200
+        }
+      },
+      username: {
+        optional: true,
+        isString: {
+          errorMessage: USERS_MESSAGES.USERNAME_MUST_BE_A_STRING
+        },
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            if (REGEX_USERNAME.test(value) === false) {
+              throw new Error(USERS_MESSAGES.USERNAME_MUST_BE_A_STRING)
+            }
+            const user = await databaseService.users.findOne({ username: value })
+
+            if (user) {
+              throw new Error(USERS_MESSAGES.USERNAME_ALREADY_EXISTS)
+            }
+            return true
+          }
+        }
+      },
+      avatar: {
+        optional: true,
+        isString: {
+          errorMessage: USERS_MESSAGES.IMAGE_URL_MUST_BE_A_STRING
+        },
+        trim: true
       }
     },
     ['body']

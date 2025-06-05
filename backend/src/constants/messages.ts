@@ -30,8 +30,24 @@ export const USERS_MESSAGES = {
   EMAIL_ALREADY_VERIFIED_BEFORE: 'Email has already been verified before',
   EMAIL_VERIFY_TOKEN_IS_INCORRECT: 'Email verify token is incorrect',
   VERIFY_EMAIL_SUCCESS: 'Verify email successful',
-  USER_ID_IS_REQUIRED: 'User ID is required',
-  ACCESS_TOKEN_IS_REQUIRED: 'Access Token is required'
+  ACCESS_TOKEN_IS_REQUIRED: 'Access token is required',
+  USER_BANNED: 'User is banned',
+  RESEND_EMAIL_VERIFY_SUCCESS: 'Resend email verify successful',
+  USER_IS_NOT_VERIFIED: 'User is not verified',
+  OLD_PASSWORD_NOT_MATCH: 'Old password does not match',
+  CHANGE_PASSWORD_SUCCESS: 'Change password successful',
+  USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist',
+  GET_ME_SUCCESS: 'Get me successful',
+  LOCATION_MUST_BE_A_STRING: 'Location must be a string',
+  LOCATION_LENGTH_MUST_BE_LESS_THAN_200: 'Location length must be less than 200 characters',
+  USERNAME_MUST_BE_A_STRING: 'Username must be a string',
+  USERNAME_ALREADY_EXISTS: 'Username already exists',
+  IMAGE_URL_MUST_BE_A_STRING: 'Image URL must be a string',
+  UPDATE_ME_SUCCESS: 'Update me successful',
+  REFRESH_TOKEN_SUCCESS: 'Refresh token successful',
+  EMAIL_NOT_VERIFIED: 'Email is not verified',
+  IMAGE_URL_MUST_BE_VALID: 'Image URL must be a valid URL',
+  USER_ID_IS_REQUIRED: 'User ID is required'
 } as const
 
 export const PRODUCTS_MESSAGES = {
