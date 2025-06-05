@@ -1,6 +1,8 @@
 import type { AxiosRequestConfig } from "axios";
 import { Result } from "neverthrow";
+
 import { ApiError } from "./error";
+
 /**
  * @interface ExtendedAxiosRequestConfig
  *@extends AxiosRequestConfig
