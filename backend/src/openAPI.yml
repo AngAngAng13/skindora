@@ -643,7 +643,158 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorServerResponse'
-
+  /users/getWishList:
+    get:
+      tags:
+        - Users
+      summary: Get Wish List depends on User ID
+      description: Get Wish List. Requires Bearer token authentication.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Get Wish List Successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              examples:
+                success:
+                  value:
+                    message: 'Get Wish List Successfully'
+                    data: ["6432a1b2c3d4e5f678901234", "6432a1b2c3d4e5f678901235"]
+        '401':
+          description: Unauthorized (e.g., access token is missing, invalid, or expired).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorStatusResponse'
+        '404':
+          description: Product not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorStatusResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorServerResponse'
+  /users/addToWishList:
+    post:
+      tags:
+        - Users
+      summary: Add to Wish List
+      description: Add one or more products to the user's wish list. Requires Bearer token authentication.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+             type: object
+             properties:
+              productId:
+                type: array
+                items:
+                  type: string
+                  example: "6432a1b2c3d4e5f678901234"
+            required:
+              - productId
+          example:
+            productId: ["6432a1b2c3d4e5f678901234", "6432a1b2c3d4e5f678901235"]
+      responses:
+        '200':
+          description: Add to Wish List Successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              examples:
+                success:
+                  value:
+                    message: 'Product added to wishlist successfully'
+        '401':
+          description: Unauthorized (e.g., access token is missing, invalid, or expired).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorStatusResponse'
+        '404':
+          description: Product not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorStatusResponse'
+              examples:
+                productNotFound:
+                  value:
+                    message: "Product Not Found"
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorServerResponse'
+  /users/removeFromWishList:
+    put:
+      tags:
+        - Users
+      summary: Remove Product from Wish List
+      description: Remove one or more products to the user's wish list. Requires Bearer token authentication.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+             type: object
+             properties:
+              productId:
+                type: array
+                items:
+                  type: string
+                  example: "6432a1b2c3d4e5f678901234"
+            required:
+              - productId
+          example:
+            productId: ["6432a1b2c3d4e5f678901234", "6432a1b2c3d4e5f678901235"]
+      responses:
+        '200':
+          description: Add to Wish List Successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              examples:
+                success:
+                  value:
+                    message: 'Product added to wishlist successfully'
+        '401':
+          description: Unauthorized (e.g., access token is missing, invalid, or expired).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorStatusResponse'
+        '404':
+          description: Product not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorStatusResponse'
+              examples:
+                productNotFound:
+                  value:
+                    message: "Product Not Found"
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorServerResponse'
 components:
   schemas:
     MessageResponse:
