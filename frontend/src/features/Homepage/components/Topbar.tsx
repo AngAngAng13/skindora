@@ -1,9 +1,19 @@
 import { ShoppingCart } from "lucide-react";
-import React from "react";
+import { Bell, User as UserIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/auth.context";
 
 interface TopbarProps {
   branding?: string;
@@ -34,7 +44,48 @@ function NavigationItems({ navItems }: { navItems: TopbarProps["navItems"] }) {
   );
 }
 
+interface ProfileDropdownProps {
+  logout?: () => void;
+  isLoading?: boolean;
+}
+
+function ProfileDropdown({ logout, isLoading }: ProfileDropdownProps) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" className="relative h-9 w-9 rounded-full">
+          <UserIcon className="h-5 w-5" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <Link to="/profile">
+            <DropdownMenuItem>Profile</DropdownMenuItem>
+          </Link>
+          <DropdownMenuItem>Settings</DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem disabled={isLoading} onClick={logout}>
+          Log out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function NotificationButton() {
+  return (
+    <Button variant="ghost" size="icon" className="relative">
+      <Bell className="h-5 w-5" />
+      <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+    </Button>
+  );
+}
+
 function TopbarActions() {
+  const { user, logout, isLoading } = useAuth();
   return (
     <div className="flex items-center space-x-4">
       <Link to="/store">
@@ -42,9 +93,16 @@ function TopbarActions() {
           <ShoppingCart className="h-5 w-5" />
         </Button>
       </Link>
-      <Link to="/auth/login">
-        <Button variant="outline">Đăng nhập</Button>
-      </Link>
+      {user ? (
+        <div className="flex items-center gap-4">
+          <NotificationButton />
+          <ProfileDropdown logout={logout} isLoading={isLoading} />
+        </div>
+      ) : (
+        <Link to="/auth/login">
+          <Button variant="outline">Đăng nhập</Button>
+        </Link>
+      )}
     </div>
   );
 }

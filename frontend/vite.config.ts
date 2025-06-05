@@ -2,16 +2,26 @@ import { sentryVitePlugin } from "@sentry/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), sentryVitePlugin({
-    org: "fpt-d1",
-    project: "javascript-react"
-  })],
+  plugins: [
+    react(),
+    tailwindcss(),
+    sentryVitePlugin({
+      org: "fpt-d1",
+      project: "javascript-react",
+    }),
+    visualizer(),
+  ],
   build: {
     sourcemap: true,
+  },
+
+  preview: {
+    port: 5173,
   },
   resolve: {
     alias: {

@@ -2,11 +2,23 @@ import express from 'express'
 import { config } from 'dotenv'
 import databaseService from './services/database.services'
 import usersRouter from './routes/users.routes'
-
+import { defaultErrorHandler } from './middlewares/error.middlewares'
+import { app, server } from './lib/socket'
+import swaggerUi from 'swagger-ui-express'
+import YAML from 'yamljs'
+import path from 'path'
+import cors from 'cors'
 config()
-const app = express()
+const swaggerDocument = YAML.load(path.join(__dirname, './openAPI.yml'))
+
 const port = process.env.PORT
-app.use(express.json())
+console.log(`Skindora server is running on port ${process.env.CORS_ORIGIN}`)
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN
+  })
+),
+  app.use(express.json())
 databaseService.connect().then(() => {
   databaseService.indexUsers()
 })
@@ -16,7 +28,10 @@ app.get('/', (req, res) => {
 })
 
 app.use('/users', usersRouter)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
-app.listen(port, () => {
-  console.log(`Skindora đang chạy trên port ${port}`)
+app.use(defaultErrorHandler)
+
+server.listen(port, () => {
+  console.log(`Skindora server is running on port ${port}`)
 })

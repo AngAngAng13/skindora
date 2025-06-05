@@ -1,5 +1,5 @@
-const ACCESS_TOKEN_KEY = "skindoraAccessToken";
-const REFRESH_TOKEN_KEY = "skindoraRefreshToken";
+const ACCESS_TOKEN_KEY = "access_token";
+const REFRESH_TOKEN_KEY = "refresh_token";
 
 export const getAccessToken = (): string | null => {
   return localStorage.getItem(ACCESS_TOKEN_KEY);
