@@ -7,6 +7,7 @@ import { app, server } from './lib/socket'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yamljs'
 import path from 'path'
+import paymentsRouter from './routes/payments.routes'
 
 config()
 const swaggerDocument = YAML.load(path.join(__dirname, './openAPI.yml'))

@@ -484,3 +484,99 @@ export const updateMeValidator = validate(
     ['body']
   )
 )
+
+export const addToWishListValidator = validate(
+  checkSchema(
+    {
+      productId: {
+        trim: true,
+        custom: {
+          options: async (value: string) => {
+            if (!value) {
+              throw new ErrorWithStatus({
+                message: PRODUCTS_MESSAGES.PRODUCT_ID_IS_REQUIRED,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            if (!Array.isArray(value)) {
+              throw new ErrorWithStatus({
+                message: PRODUCTS_MESSAGES.PRODUCT_ID_NOT_ARRAY,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            try {
+              for (const id of value) {
+                const product = await databaseService.products.findOne({ _id: new ObjectId(id) })
+                if (!product) {
+                  throw new ErrorWithStatus({
+                    message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND,
+                    status: HTTP_STATUS.NOT_FOUND
+                  })
+                }
+              }
+            } catch (error: any) {
+              if (error instanceof ErrorWithStatus) {
+                throw error
+              }
+
+              throw new ErrorWithStatus({
+                message: error.message,
+                status: HTTP_STATUS.INTERNAL_SERVER_ERROR
+              })
+            }
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const removeFromWishListValidator = validate(
+  checkSchema(
+    {
+      productId: {
+        trim: true,
+        custom: {
+          options: async (value: string) => {
+            if (!value) {
+              throw new ErrorWithStatus({
+                message: PRODUCTS_MESSAGES.PRODUCT_ID_IS_REQUIRED,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            if (!Array.isArray(value)) {
+              throw new ErrorWithStatus({
+                message: PRODUCTS_MESSAGES.PRODUCT_ID_NOT_ARRAY,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            try {
+              for (const id of value) {
+                const product = await databaseService.products.findOne({ _id: new ObjectId(id) })
+                if (!product) {
+                  throw new ErrorWithStatus({
+                    message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND,
+                    status: HTTP_STATUS.NOT_FOUND
+                  })
+                }
+              }
+            } catch (error: any) {
+              if (error instanceof ErrorWithStatus) {
+                throw error
+              }
+
+              throw new ErrorWithStatus({
+                message: error.message,
+                status: HTTP_STATUS.INTERNAL_SERVER_ERROR
+              })
+            }
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)

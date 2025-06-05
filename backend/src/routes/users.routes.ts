@@ -28,7 +28,6 @@ import {
   verifiedUserValidator,
   verifyForgotPasswordTokenValidator,
   addToWishListValidator,
-  accessTokenValidator,
   removeFromWishListValidator
 } from '~/middlewares/users.middlewares'
 import {
