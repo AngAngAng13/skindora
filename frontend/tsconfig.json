@@ -20,6 +20,12 @@
       "@assets": [
         "./src/assets/*"
       ],
+      "@/schemas": [
+        "./src/schemas/*"
+      ],
+      "@contexts": [
+        "./src/contexts/*"
+      ]
     }
   }
 }

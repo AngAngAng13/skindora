@@ -8,12 +8,17 @@ import swaggerUi from 'swagger-ui-express'
 import YAML from 'yamljs'
 import path from 'path'
 import paymentsRouter from './routes/payments.routes'
-
+import cors from 'cors'
 config()
 const swaggerDocument = YAML.load(path.join(__dirname, './openAPI.yml'))
 
 const port = process.env.PORT
-app.use(express.json())
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN
+  })
+),
+  app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 databaseService.connect().then(() => {

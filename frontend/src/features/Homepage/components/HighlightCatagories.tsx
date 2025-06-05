@@ -1,9 +1,16 @@
 import { ChevronRight, LoaderCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
+type colorScheme = "purple" | "blue" | "amber";
+const colorMapping: Record<colorScheme, { base: string; hover: string }> = {
+  purple: { base: "bg-purple-50", hover: "hover:bg-purple-100" },
+  blue: { base: "bg-blue-50", hover: "hover:bg-blue-100" },
+  amber: { base: "bg-amber-50", hover: "hover:bg-amber-100" },
+};
 const sampleCategories = [
   {
     title: "Chăm sóc da mặt",
@@ -28,7 +35,7 @@ function CategoryLoadingSpinner() {
 }
 
 function CategoryCardGrid({ categories }: { categories: typeof sampleCategories }) {
-  const bgColors = ["bg-purple-50", "bg-blue-50", "bg-amber-50"];
+  const colorThemes: colorScheme[] = ["purple", "blue", "amber"];
   return (
     <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
       {categories.map((cat, idx) => (
@@ -36,7 +43,7 @@ function CategoryCardGrid({ categories }: { categories: typeof sampleCategories 
           key={cat.title + idx}
           title={cat.title}
           description={cat.description}
-          bgColor={bgColors[idx % bgColors.length]}
+          theme={colorThemes[idx % colorThemes.length]} // 1 % 3 = 1, 2 % 3 = 2, 3 % 3 = 0
         />
       ))}
     </div>
@@ -68,23 +75,32 @@ export default function HighlightCatagories() {
 function CategoryCard({
   title,
   description,
-  bgColor,
+  theme = "purple",
 }: {
   title: string;
   description: string;
-  bgColor: string;
+  theme?: colorScheme;
 }): React.JSX.Element {
+  const { base, hover } = colorMapping[theme];
   return (
-    <Card className={cn(bgColor, "border-0 opacity-90 shadow-none")}>
+    <Card
+      className={cn(
+        base,
+        hover,
+        "group border-0 shadow-none transition-all duration-300 hover:opacity-100 hover:shadow-lg"
+      )}
+    >
       <CardHeader>
         <CardTitle className="text-lg font-semibold">{title}</CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-gray-600">{description}</p>
       </CardContent>
-      <CardFooter>
-        <button className="text-primary hover:underline">Khám phá ngay</button>
-        <ChevronRight className="text-primary ml-2 inline h-4 w-4" />
+      <CardFooter className="flex items-center justify-between">
+        <Button variant={"link"} className="hover:cursor-pointer">
+          Khám phá ngay
+          <ChevronRight className="text-primary" />
+        </Button>
       </CardFooter>
     </Card>
   );
