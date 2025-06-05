@@ -1,4 +1,4 @@
-import { Bell, Package, Plus, ShoppingCart, User, User2 } from "lucide-react";
+import { Package, Plus, ShoppingCart, User2 } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -10,6 +10,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 
 import { CardDemo } from "./components/Card";
 import { CardIcon } from "./components/CardIcon";
+import HeaderAdmin from "./components/Header";
 
 const Admin: React.FC = () => {
   return (
@@ -18,7 +19,7 @@ const Admin: React.FC = () => {
         <AppSidebar />
         <div className="flex-1">
           <div className="relative">
-            <div className="top-0 left-0 box-border w-full border-b bg-white px-6 py-5">
+            {/* <div className="top-0 left-0 box-border w-full border-b bg-white px-6 py-5">
               <div className="flex items-center justify-between">
                 <div>
                   <Typography className="text-primary text-2xl font-bold">Tổng quan</Typography>
@@ -33,7 +34,8 @@ const Admin: React.FC = () => {
                   </Button>
                 </div>
               </div>
-            </div>
+            </div> */}
+            <HeaderAdmin />
             <div className="w-full gap-4 bg-gray-50 px-6 py-8">
               <div className="mb-6 flex justify-between">
                 <Typography className="text-2xl font-bold">Bảng điều khiển</Typography>
