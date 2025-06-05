@@ -5,7 +5,7 @@ import { capitalize } from 'lodash'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { USERS_MESSAGES } from '~/constants/messages'
+import { USERS_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
 import { REGEX_USERNAME } from '~/constants/regex'
 import { ErrorWithStatus } from '~/models/Errors'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
@@ -479,6 +479,102 @@ export const updateMeValidator = validate(
           errorMessage: USERS_MESSAGES.IMAGE_URL_MUST_BE_A_STRING
         },
         trim: true
+      }
+    },
+    ['body']
+  )
+)
+
+export const addToWishListValidator = validate(
+  checkSchema(
+    {
+      productId: {
+        trim: true,
+        custom: {
+          options: async (value: string) => {
+            if (!value) {
+              throw new ErrorWithStatus({
+                message: PRODUCTS_MESSAGES.PRODUCT_ID_IS_REQUIRED,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            if (!Array.isArray(value)) {
+              throw new ErrorWithStatus({
+                message: PRODUCTS_MESSAGES.PRODUCT_ID_NOT_ARRAY,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            try {
+              for (const id of value) {
+                const product = await databaseService.products.findOne({ _id: new ObjectId(id) })
+                if (!product) {
+                  throw new ErrorWithStatus({
+                    message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND,
+                    status: HTTP_STATUS.NOT_FOUND
+                  })
+                }
+              }
+            } catch (error: any) {
+              if (error instanceof ErrorWithStatus) {
+                throw error
+              }
+
+              throw new ErrorWithStatus({
+                message: error.message,
+                status: HTTP_STATUS.INTERNAL_SERVER_ERROR
+              })
+            }
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const removeFromWishListValidator = validate(
+  checkSchema(
+    {
+      productId: {
+        trim: true,
+        custom: {
+          options: async (value: string) => {
+            if (!value) {
+              throw new ErrorWithStatus({
+                message: PRODUCTS_MESSAGES.PRODUCT_ID_IS_REQUIRED,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            if (!Array.isArray(value)) {
+              throw new ErrorWithStatus({
+                message: PRODUCTS_MESSAGES.PRODUCT_ID_NOT_ARRAY,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            try {
+              for (const id of value) {
+                const product = await databaseService.products.findOne({ _id: new ObjectId(id) })
+                if (!product) {
+                  throw new ErrorWithStatus({
+                    message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND,
+                    status: HTTP_STATUS.NOT_FOUND
+                  })
+                }
+              }
+            } catch (error: any) {
+              if (error instanceof ErrorWithStatus) {
+                throw error
+              }
+
+              throw new ErrorWithStatus({
+                message: error.message,
+                status: HTTP_STATUS.INTERNAL_SERVER_ERROR
+              })
+            }
+          }
+        }
       }
     },
     ['body']

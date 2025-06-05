@@ -46,5 +46,18 @@ export const USERS_MESSAGES = {
   UPDATE_ME_SUCCESS: 'Update me successful',
   REFRESH_TOKEN_SUCCESS: 'Refresh token successful',
   EMAIL_NOT_VERIFIED: 'Email is not verified',
-  IMAGE_URL_MUST_BE_VALID: 'Image URL must be a valid URL'
+  IMAGE_URL_MUST_BE_VALID: 'Image URL must be a valid URL',
+  USER_ID_IS_REQUIRED: 'User ID is required'
+} as const
+
+export const PRODUCTS_MESSAGES = {
+  EMPTY_PRODUCT_LIST: 'Product list is empty. Please add at least one product.',
+  PRODUCT_NOT_FOUND: 'Product not found',
+  PRODUCT_ADDED_TO_WISHLIST: 'Product added to wishlist successfully',
+  PRODUCT_REMOVED_FROM_WISHLIST: 'Product removed from wishlist successfully',
+  WISHLIST_EMPTY: 'Wishlist is empty',
+  WISHLIST_FETCHED_SUCCESSFULLY: 'Wishlist fetched successfully',
+  PRODUCT_ID_IS_REQUIRED: 'Product ID is required',
+  PRODUCT_ID_NOT_ARRAY: 'Product ID must be an array',
+  PRODUCT_NOT_IN_WISH_LIST: 'Product not in wish list'
 } as const

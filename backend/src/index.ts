@@ -7,6 +7,7 @@ import { app, server } from './lib/socket'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yamljs'
 import path from 'path'
+import paymentsRouter from './routes/payments.routes'
 import cors from 'cors'
 config()
 const swaggerDocument = YAML.load(path.join(__dirname, './openAPI.yml'))
@@ -18,6 +19,8 @@ app.use(
   })
 ),
   app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
 databaseService.connect().then(() => {
   databaseService.indexUsers()
 })
@@ -27,6 +30,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/users', usersRouter)
+app.use('/payment', paymentsRouter)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use(defaultErrorHandler)
