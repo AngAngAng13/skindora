@@ -18,10 +18,10 @@ import { Button } from "../ui/button";
 
 const items = [
   { title: "Tổng quan", url: "/admin", icon: Home },
-  { title: "Khách hàng", url: "/customers", icon: UsersRound },
-  { title: "Sản phẩm", url: "/products", icon: Package },
-  { title: "Đơn hàng", url: "/orders", icon: ShoppingCart },
-  { title: "Thống kê", url: "/stats", icon: ChartNoAxesColumnIncreasing },
+  { title: "Khách hàng", url: "/admin/customers", icon: UsersRound },
+  { title: "Sản phẩm", url: "/admin/products", icon: Package },
+  { title: "Đơn hàng", url: "/admin/orders", icon: ShoppingCart },
+  { title: "Thống kê", url: "/admin/stats", icon: ChartNoAxesColumnIncreasing },
 ];
 
 const AppSidebar: React.FC = () => {
