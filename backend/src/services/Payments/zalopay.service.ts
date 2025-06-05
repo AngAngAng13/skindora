@@ -33,14 +33,13 @@ const config = {
 const createOrder = async (req: any, res: any): Promise<void> => {
   const embeddata = {
     redirecturl: process.env.FRONTEND_URL,
-    order: req.body.order,
     orderDetails: req.body.orderDetails
   }
 
   const orderDetails = req.body.orderDetails
 
-  if (!Array.isArray(orderDetails) || orderDetails.length === 0) {
-    return res.status(400).json({ error: 'orderDetails is required and must be a non-empty array.' })
+  if (!Array.isArray(orderDetails) || orderDetails.length === 0 || !orderDetails) {
+    return res.status(400).json({ error: 'OrderDetails is required and must be a non-empty array.' })
   }
 
   const items: Item[] = orderDetails.map((item: any) => ({
@@ -58,8 +57,8 @@ const createOrder = async (req: any, res: any): Promise<void> => {
     item: JSON.stringify(items),
     embeddata: JSON.stringify(embeddata),
     amount: req.body.total,
-    description: 'ZaloPay Integration Demo',
-    bankcode: 'zalopayapp'
+    description: 'Skin Dora Shop',
+    bankcode: ''
   }
 
   const data = [
