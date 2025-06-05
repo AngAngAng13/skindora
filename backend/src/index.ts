@@ -7,12 +7,17 @@ import { app, server } from './lib/socket'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yamljs'
 import path from 'path'
-
+import cors from 'cors'
 config()
 const swaggerDocument = YAML.load(path.join(__dirname, './openAPI.yml'))
 
 const port = process.env.PORT
-app.use(express.json())
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN
+  })
+),
+  app.use(express.json())
 databaseService.connect().then(() => {
   databaseService.indexUsers()
 })
