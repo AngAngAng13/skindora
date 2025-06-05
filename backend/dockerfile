@@ -1,0 +1,29 @@
+FROM node:20-alpine AS builder
+
+USER node
+WORKDIR /app
+
+COPY --chown=node:node package.json package-lock.json* ./
+RUN npm ci
+
+COPY --chown=node:node . .
+
+RUN npm run build
+
+FROM node:20-alpine
+
+USER node
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+ARG APP_PORT=8080
+ENV PORT=${APP_PORT}
+EXPOSE ${APP_PORT}
+
+COPY --chown=node:node package.json package-lock.json* ./
+RUN npm install --omit=dev
+
+COPY --chown=node:node --from=builder /app/dist ./dist
+COPY --from=builder /app/src/openAPI.yml ./dist/openAPI.yml
+CMD ["node", "dist/index.js"]
