@@ -1,9 +1,16 @@
+import React, { useEffect } from "react";
+
 import AppSidebar from "@/components/Sidebar";
 import AppTable from "@/components/Table";
 import Typography from "@/components/Typography";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { useHeader } from "@/contexts/header.context";
 
-const ManageCustomer = () => {
+const ManageCustomer: React.FC = () => {
+  const { setHeaderName } = useHeader();
+  useEffect(() => {
+    setHeaderName("Quản Lý Khách Hàng");
+  }, []);
   return (
     <div className="flex min-h-screen bg-white">
       <div className="flex-1">

@@ -1,4 +1,4 @@
-import { ChartNoAxesColumnIncreasing, Home, Package, ShoppingCart, UsersRound } from "lucide-react";
+import { ChartNoAxesColumnIncreasing, Home, Package, ShoppingCart, User2, UsersRound } from "lucide-react";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -18,6 +18,7 @@ import { Button } from "../ui/button";
 
 const items = [
   { title: "Tổng quan", url: "/admin", icon: Home },
+  { title: "Hồ sơ", url: "/admin/profile", icon: User2 },
   { title: "Khách hàng", url: "/admin/customers", icon: UsersRound },
   { title: "Sản phẩm", url: "/admin/products", icon: Package },
   { title: "Đơn hàng", url: "/admin/orders", icon: ShoppingCart },

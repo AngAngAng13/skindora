@@ -1,11 +1,12 @@
 // src/pages/Admin/Admin.tsx
 import { Package, Plus, ShoppingCart, User2 } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import AppTable from "@/components/Table";
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
+import { useHeader } from "@/contexts/header.context";
 
 import { CardDemo } from "./components/Card";
 import { CardIcon } from "./components/CardIcon";
@@ -19,6 +20,10 @@ import { CardIcon } from "./components/CardIcon";
  * @returns {JSX.Element} The admin dashboard content.
  */
 const Admin: React.FC = () => {
+  const { setHeaderName } = useHeader();
+  useEffect(() => {
+    setHeaderName("Tổng quan");
+  }, []);
   // Authentication check and layout elements are now handled by PrivateLayout.
   // This component now focuses solely on the dashboard content.
   return (
