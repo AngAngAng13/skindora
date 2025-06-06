@@ -21,7 +21,7 @@ const items = [
   { title: "Khách hàng", url: "/admin/customers", icon: UsersRound },
   { title: "Sản phẩm", url: "/admin/products", icon: Package },
   { title: "Đơn hàng", url: "/admin/orders", icon: ShoppingCart },
-  { title: "Thống kê", url: "/admin/stats", icon: ChartNoAxesColumnIncreasing },
+  { title: "Thống kê", url: "/admin/statics", icon: ChartNoAxesColumnIncreasing },
 ];
 
 const AppSidebar: React.FC = () => {

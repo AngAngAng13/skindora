@@ -7,7 +7,8 @@ import Admin from "@/features/Admin";
 const AdminLayout = lazy(() => import("@/layouts/adminLayout"));
 const ManageProducts = lazy(() => import("@/features/Admin/ManageProduct"));
 const ManageUsers = lazy(() => import("@/features/Admin/ManageCustomer"));
-const ManageProductsPage = lazy(() => import("@/features/Admin/ManageProduct"));
+const ManageOrders = lazy(() => import("@/features/Admin/ManageOrders"));
+const ManageStatics = lazy(() => import("@/features/Admin/ManageStatics"));
 // const Admin = lazy(() => import("@/features/Admin"));
 const adminRoutes: RouteObject[] = [
   {
@@ -18,6 +19,18 @@ const adminRoutes: RouteObject[] = [
       {
         path: "customers",
         element: <ManageUsers />,
+      },
+      {
+        path: "products",
+        element: <ManageProducts />,
+      },
+      {
+        path: "orders",
+        element: <ManageOrders />,
+      },
+      {
+        path: "statics",
+        element: <ManageStatics />,
       },
     ],
   },

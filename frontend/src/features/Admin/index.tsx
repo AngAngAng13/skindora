@@ -74,7 +74,7 @@ const Admin: React.FC = () => {
             <CardIcon icon="🛒" title="Đơn hàng" />
           </Link>
 
-          <Link to="/admin/reports" className="w-full">
+          <Link to="/admin/statics" className="w-full">
             <CardIcon icon="📊" title="Báo cáo" />
           </Link>
         </div>
