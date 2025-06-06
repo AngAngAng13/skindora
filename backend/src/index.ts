@@ -5,6 +5,7 @@ import usersRouter from './routes/users.routes'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import { app, server} from './lib/socket'
 import cartRouter from './routes/cart.routes'
+import ordersRouter from './routes/orders.routes'
 
 config()
 const port = process.env.PORT
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 
 app.use('/users', usersRouter)
 app.use('/carts', cartRouter)
+app.use('/orders', ordersRouter)
 
 app.use(defaultErrorHandler)
 
