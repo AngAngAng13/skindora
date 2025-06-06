@@ -28,7 +28,7 @@ export const addToCartController = async (req: Request<AddToCartPayload>, res: R
 export const getCartController = async (req: Request, res: Response) => {
   try {
 
-    const result = await cartService.getCart(testUserId)
+    const result = await cartService.fetchCart(testUserId)
     res.json({
       message: CART_MESSAGES.FETCHED_SUCCESS,
       result

@@ -11,30 +11,17 @@ class CartService {
       throw new Error('ProductID and Quantity are required')
     }
 
-    if (typeof Quantity !== 'number' || !Number.isInteger(Quantity) || Quantity <= 0) {
-      throw new Error('Quantity must be a positive integer')
-    }
+    this.validateQuantity(Quantity)
 
-    const productId = new ObjectId(ProductID)
-    const product = await databaseService.products.findOne({ _id: productId })
-
-    if (!product) {
-      throw new Error(`Product not found with id ${ProductID}`)
-    }
-
-    if (!product.quantity || typeof product.quantity !== 'number' || product.quantity <= 0) {
-      throw new Error('Product is out of stock')
-    }
-
-    const cartKey = `${process.env.REDIS_CART}:${userId.toString()}`
-    let cart = (await this.getCartByUserID(userId.toString())) || { Products: [] }
-
-    const productIndex = cart.Products.findIndex((p: ProductInCart) => p.ProductID === ProductID)
+    const product = await this.getProductById(ProductID)
+    const cartKey = this.getCartKey(userId)
+    const cart = (await this.getCart(cartKey)) || { Products: [] }
+    const productIndex = this.findProductIndex(cart, ProductID)
     const existingQty = productIndex > -1 ? cart.Products[productIndex].Quantity : 0
     const totalRequested = existingQty + Quantity
 
-    if (totalRequested > product.quantity) {
-      throw new Error(`Only ${product.quantity} items available in stock`)
+    if (totalRequested > (product.quantity || 0)) {
+      throw new Error(`Only ${product.quantity || 0} items available in stock`)
     }
 
     if (productIndex > -1) {
@@ -47,74 +34,53 @@ class CartService {
     await redisClient.expire(cartKey, 60 * 60 * 24)
   }
 
-  async getCart(userId: ObjectId) {
-    let cart = await this.getCartByUserID(userId.toString())
+  async fetchCart(userId: ObjectId) {
+    const cartKey = this.getCartKey(userId)
+    const cart = await this.getCart(cartKey)
     //Config response sau
     return cart ? cart : { Products: [] }
   }
 
-  async updateProductQuantityInCart(
-  payload: UpdateCartPayload,
-  productId: string,
-  userId: ObjectId
-) {
-  const cartKey = `${process.env.REDIS_CART}:${userId.toString()}`;
-  const { Quantity } = payload;
+  async updateProductQuantityInCart(payload: UpdateCartPayload, productId: string, userId: ObjectId) {
+    const { Quantity } = payload
 
-  //Input validation
-  if (!productId || Quantity === undefined || Quantity === null) {
-    throw new Error('ProductID and Quantity are required');
-  }
-
-  if (typeof Quantity !== 'number' || !Number.isInteger(Quantity) || Quantity < 0) {
-    throw new Error('Quantity must be a non-negative integer');
-  }
-
-  const product = await databaseService.products.findOne({
-    _id: new ObjectId(productId),
-  });
-
-  if (!product) {
-    throw new Error(`Product not found with id ${productId}`);
-  }
-
-  if (typeof product.quantity !== 'number' || product.quantity <= 0) {
-    throw new Error('Product is out of stock');
-  }
-
-  const cart = await this.getCartByUserID(userId.toString());
-  if (!cart) {
-    throw new Error('Cart not found');
-  }
-
-  const productIndex = cart.Products.findIndex(
-    (p: ProductInCart) => p.ProductID.toString() === productId
-  );
-
-  if (productIndex < 0) {
-    throw new Error('Product not found in cart');
-  }
-
-  //Quantity update logic
-  if (Quantity === 0) {
-    cart.Products.splice(productIndex, 1); //Remove product
-  } else {
-    if (Quantity > product.quantity) {
-      throw new Error(`Only ${product.quantity} items available in stock`);
+    //Input validation
+    if (!productId || Quantity === undefined || Quantity === null) {
+      throw new Error('ProductID and Quantity are required')
     }
 
-    cart.Products[productIndex].Quantity = Quantity;
+    this.validateQuantity(Quantity, true)
+
+    const product = await this.getProductById(productId)
+    const cartKey = this.getCartKey(userId)
+    const cart = await this.getCart(cartKey)
+    if (!cart) {
+      throw new Error('Cart not found')
+    }
+
+    const productIndex = this.findProductIndex(cart, productId)
+    if (productIndex < 0) {
+      throw new Error('Product not found in cart')
+    }
+
+    //Quantity update logic
+    if (Quantity === 0) {
+      cart.Products.splice(productIndex, 1) //Remove product
+    } else {
+      if (Quantity > (product.quantity || 0)) {
+        throw new Error(`Only ${product.quantity || 0} items available in stock`)
+      }
+
+      cart.Products[productIndex].Quantity = Quantity
+    }
+
+    await this.saveCart(cartKey, cart)
+    return cart
   }
 
-  await this.saveCart(cartKey, cart);
-  return cart;
-}
-
-
   async removeProductFromCart(productId: string, userId: ObjectId) {
-    const cartKey = `${process.env.REDIS_CART}:${userId.toString()}`
-
-    let cart = await this.getCartByUserID(userId.toString())
+    const cartKey = this.getCartKey(userId)
+    let cart = await this.getCart(cartKey)
     if (!cart) {
       throw new Error('Cart not found')
     }
@@ -130,8 +96,7 @@ class CartService {
     return cart
   }
 
-  async getCartByUserID(userID: string) {
-    const cartKey = `${process.env.REDIS_CART}:${userID}`
+  async getCart(cartKey: string) {
     const existingCart = await redisClient.get(cartKey)
     if (existingCart) {
       return JSON.parse(existingCart)
@@ -141,6 +106,37 @@ class CartService {
   async saveCart(cartKey: string, cartData: any) {
     await redisClient.set(cartKey, JSON.stringify(cartData))
     await redisClient.expire(cartKey, 60 * 60 * 24)
+  }
+
+  private getCartKey(userId: ObjectId | string) {
+    return `${process.env.REDIS_CART}:${userId}`
+  }
+
+  private validateQuantity(quantity: any, allowZero = false) {
+    const isValid = typeof quantity === 'number' && Number.isInteger(quantity)
+    if (!isValid || (!allowZero && quantity <= 0) || (allowZero && quantity < 0)) {
+      throw new Error(`Quantity must be a ${allowZero ? 'non-negative' : 'positive'} integer`)
+    }
+  }
+
+  private async getProductById(id: string) {
+    const product = await databaseService.products.findOne({
+      _id: new ObjectId(id)
+    })
+
+    if (!product) {
+      throw new Error(`Product not found with id ${id}`)
+    }
+
+    if (typeof product.quantity !== 'number' || product.quantity <= 0) {
+      throw new Error('Product is out of stock')
+    }
+
+    return product
+  }
+
+  private findProductIndex(cart: any, productId: string) {
+    return cart.Products.findIndex((p: ProductInCart) => p.ProductID === productId)
   }
 }
 const cartService = new CartService()
