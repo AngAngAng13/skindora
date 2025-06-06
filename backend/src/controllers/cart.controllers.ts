@@ -82,3 +82,22 @@ export const removeFromCartController = async (req: Request<CartParams>, res: Re
     })
   }
 }
+
+export const clearCartController = async (req: Request, res: Response) => {
+  try {
+
+    const result = await cartService.clearCart(testUserId)
+    res.json({
+      message: CART_MESSAGES.CLEAR_SUCCESS,
+      result
+    })
+  } catch (error) {
+    const statusCode = error instanceof Error ? 400 : 500
+    const errorMessage = error instanceof Error ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: CART_MESSAGES.CLEAR_FAILED,
+      error: errorMessage
+    })
+  }
+}

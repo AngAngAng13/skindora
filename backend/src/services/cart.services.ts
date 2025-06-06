@@ -108,7 +108,7 @@ class CartService {
     await redisClient.expire(cartKey, 60 * 60 * 24)
   }
 
-  private getCartKey(userId: ObjectId | string) {
+  getCartKey(userId: ObjectId | string) {
     return `${process.env.REDIS_CART}:${userId}`
   }
 
@@ -137,6 +137,11 @@ class CartService {
 
   private findProductIndex(cart: any, productId: string) {
     return cart.Products.findIndex((p: ProductInCart) => p.ProductID === productId)
+  }
+
+  async clearCart(userId: ObjectId){
+    const cartKey = this.getCartKey(userId)
+    return await redisClient.del(cartKey)
   }
 }
 const cartService = new CartService()

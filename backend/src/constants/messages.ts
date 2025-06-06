@@ -28,6 +28,8 @@ export const CART_MESSAGES = {
   UPDATED_FAILED: 'Fail to update cart',
   REMOVED_SUCCESS: 'Product removed from cart successfully',
   REMOVED_FAILED: 'Fail to remove product from cart',
+  CLEAR_SUCCESS: 'Clear cart successfully',
+  CLEAR_FAILED: 'Fail to clear cart',
 } as const
 
 export const ORDER_MESSAGES = {
@@ -35,6 +37,8 @@ export const ORDER_MESSAGES = {
   PREPARED_SUCCESS: 'Order prepared successfully, expires in 10 minutes',
   PREPARED_FAILED: 'Fail to prepare order',
   CREATED_FAILED: 'Fail to create order',
+  GET_CURRENT_SUCCESS: 'Get current order successfully',
+  GET_CURRENT_FAIL: 'Fail to get current order'
 } as const
 
 export const ORDER_DETAIL_MESSAGES = {} as const

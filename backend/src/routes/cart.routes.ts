@@ -1,11 +1,12 @@
 import { Router } from 'express'
-import { addToCartController, getCartController, removeFromCartController, updateCartController } from '~/controllers/cart.controllers'
+import { addToCartController, clearCartController, getCartController, removeFromCartController, updateCartController } from '~/controllers/cart.controllers'
 
 const cartRouter = Router()
 
 cartRouter.route('/')
 .get(getCartController)
 .post(addToCartController)
+.delete(clearCartController)
 
 cartRouter.route('/:productId')
 .patch(updateCartController)
