@@ -1,12 +1,15 @@
 import { Request, Response } from 'express'
+import { ObjectId } from 'mongodb'
 import { CART_MESSAGES } from '~/constants/messages'
+import { AddToCartPayload, CartParams, UpdateCartPayload } from '~/models/requests/Cart.requests'
 import cartService from '~/services/cart.services'
 
-export const addToCartController = async (req: Request, res: Response) => {
+const testUserId = new ObjectId("683ff8f7c748f46be21bc097")
+
+export const addToCartController = async (req: Request<AddToCartPayload>, res: Response) => {
   try {
-    //Giả sử req.user tồn tại
-    const user = req.user
-    const result = await cartService.addToCart(req.body, user)
+
+    const result = await cartService.addToCart(req.body, testUserId)
     res.json({
       message: CART_MESSAGES.ADDED_SUCCESS,
       result
@@ -16,7 +19,7 @@ export const addToCartController = async (req: Request, res: Response) => {
     const errorMessage = error instanceof Error ? error.message : String(error)
 
     res.status(statusCode).json({
-      message: CART_MESSAGES.FETCHED_FAILED,
+      message: CART_MESSAGES.ADDED_FAILED,
       error: errorMessage
     })
   }
@@ -24,9 +27,8 @@ export const addToCartController = async (req: Request, res: Response) => {
 
 export const getCartController = async (req: Request, res: Response) => {
   try {
-    //Giả sử req.user tồn tại
-    const user = req.user
-    const result = await cartService.getCart(user)
+
+    const result = await cartService.getCart(testUserId)
     res.json({
       message: CART_MESSAGES.FETCHED_SUCCESS,
       result
@@ -42,11 +44,11 @@ export const getCartController = async (req: Request, res: Response) => {
   }
 }
 
-export const updateCartController = async (req: Request, res: Response) => {
+export const updateCartController = async (req: Request<CartParams, UpdateCartPayload>, res: Response) => {
   try {
-    //Giả sử req.user tồn tại
-    const user = req.user
-    const result = await cartService.updateProductQuantityInCart(req.body, user)
+
+    const productId = req.params.productId
+    const result = await cartService.updateProductQuantityInCart(req.body, productId, testUserId)
     res.json({
       message: CART_MESSAGES.UPDATED_SUCCESS,
       result
@@ -61,11 +63,11 @@ export const updateCartController = async (req: Request, res: Response) => {
     })
   }
 }
-export const removeFromCartController = async (req: Request, res: Response) => {
+export const removeFromCartController = async (req: Request<CartParams>, res: Response) => {
   try {
-    //Giả sử req.user tồn tại
-    const user = req.user
-    const result = await cartService.removeProductFromCart(req.body, user)
+
+    const productId = req.params.productId
+    const result = await cartService.removeProductFromCart(productId, testUserId)
     res.json({
       message: CART_MESSAGES.REMOVED_SUCCESS,
       result
