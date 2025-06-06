@@ -1,0 +1,63 @@
+openapi: 3.0.3
+info:
+  title: Skindora API
+  version: '1.0.0'
+  description: API for the Skindora application, primarily handling user authentication and management.
+  contact:
+    name: Skindora Team
+    email: skindora.site@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: https://api.skindora.site/api-docs
+    description: Server development
+
+tags:
+  - name: Users
+    description: User authentication and management operations
+
+paths:
+  $ref: './paths/users.yaml'
+
+components:
+  schemas:
+    #Schemas cho Request Body
+    RegisterReqBody:
+      $ref: './components/schemas/RegisterReqBody.yaml'
+    LoginReqBody:
+      $ref: './components/schemas/LoginReqBody.yaml'
+    ForgotPasswordReqBody:
+      $ref: './components/schemas/ForgotPasswordReqBody.yaml'
+    VerifyForgotPasswordTokenReqBody:
+      $ref: './components/schemas/VerifyForgotPasswordTokenReqBody.yaml'
+    ResetPasswordReqBody:
+      $ref: './components/schemas/ResetPasswordReqBody.yaml'
+    VerifyEmailReqBody:
+      $ref: './components/schemas/VerifyEmailReqBody.yaml'
+    ChangePasswordReqBody:
+      $ref: './components/schemas/ChangePasswordReqBody.yaml'
+
+    #Schemas cho Response
+    AuthSuccessResponse:
+      $ref: './components/schemas/AuthSuccessResponse.yaml'
+    MessageResponse:
+      $ref: './components/schemas/MessageResponse.yaml'
+    ErrorValidationResponse:
+      $ref: './components/schemas/ErrorValidationResponse.yaml'
+    ErrorStatusResponse:
+      $ref: './components/schemas/ErrorStatusResponse.yaml'
+    ErrorServerResponse:
+      $ref: './components/schemas/ErrorServerResponse.yaml'
+
+    #Schema cho Model
+    User:
+      $ref: './components/schemas/User.yaml'
+
+  securitySchemes:
+    BearerAuth:
+      $ref: './components/securitySchemes/BearerAuth.yaml'
+
+security:
+  - BearerAuth: []

@@ -25,5 +25,5 @@ COPY --chown=node:node package.json package-lock.json* ./
 RUN npm install --omit=dev
 
 COPY --chown=node:node --from=builder /app/dist ./dist
-COPY --from=builder /app/src/openAPI.yml ./dist/openAPI.yml
+COPY --from=builder /app/src/openapi.yml ./dist/openapi.yml
 CMD ["node", "dist/index.js"]
