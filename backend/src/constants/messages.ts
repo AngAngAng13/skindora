@@ -16,7 +16,50 @@ export const USERS_MESSAGES = {
   CONFIRM_PASSWORD_MUST_BE_A_STRING: 'Confirm password must be a string',
   CONFIRM_PASSWORD_LENGTH_MUST_BE_FROM_8_TO_30: 'Confirm password length must be from 8 to 30 characters',
   CONFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD: 'Confirm password must be the same as password',
-  REGISTER_SUCCESS: 'Register successful'
+  REGISTER_SUCCESS: 'Register successful',
+  EMAIL_OR_PASSWORD_IS_INCORRECT: 'Email or password is incorrect',
+  LOGIN_SUCCESS: 'Login successful',
+  LOGOUT_SUCCESS: 'Logout successful',
+  USER_NOT_FOUND: 'User not found',
+  CHECK_EMAIL_TO_RESET_PASSWORD: 'Check your email to reset your password',
+  FORGOT_PASSWORD_TOKEN_IS_REQUIRED: 'Forgot password token is required',
+  FORGOT_PASSWORD_TOKEN_IS_INCORRECT: 'Forgot password token is incorrect',
+  VERIFY_FORGOT_PASSWORD_TOKEN_SUCCESS: 'Verify forgot password token successful',
+  RESET_PASSWORD_SUCCESS: 'Reset password successful',
+  EMAIL_VERIFY_TOKEN_IS_REQUIRED: 'Email verify token is required',
+  EMAIL_ALREADY_VERIFIED_BEFORE: 'Email has already been verified before',
+  EMAIL_VERIFY_TOKEN_IS_INCORRECT: 'Email verify token is incorrect',
+  VERIFY_EMAIL_SUCCESS: 'Verify email successful',
+  ACCESS_TOKEN_IS_REQUIRED: 'Access token is required',
+  USER_BANNED: 'User is banned',
+  RESEND_EMAIL_VERIFY_SUCCESS: 'Resend email verify successful',
+  USER_IS_NOT_VERIFIED: 'User is not verified',
+  OLD_PASSWORD_NOT_MATCH: 'Old password does not match',
+  CHANGE_PASSWORD_SUCCESS: 'Change password successful',
+  USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist',
+  GET_ME_SUCCESS: 'Get me successful',
+  LOCATION_MUST_BE_A_STRING: 'Location must be a string',
+  LOCATION_LENGTH_MUST_BE_LESS_THAN_200: 'Location length must be less than 200 characters',
+  USERNAME_MUST_BE_A_STRING: 'Username must be a string',
+  USERNAME_ALREADY_EXISTS: 'Username already exists',
+  IMAGE_URL_MUST_BE_A_STRING: 'Image URL must be a string',
+  UPDATE_ME_SUCCESS: 'Update me successful',
+  REFRESH_TOKEN_SUCCESS: 'Refresh token successful',
+  EMAIL_NOT_VERIFIED: 'Email is not verified',
+  IMAGE_URL_MUST_BE_VALID: 'Image URL must be a valid URL',
+  USER_ID_IS_REQUIRED: 'User ID is required'
+} as const
+
+export const PRODUCTS_MESSAGES = {
+  EMPTY_PRODUCT_LIST: 'Product list is empty. Please add at least one product.',
+  PRODUCT_NOT_FOUND: 'Product not found',
+  PRODUCT_ADDED_TO_WISHLIST: 'Product added to wishlist successfully',
+  PRODUCT_REMOVED_FROM_WISHLIST: 'Product removed from wishlist successfully',
+  WISHLIST_EMPTY: 'Wishlist is empty',
+  WISHLIST_FETCHED_SUCCESSFULLY: 'Wishlist fetched successfully',
+  PRODUCT_ID_IS_REQUIRED: 'Product ID is required',
+  PRODUCT_ID_NOT_ARRAY: 'Product ID must be an array',
+  PRODUCT_NOT_IN_WISH_LIST: 'Product not in wish list'
 } as const
 
 export const CART_MESSAGES = {

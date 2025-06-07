@@ -25,14 +25,14 @@ function HeroCallToAction() {
   return (
     <div className="flex flex-col gap-4 sm:flex-row">
       <Link to="/store">
-        <Button size="lg" className="px-6 ">
+        <Button size="lg" className="px-6">
           Khám phá sản phẩm
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </Link>
       <a href="#ai-section">
         {/* TODO: THAY THE bang cai lnik component sau do tam thoi dang thieu tran*/}
-        
+
         <Button variant="outline" size="lg" className="px-6">
           Phân tích da miễn phí
         </Button>
