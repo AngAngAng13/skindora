@@ -1,10 +1,13 @@
 networks:
   traefik-public:
     driver: bridge
+    name: traefik-public
   portainer-network:
     driver: bridge
+    name: portainer-network
   redis-network:
     driver: bridge
+    name: redis-network
 volumes:
   portainer_data:
   redis_data:
