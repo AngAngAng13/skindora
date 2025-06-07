@@ -61,3 +61,20 @@ export const PRODUCTS_MESSAGES = {
   PRODUCT_ID_NOT_ARRAY: 'Product ID must be an array',
   PRODUCT_NOT_IN_WISH_LIST: 'Product not in wish list'
 } as const
+
+export const FEEDBACK_MESSAGES = {
+  INVALID_ORDER_ID: 'Order not found or does not belong to User',
+  INVALID_PRODUCT_ID: 'Product not found or does not belong to this Order',
+  EXPIRED_FEEDBACK: 'This product was delivered and can no longer be reviewed',
+  STATUS_INVALID: 'Order must be delivered',
+  FEEDBACK_NOT_FOUND: 'Feedback not found. You should rating feedback before update',
+  ORDER_ID_IS_REQUIRED: 'Oder ID is required',
+  PRODUCT_ID_IS_REQUIRED: 'Product ID is required',
+  ORDER_ID_MUST_A_STRING: 'Order ID must be a string',
+  PRODUCT_ID_MUST_A_STRING: 'Order ID must be a string',
+  RATING_IS_REQUIRED: 'Rating is required',
+  RATING_INVALID: 'Rating must be a integer between 1 and 5',
+  COMMENT_MUST_A_STRING: 'Comment must be a string',
+  COMMENT_IS_REQUIRED: 'Comment is required',
+  FEEDBACK_EXISTED: 'This product has already been reviewed.'
+} as const

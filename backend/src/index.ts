@@ -9,6 +9,7 @@ import YAML from 'yamljs'
 import path from 'path'
 import paymentsRouter from './routes/payments.routes'
 import cors from 'cors'
+import feedBacksRouter from './routes/feedbacks.routes'
 config()
 const swaggerDocument = YAML.load(path.join(__dirname, './openAPI.yml'))
 
@@ -31,6 +32,7 @@ app.get('/', (req, res) => {
 
 app.use('/users', usersRouter)
 app.use('/payment', paymentsRouter)
+app.use('/feedback', feedBacksRouter)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use(defaultErrorHandler)
