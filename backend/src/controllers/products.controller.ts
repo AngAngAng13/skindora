@@ -6,7 +6,6 @@ import { TokenPayLoad } from '~/models/requests/Users.requests'
 import databaseService from '~/services/database.services'
 import productService from '~/services/Products/product.services'
 import feedBackService from '~/services/feedback.services'
-import { toInteger } from 'lodash'
 
 export const addToWishListController = async (req: Request, res: Response): Promise<void> => {
   const { productId } = req.body
