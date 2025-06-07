@@ -3,21 +3,21 @@ import _ from 'lodash'
 import { ObjectId } from 'mongodb'
 import { OrderStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { FEEDBACK_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
+import { REVIEW_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
 import databaseService from '~/services/database.services'
 import { validate } from '~/utils/validation'
 
-export const addNewFeedBackValidator = validate(
+export const addNewReviewValidator = validate(
   checkSchema({
     orderId: {
       in: 'params',
       notEmpty: {
-        errorMessage: FEEDBACK_MESSAGES.ORDER_ID_IS_REQUIRED
+        errorMessage: REVIEW_MESSAGES.ORDER_ID_IS_REQUIRED
       },
       isString: {
-        errorMessage: FEEDBACK_MESSAGES.ORDER_ID_MUST_A_STRING
+        errorMessage: REVIEW_MESSAGES.ORDER_ID_MUST_A_STRING
       },
       trim: true,
       custom: {
@@ -28,7 +28,7 @@ export const addNewFeedBackValidator = validate(
           if (!order) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.NOT_FOUND,
-              message: FEEDBACK_MESSAGES.INVALID_ORDER_ID
+              message: REVIEW_MESSAGES.INVALID_ORDER_ID
             })
           }
         }
@@ -37,10 +37,10 @@ export const addNewFeedBackValidator = validate(
     productId: {
       in: 'params',
       notEmpty: {
-        errorMessage: FEEDBACK_MESSAGES.PRODUCT_ID_IS_REQUIRED
+        errorMessage: REVIEW_MESSAGES.PRODUCT_ID_IS_REQUIRED
       },
       isString: {
-        errorMessage: FEEDBACK_MESSAGES.PRODUCT_ID_MUST_A_STRING
+        errorMessage: REVIEW_MESSAGES.PRODUCT_ID_MUST_A_STRING
       },
       trim: true,
       custom: {
@@ -62,13 +62,13 @@ export const addNewFeedBackValidator = validate(
           if (!order) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.NOT_FOUND,
-              message: FEEDBACK_MESSAGES.INVALID_ORDER_ID
+              message: REVIEW_MESSAGES.INVALID_ORDER_ID
             })
           }
           if (order.Status !== OrderStatus.DELIVERED) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.FORBIDDEN,
-              message: FEEDBACK_MESSAGES.STATUS_INVALID
+              message: REVIEW_MESSAGES.STATUS_INVALID
             })
           }
           if (order.ShippedDate) {
@@ -78,7 +78,7 @@ export const addNewFeedBackValidator = validate(
             if (shippedDate > sevenDaysLater) {
               throw new ErrorWithStatus({
                 status: HTTP_STATUS.BAD_REQUEST,
-                message: FEEDBACK_MESSAGES.EXPIRED_FEEDBACK
+                message: REVIEW_MESSAGES.EXPIRED_REVIEW
               })
             }
           }
@@ -90,18 +90,19 @@ export const addNewFeedBackValidator = validate(
           if (!orderDetails) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.NOT_FOUND,
-              message: FEEDBACK_MESSAGES.INVALID_ORDER_ID
+              message: REVIEW_MESSAGES.INVALID_ORDER_ID
             })
           }
 
-          const isExistFeedBack = await databaseService.feedBacks.findOne({
+          const isExistFeedBack = await databaseService.reviews.findOne({
             orderID: new ObjectId(req.params?.orderId),
-            productID: new ObjectId(req.params?.productId)
+            productID: new ObjectId(req.params?.productId),
+            isDeleted: false
           })
           if (isExistFeedBack) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.FORBIDDEN,
-              message: FEEDBACK_MESSAGES.FEEDBACK_EXISTED
+              message: REVIEW_MESSAGES.REVIEW_EXISTED
             })
           }
         }
@@ -110,35 +111,35 @@ export const addNewFeedBackValidator = validate(
     rating: {
       in: 'body',
       notEmpty: {
-        errorMessage: FEEDBACK_MESSAGES.RATING_IS_REQUIRED
+        errorMessage: REVIEW_MESSAGES.RATING_IS_REQUIRED
       },
       isInt: {
         options: { min: 1, max: 5 },
-        errorMessage: FEEDBACK_MESSAGES.RATING_INVALID
+        errorMessage: REVIEW_MESSAGES.RATING_INVALID
       },
       toInt: true
     },
     comment: {
       in: 'body',
       notEmpty: {
-        errorMessage: FEEDBACK_MESSAGES.COMMENT_IS_REQUIRED
+        errorMessage: REVIEW_MESSAGES.COMMENT_IS_REQUIRED
       },
       isString: {
-        errorMessage: FEEDBACK_MESSAGES.COMMENT_MUST_A_STRING
+        errorMessage: REVIEW_MESSAGES.COMMENT_MUST_A_STRING
       }
     }
   })
 )
 
-export const updateFeedBackValidator = validate(
+export const updateReviewValidator = validate(
   checkSchema({
     orderId: {
       in: 'params',
       notEmpty: {
-        errorMessage: FEEDBACK_MESSAGES.ORDER_ID_IS_REQUIRED
+        errorMessage: REVIEW_MESSAGES.ORDER_ID_IS_REQUIRED
       },
       isString: {
-        errorMessage: FEEDBACK_MESSAGES.ORDER_ID_MUST_A_STRING
+        errorMessage: REVIEW_MESSAGES.ORDER_ID_MUST_A_STRING
       },
       trim: true,
       custom: {
@@ -149,7 +150,7 @@ export const updateFeedBackValidator = validate(
           if (!order) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.NOT_FOUND,
-              message: FEEDBACK_MESSAGES.INVALID_ORDER_ID
+              message: REVIEW_MESSAGES.INVALID_ORDER_ID
             })
           }
         }
@@ -158,10 +159,10 @@ export const updateFeedBackValidator = validate(
     productId: {
       in: 'params',
       notEmpty: {
-        errorMessage: FEEDBACK_MESSAGES.PRODUCT_ID_IS_REQUIRED
+        errorMessage: REVIEW_MESSAGES.PRODUCT_ID_IS_REQUIRED
       },
       isString: {
-        errorMessage: FEEDBACK_MESSAGES.PRODUCT_ID_MUST_A_STRING
+        errorMessage: REVIEW_MESSAGES.PRODUCT_ID_MUST_A_STRING
       },
       trim: true,
       custom: {
@@ -183,13 +184,13 @@ export const updateFeedBackValidator = validate(
           if (!order) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.NOT_FOUND,
-              message: FEEDBACK_MESSAGES.INVALID_ORDER_ID
+              message: REVIEW_MESSAGES.INVALID_ORDER_ID
             })
           }
           if (order.Status !== OrderStatus.DELIVERED) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.FORBIDDEN,
-              message: FEEDBACK_MESSAGES.STATUS_INVALID
+              message: REVIEW_MESSAGES.STATUS_INVALID
             })
           }
           if (order.ShippedDate) {
@@ -199,7 +200,7 @@ export const updateFeedBackValidator = validate(
             if (shippedDate > sevenDaysLater) {
               throw new ErrorWithStatus({
                 status: HTTP_STATUS.BAD_REQUEST,
-                message: FEEDBACK_MESSAGES.EXPIRED_FEEDBACK
+                message: REVIEW_MESSAGES.EXPIRED_REVIEW
               })
             }
           }
@@ -211,18 +212,19 @@ export const updateFeedBackValidator = validate(
           if (!orderDetails) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.NOT_FOUND,
-              message: FEEDBACK_MESSAGES.INVALID_ORDER_ID
+              message: REVIEW_MESSAGES.INVALID_ORDER_ID
             })
           }
 
-          const prevFeedBack = await databaseService.feedBacks.findOne({
+          const prevFeedBack = await databaseService.reviews.findOne({
             orderID: new ObjectId(order._id.toString()),
-            productID: new ObjectId(req.params?.productId)
+            productID: new ObjectId(req.params?.productId),
+            isDeleted: false
           })
           if (!prevFeedBack) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.NOT_FOUND,
-              message: FEEDBACK_MESSAGES.FEEDBACK_NOT_FOUND
+              message: REVIEW_MESSAGES.REVIEW_NOT_FOUND
             })
           }
         }
@@ -231,35 +233,35 @@ export const updateFeedBackValidator = validate(
     rating: {
       in: 'body',
       notEmpty: {
-        errorMessage: FEEDBACK_MESSAGES.RATING_IS_REQUIRED
+        errorMessage: REVIEW_MESSAGES.RATING_IS_REQUIRED
       },
       isInt: {
         options: { min: 1, max: 5 },
-        errorMessage: FEEDBACK_MESSAGES.RATING_INVALID
+        errorMessage: REVIEW_MESSAGES.RATING_INVALID
       },
       toInt: true
     },
     comment: {
       in: 'body',
       notEmpty: {
-        errorMessage: FEEDBACK_MESSAGES.COMMENT_IS_REQUIRED
+        errorMessage: REVIEW_MESSAGES.COMMENT_IS_REQUIRED
       },
       isString: {
-        errorMessage: FEEDBACK_MESSAGES.COMMENT_MUST_A_STRING
+        errorMessage: REVIEW_MESSAGES.COMMENT_MUST_A_STRING
       }
     }
   })
 )
 
-export const removeFeedBackValidator = validate(
+export const removeReviewValidator = validate(
   checkSchema({
     orderId: {
       in: 'params',
       notEmpty: {
-        errorMessage: FEEDBACK_MESSAGES.ORDER_ID_IS_REQUIRED
+        errorMessage: REVIEW_MESSAGES.ORDER_ID_IS_REQUIRED
       },
       isString: {
-        errorMessage: FEEDBACK_MESSAGES.ORDER_ID_MUST_A_STRING
+        errorMessage: REVIEW_MESSAGES.ORDER_ID_MUST_A_STRING
       },
       trim: true,
       custom: {
@@ -270,7 +272,7 @@ export const removeFeedBackValidator = validate(
           if (!order) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.NOT_FOUND,
-              message: FEEDBACK_MESSAGES.INVALID_ORDER_ID
+              message: REVIEW_MESSAGES.INVALID_ORDER_ID
             })
           }
         }
@@ -279,10 +281,10 @@ export const removeFeedBackValidator = validate(
     productId: {
       in: 'params',
       notEmpty: {
-        errorMessage: FEEDBACK_MESSAGES.PRODUCT_ID_IS_REQUIRED
+        errorMessage: REVIEW_MESSAGES.PRODUCT_ID_IS_REQUIRED
       },
       isString: {
-        errorMessage: FEEDBACK_MESSAGES.PRODUCT_ID_MUST_A_STRING
+        errorMessage: REVIEW_MESSAGES.PRODUCT_ID_MUST_A_STRING
       },
       trim: true,
       custom: {
@@ -304,13 +306,13 @@ export const removeFeedBackValidator = validate(
           if (!order) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.NOT_FOUND,
-              message: FEEDBACK_MESSAGES.INVALID_ORDER_ID
+              message: REVIEW_MESSAGES.INVALID_ORDER_ID
             })
           }
           if (order.Status !== OrderStatus.DELIVERED) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.FORBIDDEN,
-              message: FEEDBACK_MESSAGES.STATUS_INVALID
+              message: REVIEW_MESSAGES.STATUS_INVALID
             })
           }
           if (order.ShippedDate) {
@@ -320,7 +322,7 @@ export const removeFeedBackValidator = validate(
             if (shippedDate > sevenDaysLater) {
               throw new ErrorWithStatus({
                 status: HTTP_STATUS.BAD_REQUEST,
-                message: FEEDBACK_MESSAGES.EXPIRED_FEEDBACK
+                message: REVIEW_MESSAGES.EXPIRED_REVIEW
               })
             }
           }
@@ -332,18 +334,19 @@ export const removeFeedBackValidator = validate(
           if (!orderDetails) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.NOT_FOUND,
-              message: FEEDBACK_MESSAGES.INVALID_ORDER_ID
+              message: REVIEW_MESSAGES.INVALID_ORDER_ID
             })
           }
 
-          const prevFeedBack = await databaseService.feedBacks.findOne({
+          const prevFeedBack = await databaseService.reviews.findOne({
             orderID: new ObjectId(order._id.toString()),
-            productID: new ObjectId(req.params?.productId)
+            productID: new ObjectId(req.params?.productId),
+            isDeleted: false
           })
-          if (!prevFeedBack || prevFeedBack.isDeleted === true) {
+          if (!prevFeedBack) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.NOT_FOUND,
-              message: FEEDBACK_MESSAGES.FEEDBACK_NOT_FOUND
+              message: REVIEW_MESSAGES.REVIEW_NOT_FOUND
             })
           }
         }

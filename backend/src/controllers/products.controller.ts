@@ -5,7 +5,7 @@ import { ErrorWithStatus } from '~/models/Errors'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
 import databaseService from '~/services/database.services'
 import productService from '~/services/Products/product.services'
-import feedBackService from '~/services/feedback.services'
+import feedBackService from '~/services/review.services'
 
 export const addToWishListController = async (req: Request, res: Response): Promise<void> => {
   const { productId } = req.body
@@ -71,12 +71,12 @@ export const removeFromWishListController = async (req: Request, res: Response):
   }
 }
 
-export const addNewFeedBackController = async (req: Request, res: Response) => {
+export const addNewReviewController = async (req: Request, res: Response) => {
   const { user_id } = req.decoded_authorization as TokenPayLoad
 
   const { orderId, productId } = req.params
   try {
-    const response = await feedBackService.addFeedBack(user_id, orderId, productId, req.body)
+    const response = await feedBackService.addReview(user_id, orderId, productId, req.body)
     res.status(200).json({ status: 200, data: response })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
@@ -84,12 +84,12 @@ export const addNewFeedBackController = async (req: Request, res: Response) => {
   }
 }
 
-export const updateFeedBackController = async (req: Request, res: Response) => {
+export const updateReviewController = async (req: Request, res: Response) => {
   const { user_id } = req.decoded_authorization as TokenPayLoad
 
   const { orderId, productId } = req.params
   try {
-    const response = await feedBackService.updateFeedBack(user_id, orderId, productId, req.body)
+    const response = await feedBackService.updateReview(user_id, orderId, productId, req.body)
     res.status(200).json({ status: 200, data: response })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
@@ -97,12 +97,12 @@ export const updateFeedBackController = async (req: Request, res: Response) => {
   }
 }
 
-export const removeFeedBackController = async (req: Request, res: Response) => {
+export const removeReviewController = async (req: Request, res: Response) => {
   const { user_id } = req.decoded_authorization as TokenPayLoad
 
   const { orderId, productId } = req.params
   try {
-    const response = await feedBackService.removeFeedBack(user_id, orderId, productId)
+    const response = await feedBackService.removeReview(user_id, orderId, productId)
     res.status(200).json({ status: 200, data: response })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
@@ -110,13 +110,13 @@ export const removeFeedBackController = async (req: Request, res: Response) => {
   }
 }
 
-export const getFeedBackController = async (req: Request, res: Response) => {
+export const getReviewController = async (req: Request, res: Response) => {
   const { productId } = req.params
   const limit = parseInt(req.query.limit as string) || 10
   const currentPage = parseInt(req.query.currentPage as string) || 1
 
   try {
-    const response = await feedBackService.getFeedback(productId, currentPage, limit)
+    const response = await feedBackService.getReview(productId, currentPage, limit)
     const { data, ...info } = response
     res.status(200).json({ status: 200, data, ...info })
   } catch (error: any) {

@@ -9,7 +9,7 @@ import swaggerUi from 'swagger-ui-express'
 // import path from 'path'
 import paymentsRouter from './routes/payments.routes'
 import cors from 'cors'
-import feedBacksRouter from './routes/feedbacks.routes'
+import reviewRouters from './routes/reviews.routes'
 import swaggerDocument from '../public/openapi.json'
 config()
 // const swaggerDocument = YAML.load(path.join(__dirname, './openapi.yml'))
@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 
 app.use('/users', usersRouter)
 app.use('/payment', paymentsRouter)
-app.use('/feedback', feedBacksRouter)
+app.use('/review', reviewRouters)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use(defaultErrorHandler)

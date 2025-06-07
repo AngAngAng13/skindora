@@ -5,7 +5,7 @@ import RefreshToken from '~/models/schemas/RefreshToken.schemas'
 import Product from '~/models/schemas/Products/Product.schema'
 import Order from '~/models/schemas/Orders/Order.schema'
 import OrderDetail from '~/models/schemas/Orders/OrderDetail.schema'
-import FeedBack from '~/models/schemas/Feedback.schema'
+import FeedBack from '~/models/schemas/Reviewschema'
 
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@skindora.rbbhqia.mongodb.net/?retryWrites=true&w=majority&appName=skindora`
@@ -55,8 +55,8 @@ class DatabaseService {
     return this.db.collection(process.env.DB_REFRESH_TOKENS_COLLECTION as string)
   }
 
-  get feedBacks(): Collection<FeedBack> {
-    return this.db.collection(process.env.DB_FEEDBACK_COLLECTION as string)
+  get reviews(): Collection<FeedBack> {
+    return this.db.collection(process.env.DB_REVIEW_COLLECTION as string)
   }
 }
 

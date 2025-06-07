@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongodb'
 import databaseService from './database.services'
 import _ from 'lodash'
-import { AddNewFeedBackReqBody, UpdateFeedBackReqBody } from '~/models/requests/FeedBacks.request'
-import FeedBack from '~/models/schemas/Feedback.schema'
+import { AddNewReviewReqBody, UpdateReviewReqBody } from '~/models/requests/Reviews.request'
+import FeedBack from '~/models/schemas/Reviewschema'
 
-class FeedBackService {
-  async addFeedBack(userID: string, orderID: string, productId: string, reqBody: AddNewFeedBackReqBody) {
-    return await databaseService.feedBacks.insertOne(
+class ReviewService {
+  async addReview(userID: string, orderID: string, productId: string, reqBody: AddNewReviewReqBody) {
+    return await databaseService.reviews.insertOne(
       new FeedBack({
         _id: new ObjectId(),
         userID: new ObjectId(userID),
@@ -20,16 +20,17 @@ class FeedBackService {
     )
   }
 
-  async updateFeedBack(userID: string, orderID: string, productId: string, reqBody: UpdateFeedBackReqBody) {
+  async updateReview(userID: string, orderID: string, productId: string, reqBody: UpdateReviewReqBody) {
     const currentDate = new Date()
     const vietnamTimezoneOffset = 7 * 60
     const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
 
-    return await databaseService.feedBacks.findOneAndUpdate(
+    return await databaseService.reviews.findOneAndUpdate(
       {
         orderID: new ObjectId(orderID),
         productID: new ObjectId(productId),
-        userID: new ObjectId(userID)
+        userID: new ObjectId(userID),
+        isDeleted: false
       },
       {
         $set: {
@@ -41,16 +42,17 @@ class FeedBackService {
     )
   }
 
-  async removeFeedBack(userID: string, orderID: string, productId: string) {
+  async removeReview(userID: string, orderID: string, productId: string) {
     const currentDate = new Date()
     const vietnamTimezoneOffset = 7 * 60
     const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
 
-    return await databaseService.feedBacks.findOneAndUpdate(
+    return await databaseService.reviews.findOneAndUpdate(
       {
         userID: new ObjectId(userID.toString()),
         productID: new ObjectId(productId.toString()),
-        orderID: new ObjectId(orderID.toString())
+        orderID: new ObjectId(orderID.toString()),
+        isDeleted: false
       },
       {
         $set: {
@@ -62,10 +64,10 @@ class FeedBackService {
     )
   }
 
-  async getFeedback(productId: string, currentPage = 1, limit = 10) {
+  async getReview(productId: string, currentPage = 1, limit = 10) {
     const skip = (currentPage - 1) * limit
 
-    const result = await databaseService.feedBacks
+    const result = await databaseService.reviews
       .aggregate([
         { $match: { productID: new ObjectId(productId) } },
         {
@@ -91,5 +93,5 @@ class FeedBackService {
   }
 }
 
-const feedBackService = new FeedBackService()
-export default feedBackService
+const reviewService = new ReviewService()
+export default reviewService

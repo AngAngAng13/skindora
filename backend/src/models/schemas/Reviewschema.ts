@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 
-interface FeedBackType {
+interface ReviewType {
   _id?: ObjectId
   userID: ObjectId
   productID: ObjectId
@@ -14,7 +14,7 @@ interface FeedBackType {
   isDeleted?: boolean
 }
 
-export default class FeedBack {
+export default class Review {
   _id: ObjectId
   userID: ObjectId
   productID: ObjectId
@@ -27,21 +27,21 @@ export default class FeedBack {
   modifiedAt: Date
   isDeleted: boolean
 
-  constructor(feedBack: FeedBackType) {
+  constructor(review: ReviewType) {
     const currentDate = new Date()
     const vietnamTimezoneOffset = 7 * 60
     const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
 
-    this._id = feedBack._id || new ObjectId()
-    this.userID = feedBack.userID
-    this.productID = feedBack.productID
-    this.orderID = feedBack.orderID
-    this.rating = feedBack.rating
-    this.comment = feedBack.comment
-    this.images = feedBack.images || []
-    this.videos = feedBack.videos || []
-    this.createdAt = localTime || feedBack.createdAt
-    this.modifiedAt = localTime || feedBack.modifiedAt
-    this.isDeleted = feedBack.isDeleted || false
+    this._id = review._id || new ObjectId()
+    this.userID = review.userID
+    this.productID = review.productID
+    this.orderID = review.orderID
+    this.rating = review.rating
+    this.comment = review.comment
+    this.images = review.images || []
+    this.videos = review.videos || []
+    this.createdAt = localTime || review.createdAt
+    this.modifiedAt = localTime || review.modifiedAt
+    this.isDeleted = review.isDeleted || false
   }
 }
