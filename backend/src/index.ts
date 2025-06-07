@@ -5,13 +5,15 @@ import usersRouter from './routes/users.routes'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import { app, server } from './lib/socket'
 import swaggerUi from 'swagger-ui-express'
-import YAML from 'yamljs'
-import path from 'path'
+// import YAML from 'yamljs'
+// import path from 'path'
 import paymentsRouter from './routes/payments.routes'
 import cors from 'cors'
 import feedBacksRouter from './routes/feedbacks.routes'
+import swaggerDocument from '../public/openapi.json'
 config()
-const swaggerDocument = YAML.load(path.join(__dirname, './openAPI.yml'))
+// const swaggerDocument = YAML.load(path.join(__dirname, './openapi.yml'))
+// const swaggerDocument = require(path.join(__dirname, '../public/openapi.json'));
 
 const port = process.env.PORT
 app.use(
