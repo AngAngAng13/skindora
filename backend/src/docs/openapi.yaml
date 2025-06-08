@@ -28,6 +28,8 @@ components:
       $ref: './components/schemas/RegisterReqBody.yaml'
     LoginReqBody:
       $ref: './components/schemas/LoginReqBody.yaml'
+    LogoutReqBody:
+      $ref: './components/schemas/LogoutReqBody.yaml'
     ForgotPasswordReqBody:
       $ref: './components/schemas/ForgotPasswordReqBody.yaml'
     VerifyForgotPasswordTokenReqBody:
