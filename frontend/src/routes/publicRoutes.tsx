@@ -6,8 +6,8 @@ const PublicLayout = lazy(() => import("@/layouts/publicLayout"));
 const Adminpage = lazy(() => import("@/Adminpage"));
 const AuthPage = lazy(() => import("@/features/Auth"));
 const Homepage = lazy(() => import("@/features/Homepage"));
-const ProfilePage = lazy(() => import("@/features/Profile"));
-
+const ContactPage = lazy(() => import("@/features/Contact"));
+const AboutPage = lazy(() => import("@/features/About"));
 const publicRoutes: RouteObject[] = [
   {
     path: "/",
@@ -19,8 +19,12 @@ const publicRoutes: RouteObject[] = [
         element: <Adminpage />,
       },
       {
-        path: "profile",
-        element: <ProfilePage />,
+        path: "contact",
+        element: <ContactPage />,
+      },
+      {
+        path: "about",
+        element: <AboutPage />,
       },
     ],
   },

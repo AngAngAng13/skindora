@@ -1,7 +1,9 @@
 import { ArrowLeft } from "lucide-react";
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -13,7 +15,15 @@ import { useAuthSwitcher } from "./hooks/useAuthSwitcher";
 export default function AuthPage() {
   const LeftPanelVariant = useAuthSwitcher();
   const location = useLocation();
-
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (location.state?.reason === "unauthorized") {
+      toast.error("Access Denied", {
+        description: "Please log in to view that page.",
+      });
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, navigate]);
   let FormComponentToRender: React.JSX.Element | null = null;
 
   if (location.pathname === "/auth/login") {
