@@ -300,3 +300,51 @@
           application/json:
             schema:
               $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+# ... (giữ nguyên tất cả các endpoint đã có như /register, /login, ...)
+
+# DÁN ĐOẠN CODE NÀY VÀO CUỐI FILE
+/users/logout:
+  post:
+    tags: [Users]
+    summary: Logout a user
+    description: >
+      Logs out an authenticated user by invalidating their refresh token.
+      Requires both a valid Access Token in the Authorization header and the Refresh Token in the body.
+    security:
+      - BearerAuth: []
+    requestBody:
+      description: The refresh token to be invalidated.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/LogoutReqBody.yaml'
+    responses:
+      '200':
+        description: Logout successful. The refresh token has been invalidated.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        description: >
+          Unauthorized. This can occur for several reasons:
+          - The Access Token in the Authorization header is missing, invalid, or expired.
+          - The Refresh Token provided in the body is invalid, expired, or does not exist in the database.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Unprocessable Entity. The request body is missing the required `refresh_token` field.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        description: Internal server error.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorServerResponse.yaml'
