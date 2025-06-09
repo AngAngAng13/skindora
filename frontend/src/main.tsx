@@ -2,7 +2,6 @@ import * as Sentry from "@sentry/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider as ReduxProvider } from "react-redux";
-import { scan } from "react-scan";
 
 import App from "./App.tsx";
 import "./index.css";
@@ -30,7 +29,6 @@ if (import.meta.env.VITE_SENTRY_DSN_FRONTEND) {
 } else {
   logger.warn("Sentry DSN for Frontend is not configured. Sentry will not be initialized.");
 }
-scan({ enabled: true, animationSpeed: "slow" });
 const rootElement = document.getElementById("root")!;
 const root = createRoot(rootElement);
 
