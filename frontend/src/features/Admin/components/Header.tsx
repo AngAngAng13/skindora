@@ -44,9 +44,7 @@ function ProfileDropdown({ logout, isLoading }: ProfileDropdownProps) {
           <Link to="/admin/profile">
             <DropdownMenuItem>Profile</DropdownMenuItem>
           </Link>
-          <Link to={"/admin"}>
-            <DropdownMenuItem>Dashboard</DropdownMenuItem>
-          </Link>
+
           {/* <Link to={"/"}>
             <DropdownMenuItem>Home Page</DropdownMenuItem>
           </Link> */}
