@@ -46,5 +46,35 @@ export const USERS_MESSAGES = {
   UPDATE_ME_SUCCESS: 'Update me successful',
   REFRESH_TOKEN_SUCCESS: 'Refresh token successful',
   EMAIL_NOT_VERIFIED: 'Email is not verified',
-  IMAGE_URL_MUST_BE_VALID: 'Image URL must be a valid URL'
+  IMAGE_URL_MUST_BE_VALID: 'Image URL must be a valid URL',
+  USER_ID_IS_REQUIRED: 'User ID is required'
+} as const
+
+export const PRODUCTS_MESSAGES = {
+  EMPTY_PRODUCT_LIST: 'Product list is empty. Please add at least one product.',
+  PRODUCT_NOT_FOUND: 'Product not found',
+  PRODUCT_ADDED_TO_WISHLIST: 'Product added to wishlist successfully',
+  PRODUCT_REMOVED_FROM_WISHLIST: 'Product removed from wishlist successfully',
+  WISHLIST_EMPTY: 'Wishlist is empty',
+  WISHLIST_FETCHED_SUCCESSFULLY: 'Wishlist fetched successfully',
+  PRODUCT_ID_IS_REQUIRED: 'Product ID is required',
+  PRODUCT_ID_NOT_ARRAY: 'Product ID must be an array',
+  PRODUCT_NOT_IN_WISH_LIST: 'Product not in wish list'
+} as const
+
+export const REVIEW_MESSAGES = {
+  INVALID_ORDER_ID: 'Order not found or does not belong to User',
+  INVALID_PRODUCT_ID: 'Product not found or does not belong to this Order',
+  EXPIRED_REVIEW: 'This product was delivered and can no longer be reviewed',
+  STATUS_INVALID: 'Order must be delivered',
+  REVIEW_NOT_FOUND: 'Review not found. You should submit a review before update',
+  ORDER_ID_IS_REQUIRED: 'Order ID is required',
+  PRODUCT_ID_IS_REQUIRED: 'Product ID is required',
+  ORDER_ID_MUST_A_STRING: 'Order ID must be a string',
+  PRODUCT_ID_MUST_A_STRING: 'Order ID must be a string',
+  RATING_IS_REQUIRED: 'Rating is required',
+  RATING_INVALID: 'Rating must be an integer between 1 and 5',
+  COMMENT_MUST_A_STRING: 'Comment must be a string',
+  COMMENT_IS_REQUIRED: 'Comment is required',
+  REVIEW_EXISTED: 'This product has already been reviewed.'
 } as const
