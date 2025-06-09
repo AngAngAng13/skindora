@@ -301,9 +301,6 @@
             schema:
               $ref: '../components/schemas/ErrorServerResponse.yaml'
 
-# ... (giữ nguyên tất cả các endpoint đã có như /register, /login, ...)
-
-# DÁN ĐOẠN CODE NÀY VÀO CUỐI FILE
 /users/logout:
   post:
     tags: [Users]
@@ -338,6 +335,76 @@
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '422':
         description: Unprocessable Entity. The request body is missing the required `refresh_token` field.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        description: Internal server error.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/me:
+  get:
+    tags: [Users]
+    summary: Get current user's profile
+    description: >
+      Retrieves the profile information of the currently authenticated user based on the provided Access Token.
+      The returned user object will not contain sensitive fields like 'password' or 'tokens'.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Successfully retrieved user profile.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/GetMeSuccessResponse.yaml'
+      '401':
+        description: Unauthorized. The Access Token is missing, invalid, or expired.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        description: Internal server error.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+  patch:
+    tags: [Users]
+    summary: Update current user's profile
+    description: >
+      Partially updates the profile information of the currently authenticated user.
+      Only include the fields you want to change in the request body.
+    security:
+      - BearerAuth: []
+    requestBody:
+      description: The fields to update in the user's profile. All fields are optional.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateMeReqBody.yaml'
+    responses:
+      '200':
+        description: Profile updated successfully. Returns the updated user object.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/GetMeSuccessResponse.yaml'
+      '401':
+        description: Unauthorized. The Access Token is missing, invalid, or expired.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Unprocessable Entity. The request body contains invalid data (e.g., username already exists, invalid format).
         content:
           application/json:
             schema:

@@ -40,6 +40,8 @@ components:
       $ref: './components/schemas/VerifyEmailReqBody.yaml'
     ChangePasswordReqBody:
       $ref: './components/schemas/ChangePasswordReqBody.yaml'
+    UpdateMeReqBody:
+      $ref: './components/schemas/UpdateMeReqBody.yaml'
 
     #Schemas cho Response
     AuthSuccessResponse:
@@ -52,6 +54,8 @@ components:
       $ref: './components/schemas/ErrorStatusResponse.yaml'
     ErrorServerResponse:
       $ref: './components/schemas/ErrorServerResponse.yaml'
+    GetMeSuccessResponse:
+      $ref: './components/schemas/GetMeSuccessResponse.yaml'
 
     #Schema cho Model
     User:

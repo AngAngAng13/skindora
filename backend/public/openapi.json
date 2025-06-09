@@ -598,6 +598,117 @@
           }
         }
       }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get current user's profile",
+        "description": "Retrieves the profile information of the currently authenticated user based on the provided Access Token. The returned user object will not contain sensitive fields like 'password' or 'tokens'.\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved user profile.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMeSuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The Access Token is missing, invalid, or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update current user's profile",
+        "description": "Partially updates the profile information of the currently authenticated user. Only include the fields you want to change in the request body.\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "The fields to update in the user's profile. All fields are optional.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMeReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully. Returns the updated user object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMeSuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The Access Token is missing, invalid, or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity. The request body contains invalid data (e.g., username already exists, invalid format).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorValidationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -770,6 +881,38 @@
           }
         }
       },
+      "UpdateMeReqBody": {
+        "type": "object",
+        "description": "Fields to update for the user's profile. All fields are optional.",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "description": "The user's first name.",
+            "example": "Van A"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "The user's last name.",
+            "example": "Nguyen"
+          },
+          "location": {
+            "type": "string",
+            "description": "The user's location.",
+            "example": "Ho Chi Minh, Vietnam"
+          },
+          "username": {
+            "type": "string",
+            "description": "A new unique username for the user. Must not be already taken by another user.",
+            "example": "nguyenvana_2025"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "A URL pointing to the user's new avatar image.",
+            "format": "uri",
+            "example": "https://example.com/avatars/new_avatar.png"
+          }
+        }
+      },
       "AuthSuccessResponse": {
         "type": "object",
         "properties": {
@@ -842,6 +985,18 @@
             "type": "object",
             "nullable": true,
             "description": "Additional error information (excluding stack trace)."
+          }
+        }
+      },
+      "GetMeSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Get my profile successfully"
+          },
+          "result": {
+            "$ref": "#/components/schemas/User"
           }
         }
       },
