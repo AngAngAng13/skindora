@@ -1,12 +1,8 @@
 import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
 
-import ManageCustomer from "@/Adminpage";
-import Admin from "@/features/Admin";
-
 const PublicLayout = lazy(() => import("@/layouts/publicLayout"));
 
-const Adminpage = lazy(() => import("@/Adminpage"));
 const AuthPage = lazy(() => import("@/features/Auth"));
 const Homepage = lazy(() => import("@/features/Homepage"));
 const ProfilePage = lazy(() => import("@/features/Profile"));
