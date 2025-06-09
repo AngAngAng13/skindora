@@ -42,6 +42,8 @@ components:
       $ref: './components/schemas/ChangePasswordReqBody.yaml'
     UpdateMeReqBody:
       $ref: './components/schemas/UpdateMeReqBody.yaml'
+    RefreshTokenReqBody:
+      $ref: './components/schemas/RefreshTokenReqBody.yaml'
 
     #Schemas cho Response
     AuthSuccessResponse:
@@ -56,6 +58,8 @@ components:
       $ref: './components/schemas/ErrorServerResponse.yaml'
     GetMeSuccessResponse:
       $ref: './components/schemas/GetMeSuccessResponse.yaml'
+    RefreshTokenSuccessResponse:
+      $ref: './components/schemas/RefreshTokenSuccessResponse.yaml'
 
     #Schema cho Model
     User:
