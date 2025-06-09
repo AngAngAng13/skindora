@@ -415,3 +415,43 @@
           application/json:
             schema:
               $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/refresh-token:
+  post:
+    tags: [Users]
+    summary: Refresh user's access token
+    description: >
+      Provides a new access token and a new refresh token in exchange for a valid, unexpired refresh token.
+      This endpoint does not require Bearer authentication via an access token.
+    requestBody:
+      description: A valid refresh token.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/RefreshTokenReqBody.yaml'
+    responses:
+      '200':
+        description: Tokens refreshed successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/RefreshTokenSuccessResponse.yaml'
+      '401':
+        description: Unauthorized. The provided refresh token is invalid, expired, or was not found in the database.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Unprocessable Entity. The request body is missing the required `refresh_token` field.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        description: Internal server error.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorServerResponse.yaml'
