@@ -1,10 +1,13 @@
 networks:
   traefik-public:
     driver: bridge
+    name: traefik-public
   portainer-network:
     driver: bridge
+    name: portainer-network
   redis-network:
     driver: bridge
+    name: redis-network
 volumes:
   portainer_data:
   redis_data:
@@ -136,30 +139,15 @@ services:
     volumes:
       - redis_data:/data
       - ./redis-logs:/var/log/redis
-      - ./certs/redis.crt:/etc/redis/tls/redis.crt:ro
-      - ./certs/redis.key:/etc/redis/tls/redis.key:ro
-      - ./certs/ca.crt:/etc/redis/tls/ca.crt:ro
-      - ./certs/redis.dh:/etc/redis/tls/redis.dh:ro
     command: >
       redis-server
       --appendonly yes
       --requirepass ${REDIS_PASSWORD}
-      --tls-port 6379
-      --port 0
-      --tls-cert-file /etc/redis/tls/redis.crt
-      --tls-key-file /etc/redis/tls/redis.key
-      --tls-ca-cert-file /etc/redis/tls/ca.crt
-      --tls-auth-clients no
-      --tls-dh-params-file /etc/redis/tls/redis.dh
+      --port 6379
     networks:
       - redis-network
-      - traefik-public
     labels:
       - "traefik.enable=true"
-      - "traefik.tcp.routers.redis-tcp.rule=HostSNI(`${REDIS_SNI}`)"
       - "traefik.tcp.routers.redis-tcp.entrypoints=websecure"
-      - "traefik.tcp.routers.redis-tcp.tls=true"
-      - "traefik.tcp.routers.redis-tcp.tls.passthrough=true"
-      - "traefik.tcp.services.redis-tcp.loadbalancer.server.port=6379"
     depends_on:
       - traefik

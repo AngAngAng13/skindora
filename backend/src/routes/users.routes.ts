@@ -26,12 +26,20 @@ import {
   resetPasswordValidator,
   updateMeValidator,
   verifiedUserValidator,
-  verifyForgotPasswordTokenValidator
+  verifyForgotPasswordTokenValidator,
+  addToWishListValidator,
+  removeFromWishListValidator
 } from '~/middlewares/users.middlewares'
+import {
+  addToWishListController,
+  getWishListController,
+  removeFromWishListController
+} from '~/controllers/products.controller'
 import { UpdateMeReqBody } from '~/models/requests/Users.requests'
 import { wrapAsync } from '~/utils/handler'
 
 const usersRouter = Router()
+usersRouter.route('/').get(loginController)
 usersRouter.route('/').get(loginController)
 
 usersRouter.post('/login', loginValidator, wrapAsync(loginController))
@@ -50,6 +58,14 @@ usersRouter.post(
 )
 
 usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapAsync(emailVerifyTokenController))
+usersRouter.post('/addToWishList', accessTokenValidator, addToWishListValidator, wrapAsync(addToWishListController))
+usersRouter.put(
+  '/removeFromWishList',
+  accessTokenValidator,
+  removeFromWishListValidator,
+  wrapAsync(removeFromWishListController)
+)
+usersRouter.get('/getWishList', accessTokenValidator, wrapAsync(getWishListController))
 usersRouter.post('/resend-verify-email', accessTokenValidator, wrapAsync(resendEmailVerifyController))
 usersRouter.put(
   '/change-password',
