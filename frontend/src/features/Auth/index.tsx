@@ -37,8 +37,7 @@ export default function AuthPage() {
       <ReturnHomeButton />
       {LeftPanelVariant}
       <div className="relative flex w-full flex-col items-center justify-center p-4 sm:p-8 lg:w-1/2">
-        <ReturnHomeButton />
-
+        <ReturnHomeButton className="hidden" />
         {FormComponentToRender}
       </div>
     </div>

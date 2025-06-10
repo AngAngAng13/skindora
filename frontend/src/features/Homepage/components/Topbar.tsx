@@ -31,13 +31,13 @@ function NavigationItems({ navItems }: { navItems: TopbarProps["navItems"] }) {
         const path = `/${item.path}`;
         const isActive = location.pathname === path;
         return (
-            <Link
-              key={index}
-              to={path}
-              className={`prose-a ${isActive ? "text-primary font-semibold" : "hover:text-gray-700 text-gray-600"}`}
-            >
-              {item.displayText}
-            </Link>
+          <Link
+            key={index}
+            to={path}
+            className={`prose-a ${isActive ? "text-primary font-semibold" : "text-gray-600 hover:text-gray-700"}`}
+          >
+            {item.displayText}
+          </Link>
         );
       })}
     </nav>

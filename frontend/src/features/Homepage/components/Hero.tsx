@@ -13,7 +13,7 @@ function HeroTitleAndSubtitle({ title, subtitle, paragraph }: { title: string; s
   return (
     <>
       <h1 className="prose-h1 mb-6 text-4xl font-bold md:text-5xl">
-        <span className="mb-2 md:mb-4 block text-gray-800">{title}</span>
+        <span className="mb-2 block text-gray-800 md:mb-4">{title}</span>
         <span className="from-primary to-accent bg-gradient-to-r bg-clip-text text-transparent">{subtitle}</span>
       </h1>
       <p className="prose-p mb-8 text-lg text-gray-600">{paragraph}</p>

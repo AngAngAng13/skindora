@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { useUserProfileQuery } from "@/hooks/queries/useUserProfileQuery";
 import { useAuthActions } from "@/hooks/useAuthActions";
-import type { User } from "@/types/auth";
+import type { User } from "@/types";
 import { getAccessToken, getGoogleAuthURL, logger } from "@/utils";
 import { setTokens } from "@/utils";
 import { mapBackendUserToFrontendUser } from "@/utils/userMappers";
@@ -27,7 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [hasToken, setHasToken] = useState<boolean>(!!getAccessToken());
   const queryClient = useQueryClient();
 
-  const { data: apiUser, isLoading: isUserLoading, isSuccess, isError,} = useUserProfileQuery(hasToken);
+  const { data: apiUser, isLoading: isUserLoading, isSuccess, isError } = useUserProfileQuery(hasToken);
 
   const handleOAuthLogin = useCallback(
     (params: { accessToken: string; refreshToken: string; newUserParam: string | null }) => {
@@ -66,11 +66,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     if (isError && hasToken) {
-      logger.info("session expired rui" ,{
-        error: isError
-      }
-
-      );
+      logger.info("session expired rui", {
+        error: isError,
+      });
       queryClient.clear();
       setHasToken(false);
     }
@@ -84,7 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       user,
       isAuthenticated,
       isLoading: isUserLoading,
-      actions, 
+      actions,
       handleGoogleLogin: () => {
         window.location.href = getGoogleAuthURL();
       },
