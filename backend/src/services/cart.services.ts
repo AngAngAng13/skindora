@@ -1,19 +1,17 @@
 import databaseService from './database.services'
+import productService from './Products/product.services'
 import redisClient from './redis.services'
 import { ObjectId } from 'mongodb'
-import { AddToCartPayload, ProductInCart, UpdateCartPayload } from '~/models/requests/Cart.requests'
+import { AddToCartPayload, Cart, ProductInCart, UpdateCartPayload } from '~/models/requests/Cart.requests'
+import { ErrorWithStatus } from '~/models/Errors'
+import HTTP_STATUS from '~/constants/httpStatus'
+import { CART_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
+import Product from '~/models/schemas/Products/Product.schema'
 
 class CartService {
-  async addToCart(payload: AddToCartPayload, userId: ObjectId) {
+  async addToCart(payload: AddToCartPayload, userId: string, product: Product) {
     const { ProductID, Quantity } = payload
 
-    if (!ProductID || Quantity === undefined || Quantity === null) {
-      throw new Error('ProductID and Quantity are required')
-    }
-
-    this.validateQuantity(Quantity)
-
-    const product = await this.getProductById(ProductID)
     const cartKey = this.getCartKey(userId)
     const cart = (await this.getCart(cartKey)) || { Products: [] }
     const productIndex = this.findProductIndex(cart, ProductID)
@@ -21,7 +19,13 @@ class CartService {
     const totalRequested = existingQty + Quantity
 
     if (totalRequested > (product.quantity || 0)) {
-      throw new Error(`Only ${product.quantity || 0} items available in stock`)
+      throw new ErrorWithStatus({
+        message: PRODUCTS_MESSAGES.NOT_ENOUGHT.replace(
+          '%s',
+          `${product.quantity} item${Number(product.quantity) > 1 ? 's' : ''}`
+        ),
+        status: HTTP_STATUS.BAD_REQUEST
+      })
     }
 
     if (productIndex > -1) {
@@ -30,37 +34,38 @@ class CartService {
       cart.Products.push({ ProductID, Quantity })
     }
 
-    await redisClient.set(cartKey, JSON.stringify(cart))
-    await redisClient.expire(cartKey, 60 * 60 * 24)
+    const multi = redisClient.multi()
+    multi.set(cartKey, JSON.stringify(cart))
+    multi.expire(cartKey, 60 * 60 * 24)
+    await multi.exec()
+    return cart
   }
 
-  async fetchCart(userId: ObjectId) {
+  async fetchCart(userId: string) {
     const cartKey = this.getCartKey(userId)
     const cart = await this.getCart(cartKey)
-    //Config response sau
-    return cart ? cart : { Products: [] }
+
+    return this.formatCart(cart)
   }
 
-  async updateProductQuantityInCart(payload: UpdateCartPayload, productId: string, userId: ObjectId) {
+  async updateProductQuantityInCart(payload: UpdateCartPayload, product: Product, userId: string) {
     const { Quantity } = payload
 
-    //Input validation
-    if (!productId || Quantity === undefined || Quantity === null) {
-      throw new Error('ProductID and Quantity are required')
-    }
-
-    this.validateQuantity(Quantity, true)
-
-    const product = await this.getProductById(productId)
     const cartKey = this.getCartKey(userId)
     const cart = await this.getCart(cartKey)
     if (!cart) {
-      throw new Error('Cart not found')
+      throw new ErrorWithStatus({
+        message: CART_MESSAGES.NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
     }
 
-    const productIndex = this.findProductIndex(cart, productId)
+    const productIndex = this.findProductIndex(cart, product._id?.toString() || '')
     if (productIndex < 0) {
-      throw new Error('Product not found in cart')
+      throw new ErrorWithStatus({
+        message: CART_MESSAGES.PRODUCT_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
     }
 
     //Quantity update logic
@@ -68,32 +73,44 @@ class CartService {
       cart.Products.splice(productIndex, 1) //Remove product
     } else {
       if (Quantity > (product.quantity || 0)) {
-        throw new Error(`Only ${product.quantity || 0} items available in stock`)
+        throw new ErrorWithStatus({
+          message: PRODUCTS_MESSAGES.NOT_ENOUGHT.replace(
+            '%s',
+            `${product.quantity} item${Number(product.quantity) > 1 ? 's' : ''}`
+          ),
+          status: HTTP_STATUS.BAD_REQUEST
+        })
       }
 
       cart.Products[productIndex].Quantity = Quantity
     }
 
     await this.saveCart(cartKey, cart)
-    return cart
+    return this.formatCart(cart)
   }
 
-  async removeProductFromCart(productId: string, userId: ObjectId) {
+  async removeProductFromCart(productId: string, userId: string) {
     const cartKey = this.getCartKey(userId)
     let cart = await this.getCart(cartKey)
     if (!cart) {
-      throw new Error('Cart not found')
+      throw new ErrorWithStatus({
+        message: CART_MESSAGES.NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
     }
 
     const productIndex = cart.Products.findIndex((p: ProductInCart) => p.ProductID.toString() === productId.toString())
     if (productIndex < 0) {
-      throw new Error('Product not found in cart')
+      throw new ErrorWithStatus({
+        message: CART_MESSAGES.PRODUCT_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
     }
     cart.Products.splice(productIndex, 1)
 
     await this.saveCart(cartKey, cart)
     //Config response sau
-    return cart
+    return this.formatCart(cart)
   }
 
   async getCart(cartKey: string) {
@@ -103,44 +120,89 @@ class CartService {
     }
   }
 
-  async saveCart(cartKey: string, cartData: any) {
+  async saveCart(cartKey: string, cartData: Cart) {
     await redisClient.set(cartKey, JSON.stringify(cartData))
     await redisClient.expire(cartKey, 60 * 60 * 24)
   }
 
   getCartKey(userId: ObjectId | string) {
-    return `${process.env.REDIS_CART}:${userId}`
-  }
-
-  private validateQuantity(quantity: any, allowZero = false) {
-    const isValid = typeof quantity === 'number' && Number.isInteger(quantity)
-    if (!isValid || (!allowZero && quantity <= 0) || (allowZero && quantity < 0)) {
-      throw new Error(`Quantity must be a ${allowZero ? 'non-negative' : 'positive'} integer`)
-    }
-  }
-
-  private async getProductById(id: string) {
-    const product = await databaseService.products.findOne({
-      _id: new ObjectId(id)
-    })
-
-    if (!product) {
-      throw new Error(`Product not found with id ${id}`)
-    }
-
-    if (typeof product.quantity !== 'number' || product.quantity <= 0) {
-      throw new Error('Product is out of stock')
-    }
-
-    return product
+    return `${process.env.CART_KEY}${userId}`
   }
 
   private findProductIndex(cart: any, productId: string) {
     return cart.Products.findIndex((p: ProductInCart) => p.ProductID === productId)
   }
 
-  async clearCart(userId: ObjectId){
+  private async formatCart(cart: Cart | null): Promise<{ Products: any[]; totalPrice: number }> {
+    if (!cart || !cart.Products || cart.Products.length === 0) {
+      return { Products: [], totalPrice: 0 }
+    }
+
+    const productKeys = cart.Products.map((p: ProductInCart) => productService.getProductInfoKey(p.ProductID))
+
+    let productInfos = await Promise.all(productKeys.map((key: string) => redisClient.hGetAll(key)))
+
+    const missingIndexes = productInfos
+      .map((info, i) => (Object.keys(info).length === 0 ? i : -1))
+      .filter((i) => i !== -1)
+
+    if (missingIndexes.length > 0) {
+      for (const index of missingIndexes) {
+        const productId = cart.Products[index].ProductID
+        const product = await databaseService.products.findOne({ _id: new ObjectId(productId) })
+
+        if (!product) {
+          cart.Products.splice(index, 1)
+          continue
+        }
+
+        const productKey = productService.getProductInfoKey(productId)
+        await redisClient.hSet(productKey, {
+          name: product.name_on_list ?? '',
+          image: product.image_on_list ?? '',
+          price: product.price_on_list ?? '0'
+        })
+        await redisClient.expire(productKey, 24 * 60 * 60)
+
+        productInfos[index] = {
+          name: product.name_on_list ?? '',
+          image: product.image_on_list ?? '',
+          price: product.price_on_list ?? '0'
+        }
+      }
+    }
+
+    const detailedCart = cart.Products.map((item: ProductInCart, index: number) => {
+      const info = productInfos[index]
+      const price = parseFloat(info.price || '0')
+
+      return {
+        ProductID: item.ProductID,
+        Quantity: item.Quantity,
+        name: info.name,
+        image: info.image,
+        unitPrice: price,
+        totalPrice: price * item.Quantity
+      }
+    })
+
+    const totalPrice = detailedCart.reduce((sum, item) => sum + item.totalPrice, 0)
+
+    return {
+      Products: detailedCart,
+      totalPrice
+    }
+  }
+
+  async clearCart(userId: string) {
     const cartKey = this.getCartKey(userId)
+    const cart = await this.getCart(cartKey)
+    if(!cart || cart.Products && cart.Products.length <= 0){
+      throw new ErrorWithStatus({
+        message: CART_MESSAGES.EMPTY_OR_EXPIRED,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
     return await redisClient.del(cartKey)
   }
 }

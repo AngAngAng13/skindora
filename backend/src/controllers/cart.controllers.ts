@@ -1,22 +1,35 @@
 import { Request, Response } from 'express'
-import { ObjectId } from 'mongodb'
-import { CART_MESSAGES } from '~/constants/messages'
-import { AddToCartPayload, CartParams, UpdateCartPayload } from '~/models/requests/Cart.requests'
+import { CART_MESSAGES, PRODUCTS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
+import { ErrorWithStatus } from '~/models/Errors'
+import { CartParams, UpdateCartPayload } from '~/models/requests/Cart.requests'
+import { TokenPayLoad } from '~/models/requests/Users.requests'
 import cartService from '~/services/cart.services'
 
-const testUserId = new ObjectId("683ff8f7c748f46be21bc097")
+export const addToCartController = async (req: Request, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+  const product = req.product
 
-export const addToCartController = async (req: Request<AddToCartPayload>, res: Response) => {
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
+
+  if (!product) {
+    res.status(400).json({
+      message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND
+    })
+    return
+  }
+
   try {
-
-    const result = await cartService.addToCart(req.body, testUserId)
+    const result = await cartService.addToCart(req.body, user_id, product)
     res.json({
       message: CART_MESSAGES.ADDED_SUCCESS,
       result
     })
   } catch (error) {
-    const statusCode = error instanceof Error ? 400 : 500
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
 
     res.status(statusCode).json({
       message: CART_MESSAGES.ADDED_FAILED,
@@ -26,16 +39,20 @@ export const addToCartController = async (req: Request<AddToCartPayload>, res: R
 }
 
 export const getCartController = async (req: Request, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
   try {
-
-    const result = await cartService.fetchCart(testUserId)
+    const result = await cartService.fetchCart(user_id)
     res.json({
       message: CART_MESSAGES.FETCHED_SUCCESS,
       result
     })
   } catch (error) {
-    const statusCode = error instanceof Error ? 400 : 500
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
 
     res.status(statusCode).json({
       message: CART_MESSAGES.FETCHED_FAILED,
@@ -45,17 +62,28 @@ export const getCartController = async (req: Request, res: Response) => {
 }
 
 export const updateCartController = async (req: Request<CartParams, UpdateCartPayload>, res: Response) => {
-  try {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
 
-    const productId = req.params.productId
-    const result = await cartService.updateProductQuantityInCart(req.body, productId, testUserId)
+  const product = req.product!
+  if (!product) {
+    res.status(400).json({
+      message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND
+    })
+    return
+  }
+  try {
+    const result = await cartService.updateProductQuantityInCart(req.body, product, user_id)
     res.json({
       message: CART_MESSAGES.UPDATED_SUCCESS,
       result
     })
   } catch (error) {
-    const statusCode = error instanceof Error ? 400 : 500
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
 
     res.status(statusCode).json({
       message: CART_MESSAGES.UPDATED_FAILED,
@@ -64,17 +92,22 @@ export const updateCartController = async (req: Request<CartParams, UpdateCartPa
   }
 }
 export const removeFromCartController = async (req: Request<CartParams>, res: Response) => {
-  try {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
 
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
+  try {
     const productId = req.params.productId
-    const result = await cartService.removeProductFromCart(productId, testUserId)
+    const result = await cartService.removeProductFromCart(productId, user_id)
     res.json({
       message: CART_MESSAGES.REMOVED_SUCCESS,
       result
     })
   } catch (error) {
-    const statusCode = error instanceof Error ? 400 : 500
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
 
     res.status(statusCode).json({
       message: CART_MESSAGES.REMOVED_FAILED,
@@ -84,16 +117,21 @@ export const removeFromCartController = async (req: Request<CartParams>, res: Re
 }
 
 export const clearCartController = async (req: Request, res: Response) => {
-  try {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
 
-    const result = await cartService.clearCart(testUserId)
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
+  try {
+    const result = await cartService.clearCart(user_id)
     res.json({
       message: CART_MESSAGES.CLEAR_SUCCESS,
       result
     })
   } catch (error) {
-    const statusCode = error instanceof Error ? 400 : 500
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
 
     res.status(statusCode).json({
       message: CART_MESSAGES.CLEAR_FAILED,
