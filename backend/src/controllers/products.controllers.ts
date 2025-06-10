@@ -6,6 +6,7 @@ import { TokenPayLoad } from '~/models/requests/Users.requests'
 import databaseService from '~/services/database.services'
 import productService from '~/services/product.services'
 import feedBackService from '~/services/review.services'
+import { sendPaginatedResponse } from '~/utils/pagination.helper'
 
 export const addToWishListController = async (req: Request, res: Response): Promise<void> => {
   const { productId } = req.body
@@ -125,15 +126,35 @@ export const getReviewController = async (req: Request, res: Response) => {
   }
 }
 
-export const getAllProductController = async (req: Request, res: Response) => {
+// export const getAllProductController = async (req: Request, res: Response) => {
+//   try {
+//     const products = await productService.getAllProducts()
+//     res.json({
+//       message: PRODUCTS_MESSAGES.GET_ALL_PRODUCT_SUCCESS,
+//       products
+//     })
+//   } catch (error) {
+//     const errorMessage = error instanceof Error ? error.message : 'Internal Server Error'
+//     res.status(500).json({ error: errorMessage })
+//   }
+// }
+// export const getAllProductController = async (req: Request, res: Response, next: NextFunction) => {
+//   // Lấy collection từ database service và truyền vào helper
+//   await sendPaginatedResponse(res, next, databaseService.products, req.query)
+// }
+export const getAllProductController = async (req: Request, res: Response, next: NextFunction) => {
+  // Lấy collection từ database service và truyền vào helper
+  // Helper sẽ làm tất cả phần việc còn lại
+  await sendPaginatedResponse(res, next, databaseService.products, req.query)
+}
+
+// Các controller khác (tạo, sửa, xóa) sẽ tự xử lý response của chúng
+export const getProductDetailsController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const products = await productService.getAllProducts()
-    res.json({
-      message: PRODUCTS_MESSAGES.GET_ALL_PRODUCT_SUCCESS,
-      products
-    })
+    // ... logic lấy sản phẩm theo id
+    // const product = await productService.getById(req.params.id);
+    // return res.status(200).json({ message: 'Thành công', data: product });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Internal Server Error'
-    res.status(500).json({ error: errorMessage })
+    next(error)
   }
 }
