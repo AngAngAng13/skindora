@@ -63,7 +63,7 @@ class UsersService {
   private signEmailVerifyToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     return signToken({
       payload: { user_id, token_type: TokenType.EmailVerificationToken, verify },
-      options: { expiresIn: '3d' },
+      options: { expiresIn: '1d' },
       privateKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
     })
   }
