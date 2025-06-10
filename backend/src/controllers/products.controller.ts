@@ -4,7 +4,7 @@ import { PRODUCTS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
 import databaseService from '~/services/database.services'
-import productService from '~/services/Products/product.services'
+import productService from '~/services/product.services'
 import feedBackService from '~/services/review.services'
 
 export const addToWishListController = async (req: Request, res: Response): Promise<void> => {
