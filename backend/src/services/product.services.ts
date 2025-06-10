@@ -60,6 +60,16 @@ class ProductsService {
     }
     return productIds
   }
+
+  async getAllProducts() {
+    try {
+      const products = await databaseService.products.find({}).toArray()
+      return products
+    } catch (error) {
+      console.error('Error fetching products:', error)
+      throw error
+    }
+  }
 }
 
 const productService = new ProductsService()

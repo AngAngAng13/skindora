@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { ObjectId } from 'mongodb'
 import { PRODUCTS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
@@ -122,5 +122,18 @@ export const getReviewController = async (req: Request, res: Response) => {
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
     res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+  }
+}
+
+export const getAllProductController = async (req: Request, res: Response) => {
+  try {
+    const products = await productService.getAllProducts()
+    res.json({
+      message: PRODUCTS_MESSAGES.GET_ALL_PRODUCT_SUCCESS,
+      products
+    })
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Internal Server Error'
+    res.status(500).json({ error: errorMessage })
   }
 }
