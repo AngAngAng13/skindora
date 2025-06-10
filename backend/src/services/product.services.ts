@@ -61,6 +61,24 @@ class ProductsService {
     return productIds
   }
 
+  // lấy key trong redis
+  async getAllWishListKeys() {
+    const key: string[] = []
+    let cursor = '0'
+
+    do {
+      const reply = await redisClient.scan(cursor, {
+        MATCH: process.env.WISHLIST_KEY + '_*',
+        COUNT: 100
+      })
+
+      cursor = reply.cursor
+      key.push(...reply.keys)
+    } while (cursor !== '0')
+
+    return key
+  }
+
   async getAllProducts() {
     try {
       const products = await databaseService.products.find({}).toArray()

@@ -148,7 +148,6 @@ class UsersService {
         }
       })
       const verifyURL = `http://localhost:${process.env.PORT}/users/verify-email?email_verify_token=${email_verify_token}` // Đường dẫn xác nhận email
-      
 
       const htmlContent = readEmailTemplate('verify-email.html', {
         first_name: payload.first_name,
@@ -159,7 +158,7 @@ class UsersService {
         from: `"SKINDORA" <${process.env.EMAIL_APP}>`,
         to: payload.email,
         subject: 'Xác nhận đăng ký tài khoản SKINDORA',
-        html: htmlContent // ✅ Sử dụng HTML từ file
+        html: htmlContent //truyền nội dung html vào
       }
 
       transporter.sendMail(mailOptions)
