@@ -12,7 +12,6 @@ config()
 const swaggerDocument = YAML.load(path.join(__dirname, './openAPI.yml'))
 
 const port = process.env.PORT
-console.log(`Skindora server is running on port ${process.env.CORS_ORIGIN}`)
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN

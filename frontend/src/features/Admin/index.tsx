@@ -11,21 +11,12 @@ import { useHeader } from "@/contexts/header.context";
 import { CardDemo } from "./components/Card";
 import { CardIcon } from "./components/CardIcon";
 
-/**
- * Admin component
- * This component displays the admin dashboard content.
- * It is designed to be rendered as a child route within a PrivateLayout,
- * which handles authentication and overall layout.
- *
- * @returns {JSX.Element} The admin dashboard content.
- */
 const Admin: React.FC = () => {
   const { setHeaderName } = useHeader();
   useEffect(() => {
     setHeaderName("Tổng quan");
   }, []);
-  // Authentication check and layout elements are now handled by PrivateLayout.
-  // This component now focuses solely on the dashboard content.
+
   return (
     <div className="w-full gap-4 bg-gray-50 px-6 py-8">
       <div className="mb-6 flex justify-between">
