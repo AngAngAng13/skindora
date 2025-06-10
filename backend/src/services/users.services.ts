@@ -385,6 +385,16 @@ class UsersService {
       }
     }
   }
+
+  async getAllUser() {
+    try {
+      const users = await databaseService.users.find({}).toArray()
+      return users
+    } catch (error) {
+      console.error('Error fetching users:', error)
+      throw error
+    }
+  }
 }
 
 const usersService = new UsersService()
