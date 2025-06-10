@@ -119,7 +119,7 @@ export const getReviewController = async (req: Request, res: Response) => {
   try {
     const response = await feedBackService.getReview(productId, currentPage, limit)
     const { data, ...info } = response
-    res.status(200).json({ status: 200, data, ...info })
+    res.status(200).json({ status: 200, data, pagination: { ...info } })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
     res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
