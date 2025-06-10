@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
-import redisClient from '../redis.services'
-import databaseService from '../database.services'
+import redisClient from './redis.services'
+import databaseService from './database.services'
 import { ErrorWithStatus } from '~/models/Errors'
 import { PRODUCTS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
