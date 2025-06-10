@@ -88,6 +88,13 @@ class ProductsService {
       throw error
     }
   }
+
+  // async getPaginatedProducts(query: { page?: string; limit?: string }) {
+  //   const paginatedResult = await createPaginatedQuery(ProductModel, query, {})
+  //   //có thể thêm các điều kiện lọc ở đây
+  //   //ví dụ //state: ProductState.ACTIVE
+  //   return paginatedResult
+  // }
 }
 
 const productService = new ProductsService()
