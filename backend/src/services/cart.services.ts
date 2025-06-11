@@ -1,12 +1,12 @@
 import databaseService from './database.services'
-import productService from './Products/product.services'
 import redisClient from './redis.services'
 import { ObjectId } from 'mongodb'
 import { AddToCartPayload, Cart, ProductInCart, UpdateCartPayload } from '~/models/requests/Cart.requests'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { CART_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
-import Product from '~/models/schemas/Products/Product.schema'
+import Product from '~/models/schemas/Product.schema'
+import productService from './product.services'
 
 class CartService {
   async addToCart(payload: AddToCartPayload, userId: string, product: Product) {

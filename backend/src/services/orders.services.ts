@@ -5,10 +5,10 @@ import { OrderStatus } from '~/constants/enums'
 import { ObjectId } from 'mongodb'
 import { OrderReqBody, PrepareOrderPayload, ProductInOrder, TempOrder } from '~/models/requests/Orders.requests'
 import { ProductInCart } from '~/models/requests/Cart.requests'
-import Product from '~/models/schemas/Products/Product.schema'
 import { ErrorWithStatus } from '~/models/Errors'
 import { CART_MESSAGES, ORDER_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
+import Product from '~/models/schemas/Product.schema'
 
 class OrdersService {
   async prepareOrder(userId: string, payload: PrepareOrderPayload) {

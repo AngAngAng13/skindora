@@ -80,7 +80,6 @@ export const getCurrentOrderController = async (req: Request, res: Response) => 
 
 export const getAllOrdersController = async (req: Request<ParamsDictionary, any, OrderReqBody>, res: Response) => {
   try {
-    //autho user role: Admin
     const result = await ordersService.getAllOrders()
     res.json({
       message: ORDER_MESSAGES.GET_ALL_SUCCESS,
