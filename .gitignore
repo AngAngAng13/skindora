@@ -3,3 +3,5 @@ redis-logs
 certs
 letsencrypt
 *.log
+*.html
+!backend/src/utils/templates/*.html

@@ -531,6 +531,246 @@
           }
         }
       }
+    },
+    "/users/logout": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Logout a user",
+        "description": "Logs out an authenticated user by invalidating their refresh token. Requires both a valid Access Token in the Authorization header and the Refresh Token in the body.\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "The refresh token to be invalidated.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogoutReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logout successful. The refresh token has been invalidated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. This can occur for several reasons: - The Access Token in the Authorization header is missing, invalid, or expired. - The Refresh Token provided in the body is invalid, expired, or does not exist in the database.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity. The request body is missing the required `refresh_token` field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorValidationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get current user's profile",
+        "description": "Retrieves the profile information of the currently authenticated user based on the provided Access Token. The returned user object will not contain sensitive fields like 'password' or 'tokens'.\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved user profile.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMeSuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The Access Token is missing, invalid, or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update current user's profile",
+        "description": "Partially updates the profile information of the currently authenticated user. Only include the fields you want to change in the request body.\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "The fields to update in the user's profile. All fields are optional.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMeReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully. Returns the updated user object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMeSuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The Access Token is missing, invalid, or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity. The request body contains invalid data (e.g., username already exists, invalid format).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorValidationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/refresh-token": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Refresh user's access token",
+        "description": "Provides a new access token and a new refresh token in exchange for a valid, unexpired refresh token. This endpoint does not require Bearer authentication via an access token.\n",
+        "requestBody": {
+          "description": "A valid refresh token.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tokens refreshed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenSuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The provided refresh token is invalid, expired, or was not found in the database.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity. The request body is missing the required `refresh_token` field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorValidationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -598,6 +838,19 @@
             "example": "Str0ngP@sswOrd"
           }
         }
+      },
+      "LogoutReqBody": {
+        "type": "object",
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "description": "The refresh token issued to the user during login, which will be invalidated upon logout.",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZhMTIzNDU2Nzg5MGFiY2RlZjEyMzQ1IiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJpYXQiOjE3MTg1MjAxMDAsImV4cCI6MTcxOTEyNDkwMH0.abcdefg123456"
+          }
+        },
+        "required": [
+          "refresh_token"
+        ]
       },
       "ForgotPasswordReqBody": {
         "type": "object",
@@ -690,6 +943,51 @@
           }
         }
       },
+      "UpdateMeReqBody": {
+        "type": "object",
+        "description": "Fields to update for the user's profile. All fields are optional.",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "description": "The user's first name.",
+            "example": "Van A"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "The user's last name.",
+            "example": "Nguyen"
+          },
+          "location": {
+            "type": "string",
+            "description": "The user's location.",
+            "example": "Ho Chi Minh, Vietnam"
+          },
+          "username": {
+            "type": "string",
+            "description": "A new unique username for the user. Must not be already taken by another user.",
+            "example": "nguyenvana_2025"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "A URL pointing to the user's new avatar image.",
+            "format": "uri",
+            "example": "https://example.com/avatars/new_avatar.png"
+          }
+        }
+      },
+      "RefreshTokenReqBody": {
+        "type": "object",
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "description": "The valid refresh token that was provided upon login.",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjY2NTZkYmRjYj..."
+          }
+        },
+        "required": [
+          "refresh_token"
+        ]
+      },
       "AuthSuccessResponse": {
         "type": "object",
         "properties": {
@@ -762,6 +1060,30 @@
             "type": "object",
             "nullable": true,
             "description": "Additional error information (excluding stack trace)."
+          }
+        }
+      },
+      "GetMeSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Get my profile successfully"
+          },
+          "result": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "RefreshTokenSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Refresh token successful"
+          },
+          "result": {
+            "$ref": "#/components/schemas/AuthSuccessResponse"
           }
         }
       },

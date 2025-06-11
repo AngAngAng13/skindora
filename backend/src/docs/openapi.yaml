@@ -28,6 +28,8 @@ components:
       $ref: './components/schemas/RegisterReqBody.yaml'
     LoginReqBody:
       $ref: './components/schemas/LoginReqBody.yaml'
+    LogoutReqBody:
+      $ref: './components/schemas/LogoutReqBody.yaml'
     ForgotPasswordReqBody:
       $ref: './components/schemas/ForgotPasswordReqBody.yaml'
     VerifyForgotPasswordTokenReqBody:
@@ -38,6 +40,10 @@ components:
       $ref: './components/schemas/VerifyEmailReqBody.yaml'
     ChangePasswordReqBody:
       $ref: './components/schemas/ChangePasswordReqBody.yaml'
+    UpdateMeReqBody:
+      $ref: './components/schemas/UpdateMeReqBody.yaml'
+    RefreshTokenReqBody:
+      $ref: './components/schemas/RefreshTokenReqBody.yaml'
 
     #Schemas cho Response
     AuthSuccessResponse:
@@ -50,6 +56,10 @@ components:
       $ref: './components/schemas/ErrorStatusResponse.yaml'
     ErrorServerResponse:
       $ref: './components/schemas/ErrorServerResponse.yaml'
+    GetMeSuccessResponse:
+      $ref: './components/schemas/GetMeSuccessResponse.yaml'
+    RefreshTokenSuccessResponse:
+      $ref: './components/schemas/RefreshTokenSuccessResponse.yaml'
 
     #Schema cho Model
     User:
