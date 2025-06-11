@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { toast as sonnerToast } from "sonner";
 
 import { useAuth } from "@/contexts/auth.context";
-import { useUpdateProfileMutation } from "@/hooks/useUpdateProfileMutation";
+import { useUpdateProfileMutation } from "@/hooks/mutations/useUpdateProfileMutation";
 import { type ProfileUpdateFormData, profileUpdateSchema } from "@/schemas/authSchemas";
 import { type UpdateMePayload, authService } from "@/services/authService";
 

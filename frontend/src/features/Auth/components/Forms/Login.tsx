@@ -27,16 +27,15 @@ export function LoginForm() {
       rememberMe: false,
     },
   });
-
+  if (isProcessingOAuth) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8">
+        <Loader2 className="text-primary h-12 w-12 animate-spin" />
+      </div>
+    );
+  }
   async function onSubmit(values: LoginFormData) {
     actions.login(values);
-    if (isProcessingOAuth) {
-      return (
-        <div className="flex flex-col items-center justify-center p-8">
-          <Loader2 className="text-primary h-12 w-12 animate-spin" />
-        </div>
-      );
-    }
   }
 
   return (

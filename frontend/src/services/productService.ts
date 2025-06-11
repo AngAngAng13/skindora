@@ -1,37 +1,35 @@
 import { apiClient } from "@/lib/apiClient";
-import type { PaginatedProductsResponse, ProductSummary as Product, ProductDetail} from "@/types";
+import type { PaginatedProductsResponse, ProductDetail } from "@/types/product";
 
-interface ApiResponse<T> {
-  message: string;
-  result: T;
-}
-
-
+// The backend response is now directly the paginated shape
+// No extra 'message' or 'result' nesting for this specific endpoint
 
 export const productService = {
-  
-  getFeaturedProducts: async () => {
-    const result = await apiClient.get<ApiResponse<Product[]>>("/products/featured");
+  // ... (getFeaturedProducts can stay if you expect that endpoint later)
+
+  /**
+   * Fetches a paginated list of all products.
+   * @param page - The page number to fetch.
+   * @param limit - The number of items per page.
+   */
+  getAllProducts: async ({ page = 1, limit = 12 }) => {
+    // Correct the endpoint path to '/products/get-all'
+    const result = await apiClient.get<PaginatedProductsResponse>(`/products/get-all?page=${page}&limit=${limit}`);
 
     if (result.isErr()) {
-      throw result.error;
+      throw result.error; // Let TanStack Query handle the error
     }
-    return result.value.data.result;
-  },
-
- 
-  getAllProducts: async ({ page = 1, limit = 10 }) => {
-    const result = await apiClient.get<PaginatedProductsResponse>(`/products?page=${page}&limit=${limit}`);
-
-    if (result.isErr()) {
-      throw result.error;
-    }
+    // The response body is the data we need
     return result.value.data;
   },
 
- 
+  /**
+   * Fetches the full details for a single product.
+   * @param productId - The ID of the product to fetch.
+   */
   getProductById: async (productId: string): Promise<ProductDetail> => {
-    const result = await apiClient.get<ApiResponse<ProductDetail>>(`/products/${productId}`);
+    // Assuming this endpoint will be '/products/:productId'
+    const result = await apiClient.get<{ message: string; result: ProductDetail }>(`/products/${productId}`);
     if (result.isErr()) {
       throw result.error;
     }

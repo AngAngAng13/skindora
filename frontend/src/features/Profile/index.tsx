@@ -41,7 +41,7 @@ const ProfilePage = () => {
       <div className="mx-auto max-w-4xl">
         <div className="mb-6">
           <Link to="/">
-            <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
+            <Button variant="ghost" className="text-muted-foreground">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
             </Button>
           </Link>
