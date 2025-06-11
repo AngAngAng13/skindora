@@ -6,21 +6,39 @@ import { ObjectId } from 'mongodb'
 import { OrderReqBody, PrepareOrderPayload, ProductInOrder, TempOrder } from '~/models/requests/Orders.requests'
 import { ProductInCart } from '~/models/requests/Cart.requests'
 import Product from '~/models/schemas/Products/Product.schema'
+import { ErrorWithStatus } from '~/models/Errors'
+import { CART_MESSAGES, ORDER_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
+import HTTP_STATUS from '~/constants/httpStatus'
 
 class OrdersService {
-  async prepareOrder(userId: ObjectId, payload: PrepareOrderPayload) {
+  async prepareOrder(userId: string, payload: PrepareOrderPayload) {
     const cartKey = cartService.getCartKey(userId)
     const cart = await cartService.getCart(cartKey)
-    console.log("cart: ", cart)
     if (!cart || !cart.Products || cart.Products?.length <= 0) {
-      throw new Error('Cart is empty or expired')
+      throw new ErrorWithStatus({
+        message: CART_MESSAGES.EMPTY_OR_EXPIRED,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+
+    const productIdsInCart = cart.Products.map((p: ProductInCart) => p.ProductID)
+    const invalidIDs = payload.selectedProductIDs.filter((id) => !productIdsInCart.includes(id))
+
+    if (invalidIDs.length > 0) {
+      throw new ErrorWithStatus({
+        message: CART_MESSAGES.NOT_IN_CART,
+        status: HTTP_STATUS.BAD_REQUEST
+      })
     }
 
     const selectedProducts = cart.Products.filter((p: ProductInCart) =>
       payload.selectedProductIDs.includes(p.ProductID)
     )
     if (!selectedProducts || selectedProducts.length === 0) {
-      throw new Error('No valid products selected')
+      throw new ErrorWithStatus({
+        message: CART_MESSAGES.NOT_SELECTED,
+        status: HTTP_STATUS.NOT_FOUND
+      })
     }
 
     const productIds = selectedProducts.map((p: ProductInCart) => new ObjectId(p.ProductID))
@@ -33,10 +51,19 @@ class OrdersService {
       Products: selectedProducts.map((p: ProductInCart) => {
         const product = productMap.get(p.ProductID)
         if (!product) {
-          throw new Error(`Product not found with id ${p.ProductID}`)
+          throw new ErrorWithStatus({
+            message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND.replace('%s', p.ProductID),
+            status: HTTP_STATUS.NOT_FOUND
+          })
         }
         if (!product.quantity || product.quantity < p.Quantity) {
-          throw new Error(`Only ${product.quantity} available in stock`)
+          throw new ErrorWithStatus({
+            message: PRODUCTS_MESSAGES.NOT_ENOUGHT.replace(
+              '%s',
+              `${product.quantity} item${Number(product.quantity) > 1 ? 's' : ''}`
+            ),
+            status: HTTP_STATUS.BAD_REQUEST
+          })
         }
 
         const pricePerUnit = Number.parseInt(product.price_on_list ?? '0')
@@ -63,7 +90,7 @@ class OrdersService {
     return tempOrder
   }
 
-  async createOrder(payload: OrderReqBody, userId: ObjectId) {
+  async createOrder(payload: OrderReqBody, userId: string) {
     //Kiểm tra thông tin đơn hàng(thêm sau)
     if (!payload.ShipAddress || !payload.RequireDate) {
       throw new Error('ShipAddress and RequireDate are required')
@@ -76,18 +103,21 @@ class OrdersService {
       throw new Error('No order found or it has expired')
     }
 
+    const status = OrderStatus.PENDING
     //insert order into db
     const order = await databaseService.orders.insertOne({
-      UserID: userId,
+      UserID: new ObjectId(userId),
       ShipAddress: payload.ShipAddress,
       Description: payload.Description ?? '',
       RequireDate: payload.RequireDate || new Date().toISOString(),
       // ShippedDate?: string
-      Status: OrderStatus.PENDING
+      Status: status
     })
     const orderId = order.insertedId
 
     //insert order details into db
+    let finalPrice = 0
+
     const orderDetail = tempOrder.Products.map((p: ProductInOrder) => {
       //cal total price for each product
       return {
@@ -112,29 +142,32 @@ class OrdersService {
     if (remainingProducts.length <= 0) {
       await redisClient.del(cartKey)
     } else {
-      await redisClient.set(cartKey, JSON.stringify({Products: remainingProducts}), { EX: 24 * 60 * 60 })
+      await redisClient.set(cartKey, JSON.stringify({ Products: remainingProducts }), { EX: 24 * 60 * 60 })
     }
     await redisClient.del(tempOrderKey)
 
     //Trả thông tin đơn hàng đã tạo
     return {
       orderId: orderId.toString(),
-      orderDetails: orderDetail
+      orderDetails: orderDetail,
+      status: status
     }
   }
 
-  async getCurrentOrder(userId: ObjectId) {
+  async getCurrentOrder(userId: string) {
     const orderKey = this.getTempOrderKey(userId)
     const order = await this.getTempOrder(orderKey)
     if (!order || order.Products.length <= 0) {
-      throw new Error('No order found or it has expired')
+      throw new ErrorWithStatus({
+        message: ORDER_MESSAGES.EMPTY_OR_EXPIRED,
+        status: HTTP_STATUS.NOT_FOUND
+      })
     }
-    console.log('order: ', order)
     return order
   }
 
   getTempOrderKey(userId: ObjectId | string) {
-    return `${process.env.REDIS_TEMP_ORDER}:${userId}`
+    return `${process.env.TEMP_ORDER_KEY}${userId}`
   }
 
   async getTempOrder(tempOrderKey: string) {
@@ -144,20 +177,73 @@ class OrdersService {
     }
   }
 
-  async getAllOrders() {}
+  async getAllOrders() {
+    //Nhúng orderDetail nếu cần
+    return await databaseService.orders.find({}).toArray()
+  }
 
-  async getAllOrdersByUserId(userId: ObjectId) {}
+  async getAllOrdersByAuthUser(userId: string) {
+    const orders = await databaseService.orders.find({ UserID: new ObjectId(userId) }).toArray()
+    if (orders.length === 0) return []
+
+    const orderIds = orders.map((order) => order._id)
+    const orderDetails = await databaseService.orderDetails.find({ OrderID: { $in: orderIds } }).toArray()
+
+    const productIds = [...new Set(orderDetails.map(orderDetail => orderDetail.ProductID?.toString()))].map(id => new ObjectId(id))
+    const products = await databaseService.products
+    .find({_id: {$in: productIds}})
+    .project({_id: 1, name_on_list: 1, image_on_list: 1, price_on_list: 1})
+    .toArray()
+
+    const productInfoMap = new Map(
+      products.map((product) => [product._id.toString(), {
+        productId: product._id,
+        name: product.name_on_list,
+        image: product.image_on_list,
+        price: product.price_on_list
+      }])
+    )
+    const orderDetailMapping = orderDetails.reduce((map, detail) => {
+      const key = detail.OrderID?.toString() || ''
+      const productInfo = productInfoMap.get(detail.ProductID?.toString())
+
+      const {OrderID, ProductID, ...restDetail} = detail
+
+      if (!map.has(key)) map.set(key, [])
+      map.get(key)?.push({...restDetail, Products: productInfo})
+      return map
+    }, new Map<string, any[]>())
+
+    const orderList = orders.map((order) => ({
+      orderId: order._id,
+      orderDetail: orderDetailMapping.get(order._id.toString())
+    }))
+
+    return orderList
+  }
 
   async getOrderById(id: string) {
-    if (!id) {
-      throw new Error('Id is required')
+    const order = await databaseService.orders.findOne({ _id: new ObjectId(id) })
+    if (!order) {
+      throw new ErrorWithStatus({
+        message: ORDER_MESSAGES.NOT_FOUND.replace('%s', id),
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    const orderDetail = await this.getOrderDetailByOrderId(id)
+    const details = orderDetail.map(o => {
+      const {OrderID, ...detail} = o
+      return detail
+    })
+    return {
+      ...order,
+      orderDetail: details
     }
   }
 
   async getOrderDetailByOrderId(id: string) {
-    if (!id) {
-      throw new Error('Id is required')
-    }
+    const orderDetails = await databaseService.orderDetails.find({ OrderID: new ObjectId(id) }).toArray()
+    return orderDetails
   }
 }
 

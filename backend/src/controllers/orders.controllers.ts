@@ -1,24 +1,27 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { ObjectId } from 'mongodb'
-import { ORDER_MESSAGES } from '~/constants/messages'
-import { OrderParams, OrderReqBody, PrepareOrderPayload } from '~/models/requests/Orders.requests'
+import { ORDER_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
+import { ErrorWithStatus } from '~/models/Errors'
+import { OrderParams, OrderReqBody } from '~/models/requests/Orders.requests'
+import { TokenPayLoad } from '~/models/requests/Users.requests'
 import ordersService from '~/services/orders.services'
 
-const testUserId = new ObjectId("683ff8f7c748f46be21bc097")
+export const prepareOrderController = async (req: Request, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
 
-export const prepareOrderController = async (req: Request<PrepareOrderPayload>, res: Response) => {
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
   try {
-    //Giả sử req.user tồn tại
-    // const user = req.user
-    const result = await ordersService.prepareOrder(testUserId, req.body)
+    const result = await ordersService.prepareOrder(user_id, req.body)
     res.json({
       message: ORDER_MESSAGES.PREPARED_SUCCESS,
       result
     })
   } catch (error) {
-    const statusCode = error instanceof Error ? 400 : 500
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
 
     res.status(statusCode).json({
       message: ORDER_MESSAGES.PREPARED_FAILED,
@@ -28,17 +31,21 @@ export const prepareOrderController = async (req: Request<PrepareOrderPayload>, 
 }
 
 export const createOrderController = async (req: Request<ParamsDictionary, any, OrderReqBody>, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
   try {
-    //Giả sử req.user tồn tại
-    // const user = req.user
-    const result = await ordersService.createOrder(req.body, testUserId)
+    const result = await ordersService.createOrder(req.body, user_id)
     res.json({
       message: ORDER_MESSAGES.CREATED_SUCCESS,
       result
     })
   } catch (error) {
-    const statusCode = error instanceof Error ? 400 : 500
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
 
     res.status(statusCode).json({
       message: ORDER_MESSAGES.CREATED_FAILED,
@@ -48,17 +55,21 @@ export const createOrderController = async (req: Request<ParamsDictionary, any, 
 }
 
 export const getCurrentOrderController = async (req: Request, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
   try {
-    //Giả sử req.user tồn tại
-    // const user = req.user
-    const result = await ordersService.getCurrentOrder(testUserId)
+    const result = await ordersService.getCurrentOrder(user_id)
     res.json({
       message: ORDER_MESSAGES.GET_CURRENT_SUCCESS,
       result
     })
   } catch (error) {
-    const statusCode = error instanceof Error ? 400 : 500
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
 
     res.status(statusCode).json({
       message: ORDER_MESSAGES.GET_CURRENT_FAIL,
@@ -69,39 +80,42 @@ export const getCurrentOrderController = async (req: Request, res: Response) => 
 
 export const getAllOrdersController = async (req: Request<ParamsDictionary, any, OrderReqBody>, res: Response) => {
   try {
-    //Giả sử req.user tồn tại
-    // const user = req.user
+    //autho user role: Admin
     const result = await ordersService.getAllOrders()
     res.json({
-      message: ORDER_MESSAGES.CREATED_SUCCESS,
+      message: ORDER_MESSAGES.GET_ALL_SUCCESS,
       result
     })
   } catch (error) {
-    const statusCode = error instanceof Error ? 400 : 500
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
 
     res.status(statusCode).json({
-      message: ORDER_MESSAGES.CREATED_FAILED,
+      message: ORDER_MESSAGES.GET_ALL_FAIL,
       error: errorMessage
     })
   }
 }
 
-export const getAllOrdersByUserIdController = async (req: Request<ParamsDictionary, any, OrderReqBody>, res: Response) => {
+export const getAllOrdersByAuthUserController = async (req: Request, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
   try {
-    //Giả sử req.user tồn tại
-    // const user = req.user
-    const result = await ordersService.getAllOrdersByUserId(testUserId)
+    const result = await ordersService.getAllOrdersByAuthUser(user_id)
     res.json({
-      message: ORDER_MESSAGES.CREATED_SUCCESS,
+      message: ORDER_MESSAGES.GET_ORDER_BY_USER_SUCCESS,
       result
     })
   } catch (error) {
-    const statusCode = error instanceof Error ? 400 : 500
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
 
     res.status(statusCode).json({
-      message: ORDER_MESSAGES.CREATED_FAILED,
+      message: ORDER_MESSAGES.GET_ORDER_BY_USER_FAIL,
       error: errorMessage
     })
   }
@@ -109,41 +123,18 @@ export const getAllOrdersByUserIdController = async (req: Request<ParamsDictiona
 
 export const getOrderByIdController = async (req: Request<OrderParams>, res: Response) => {
   try {
-    //Giả sử req.user tồn tại
-    // const user = req.user
-    const {id} = req.params
+    const { id } = req.params
     const result = await ordersService.getOrderById(id)
     res.json({
-      message: ORDER_MESSAGES.CREATED_SUCCESS,
+      message: ORDER_MESSAGES.GET_ORDER_BY_ID_SUCCESS,
       result
     })
   } catch (error) {
-    const statusCode = error instanceof Error ? 400 : 500
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
 
     res.status(statusCode).json({
-      message: ORDER_MESSAGES.CREATED_FAILED,
-      error: errorMessage
-    })
-  }
-}
-
-export const getOrderDetailByOrderIdController = async (req: Request<OrderParams, any, OrderReqBody>, res: Response) => {
-  try {
-    //Giả sử req.user tồn tại
-    // const user = req.user
-    const {id} = req.params
-    const result = await ordersService.getOrderDetailByOrderId(id)
-    res.json({
-      message: ORDER_MESSAGES.CREATED_SUCCESS,
-      result
-    })
-  } catch (error) {
-    const statusCode = error instanceof Error ? 400 : 500
-    const errorMessage = error instanceof Error ? error.message : String(error)
-
-    res.status(statusCode).json({
-      message: ORDER_MESSAGES.CREATED_FAILED,
+      message: ORDER_MESSAGES.GET_ORDER_BY_ID_FAIL,
       error: errorMessage
     })
   }

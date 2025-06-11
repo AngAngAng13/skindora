@@ -37,6 +37,7 @@ import {
 } from '~/controllers/products.controller'
 import { UpdateMeReqBody } from '~/models/requests/Users.requests'
 import { wrapAsync } from '~/utils/handler'
+import { getAllOrdersByAuthUserController } from '~/controllers/orders.controllers'
 
 const usersRouter = Router()
 usersRouter.route('/').get(loginController)
@@ -83,6 +84,7 @@ usersRouter.patch(
   updateMeValidator,
   wrapAsync(updateMeController)
 )
+usersRouter.get('/me/orders', accessTokenValidator, wrapAsync(getAllOrdersByAuthUserController))
 usersRouter.post('/refresh-token', refreshTokenValidator, wrapAsync(refreshController))
 usersRouter.get('/oauth/google', wrapAsync(oAuthController))
 export default usersRouter
