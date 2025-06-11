@@ -1,4 +1,5 @@
 import { TokenPayLoad } from './models/requests/Users.requests'
+import Product from './models/schemas/Products/Product.schema'
 import User from './models/schemas/User.schema'
 import { Request } from 'express'
 
@@ -9,5 +10,6 @@ declare module 'express' {
     decoded_refresh_token?: TokenPayLoad
     decoded_email_verify_token?: TokenPayLoad
     decoded_forgot_password_token?: TokenPayLoad
+    product?: Product
   }
 }

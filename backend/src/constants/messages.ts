@@ -52,17 +52,21 @@ export const USERS_MESSAGES = {
 
 export const PRODUCTS_MESSAGES = {
   EMPTY_PRODUCT_LIST: 'Product list is empty. Please add at least one product.',
-  PRODUCT_NOT_FOUND: 'Product not found',
+  PRODUCT_NOT_FOUND: 'Product not found with id %s',
   PRODUCT_ADDED_TO_WISHLIST: 'Product added to wishlist successfully',
   PRODUCT_REMOVED_FROM_WISHLIST: 'Product removed from wishlist successfully',
   WISHLIST_EMPTY: 'Wishlist is empty',
   WISHLIST_FETCHED_SUCCESSFULLY: 'Wishlist fetched successfully',
   PRODUCT_ID_IS_REQUIRED: 'Product ID is required',
   PRODUCT_ID_NOT_ARRAY: 'Product ID must be an array',
-  PRODUCT_NOT_IN_WISH_LIST: 'Product not in wish list'
+  PRODUCT_NOT_IN_WISH_LIST: 'Product not in wish list',
+  OUT_OF_STOCK: 'Product is out of stock',
+  NOT_ENOUGHT: 'Only %s available in stock'
 } as const
 
 export const CART_MESSAGES = {
+  NOT_FOUND: 'Cart not found',
+  EMPTY_OR_EXPIRED: 'Cart is empty or expired',
   ADDED_SUCCESS: 'Product added to cart successfully',
   ADDED_FAILED: 'Fail to add product to cart',
   FETCHED_SUCCESS: 'Cart fetched successfully',
@@ -73,6 +77,14 @@ export const CART_MESSAGES = {
   REMOVED_FAILED: 'Fail to remove product from cart',
   CLEAR_SUCCESS: 'Clear cart successfully',
   CLEAR_FAILED: 'Fail to clear cart',
+  PRODUCT_NOT_FOUND: 'Product not found in cart',
+  PRODUCT_ID_IS_REQUIRED: 'ProductID is required',
+  INVALID_PRODUCT_ID: 'ProductID is invalid',
+  NOT_IN_CART: 'Some selected product are not in cart',
+  NOT_SELECTED: 'No valid products selected',
+  QUANTITY_IS_REQUIRED: 'Quantity is required',
+  POSITIVE_INTEGER_QUANTITY: 'Quantity must be a positive integer',
+  NON_NEGATIVE_INTEGER_QUANTITY: 'Quantity must be a non-negative integer'
 } as const
 
 export const ORDER_MESSAGES = {
@@ -81,7 +93,15 @@ export const ORDER_MESSAGES = {
   PREPARED_FAILED: 'Fail to prepare order',
   CREATED_FAILED: 'Fail to create order',
   GET_CURRENT_SUCCESS: 'Get current order successfully',
-  GET_CURRENT_FAIL: 'Fail to get current order'
+  GET_CURRENT_FAIL: 'Fail to get current order',
+  GET_ALL_SUCCESS: 'Get all orders successfully',
+  GET_ALL_FAIL: 'Fail to get all orders',
+  GET_ORDER_BY_USER_SUCCESS: 'Get all your orders successfully',
+  GET_ORDER_BY_USER_FAIL: 'Fail to get all your orders',
+  GET_ORDER_BY_ID_SUCCESS: 'Get order by id successfully',
+  GET_ORDER_BY_ID_FAIL: 'Fail to get order by id',
+  EMPTY_OR_EXPIRED: 'Order is empty or expired',
+  NOT_FOUND: 'Order not found with id %s'
 } as const
 
 export const ORDER_DETAIL_MESSAGES = {} as const
