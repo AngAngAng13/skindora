@@ -32,6 +32,6 @@ ordersRouter.route('/cart').post(accessTokenValidator, wrapAsync(prepareOrderCon
 
 ordersRouter.route('/buy-now').post(accessTokenValidator, wrapAsync(buyNowController))
 
-ordersRouter.route('/checkout').post(accessTokenValidator, checkOutValidator, checkOutController)
+ordersRouter.route('/checkout').post(accessTokenValidator, checkOutValidator, wrapAsync(checkOutController))
 
 export default ordersRouter
