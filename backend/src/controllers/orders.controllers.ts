@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { Role } from '~/constants/enums'
+import { OrderStatus, Role } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ORDER_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { isAdminOrStaffValidator } from '~/middlewares/admin.middlewares'
@@ -162,7 +162,8 @@ export const getOrderByIdController = async (req: Request<OrderParams>, res: Res
 //Manage orders: Staff and Admin only
 export const getAllOrdersController = async (req: Request, res: Response) => {
   try {
-    const result = await ordersService.getAllOrders()
+    const {status} = req.query
+    const result = await ordersService.getAllOrders(status as OrderStatus | undefined)
     res.json({
       message: ORDER_MESSAGES.GET_ALL_SUCCESS,
       result

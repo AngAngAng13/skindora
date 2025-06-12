@@ -183,9 +183,13 @@ class OrdersService {
     }
   }
 
-  async getAllOrders() {
+  async getAllOrders(status?: OrderStatus) {
+    const filter: Record<string, any> = {}
+    if(status && Object.values(OrderStatus).includes(status)){
+      filter.Status = status
+    }
     //Nhúng orderDetail nếu cần
-    return await databaseService.orders.find({}).toArray()
+    return await databaseService.orders.find(filter).toArray()
   }
 
   async getAllOrdersByUserId(userId: string) {
