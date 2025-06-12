@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
-import { ParamsDictionary } from 'express-serve-static-core'
+import { NextFunction, ParamsDictionary } from 'express-serve-static-core'
+import { Filter, ObjectId } from 'mongodb'
 import { OrderStatus, Role } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ORDER_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
@@ -7,7 +8,10 @@ import { isAdminOrStaffValidator } from '~/middlewares/admin.middlewares'
 import { ErrorWithStatus } from '~/models/Errors'
 import { OrderParams, OrderReqBody } from '~/models/requests/Orders.requests'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
+import Order from '~/models/schemas/Orders/Order.schema'
+import databaseService from '~/services/database.services'
 import ordersService from '~/services/orders.services'
+import { sendPaginatedResponse } from '~/utils/pagination.helper'
 
 export const prepareOrderController = async (req: Request, res: Response) => {
   const { user_id } = req.decoded_authorization as TokenPayLoad
@@ -160,40 +164,19 @@ export const getOrderByIdController = async (req: Request<OrderParams>, res: Res
 }
 
 //Manage orders: Staff and Admin only
-export const getAllOrdersController = async (req: Request, res: Response) => {
-  try {
-    const {status} = req.query
-    const result = await ordersService.getAllOrders(status as OrderStatus | undefined)
-    res.json({
-      message: ORDER_MESSAGES.GET_ALL_SUCCESS,
-      result
-    })
-  } catch (error) {
-    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
-
-    res.status(statusCode).json({
-      message: ORDER_MESSAGES.GET_ALL_FAIL,
-      error: errorMessage
-    })
+export const getAllOrdersController = async (req: Request, res: Response, next: NextFunction) => {
+  const filter: Filter<Order> = {}
+  if(req.query.status){
+    filter.Status = req.query.status as OrderStatus
   }
+  await sendPaginatedResponse(res, next, databaseService.orders, req.query, filter)
 }
 
-export const getAllOrdersByUserIdController = async (req: Request<{ userId: string }>, res: Response) => {
-  try {
-    const { userId } = req.params
-    const result = await ordersService.getAllOrdersByUserId(userId)
-    res.json({
-      message: ORDER_MESSAGES.GET_ORDER_BY_ID_SUCCESS,
-      result
-    })
-  } catch (error) {
-    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
-
-    res.status(statusCode).json({
-      message: ORDER_MESSAGES.GET_ORDER_BY_ID_FAIL,
-      error: errorMessage
-    })
-  }
+export const getAllOrdersByUserIdController = async (req: Request<{ userId: string }>, res: Response, next: NextFunction) => {
+    const filter: Filter<Order> = {}
+    if(req.params.userId){
+      filter.UserID = new ObjectId(req.params.userId) as ObjectId
+    }
+    await sendPaginatedResponse(res, next, databaseService.orders, req.query, filter)
 }
+
