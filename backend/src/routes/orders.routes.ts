@@ -12,11 +12,11 @@ import {
   prepareOrderController
 } from '~/controllers/orders.controllers'
 import { isAdminOrStaffValidator } from '~/middlewares/admin.middlewares'
-import { checkOutValidator, getOrderByIdValidator } from '~/middlewares/orders.middlewares'
+import { checkOutValidator, getAllOrdersValidator, getOrderByIdValidator } from '~/middlewares/orders.middlewares'
 
 const ordersRouter = Router()
 
-ordersRouter.route('/').get(accessTokenValidator, isAdminOrStaffValidator, wrapAsync(getAllOrdersController))
+ordersRouter.route('/').get(accessTokenValidator, isAdminOrStaffValidator, getAllOrdersValidator, wrapAsync(getAllOrdersController))
 
 ordersRouter
   .route('/users/:userId')

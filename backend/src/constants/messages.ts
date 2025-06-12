@@ -138,7 +138,8 @@ export const ORDER_MESSAGES = {
   INVALID_CHECKOUT_TYPE: 'Invalid check-out type',
   REQUIRE_USER_ID: 'UserId is required',
   REQUIRE_ORDER_ID: 'OrderId is required',
-  INVALID_ORDER_ID: 'OrderId is invalid'
+  INVALID_ORDER_ID: 'OrderId is invalid',
+  INVALID_ORDER_STATUS: 'OrderStatus is invalid'
 } as const
 
 export const ORDER_DETAIL_MESSAGES = {} as const

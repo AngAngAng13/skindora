@@ -3,7 +3,7 @@ import { validate } from '~/utils/validation'
 import { CART_MESSAGES, ORDER_MESSAGES, PRODUCTS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { OrderType } from '~/constants/enums'
+import { OrderStatus, OrderType } from '~/constants/enums'
 import { ObjectId } from 'mongodb'
 import databaseService from '~/services/database.services'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
@@ -144,8 +144,30 @@ export const getOrderByIdValidator = validate(
                 status: HTTP_STATUS.NOT_FOUND
               })
             }
-            
+
             req.order = order
+            return true
+          }
+        }
+      }
+    }
+  )
+)
+
+export const getAllOrdersValidator = validate(
+  checkSchema(
+    {
+      status:{
+        in: ['query'],
+        optional: true,
+        custom: {
+          options: (value)=>{
+            if(!Object.values(OrderStatus).includes(value)){
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
             return true
           }
         }
