@@ -50,7 +50,8 @@ export const USERS_MESSAGES = {
   USER_ID_IS_REQUIRED: 'User ID is required',
   ACCESS_DENIED_ADMIN_ONLY: 'Access denied. Admins only',
   ACCESS_DENIED_ADMIN_OR_STAFF_ONLY: 'Access denied. Admins or staffs only',
-  INVALID_USER_ID: 'UserId is invalid'  
+  INVALID_USER_ID: 'UserId is invalid',
+  ACCESS_DENIED: 'Access denied'  
 } as const
 
 export const PRODUCTS_MESSAGES = {
@@ -135,7 +136,9 @@ export const ORDER_MESSAGES = {
   INVALID_REQUIRE_DATE: 'RequireDate must be a valid ISO8601 date',
   PRESENT_REQUIRE_DATE: 'RequireDate cannot be in the past',
   INVALID_CHECKOUT_TYPE: 'Invalid check-out type',
-  REQUIRE_USER_ID: 'UserId is required'
+  REQUIRE_USER_ID: 'UserId is required',
+  REQUIRE_ORDER_ID: 'OrderId is required',
+  INVALID_ORDER_ID: 'OrderId is invalid'
 } as const
 
 export const ORDER_DETAIL_MESSAGES = {} as const
