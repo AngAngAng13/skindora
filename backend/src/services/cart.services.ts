@@ -60,7 +60,7 @@ class CartService {
       })
     }
 
-    const productIndex = this.findProductIndex(cart, product._id?.toString() || '')
+    const productIndex = this.findProductIndex(cart, product._id?.toString()!)
     if (productIndex < 0) {
       throw new ErrorWithStatus({
         message: CART_MESSAGES.PRODUCT_NOT_FOUND,
@@ -121,8 +121,7 @@ class CartService {
   }
 
   async saveCart(cartKey: string, cartData: Cart) {
-    await redisClient.set(cartKey, JSON.stringify(cartData))
-    await redisClient.expire(cartKey, 60 * 60 * 24)
+    await redisClient.set(cartKey, JSON.stringify(cartData), {EX: 60 * 60 * 24})
   }
 
   getCartKey(userId: ObjectId | string) {

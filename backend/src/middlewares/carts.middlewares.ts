@@ -1,10 +1,9 @@
 import { checkSchema } from 'express-validator'
-import { ObjectId } from 'mongodb'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { CART_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
-import databaseService from '~/services/database.services'
 import { validate } from '~/utils/validation'
+import { validateProductExists } from './products.middlewares'
 
 export const addToCartValidator = validate(
   checkSchema(
@@ -14,22 +13,8 @@ export const addToCartValidator = validate(
           errorMessage: CART_MESSAGES.PRODUCT_ID_IS_REQUIRED
         },
         custom: {
-          options: async (value, { req }) => {
-            //Kiem tra ObjectId valid
-            if (!ObjectId.isValid(value)) {
-              throw new ErrorWithStatus({
-                message: CART_MESSAGES.INVALID_PRODUCT_ID,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
-
-            const product = await databaseService.products.findOne({ _id: new ObjectId(value) })
-            if (!product) {
-              throw new ErrorWithStatus({
-                message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND.replace('%s', value),
-                status: HTTP_STATUS.NOT_FOUND
-              })
-            }
+          options: async (value: string, {req}) => {
+            const product = await validateProductExists(value)
 
             if (!product.quantity || product.quantity <= 0) {
               throw new ErrorWithStatus({
@@ -37,7 +22,6 @@ export const addToCartValidator = validate(
                 status: HTTP_STATUS.BAD_REQUEST
               })
             }
-
             req.product = product
             return true
           }
@@ -64,23 +48,19 @@ export const updateCartValidator = validate(
       notEmpty: {
         errorMessage: CART_MESSAGES.PRODUCT_ID_IS_REQUIRED
       },
-      custom:{
-        options: async(value, {req}) => {
-          const product = await databaseService.products.findOne({_id: new ObjectId(value)})
-          if(!product){
-            throw new ErrorWithStatus({
-              message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND.replace('%s', value),
-              status: HTTP_STATUS.NOT_FOUND
-            })
-          }
+      custom: {
+        //options: (value, meta: {req, location, path})
+        options: async (value, { req }) => {
+          const product = await validateProductExists(value)
           req.product = product
+          return true
         }
       }
     },
     Quantity: {
       in: ['body'],
       isInt: {
-        options: {min: 0},
+        options: { min: 0 },
         errorMessage: CART_MESSAGES.NON_NEGATIVE_INTEGER_QUANTITY
       }
     }
@@ -94,34 +74,14 @@ export const removeProductFromCartValidator = validate(
         notEmpty: {
           errorMessage: CART_MESSAGES.PRODUCT_ID_IS_REQUIRED
         },
-        isMongoId: {
-          errorMessage: CART_MESSAGES.INVALID_PRODUCT_ID
-        },
         custom: {
-          options: async (value, { req }) => {
-            const product = await databaseService.products.findOne({ _id: new ObjectId(value) })
-            if (!product) {
-              throw new ErrorWithStatus({
-                message: CART_MESSAGES.PRODUCT_NOT_FOUND,
-                status: HTTP_STATUS.NOT_FOUND
-              })
-            }
+          options: async (value) => {
+            await validateProductExists(value)
             return true
           }
         }
       }
     },
-    ['params'] 
+    ['params']
   )
 )
-
-
-
-
-
-
-
-
-
-
-
