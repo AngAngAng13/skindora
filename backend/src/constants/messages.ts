@@ -48,7 +48,9 @@ export const USERS_MESSAGES = {
   EMAIL_NOT_VERIFIED: 'Email is not verified',
   IMAGE_URL_MUST_BE_VALID: 'Image URL must be a valid URL',
   USER_ID_IS_REQUIRED: 'User ID is required',
-  ACCESS_DENIED_ADMIN_ONLY: 'Access denied. Admins only'
+  ACCESS_DENIED_ADMIN_ONLY: 'Access denied. Admins only',
+  ACCESS_DENIED_ADMIN_OR_STAFF_ONLY: 'Access denied. Admins or staffs only',
+  INVALID_USER_ID: 'UserId is invalid'  
 } as const
 
 export const PRODUCTS_MESSAGES = {
@@ -63,7 +65,9 @@ export const PRODUCTS_MESSAGES = {
   PRODUCT_NOT_IN_WISH_LIST: 'Product not in wish list',
   GET_ALL_PRODUCT_SUCCESS: 'Get all products successfully',
   OUT_OF_STOCK: 'Product is out of stock',
-  NOT_ENOUGHT: 'Only %s available in stock'
+  NOT_ENOUGHT: 'Only %s available in stock',
+  PRODUCT_IDS_MUST_BE_ARRAY: 'ProductIds must be an array',
+  INVALID_PRODUCT_ID: 'ProductId is invalid'
 } as const
 
 export const REVIEW_MESSAGES = {
@@ -124,7 +128,14 @@ export const ORDER_MESSAGES = {
   GET_ORDER_BY_ID_SUCCESS: 'Get order by id successfully',
   GET_ORDER_BY_ID_FAIL: 'Fail to get order by id',
   EMPTY_OR_EXPIRED: 'Order is empty or expired',
-  NOT_FOUND: 'Order not found with id %s'
+  NOT_FOUND: 'Order not found with id %s',
+  SHIP_ADDRESS_REQUIRED: 'ShipAddress is required',
+  SHIP_ADDRESS_MUST_BE_STRING: 'ShipAddress must be a string',
+  REQUIRE_DATE_REQUIRED: 'RequireDate is required',
+  INVALID_REQUIRE_DATE: 'RequireDate must be a valid ISO8601 date',
+  PRESENT_REQUIRE_DATE: 'RequireDate cannot be in the past',
+  INVALID_CHECKOUT_TYPE: 'Invalid check-out type',
+  REQUIRE_USER_ID: 'UserId is required'
 } as const
 
 export const ORDER_DETAIL_MESSAGES = {} as const

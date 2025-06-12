@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { OrderStatus } from "~/constants/enums";
+import { OrderStatus, OrderType } from "~/constants/enums";
 
 export interface OrderReqBody {
   UserID: string
@@ -9,10 +9,16 @@ export interface OrderReqBody {
   RequireDate: string
   ShippedDate: string
   Status: OrderStatus
+  type?: OrderType 
 }
 
 export interface OrderParams{
-  id: string
+  orderId: string
+}
+
+export interface BuyNowReqBody{
+  productId: string,
+  quantity: number
 }
 
 export interface ProductInOrder{

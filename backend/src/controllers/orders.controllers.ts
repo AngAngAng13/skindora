@@ -1,6 +1,9 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
+import { Role } from '~/constants/enums'
+import HTTP_STATUS from '~/constants/httpStatus'
 import { ORDER_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
+import { isAdminOrStaffValidator } from '~/middlewares/admin.middlewares'
 import { ErrorWithStatus } from '~/models/Errors'
 import { OrderParams, OrderReqBody } from '~/models/requests/Orders.requests'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
@@ -30,7 +33,7 @@ export const prepareOrderController = async (req: Request, res: Response) => {
   }
 }
 
-export const createOrderController = async (req: Request<ParamsDictionary, any, OrderReqBody>, res: Response) => {
+export const buyNowController = async (req: Request, res: Response) => {
   const { user_id } = req.decoded_authorization as TokenPayLoad
 
   if (!user_id || typeof user_id !== 'string') {
@@ -38,7 +41,31 @@ export const createOrderController = async (req: Request<ParamsDictionary, any, 
     return
   }
   try {
-    const result = await ordersService.createOrder(req.body, user_id)
+    const result = await ordersService.buyNow(user_id, req.body)
+    res.json({
+      message: ORDER_MESSAGES.PREPARED_SUCCESS,
+      result
+    })
+  } catch (error) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: ORDER_MESSAGES.PREPARED_FAILED,
+      error: errorMessage
+    })
+  }
+}
+
+export const checkOutController = async (req: Request<ParamsDictionary, any, OrderReqBody>, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
+  try {
+    const result = await ordersService.checkOut(req.body, user_id)
     res.json({
       message: ORDER_MESSAGES.CREATED_SUCCESS,
       result
@@ -78,7 +105,62 @@ export const getCurrentOrderController = async (req: Request, res: Response) => 
   }
 }
 
-export const getAllOrdersController = async (req: Request<ParamsDictionary, any, OrderReqBody>, res: Response) => {
+export const getAllOrdersByAuthUserController = async (req: Request, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
+  try {
+    const result = await ordersService.getAllOrdersByUserId(user_id)
+    res.json({
+      message: ORDER_MESSAGES.GET_ORDER_BY_USER_SUCCESS,
+      result
+    })
+  } catch (error) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: ORDER_MESSAGES.GET_ORDER_BY_USER_FAIL,
+      error: errorMessage
+    })
+  }
+}
+
+export const getOrderByIdController = async (req: Request<OrderParams>, res: Response) => {
+  const order = req.order
+  const isAdminOrStaff = [Role.Admin, Role.Staff].includes(req.user?.roleid || 0)
+  const isOwner = req.user?._id?.toString() === order?.UserID?.toString()
+
+  if(!isAdminOrStaff && !isOwner){
+    res.status(HTTP_STATUS.FORBIDDEN).json({
+      status: HTTP_STATUS.FORBIDDEN,
+      message: USERS_MESSAGES.ACCESS_DENIED
+    })
+    return
+  }
+
+  try {
+    const result = await ordersService.getOrderById(order!)
+    res.json({
+      message: ORDER_MESSAGES.GET_ORDER_BY_ID_SUCCESS,
+      result
+    })
+  } catch (error) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: ORDER_MESSAGES.GET_ORDER_BY_ID_FAIL,
+      error: errorMessage
+    })
+  }
+}
+
+//Manage orders: Staff and Admin only
+export const getAllOrdersController = async (req: Request, res: Response) => {
   try {
     const result = await ordersService.getAllOrders()
     res.json({
@@ -96,34 +178,10 @@ export const getAllOrdersController = async (req: Request<ParamsDictionary, any,
   }
 }
 
-export const getAllOrdersByAuthUserController = async (req: Request, res: Response) => {
-  const { user_id } = req.decoded_authorization as TokenPayLoad
-
-  if (!user_id || typeof user_id !== 'string') {
-    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
-    return
-  }
+export const getAllOrdersByUserIdController = async (req: Request<{ userId: string }>, res: Response) => {
   try {
-    const result = await ordersService.getAllOrdersByAuthUser(user_id)
-    res.json({
-      message: ORDER_MESSAGES.GET_ORDER_BY_USER_SUCCESS,
-      result
-    })
-  } catch (error) {
-    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
-
-    res.status(statusCode).json({
-      message: ORDER_MESSAGES.GET_ORDER_BY_USER_FAIL,
-      error: errorMessage
-    })
-  }
-}
-
-export const getOrderByIdController = async (req: Request<OrderParams>, res: Response) => {
-  try {
-    const { id } = req.params
-    const result = await ordersService.getOrderById(id)
+    const { userId } = req.params
+    const result = await ordersService.getAllOrdersByUserId(userId)
     res.json({
       message: ORDER_MESSAGES.GET_ORDER_BY_ID_SUCCESS,
       result
@@ -138,4 +196,3 @@ export const getOrderByIdController = async (req: Request<OrderParams>, res: Res
     })
   }
 }
-
