@@ -11,6 +11,7 @@ import { TokenPayLoad } from '~/models/requests/Users.requests'
 import Order from '~/models/schemas/Orders/Order.schema'
 import databaseService from '~/services/database.services'
 import ordersService from '~/services/orders.services'
+import { getNextOrderStatus } from '~/utils/orderStatus'
 import { sendPaginatedResponse } from '~/utils/pagination.helper'
 
 export const prepareOrderController = async (req: Request, res: Response) => {
@@ -179,4 +180,34 @@ export const getAllOrdersByUserIdController = async (req: Request<{ userId: stri
     }
     await sendPaginatedResponse(res, next, databaseService.orders, req.query, filter)
 }
+
+export const moveToNextStatusController = async (req: Request<OrderParams>, res: Response) => {
+  try {
+    const order = req.order
+    const nextStatus = getNextOrderStatus(order?.Status!)
+
+    await databaseService.orders.updateOne(
+      { _id: order?._id },
+      { $set: { Status: nextStatus!, updatedAt: new Date() } }
+    )
+
+    res.status(200).json({
+      message: ORDER_MESSAGES.UPDATE_TO_NEXT_STATUS_SUCCESS,
+      result: {
+        orderId: order?._id,
+        previousStatus: order?.Status,
+        updatedStatus: nextStatus
+      }
+    })
+  } catch (error) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: ORDER_MESSAGES.UPDATE_TO_NEXT_STATUS_FAIL,
+      error: errorMessage
+    })
+  }
+}
+
 

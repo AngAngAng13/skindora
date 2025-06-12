@@ -51,7 +51,8 @@ export const USERS_MESSAGES = {
   ACCESS_DENIED_ADMIN_ONLY: 'Access denied. Admins only',
   ACCESS_DENIED_ADMIN_OR_STAFF_ONLY: 'Access denied. Admins or staffs only',
   INVALID_USER_ID: 'UserId is invalid',
-  ACCESS_DENIED: 'Access denied'  
+  ACCESS_DENIED: 'Access denied',
+  ACCESS_DENIED_STAFF_ONLY: 'Access denied. Staffs only'  
 } as const
 
 export const PRODUCTS_MESSAGES = {
@@ -139,7 +140,10 @@ export const ORDER_MESSAGES = {
   REQUIRE_USER_ID: 'UserId is required',
   REQUIRE_ORDER_ID: 'OrderId is required',
   INVALID_ORDER_ID: 'OrderId is invalid',
-  INVALID_ORDER_STATUS: 'OrderStatus is invalid'
+  INVALID_ORDER_STATUS: 'OrderStatus is invalid',
+  CANNOT_UPDATE_STATUS: 'Cannot update from status %s',
+  UPDATE_TO_NEXT_STATUS_FAIL: 'Cannot update from %s to %s ',
+  UPDATE_TO_NEXT_STATUS_SUCCESS: 'Update to next status successfully'
 } as const
 
 export const ORDER_DETAIL_MESSAGES = {} as const

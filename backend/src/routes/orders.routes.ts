@@ -9,10 +9,12 @@ import {
   getAllOrdersController,
   getCurrentOrderController,
   getOrderByIdController,
-  prepareOrderController
+  moveToNextStatusController,
+  prepareOrderController,
 } from '~/controllers/orders.controllers'
 import { isAdminOrStaffValidator } from '~/middlewares/admin.middlewares'
-import { checkOutValidator, getAllOrdersValidator, getOrderByIdValidator } from '~/middlewares/orders.middlewares'
+import { checkOutValidator, getAllOrdersValidator, getNextOrderStatusValidator, getOrderByIdValidator } from '~/middlewares/orders.middlewares'
+import { isStaffValidator } from '~/middlewares/staff.middlewares'
 
 const ordersRouter = Router()
 
@@ -25,6 +27,8 @@ ordersRouter
 ordersRouter.route('/current').get(accessTokenValidator, wrapAsync(getCurrentOrderController))
 
 ordersRouter.route('/me').get(accessTokenValidator, wrapAsync(getAllOrdersByAuthUserController))
+
+ordersRouter.route('/:orderId/next-status').patch(accessTokenValidator, isStaffValidator, getNextOrderStatusValidator, wrapAsync(moveToNextStatusController))
 
 ordersRouter.route('/:orderId').get(accessTokenValidator, getOrderByIdValidator, wrapAsync(getOrderByIdController))
 
