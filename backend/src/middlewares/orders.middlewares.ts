@@ -3,10 +3,12 @@ import { validate } from '~/utils/validation'
 import { CART_MESSAGES, ORDER_MESSAGES, PRODUCTS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { OrderStatus, OrderType } from '~/constants/enums'
+import { OrderStatus, OrderType, Role } from '~/constants/enums'
 import { ObjectId } from 'mongodb'
 import databaseService from '~/services/database.services'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
+import { canRoleTransition, getNextOrderStatus } from '~/utils/orderStatus'
+import { format } from 'util'
 
 export const checkOutValidator = validate(
   checkSchema(
@@ -30,7 +32,7 @@ export const checkOutValidator = validate(
           options: (value) => {
             const requiredDate = new Date(value)
             const now = new Date()
-            if(requiredDate < now){
+            if (requiredDate < now) {
               throw new ErrorWithStatus({
                 message: ORDER_MESSAGES.PRESENT_REQUIRE_DATE,
                 status: HTTP_STATUS.BAD_REQUEST
@@ -53,125 +55,168 @@ export const checkOutValidator = validate(
 )
 
 export const prepareOrderValidator = validate(
-  checkSchema(
-    {
-      selectedProductIDs:{
-        in: ['body'],
-        isArray: {
-          errorMessage: PRODUCTS_MESSAGES.PRODUCT_IDS_MUST_BE_ARRAY
-        },
-        notEmpty: {
-          errorMessage: CART_MESSAGES.NOT_SELECTED
-        }
+  checkSchema({
+    selectedProductIDs: {
+      in: ['body'],
+      isArray: {
+        errorMessage: PRODUCTS_MESSAGES.PRODUCT_IDS_MUST_BE_ARRAY
       },
-      'selectedProductIDs.*':{
-        custom: {
-          options: (value) => {
-            if(!ObjectId.isValid(value)) {
-              throw new ErrorWithStatus({
-                message: CART_MESSAGES.INVALID_PRODUCT_ID,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
-            return true
+      notEmpty: {
+        errorMessage: CART_MESSAGES.NOT_SELECTED
+      }
+    },
+    'selectedProductIDs.*': {
+      custom: {
+        options: (value) => {
+          if (!ObjectId.isValid(value)) {
+            throw new ErrorWithStatus({
+              message: CART_MESSAGES.INVALID_PRODUCT_ID,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
           }
+          return true
         }
       }
     }
-  )
+  })
 )
 
 export const getAllOrdersByUserIdValidator = validate(
-  checkSchema(
-    {
-      userId:{
-        in: ['params'],
-        notEmpty: {
-          errorMessage: ORDER_MESSAGES.REQUIRE_USER_ID
-        },
-        isMongoId: {
-          errorMessage: USERS_MESSAGES.INVALID_USER_ID
-        },
-        custom: {
-          options: async(value) => {
-            const user = await databaseService.users.findOne({_id: new ObjectId(value)})
-            if(!user){
-              throw new ErrorWithStatus({
-                message: USERS_MESSAGES.USER_NOT_FOUND,
-                status: HTTP_STATUS.NOT_FOUND
-              })
-            }
-            return true
+  checkSchema({
+    userId: {
+      in: ['params'],
+      notEmpty: {
+        errorMessage: ORDER_MESSAGES.REQUIRE_USER_ID
+      },
+      isMongoId: {
+        errorMessage: USERS_MESSAGES.INVALID_USER_ID
+      },
+      custom: {
+        options: async (value) => {
+          const user = await databaseService.users.findOne({ _id: new ObjectId(value) })
+          if (!user) {
+            throw new ErrorWithStatus({
+              message: USERS_MESSAGES.USER_NOT_FOUND,
+              status: HTTP_STATUS.NOT_FOUND
+            })
           }
+          return true
         }
       }
     }
-  )
+  })
 )
 
 export const getOrderByIdValidator = validate(
-  checkSchema(
-    {
-      orderId:{
-        in:['params'],
-        notEmpty: {
-          errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
-        },
-        isMongoId: {
-          errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
-        },
-        custom: {
-          options: async(value, {req}) => {
-            const { user_id } = req.decoded_authorization as TokenPayLoad
+  checkSchema({
+    orderId: {
+      in: ['params'],
+      notEmpty: {
+        errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
+      },
+      isMongoId: {
+        errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
+      },
+      custom: {
+        options: async (value, { req }) => {
+          const { user_id } = req.decoded_authorization as TokenPayLoad
 
-            const user = await databaseService.users.findOne({
-              _id: new ObjectId(user_id)
+          const user = await databaseService.users.findOne({
+            _id: new ObjectId(user_id)
+          })
+
+          if (user === null) {
+            throw new ErrorWithStatus({
+              message: USERS_MESSAGES.USER_NOT_FOUND,
+              status: HTTP_STATUS.UNAUTHORIZED
             })
-            
-            if (user === null) {
-              throw new ErrorWithStatus({
-                message: USERS_MESSAGES.USER_NOT_FOUND,
-                status: HTTP_STATUS.UNAUTHORIZED
-              })
-            }
-            req.user = user
-
-            const order = await databaseService.orders.findOne({_id: new ObjectId(value)})
-
-            if(!order){
-              throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.NOT_FOUND,
-                status: HTTP_STATUS.NOT_FOUND
-              })
-            }
-
-            req.order = order
-            return true
           }
+          req.user = user
+
+          const order = await databaseService.orders.findOne({ _id: new ObjectId(value) })
+
+          if (!order) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.NOT_FOUND,
+              status: HTTP_STATUS.NOT_FOUND
+            })
+          }
+
+          req.order = order
+          return true
         }
       }
     }
-  )
+  })
 )
 
 export const getAllOrdersValidator = validate(
-  checkSchema(
-    {
-      status:{
-        in: ['query'],
-        optional: true,
-        custom: {
-          options: (value)=>{
-            if(!Object.values(OrderStatus).includes(value)){
-              throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
-            return true
+  checkSchema({
+    status: {
+      in: ['query'],
+      optional: true,
+      custom: {
+        options: (value) => {
+          if (!Object.values(OrderStatus).includes(value)) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
           }
+          return true
         }
       }
     }
-  )
+  })
+)
+
+export const getNextOrderStatusValidator = validate(
+  checkSchema({
+    orderId: {
+      in: ['params'],
+      notEmpty: {
+        errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
+      },
+      isMongoId: {
+        errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
+      },
+      custom: {
+        options: async (value, { req }) => {
+          const order = await databaseService.orders.findOne({ _id: new ObjectId(value) })
+
+          if (!order) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.NOT_FOUND,
+              status: HTTP_STATUS.NOT_FOUND
+            })
+          }
+
+          if (!order.Status) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+
+          if (order.Status === OrderStatus.RETURNED || order.Status === OrderStatus.CANCELLED) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.CANNOT_UPDATE_STATUS.replace('%s', order.Status),
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+
+          const nextStatus = getNextOrderStatus(order.Status)
+          if (!canRoleTransition(Role.Staff, order.Status, nextStatus!)) {
+            throw new ErrorWithStatus({
+              message: format(ORDER_MESSAGES.UPDATE_TO_NEXT_STATUS_FAIL, order.Status, nextStatus),
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+
+          req.order = order
+          return true
+        }
+      }
+    }
+  })
 )
