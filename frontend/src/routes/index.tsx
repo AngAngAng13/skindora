@@ -22,6 +22,7 @@ const router = createBrowserRouter([
         children: [...protectedRoutes],
       },
     ],
+
     errorElement: <NotFoundPage />,
   },
 ]);
