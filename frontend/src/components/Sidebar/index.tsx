@@ -1,7 +1,9 @@
-import { ChartNoAxesColumnIncreasing, Home, Package, ShoppingCart, UsersRound } from "lucide-react";
+import { ChartNoAxesColumnIncreasing, Home, Package, ShoppingCart, User2, UsersRound } from "lucide-react";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
+import logo from "@/assets/logo.svg";
 import {
   Sidebar,
   SidebarContent,
@@ -15,11 +17,12 @@ import {
 import { Button } from "../ui/button";
 
 const items = [
-  { title: "Tổng quan", url: "/dashboard", icon: Home },
-  { title: "Khách hàng", url: "/customers", icon: UsersRound },
-  { title: "Sản phẩm", url: "/products", icon: Package },
-  { title: "Đơn hàng", url: "/orders", icon: ShoppingCart },
-  { title: "Thống kê", url: "/stats", icon: ChartNoAxesColumnIncreasing },
+  { title: "Tổng quan", url: "/admin", icon: Home },
+  { title: "Hồ sơ", url: "/admin/profile", icon: User2 },
+  { title: "Khách hàng", url: "/admin/customers", icon: UsersRound },
+  { title: "Sản phẩm", url: "/admin/products", icon: Package },
+  { title: "Đơn hàng", url: "/admin/orders", icon: ShoppingCart },
+  { title: "Thống kê", url: "/admin/statics", icon: ChartNoAxesColumnIncreasing },
 ];
 
 const AppSidebar: React.FC = () => {
@@ -32,10 +35,13 @@ const AppSidebar: React.FC = () => {
         <SidebarGroup>
           <SidebarGroupLabel className="py-10">
             <div className="p-2">
-              <h2 className="from-primary to-accent bg-gradient-to-r bg-clip-text text-2xl font-bold text-transparent">
+              <Link to="/" aria-label="Go to homepage">
+                <img src={logo} alt="Skindora - Premium Skincare Products" title={"Skindora"} loading="eager" />
+              </Link>
+              {/* <h2 className="from-primary to-accent bg-gradient-to-r bg-clip-text text-2xl font-bold text-transparent">
                 Skin Dora
-              </h2>
-              <p className="text-sm">Quản lý Dược Mỹ Phẩm</p>
+              </h2> */}
+              <p className="mt-1 text-sm">Quản lý Dược Mỹ Phẩm</p>
             </div>
           </SidebarGroupLabel>
           <SidebarGroupContent>
