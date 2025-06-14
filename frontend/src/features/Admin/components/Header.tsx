@@ -59,13 +59,13 @@ function ProfileDropdown({ logout, isLoading }: ProfileDropdownProps) {
   );
 }
 export function TopbarActions() {
-  const { user, logout, isLoading } = useAuth();
+  const { user, actions } = useAuth();
   return (
     <div className="flex items-center space-x-4">
       {user ? (
         <div className="flex items-center gap-4">
           <NotificationButton />
-          <ProfileDropdown logout={logout} isLoading={isLoading} />
+          <ProfileDropdown logout={actions.logout} isLoading={actions.isLoggingOut} />
         </div>
       ) : (
         <Link to="/auth/login">

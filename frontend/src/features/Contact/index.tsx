@@ -77,6 +77,7 @@ function ContactForm() {
     },
   });
   const handleSubmit = (data: ContactFormData) => {
+    console.log("Form submitted:", data);
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
