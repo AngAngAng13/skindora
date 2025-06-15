@@ -6,6 +6,7 @@ import Order from '~/models/schemas/Orders/Order.schema'
 import OrderDetail from '~/models/schemas/Orders/OrderDetail.schema'
 import FeedBack from '~/models/schemas/Reviewschema'
 import Product from '~/models/schemas/Product.schema'
+import Voucher from '~/models/schemas/Voucher.schema'
 
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@skindora.rbbhqia.mongodb.net/?retryWrites=true&w=majority&appName=skindora`
@@ -51,12 +52,20 @@ class DatabaseService {
     await this.users.createIndex({ email: 1, password: 1 })
   }
 
+  async indexVouchers() {
+    await this.vouchers.createIndex({ code: 1 }, { unique: true })
+  }
+
   get refreshTokens(): Collection<RefreshToken> {
     return this.db.collection(process.env.DB_REFRESH_TOKENS_COLLECTION as string)
   }
 
   get reviews(): Collection<FeedBack> {
     return this.db.collection(process.env.DB_REVIEW_COLLECTION as string)
+  }
+
+  get vouchers(): Collection<Voucher> {
+    return this.db.collection(process.env.DB_VOUCHER_COLLECTION as string)
   }
 }
 

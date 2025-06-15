@@ -1,9 +1,5 @@
 import { ObjectId } from 'mongodb'
-
-export enum DiscountType {
-  Percentage = 'percentage', // giảm giá theo %
-  Fixed = 'fixed' // giảm giá số tiền ví dụ giảm thẳng 50k
-}
+import { DiscountType } from '~/constants/enums'
 
 interface VoucherType {
   _id?: ObjectId
@@ -19,8 +15,8 @@ interface VoucherType {
   usedCount?: number
   userUsageLimit?: number
   isActive?: boolean
-  created_at?: Date
-  updated_at?: Date
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export default class Voucher {
@@ -37,8 +33,8 @@ export default class Voucher {
   usedCount: number
   userUsageLimit: number
   isActive: boolean
-  created_at: Date
-  updated_at: Date
+  createdAt: Date
+  updatedAt: Date
 
   constructor(voucher: VoucherType) {
     const currentDate = new Date()
@@ -58,7 +54,7 @@ export default class Voucher {
     this.usedCount = voucher.usedCount ?? 0 // số lần voucher đã được sử dụng thực tế
     this.userUsageLimit = voucher.userUsageLimit ?? 1 // giới hạn mỗi user chỉ được sử dụng 1 lần
     this.isActive = voucher.isActive ?? true
-    this.created_at = voucher.created_at || localTime
-    this.updated_at = voucher.updated_at || localTime
+    this.createdAt = voucher.createdAt || localTime
+    this.updatedAt = voucher.updatedAt || localTime
   }
 }
