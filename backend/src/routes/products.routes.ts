@@ -5,5 +5,5 @@ import { accessTokenValidator } from '~/middlewares/users.middlewares'
 import { wrapAsync } from '~/utils/handler'
 
 const productRouter = Router()
-productRouter.get('/get-all', accessTokenValidator, wrapAsync(getAllProductController))
+productRouter.get('/get-all', wrapAsync(getAllProductController))
 export default productRouter
