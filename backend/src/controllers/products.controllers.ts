@@ -133,6 +133,22 @@ export const getAllProductController = async (req: Request, res: Response, next:
   await sendPaginatedResponse(res, next, databaseService.products, req.query)
 }
 
+export const userGetAllProductController = async (req: Request, res: Response, next: NextFunction) => {
+  const projection = {
+    name_on_list: 1,
+    engName_on_list: 1,
+    price_on_list: 1,
+    image_on_list: 1,
+    hover_image_on_list: 1,
+    product_detail_url: 1,
+    productName_detail: 1,
+    engName_detail: 1,
+    _id: 0
+  }
+  const filter = {}
+  await sendPaginatedResponse(res, next, databaseService.products, req.query, filter, projection)
+}
+
 export const createNewProductController = async (
   req: Request<ParamsDictionary, any, CreateNewProductReqBody>,
   res: Response
