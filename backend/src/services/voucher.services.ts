@@ -51,7 +51,7 @@ class VouchersService {
       {
         $set: {
           isActive: false,
-          updated_at: localTime
+          updatedAt: localTime
         }
       },
       { returnDocument: 'after' }
