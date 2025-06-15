@@ -54,6 +54,6 @@ export enum FilterBrandState {
 }
 
 export enum DiscountType {
-  Percentage = 'percentage', // giảm giá theo %
-  Fixed = 'fixed' // giảm giá số tiền ví dụ giảm thẳng 50k
+  Percentage = 'PERCENTAGE', // giảm giá theo %
+  Fixed = 'FIXED' // giảm giá số tiền ví dụ giảm thẳng 50k
 }

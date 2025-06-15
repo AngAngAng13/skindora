@@ -29,6 +29,7 @@ app.use(express.urlencoded({ extended: true }))
 
 databaseService.connect().then(() => {
   databaseService.indexUsers()
+  databaseService.indexVouchers()
 })
 
 app.get('/', (req, res) => {

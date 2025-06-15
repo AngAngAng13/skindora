@@ -82,5 +82,34 @@ export const REVIEW_MESSAGES = {
 } as const
 
 export const ADMIN_MESSAGES = {
-  GET_ALL_USERS_SUCCESS: 'Get all users successfully'
+  GET_ALL_USERS_SUCCESS: 'Get all users successfully',
+  CODE_IS_REQUIRED: 'Code is required',
+  CODE_MUST_BE_A_STRING: 'Code must be a string',
+  CODE_IS_DUPLICATED: 'Code %s is duplicate',
+  CODE_LENGTH_INVALID: 'Code must be between 3 and 10 characters',
+  CODE_INVALID_CHARACTERS: 'Code must only contain letters and numbers',
+  DESCRIPTION_IS_REQUIRED: 'Description is required',
+  DESCRIPTION_MUST_BE_STRING: 'Description must be a string',
+  DESCRIPTION_LENGTH_INVALID: 'Description must be between 1 and 20 characters',
+  DISCOUNT_VALUE_IS_REQUIRED: 'Discount value is required',
+  DISCOUNT_VALUE_INVALID: 'Discount value must be a number',
+  DISCOUNT_VALUE_GREATER_THAN_0: 'Discount value must be a number greater than 0',
+  DISCOUNT_VALUE_GREATER_THAN_1000: 'Discount value must be a number greater than 1000',
+  DISCOUNT_VALUE_PERCENTAGE: 'Percentage discount must be between 0 and 100',
+  DISCOUNT_TYPE_IS_REQUIRED: 'Discount type is required',
+  DISCOUNT_TYPE_INVALID: 'Discount type must be one of: %s',
+  MAX_DISCOUNT_IS_REQUIRED: 'Max Discount Amount is required',
+  MAX_DISCOUNT_INVALID: 'Max Discount Amount must greate than 1000',
+  MIN_ORDER_IS_REQUIRED: 'Min Order Value is required',
+  MIN_ORDER_INVALID: 'Min Order Value must greate than 1000',
+  START_DATE_IS_REQUIRED: 'Start Date is required',
+  START_DATE_INVALID: 'Start Date must be in ISO8601 format',
+  END_DATE_IS_REQUIRED: 'End Date is required',
+  END_DATE_INVALID: 'End Date must be in ISO8601 format',
+  END_DATE_BEFORE_START_DATE: 'End date must be after start date',
+  USAGE_LIMIT_MUST_BE_NUMBER: 'Usage Limit must be a number and greater than 1',
+  USER_USAGE_LIMIT_MUST_BE_NUMBER: 'User Usage Limit must be a number and greater than 1',
+  START_DATE_NOT_FOUND: 'Start date is not available to validate end date',
+  VOUCHER_ID_IS_REQUIRED: 'Voucher ID is required',
+  VOUCHER_ID_NOT_FOUND: 'Voucher ID %s not found'
 } as const

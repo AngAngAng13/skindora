@@ -9,6 +9,7 @@ import {
 import { isAdminValidator } from '~/middlewares/admin.middlewares'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
+import { createVoucherValidator, updateVoucherValidator, voucherIdValidator } from '~/middlewares/voucher.middlewares'
 import { CreateNewVoucherReqBody } from '~/models/requests/Vouchers.request'
 import { wrapAsync } from '~/utils/handler'
 
@@ -32,12 +33,14 @@ adminRouter.post(
     'usageLimit',
     'userUsageLimit'
   ]),
+  createVoucherValidator,
   wrapAsync(createVoucherController)
 )
 adminRouter.put(
   '/manage-vouchers/:voucherId',
   accessTokenValidator,
   isAdminValidator,
+  voucherIdValidator,
   filterMiddleware<CreateNewVoucherReqBody>([
     'code',
     'description',
@@ -50,12 +53,14 @@ adminRouter.put(
     'usageLimit',
     'userUsageLimit'
   ]),
+  updateVoucherValidator,
   wrapAsync(updateVoucherController)
 )
 adminRouter.put(
   '/manage-vouchers/:voucherId/inactive',
   accessTokenValidator,
   isAdminValidator,
+  voucherIdValidator,
   wrapAsync(inactiveVoucherController)
 )
 
