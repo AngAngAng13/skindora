@@ -1,23 +1,18 @@
 import { Router } from 'express'
 import { getAllUserController } from '~/controllers/admin.controllers'
 import { createNewProductController, getAllProductController } from '~/controllers/products.controllers'
-import { createNewProductValidator, isAdminValidator } from '~/middlewares/admin.middlewares'
+import { createNewProductValidator, isAdminValidator, isValidToActiveValidator } from '~/middlewares/admin.middlewares'
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
 import { wrapAsync } from '~/utils/handler'
-import { Router } from 'express'
-import { getAllUserController } from '~/controllers/admin.controllers'
 import {
   getAllVoucherController,
   createVoucherController,
   updateVoucherController,
   inactiveVoucherController
 } from '~/controllers/voucher.controllers'
-import { isAdminValidator, isValidToActiveValidator } from '~/middlewares/admin.middlewares'
 import { filterMiddleware, parseDateFieldsMiddleware } from '~/middlewares/common.middlewares'
-import { accessTokenValidator } from '~/middlewares/users.middlewares'
 import { createVoucherValidator, updateVoucherValidator, voucherIdValidator } from '~/middlewares/voucher.middlewares'
 import { CreateNewVoucherReqBody, UpdateVoucherReqBody } from '~/models/requests/Vouchers.request'
-import { wrapAsync } from '~/utils/handler'
 
 const adminRouter = Router()
 //user management
