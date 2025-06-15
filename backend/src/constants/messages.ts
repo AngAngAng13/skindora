@@ -163,7 +163,7 @@ export const ADMIN_MESSAGES = {
   QUANTITY_EXCEEDS_LIMIT: 'Product quantity exceeds the limit of',
   STATE_MUST_BE_ONE_OF: 'State must be one of',
   CREATE_NEW_PRODUCT_SUCCESS: 'Create new product successfully',
-  
+  GET_USER_DETAIL_SUCCESS: 'Get user detail successfully'
 } as const
 
 export const CART_MESSAGES = {

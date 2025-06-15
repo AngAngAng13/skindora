@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getAllUserController } from '~/controllers/admin.controllers'
+import { getAllUserController, getUserDetailController } from '~/controllers/admin.controllers'
 import { createNewProductController, getAllProductController } from '~/controllers/products.controllers'
 import { createNewProductValidator, isAdminValidator } from '~/middlewares/admin.middlewares'
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
@@ -8,6 +8,7 @@ import { wrapAsync } from '~/utils/handler'
 const adminRouter = Router()
 //user management
 adminRouter.get('/manage-users/get-all', accessTokenValidator, isAdminValidator, wrapAsync(getAllUserController))
+adminRouter.get('/manage-users/:_id',accessTokenValidator, isAdminValidator, wrapAsync(getUserDetailController))
 
 //product management
 adminRouter.get('/manage-products/get-all', accessTokenValidator, isAdminValidator, wrapAsync(getAllProductController))
