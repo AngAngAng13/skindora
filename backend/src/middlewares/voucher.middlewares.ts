@@ -92,7 +92,6 @@ export const createVoucherValidator = validate(
               })
             }
           }
-
           return true
         }
       },
@@ -119,6 +118,7 @@ export const createVoucherValidator = validate(
               message: ADMIN_MESSAGES.MAX_DISCOUNT_INVALID
             })
           }
+          return true
         }
       },
       trim: true
@@ -213,8 +213,12 @@ export const updateVoucherValidator = validate(
         errorMessage: ADMIN_MESSAGES.DISCOUNT_VALUE_IS_REQUIRED
       },
       custom: {
-        options: (value, { req }) => {
-          const type = req.body.discountType
+        options: async (value, { req }) => {
+          let type = req.body.discountType
+          if (!type) {
+            const voucher = await databaseService.vouchers.findOne({ _id: new ObjectId(req.params?.voucherId) })
+            type = voucher?.discountType
+          }
           const num = parseInt(value, 10)
 
           if (isNaN(num)) {
