@@ -7,10 +7,10 @@ import {
   inactiveVoucherController
 } from '~/controllers/voucher.controllers'
 import { isAdminValidator } from '~/middlewares/admin.middlewares'
-import { filterMiddleware } from '~/middlewares/common.middlewares'
+import { filterMiddleware, parseDateFieldsMiddleware } from '~/middlewares/common.middlewares'
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
 import { createVoucherValidator, updateVoucherValidator, voucherIdValidator } from '~/middlewares/voucher.middlewares'
-import { CreateNewVoucherReqBody } from '~/models/requests/Vouchers.request'
+import { CreateNewVoucherReqBody, UpdateVoucherReqBody } from '~/models/requests/Vouchers.request'
 import { wrapAsync } from '~/utils/handler'
 
 const adminRouter = Router()
@@ -33,6 +33,7 @@ adminRouter.post(
     'usageLimit',
     'userUsageLimit'
   ]),
+  parseDateFieldsMiddleware(['startDate', 'endDate']),
   createVoucherValidator,
   wrapAsync(createVoucherController)
 )
@@ -41,12 +42,11 @@ adminRouter.put(
   accessTokenValidator,
   isAdminValidator,
   voucherIdValidator,
-  filterMiddleware<CreateNewVoucherReqBody>([
-    'code',
+  parseDateFieldsMiddleware(['endDate']),
+  filterMiddleware<UpdateVoucherReqBody>([
     'description',
     'discountType',
     'discountValue',
-    'startDate',
     'endDate',
     'maxDiscountAmount',
     'minOrderValue',
