@@ -4,6 +4,10 @@ import databaseService from './database.services'
 import { ErrorWithStatus } from '~/models/Errors'
 import { PRODUCTS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
+import { ProductInCache } from '~/models/requests/Cart.requests'
+import { CreateNewProductReqBody } from '~/models/requests/Product.requests'
+import Product from '~/models/schemas/Product.schema'
+import { ProductState } from '~/constants/enums'
 
 class ProductsService {
   async addToWishList(userID: string, productIds: string[]) {
@@ -61,6 +65,19 @@ class ProductsService {
     return productIds
   }
 
+  async cacheProductInfo(product: ProductInCache) {
+    const key = this.getProductInfoKey(product._id)
+    await redisClient.hSet(key, {
+      price: product.price.toString(),
+      name: product.name,
+      image: product.image
+    })
+    await redisClient.expire(key, 60 * 60 * 24)
+  }
+
+  getProductInfoKey(productId: string) {
+    return `${process.env.PRODUCT_INFO_KEY}${productId}`
+  }
   // lấy key trong redis
   async getAllWishListKeys() {
     const key: string[] = []
@@ -95,6 +112,26 @@ class ProductsService {
   //   //ví dụ //state: ProductState.ACTIVE
   //   return paginatedResult
   // }
+
+  async createNewProduct(payload: CreateNewProductReqBody) {
+    const productID = new ObjectId()
+    const currentDate = new Date()
+    const vietnamTimezoneOffset = 7 * 60
+    const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
+
+    const result = await databaseService.products.insertOne(
+      new Product({
+        ...payload,
+        _id: productID,
+        state: payload.state || ProductState.ACTIVE,
+        created_at: localTime,
+        updated_at: localTime
+      })
+    )
+    console.log(payload)
+    console.log(result)
+    return result
+  }
 }
 
 const productService = new ProductsService()
