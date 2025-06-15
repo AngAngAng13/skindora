@@ -44,7 +44,7 @@ export const updateVoucherController = async (req: Request, res: Response) => {
 export const inactiveVoucherController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { voucherId } = req.params ?? ''
-    const response = await voucherService.inactiveVoucher(voucherId)
+    const response = await voucherService.inactiveVoucher(voucherId, req.voucher)
     res.status(200).json({ status: 200, data: response })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500

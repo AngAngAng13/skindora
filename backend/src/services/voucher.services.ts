@@ -1,6 +1,6 @@
 import { CreateNewVoucherReqBody, UpdateVoucherReqBody } from '~/models/requests/Vouchers.request'
 import databaseService from './database.services'
-import Voucher from '~/models/schemas/Voucher.schema'
+import Voucher, { VoucherType } from '~/models/schemas/Voucher.schema'
 import { ObjectId } from 'mongodb'
 
 class VouchersService {
@@ -40,7 +40,7 @@ class VouchersService {
     )
   }
 
-  async inactiveVoucher(voucherId: string) {
+  async inactiveVoucher(voucherId: string, voucher?: VoucherType) {
     const currentDate = new Date()
     const vietnamTimezoneOffset = 7 * 60
     const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
@@ -50,7 +50,7 @@ class VouchersService {
       },
       {
         $set: {
-          isActive: false,
+          isActive: !voucher?.isActive,
           updatedAt: localTime
         }
       },

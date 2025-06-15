@@ -49,6 +49,7 @@ export const isValidToActiveValidator = async (req: Request, res: Response, next
     if (endDate <= now) {
       res.status(400).json({ message: ADMIN_MESSAGES.VOUCHER_EXPIRED })
     }
+    next()
   } catch (error) {
     let status: number = HTTP_STATUS.INTERNAL_SERVER_ERROR
     let message = 'Internal Server Error'
