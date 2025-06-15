@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 import { DiscountType } from '~/constants/enums'
 
-interface VoucherType {
+export interface VoucherType {
   _id?: ObjectId
   code: string
   description?: string

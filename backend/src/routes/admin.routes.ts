@@ -6,7 +6,7 @@ import {
   updateVoucherController,
   inactiveVoucherController
 } from '~/controllers/voucher.controllers'
-import { isAdminValidator } from '~/middlewares/admin.middlewares'
+import { isAdminValidator, isValidToActiveValidator } from '~/middlewares/admin.middlewares'
 import { filterMiddleware, parseDateFieldsMiddleware } from '~/middlewares/common.middlewares'
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
 import { createVoucherValidator, updateVoucherValidator, voucherIdValidator } from '~/middlewares/voucher.middlewares'
@@ -57,10 +57,11 @@ adminRouter.put(
   wrapAsync(updateVoucherController)
 )
 adminRouter.put(
-  '/manage-vouchers/:voucherId/inactive',
+  '/manage-vouchers/:voucherId/status',
   accessTokenValidator,
   isAdminValidator,
   voucherIdValidator,
+  isValidToActiveValidator,
   wrapAsync(inactiveVoucherController)
 )
 

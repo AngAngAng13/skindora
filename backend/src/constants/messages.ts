@@ -111,5 +111,6 @@ export const ADMIN_MESSAGES = {
   USER_USAGE_LIMIT_MUST_BE_NUMBER: 'User Usage Limit must be a number and greater than 1',
   START_DATE_NOT_FOUND: 'Start date is not available to validate end date',
   VOUCHER_ID_IS_REQUIRED: 'Voucher ID is required',
-  VOUCHER_ID_NOT_FOUND: 'Voucher ID %s not found'
+  VOUCHER_ID_NOT_FOUND: 'Voucher ID %s not found',
+  VOUCHER_EXPIRED: 'Voucher has already expired and cannot be reactivated'
 } as const

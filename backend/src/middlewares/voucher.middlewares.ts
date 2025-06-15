@@ -354,7 +354,7 @@ export const voucherIdValidator = validate(
         errorMessage: ADMIN_MESSAGES.VOUCHER_ID_IS_REQUIRED
       },
       custom: {
-        options: async (value: string) => {
+        options: async (value: string, { req }) => {
           const voucher = await databaseService.vouchers.findOne({ _id: new ObjectId(value.toString()) })
           if (!voucher) {
             const message = util.format(ADMIN_MESSAGES.VOUCHER_ID_NOT_FOUND, value)
@@ -364,6 +364,8 @@ export const voucherIdValidator = validate(
               message: message
             })
           }
+          req.voucher = voucher
+          return true
         }
       },
       trim: true
