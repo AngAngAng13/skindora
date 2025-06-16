@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { ObjectId } from 'mongodb'
+import { Filter, ObjectId } from 'mongodb'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ADMIN_MESSAGES, PRODUCTS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
@@ -10,6 +10,7 @@ import feedBackService from '~/services/review.services'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { sendPaginatedResponse } from '~/utils/pagination.helper'
 import { CreateNewProductReqBody } from '~/models/requests/Product.requests'
+import Review from '~/models/schemas/Reviewschema'
 
 export const addToWishListController = async (req: Request, res: Response): Promise<void> => {
   const { productId } = req.body
@@ -114,19 +115,17 @@ export const removeReviewController = async (req: Request, res: Response) => {
   }
 }
 
-export const getReviewController = async (req: Request, res: Response) => {
-  const { productId } = req.params
-  const limit = parseInt(req.query.limit as string) || 10
-  const currentPage = parseInt(req.query.currentPage as string) || 1
-
-  try {
-    const response = await feedBackService.getReview(productId, currentPage, limit)
-    const { data, ...info } = response
-    res.status(200).json({ status: 200, data, pagination: { ...info } })
-  } catch (error: any) {
-    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
+export const getReviewController = async (req: Request, res: Response, next: NextFunction) => {
+  const filter: Filter<Review> = {}
+  if (req.query.rating) {
+    const rating = parseInt(req.query.rating as string, 10)
+    if (!isNaN(rating)) {
+      filter.rating = rating
+    }
   }
+
+  filter.isDeleted = true
+  await sendPaginatedResponse(res, next, databaseService.reviews, req.query, filter)
 }
 
 export const getAllProductController = async (req: Request, res: Response, next: NextFunction) => {

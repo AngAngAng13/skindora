@@ -5,9 +5,20 @@ import voucherService from '~/services/voucher.services'
 import { ErrorWithStatus } from '~/models/Errors'
 import { ADMIN_MESSAGES } from '~/constants/messages'
 import util from 'util'
+import { Filter } from 'mongodb'
+import Voucher from '~/models/schemas/Voucher.schema'
 
 export const getAllVoucherController = async (req: Request, res: Response, next: NextFunction) => {
-  await sendPaginatedResponse(res, next, databaseService.vouchers, req.query)
+  const filter: Filter<Voucher> = {}
+  if (req.query.code) {
+    filter.code = {
+      $regex: req.query.code as string,
+      $options: 'i'
+    }
+  }
+
+  filter.isActive = true
+  await sendPaginatedResponse(res, next, databaseService.vouchers, req.query, filter)
 }
 
 export const createVoucherController = async (req: Request, res: Response, next: NextFunction) => {
