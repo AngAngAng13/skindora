@@ -144,6 +144,11 @@ export const ORDER_MESSAGES = {
   CANNOT_UPDATE_STATUS: 'Cannot update from status %s',
   UPDATE_TO_NEXT_STATUS_FAIL: 'Cannot update from %s to %s ',
   UPDATE_TO_NEXT_STATUS_SUCCESS: 'Update to next status successfully',
-  INVALID_DISCOUNT_VALUE: 'Invalid discount value, must be a non-negative number and not exceed 100'
+  INVALID_DISCOUNT_VALUE: 'Invalid discount value, must be a non-negative number and not exceed 100',
+  CANCEL_SUCCESS: 'Order canceled successfully',
+  CANCEL_FAIL: 'Fail to cancel order',
+  REQUIRE_REASON: 'Reason is required',
+  UNABLE_TO_CANCEL: 'Only order with status PENDING or CONFIRMED can be cancelled',
+  NO_CANCELATION_REQUESTED: 'Customer still not request for cancelation'
 } as const
 

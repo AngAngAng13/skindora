@@ -33,6 +33,31 @@ export enum OrderType {
   BUY_NOW = 'buy-now'
 }
 
+export enum PaymentMethod {
+  COD = 'COD',
+  ZALOPAY = 'ZALOPAY',
+  VNPAY = 'VNPAY'
+}
+
+export enum PaymentStatus {
+  UNPAID = 'UNPAID',
+  PAID = 'PAID'
+}
+
+export enum CancelRequestStatus {
+  REQUESTED  = 'REQUESTED',
+  APPROVED = 'APPROVED',
+  REJECTED  = 'REJECTED'
+}
+
+export enum RefundStatus {
+  NONE = 'NONE',
+  REQUESTED = 'REQUESTED',
+  PROCESSING = 'PROCESSING',
+  REFUNDED = 'REFUNDED',
+  FAILED = 'FAILED'
+}
+
 export enum ProductState {
   INACTIVE = 'INACTIVE', //Sản phẩm không hoạt động
   ACTIVE = 'ACTIVE', //Sản phẩm đang hoạt động
