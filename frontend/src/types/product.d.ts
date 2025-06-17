@@ -1,4 +1,4 @@
-export interface Product {
+export interface ProductFE {
   _id: string;
   name_on_list: string;
   engName_on_list: string;

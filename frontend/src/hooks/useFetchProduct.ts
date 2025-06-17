@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 
 import type { FetchProductProps } from "@/api/product";
 import { fetchProduct } from "@/api/product";
-import type { Product } from "@/types";
+import type { ProductFE } from "@/types/product";
 
 export const useFetchProduct = () => {
   const [loading, setLoading] = React.useState(false);
@@ -12,7 +12,7 @@ export const useFetchProduct = () => {
     totalPages: 1,
     totalRecords: 1,
   });
-  const [data, setData] = React.useState<Product[]>([]);
+  const [data, setData] = React.useState<ProductFE[]>([]);
   const changePage = React.useCallback((page: number) => {
     setParams((prev) => ({ ...prev, page }));
   }, []);
