@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express'
-import { ADMIN_MESSAGES } from '~/constants/messages'
 import databaseService from '~/services/database.services'
 import usersService from '~/services/users.services'
 import { sendPaginatedResponse } from '~/utils/pagination.helper'

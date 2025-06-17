@@ -139,7 +139,7 @@ export const getOrderByIdController = async (req: Request<OrderParams>, res: Res
   const isAdminOrStaff = [Role.Admin, Role.Staff].includes(req.user?.roleid || 0)
   const isOwner = req.user?._id?.toString() === order?.UserID?.toString()
 
-  if(!isAdminOrStaff && !isOwner){
+  if (!isAdminOrStaff && !isOwner) {
     res.status(HTTP_STATUS.FORBIDDEN).json({
       status: HTTP_STATUS.FORBIDDEN,
       message: USERS_MESSAGES.ACCESS_DENIED
@@ -167,18 +167,22 @@ export const getOrderByIdController = async (req: Request<OrderParams>, res: Res
 //Manage orders: Staff and Admin only
 export const getAllOrdersController = async (req: Request, res: Response, next: NextFunction) => {
   const filter: Filter<Order> = {}
-  if(req.query.status){
+  if (req.query.status) {
     filter.Status = req.query.status as OrderStatus
   }
   await sendPaginatedResponse(res, next, databaseService.orders, req.query, filter)
 }
 
-export const getAllOrdersByUserIdController = async (req: Request<{ userId: string }>, res: Response, next: NextFunction) => {
-    const filter: Filter<Order> = {}
-    if(req.params.userId){
-      filter.UserID = new ObjectId(req.params.userId) as ObjectId
-    }
-    await sendPaginatedResponse(res, next, databaseService.orders, req.query, filter)
+export const getAllOrdersByUserIdController = async (
+  req: Request<{ userId: string }>,
+  res: Response,
+  next: NextFunction
+) => {
+  const filter: Filter<Order> = {}
+  if (req.params.userId) {
+    filter.UserID = new ObjectId(req.params.userId) as ObjectId
+  }
+  await sendPaginatedResponse(res, next, databaseService.orders, req.query, filter)
 }
 
 export const moveToNextStatusController = async (req: Request<OrderParams>, res: Response) => {
@@ -209,5 +213,3 @@ export const moveToNextStatusController = async (req: Request<OrderParams>, res:
     })
   }
 }
-
-
