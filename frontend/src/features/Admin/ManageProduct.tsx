@@ -3,10 +3,7 @@ import React, { useEffect } from "react";
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
-import { useFetchOrder } from "@/hooks/useFetchOrders";
-import { useFetchProduct } from "@/hooks/useFetchProduct";
 
 import { ProductOverview } from "./components/ProductOverview";
 
@@ -15,16 +12,11 @@ const ManageProduct: React.FC = () => {
   const [activeView, setActiveView] = React.useState("overview");
 
   const { setHeaderName } = useHeader();
-  const { fetchListProduct, data, loading, changePage, params } = useFetchProduct();
+
   useEffect(() => {
     setHeaderName("Quản Lý Sản Phẩm");
   }, []);
-  useEffect(() => {
-    fetchListProduct();
-  }, [params.page]);
-  useEffect(() => {
-    console.log(data);
-  });
+
   return (
     <div className="flex min-h-screen bg-white">
       <div className="flex-1">

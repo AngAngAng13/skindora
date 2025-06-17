@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { type FetchListOrderProps, fetchListOrder } from "@/api/order";
 import type { Order } from "@/types/order";
