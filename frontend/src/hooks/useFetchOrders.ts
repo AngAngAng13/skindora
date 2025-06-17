@@ -21,9 +21,7 @@ export const useFetchOrder = () => {
   const changeStatus = useCallback((status: FetchListOrderProps["status"]) => {
     setParams((prev) => ({ ...prev, status }));
   }, []);
-  useEffect(() => {
-    console.log(params.status);
-  }, [params.status]);
+
   const changeLimit = useCallback((limit: number) => {
     setParams((prev) => ({ ...prev, page: 1, limit }));
   }, []);
