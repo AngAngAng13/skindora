@@ -5,13 +5,19 @@ import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
 import { useHeader } from "@/contexts/header.context";
 
-import TableProduct from "./components/TableProduct";
+import { ProductOverview } from "./components/ProductOverview";
+import type { Product } from "./components/ProductOverview";
 
 const ManageProduct: React.FC = () => {
+  const [, setSelectedProduct] = React.useState<Product | null>(null);
+  const [, setActiveView] = React.useState("overview");
+
   const { setHeaderName } = useHeader();
+
   useEffect(() => {
     setHeaderName("Quản Lý Sản Phẩm");
   }, []);
+
   return (
     <div className="flex min-h-screen bg-white">
       <div className="flex-1">
@@ -34,8 +40,12 @@ const ManageProduct: React.FC = () => {
           {/* <div>
             <Typography className="text-2xl font-bold">Quản lý khách hàng</Typography>
           </div> */}
-          <div className="mt-8">
+          {/* <div className="mt-8">
             <TableProduct />
+          </div>
+        </div> */}
+          <div>
+            <ProductOverview onSelectProduct={setSelectedProduct} onEditProduct={() => setActiveView("editor")} />
           </div>
         </div>
       </div>

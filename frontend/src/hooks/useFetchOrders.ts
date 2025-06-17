@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { type FetchListOrderProps, fetchListOrder } from "@/api/order";
 import type { Order } from "@/types/order";
@@ -21,9 +21,7 @@ export const useFetchOrder = () => {
   const changeStatus = useCallback((status: FetchListOrderProps["status"]) => {
     setParams((prev) => ({ ...prev, status }));
   }, []);
-  useEffect(() => {
-    console.log(params.status);
-  }, [params.status]);
+
   const changeLimit = useCallback((limit: number) => {
     setParams((prev) => ({ ...prev, page: 1, limit }));
   }, []);
