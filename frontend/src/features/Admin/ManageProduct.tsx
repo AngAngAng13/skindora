@@ -9,8 +9,8 @@ import { ProductOverview } from "./components/ProductOverview";
 import type { Product } from "./components/ProductOverview";
 
 const ManageProduct: React.FC = () => {
-  const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
-  const [activeView, setActiveView] = React.useState("overview");
+  const [, setSelectedProduct] = React.useState<Product | null>(null);
+  const [, setActiveView] = React.useState("overview");
 
   const { setHeaderName } = useHeader();
 
