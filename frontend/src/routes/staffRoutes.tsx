@@ -1,19 +1,18 @@
 import type { RouteObject } from "react-router-dom";
 
-import Admin from "@/features/Admin";
 import ManageUsers from "@/features/Admin/ManageCustomer";
-import ManageOrders from "@/features/Admin/ManageOrders";
 import ManageProducts from "@/features/Admin/ManageProduct";
 import ManageStatics from "@/features/Admin/ManageStatics";
 import ProfileAdmin from "@/features/Admin/ProfileAdmin";
-import AdminLayout from "@/layouts/adminLayout";
+import ManageOrdersStaff from "@/features/Staff/ManageOrdersStaff";
+import StaffLayout from "@/layouts/staffLayout";
 
-const adminRoutes: RouteObject[] = [
+const staffRoutes: RouteObject[] = [
   {
-    path: "/admin",
-    element: <AdminLayout />,
+    path: "/staff",
+    element: <StaffLayout />,
     children: [
-      { index: true, element: <Admin /> },
+      { index: true, element: <ProfileAdmin /> },
       {
         path: "customers",
         element: <ManageUsers />,
@@ -24,7 +23,7 @@ const adminRoutes: RouteObject[] = [
       },
       {
         path: "orders",
-        element: <ManageOrders />,
+        element: <ManageOrdersStaff />,
       },
       {
         path: "profile",
@@ -38,4 +37,4 @@ const adminRoutes: RouteObject[] = [
   },
 ];
 
-export default adminRoutes;
+export default staffRoutes;

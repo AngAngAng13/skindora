@@ -59,19 +59,23 @@ function ProfileDropdown({ logout, isLoading }: ProfileDropdownProps) {
   );
 }
 export function TopbarActions() {
-  const { user, actions } = useAuth();
+  const { actions } = useAuth();
+  // const navigate = useNavigate();
+  // if (!user) {
+  //   navigate("/auth/login");
+  // }
   return (
     <div className="flex items-center space-x-4">
-      {user ? (
-        <div className="flex items-center gap-4">
-          <NotificationButton />
-          <ProfileDropdown logout={actions.logout} isLoading={actions.isLoggingOut} />
-        </div>
-      ) : (
-        <Link to="/auth/login">
-          <Button variant="outline">Đăng nhập</Button>
-        </Link>
-      )}
+      {/* {user ? ( */}
+      <div className="flex items-center gap-4">
+        <NotificationButton />
+        <ProfileDropdown logout={actions.logout} isLoading={actions.isLoggingOut} />
+      </div>
+      {/* // ) : (
+      //   <Link to="/auth/login">
+      //     <Button variant="outline">Đăng nhập</Button>
+      //   </Link>
+      // )} */}
     </div>
   );
 }

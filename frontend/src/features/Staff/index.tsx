@@ -1,17 +1,15 @@
 // src/pages/Admin/Admin.tsx
 import { Package, Plus, ShoppingCart, User2 } from "lucide-react";
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
 import { useHeader } from "@/contexts/header.context";
 import AppTable from "@/features/Admin/components/Table";
 
-import { CardDemo } from "./components/Card";
-import { CardIcon } from "./components/CardIcon";
+import { CardDemo } from "../Admin/components/Card";
 
-const Admin: React.FC = () => {
+const Staff: React.FC = () => {
   const { setHeaderName } = useHeader();
   useEffect(() => {
     setHeaderName("Tổng quan");
@@ -55,7 +53,7 @@ const Admin: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="w-full gap-4 py-6">
+      {/* <div className="w-full gap-4 py-6">
         <div className="mb-4">
           <Typography className="text-lg font-medium">Truy cập nhanh</Typography>
         </div>
@@ -74,9 +72,9 @@ const Admin: React.FC = () => {
             <CardIcon icon="📊" title="Báo cáo" />
           </Link>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
 
-export default Admin;
+export default Staff;

@@ -8,6 +8,7 @@ import privateRoutes from "./adminRoutes";
 import adminRoutes from "./adminRoutes";
 import protectedRoutes from "./protectedRoutes";
 import publicRoutes from "./publicRoutes";
+import staffRoutes from "./staffRoutes";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
       ...publicRoutes,
       ...privateRoutes,
       ...adminRoutes,
+      ...staffRoutes,
       {
         element: <ProtectedRoute />,
         children: [...protectedRoutes],

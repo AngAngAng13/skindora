@@ -162,8 +162,7 @@ export const ADMIN_MESSAGES = {
   QUANTITY_MUST_BE_NON_NEGATIVE: 'Product quantity must be a non-negative integer',
   QUANTITY_EXCEEDS_LIMIT: 'Product quantity exceeds the limit of',
   STATE_MUST_BE_ONE_OF: 'State must be one of',
-  CREATE_NEW_PRODUCT_SUCCESS: 'Create new product successfully',
-  
+  CREATE_NEW_PRODUCT_SUCCESS: 'Create new product successfully'
 } as const
 
 export const CART_MESSAGES = {
