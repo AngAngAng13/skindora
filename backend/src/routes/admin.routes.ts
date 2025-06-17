@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getAllUserController } from '~/controllers/admin.controllers'
+import { getAllUserController, getUserDetailController } from '~/controllers/admin.controllers'
 import { createNewProductController, getAllProductController } from '~/controllers/products.controllers'
 import { createNewProductValidator, isAdminValidator, isValidToActiveValidator } from '~/middlewares/admin.middlewares'
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
@@ -17,6 +17,7 @@ import { CreateNewVoucherReqBody, UpdateVoucherReqBody } from '~/models/requests
 const adminRouter = Router()
 //user management
 adminRouter.get('/manage-users/get-all', accessTokenValidator, isAdminValidator, wrapAsync(getAllUserController))
+adminRouter.get('/manage-users/:_id',accessTokenValidator, isAdminValidator, wrapAsync(getUserDetailController))
 adminRouter.get('/manage-vouchers/get-all', accessTokenValidator, isAdminValidator, wrapAsync(getAllVoucherController))
 adminRouter.post(
   '/manage-vouchers',

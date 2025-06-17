@@ -395,6 +395,20 @@ class UsersService {
       throw error
     }
   }
+
+  async getUserDetail(_id: string) {
+    //tìm user dựa vào username
+    const user = await databaseService.users.findOne({
+      _id: new ObjectId(_id)
+    })
+    if (user == null) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    return user
+  }
 }
 
 const usersService = new UsersService()

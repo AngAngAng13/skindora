@@ -192,7 +192,8 @@ export const ADMIN_MESSAGES = {
   START_DATE_NOT_FOUND: 'Start date is not available to validate end date',
   VOUCHER_ID_IS_REQUIRED: 'Voucher ID is required',
   VOUCHER_ID_NOT_FOUND: 'Voucher ID %s not found',
-  VOUCHER_EXPIRED: 'Voucher has already expired and cannot be reactivated'
+  VOUCHER_EXPIRED: 'Voucher has already expired and cannot be reactivated',
+  GET_USER_DETAIL_SUCCESS: 'Get user detail successfully'
 } as const
 
 export const CART_MESSAGES = {
