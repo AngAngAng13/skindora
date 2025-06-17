@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { useHeader } from "@/contexts/header.context";
 
 import { ProductOverview } from "./components/ProductOverview";
+import type { Product } from "./components/ProductOverview";
 
 const ManageProduct: React.FC = () => {
-  const [selectedProduct, setSelectedProduct] = React.useState(null);
+  const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
   const [activeView, setActiveView] = React.useState("overview");
 
   const { setHeaderName } = useHeader();
