@@ -63,7 +63,7 @@ class UsersService {
   private signEmailVerifyToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     return signToken({
       payload: { user_id, token_type: TokenType.EmailVerificationToken, verify },
-      options: { expiresIn: '3d' },
+      options: { expiresIn: '1d' },
       privateKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
     })
   }
@@ -148,7 +148,6 @@ class UsersService {
         }
       })
       const verifyURL = `http://localhost:${process.env.PORT}/users/verify-email?email_verify_token=${email_verify_token}` // Đường dẫn xác nhận email
-      
 
       const htmlContent = readEmailTemplate('verify-email.html', {
         first_name: payload.first_name,
@@ -159,7 +158,7 @@ class UsersService {
         from: `"SKINDORA" <${process.env.EMAIL_APP}>`,
         to: payload.email,
         subject: 'Xác nhận đăng ký tài khoản SKINDORA',
-        html: htmlContent // ✅ Sử dụng HTML từ file
+        html: htmlContent //truyền nội dung html vào
       }
 
       transporter.sendMail(mailOptions)
@@ -385,6 +384,30 @@ class UsersService {
         verify: UserVerifyStatus.Unverified
       }
     }
+  }
+
+  async getAllUser() {
+    try {
+      const users = await databaseService.users.find({}).toArray()
+      return users
+    } catch (error) {
+      console.error('Error fetching users:', error)
+      throw error
+    }
+  }
+
+  async getUserDetail(_id: string) {
+    //tìm user dựa vào username
+    const user = await databaseService.users.findOne({
+      _id: new ObjectId(_id)
+    })
+    if (user == null) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    return user
   }
 }
 

@@ -27,3 +27,38 @@ export enum OrderStatus {
   RETURNED = 'RETURNED', // Đã hoàn trả hàng
   FAILED = 'FAILED' // Giao hàng thất bại (shipper không giao được)
 }
+
+export enum OrderType {
+  CART = 'cart',
+  BUY_NOW = 'buy-now'
+}
+
+export enum ProductState {
+  INACTIVE = 'INACTIVE', //Sản phẩm không hoạt động
+  ACTIVE = 'ACTIVE', //Sản phẩm đang hoạt động
+  OUT_OF_STOCK = 'OUT_OF_STOCK', //Hết hàng
+  DISCONTINUED = 'DISCONTINUED' //Ngừng kinh doanh
+}
+
+export enum FilterBrandState {
+  //trạng thái cơ bản
+  INACTIVE = 'INACTIVE',//0 - //Thương hiệu không hoạt động(chưa bắt đầu hoặc tạm thời không active)
+  ACTIVE = 'ACTIVE',//1 - //Thương hiệu độc lập đang hoạt động
+
+  //đối tác
+  COLLABORATION = 'COLLABORATION',//2 - //Đang collab với brand khác
+  PARTNERSHIP = 'PARTNERSHIP',//3 - //Quan hệ đối tác dài hạn
+
+  //đặc biệt
+  EXCLUSIVE = 'EXCLUSIVE',//4 - //Độc quyền phân phối
+  LIMITED_EDITION = 'LIMITED_EDITION',//5 - //Phiên bản giới hạn collab
+
+  //Inactive states
+  SUSPENDED = 'SUSPENDED',//6 - //Tạm ngưng hoạt động do vi phạm policy hoặc vấn đề tạm thờiTạm ngưng hoạt động
+  DISCONTINUED = 'DISCONTINUED'//7 - //Ngừng hợp tác/kinh doanh vĩnh viễn
+}
+
+export enum DiscountType {
+  Percentage = 'PERCENTAGE', // giảm giá theo %
+  Fixed = 'FIXED' // giảm giá số tiền ví dụ giảm thẳng 50k
+}

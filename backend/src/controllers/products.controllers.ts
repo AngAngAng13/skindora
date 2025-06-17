@@ -1,11 +1,16 @@
-import { Request, Response } from 'express'
-import { ObjectId } from 'mongodb'
-import { PRODUCTS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
+import { Request, Response, NextFunction } from 'express'
+import { Filter, ObjectId } from 'mongodb'
+import HTTP_STATUS from '~/constants/httpStatus'
+import { ADMIN_MESSAGES, PRODUCTS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
 import databaseService from '~/services/database.services'
-import productService from '~/services/Products/product.services'
+import productService from '~/services/product.services'
 import feedBackService from '~/services/review.services'
+import { ParamsDictionary } from 'express-serve-static-core'
+import { sendPaginatedResponse } from '~/utils/pagination.helper'
+import { CreateNewProductReqBody } from '~/models/requests/Product.requests'
+import Review from '~/models/schemas/Reviewschema'
 
 export const addToWishListController = async (req: Request, res: Response): Promise<void> => {
   const { productId } = req.body
@@ -32,7 +37,7 @@ export const addToWishListController = async (req: Request, res: Response): Prom
     res.status(200).json({ status: 200, message: PRODUCTS_MESSAGES.PRODUCT_ADDED_TO_WISHLIST })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
 
@@ -49,7 +54,7 @@ export const getWishListController = async (req: Request, res: Response): Promis
     res.status(200).json({ status: 200, data: wishList })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
 
@@ -67,7 +72,7 @@ export const removeFromWishListController = async (req: Request, res: Response):
     res.status(200).json({ status: 200, data: wishList })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
 
@@ -80,7 +85,7 @@ export const addNewReviewController = async (req: Request, res: Response) => {
     res.status(200).json({ status: 200, data: response })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
 
@@ -93,7 +98,7 @@ export const updateReviewController = async (req: Request, res: Response) => {
     res.status(200).json({ status: 200, data: response })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
 
@@ -106,21 +111,55 @@ export const removeReviewController = async (req: Request, res: Response) => {
     res.status(200).json({ status: 200, data: response })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
 
-export const getReviewController = async (req: Request, res: Response) => {
-  const { productId } = req.params
-  const limit = parseInt(req.query.limit as string) || 10
-  const currentPage = parseInt(req.query.currentPage as string) || 1
+export const getReviewController = async (req: Request, res: Response, next: NextFunction) => {
+  const filter: Filter<Review> = {}
+  if (req.query.rating) {
+    const rating = parseInt(req.query.rating as string, 10)
+    if (!isNaN(rating)) {
+      filter.rating = rating
+    }
+  }
 
+  filter.isDeleted = true
+  await sendPaginatedResponse(res, next, databaseService.reviews, req.query, filter)
+}
+
+export const getAllProductController = async (req: Request, res: Response, next: NextFunction) => {
+  await sendPaginatedResponse(res, next, databaseService.products, req.query)
+}
+
+export const userGetAllProductController = async (req: Request, res: Response, next: NextFunction) => {
+  const projection = {
+    name_on_list: 1,
+    engName_on_list: 1,
+    price_on_list: 1,
+    image_on_list: 1,
+    hover_image_on_list: 1,
+    product_detail_url: 1,
+    productName_detail: 1,
+    engName_detail: 1,
+    _id: 0
+  }
+  const filter = {}
+  await sendPaginatedResponse(res, next, databaseService.products, req.query, filter, projection)
+}
+
+export const createNewProductController = async (
+  req: Request<ParamsDictionary, any, CreateNewProductReqBody>,
+  res: Response
+) => {
   try {
-    const response = await feedBackService.getReview(productId, currentPage, limit)
-    const { data, ...info } = response
-    res.status(200).json({ status: 200, data, ...info })
-  } catch (error: any) {
-    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    const result = await productService.createNewProduct(req.body)
+    res.json({
+      message: ADMIN_MESSAGES.CREATE_NEW_PRODUCT_SUCCESS,
+      result
+    })
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : HTTP_STATUS.INTERNAL_SERVER_ERROR
+    res.status(500).json({ error: errorMessage })
   }
 }
