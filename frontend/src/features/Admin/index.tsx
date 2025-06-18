@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
 import { useHeader } from "@/contexts/header.context";
-import AppTable from "@/features/Admin/components/Table";
 
+import ManageOrdersStaff from "../Staff/ManageOrdersStaff";
 import { CardDemo } from "./components/Card";
 import { CardIcon } from "./components/CardIcon";
 
@@ -51,7 +51,7 @@ const Admin: React.FC = () => {
             </div>
           </div>
           <div>
-            <AppTable />
+            <ManageOrdersStaff />
           </div>
         </div>
       </div>
