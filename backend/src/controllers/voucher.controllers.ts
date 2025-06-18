@@ -1,24 +1,48 @@
 import { Request, Response, NextFunction } from 'express'
-import databaseService from '~/services/database.services'
-import { sendPaginatedResponse } from '~/utils/pagination.helper'
+import { sendPaginatedResponse, sendPaginatedResponseFromRedis } from '~/utils/pagination.helper'
 import voucherService from '~/services/voucher.services'
 import { ErrorWithStatus } from '~/models/Errors'
 import { ADMIN_MESSAGES } from '~/constants/messages'
 import util from 'util'
 import { Filter } from 'mongodb'
 import Voucher from '~/models/schemas/Voucher.schema'
+import redisClient from '~/services/redis.services'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 export const getAllVoucherController = async (req: Request, res: Response, next: NextFunction) => {
-  const filter: Filter<Voucher> = {}
-  if (req.query.code) {
-    filter.code = {
-      $regex: req.query.code as string,
-      $options: 'i'
-    }
-  }
+  try {
+    const filter: Filter<Voucher> = {}
 
-  filter.isActive = true
-  await sendPaginatedResponse(res, next, databaseService.vouchers, req.query, filter)
+    if (req.query.code) {
+      filter.code = {
+        $regex: req.query.code as string,
+        $options: 'i'
+      }
+    }
+
+    filter.isActive = true
+
+    const key = process.env.VOUCHER_KEY ?? ''
+    const voucherList = await redisClient.get(key)
+
+    if (voucherList) {
+      let vouchers: Voucher[] = JSON.parse(voucherList)
+
+      if (req.query.code) {
+        const regex = new RegExp(req.query.code as string, 'i')
+        vouchers = vouchers.filter((voucher) => regex.test(voucher.code))
+      }
+
+      sendPaginatedResponseFromRedis(res, next, vouchers, req.query)
+      return
+    }
+
+    // await sendPaginatedResponse(res, next, databaseService.vouchers, req.query, filter)
+  } catch (err) {
+    next(err)
+  }
 }
 
 export const createVoucherController = async (req: Request, res: Response, next: NextFunction) => {

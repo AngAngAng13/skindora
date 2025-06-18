@@ -15,13 +15,17 @@ export async function connectProducer() {
   console.log('Kafka connected')
 }
 
-export async function sendMessage(topic: string, key: string, value: any) {
+export function waitForKafkaReady(ms = 10000) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+export async function sendMessage(topic: string, key: string, value: string) {
   await producer.send({
     topic,
     messages: [
       {
         key,
-        value: JSON.stringify(value)
+        value
       }
     ]
   })
