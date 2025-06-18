@@ -6,6 +6,7 @@ import ManageOrders from "@/features/Admin/ManageOrders";
 import ManageProducts from "@/features/Admin/ManageProduct";
 import ManageStatics from "@/features/Admin/ManageStatics";
 import ProfileAdmin from "@/features/Admin/ProfileAdmin";
+import AddProductPage from "@/features/Admin/components/AddProduct";
 import AdminLayout from "@/layouts/adminLayout";
 
 const adminRoutes: RouteObject[] = [
@@ -21,6 +22,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "products",
         element: <ManageProducts />,
+      },
+      {
+        path: "createProduct",
+        element: <AddProductPage />,
       },
       {
         path: "orders",
