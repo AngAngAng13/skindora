@@ -193,7 +193,16 @@ export const ADMIN_MESSAGES = {
   VOUCHER_ID_IS_REQUIRED: 'Voucher ID is required',
   VOUCHER_ID_NOT_FOUND: 'Voucher ID %s not found',
   VOUCHER_EXPIRED: 'Voucher has already expired and cannot be reactivated',
-  GET_USER_DETAIL_SUCCESS: 'Get user detail successfully'
+  GET_USER_DETAIL_SUCCESS: 'Get user detail successfully',
+  FILTER_BRAND_OPTION_NAME_IS_REQUIRED: 'Filter brand option name is required',
+  FILTER_BRAND_OPTION_NAME_MUST_BE_A_STRING: 'Filter brand option name must be a string',
+  FILTER_BRAND_CATEGORY_NAME_IS_REQUIRED: 'Filter brand category name is required',
+  FILTER_BRAND_CATEGORY_NAME_MUST_BE_A_STRING: 'Filter brand category name must be a string',
+  FILTER_BRAND_CATEGORY_PARAM_IS_REQUIRED: 'Filter brand category param is required',
+  FILTER_BRAND_CATEGORY_PARAM_MUST_BE_A_STRING: 'Filter brand category param must be a string',
+  FILTER_BRAND_STATE_MUST_BE_A_STRING: 'Filter brand state must be a string',
+  FILTER_BRAND_STATE_MUST_BE_ONE_OF: 'Filter brand state must be one of',
+  STATE_MUST_BE_A_STRING: 'State must be a string',
 } as const
 
 export const CART_MESSAGES = {

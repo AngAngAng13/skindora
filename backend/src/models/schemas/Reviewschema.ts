@@ -40,8 +40,8 @@ export default class Review {
     this.comment = review.comment
     this.images = review.images || []
     this.videos = review.videos || []
-    this.createdAt = localTime || review.createdAt
-    this.modifiedAt = localTime || review.modifiedAt
+    this.createdAt = review.createdAt || localTime
+    this.modifiedAt =  review.modifiedAt || localTime
     this.isDeleted = review.isDeleted || false
   }
 }

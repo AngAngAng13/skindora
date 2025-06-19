@@ -5,7 +5,7 @@ import { ErrorWithStatus } from '~/models/Errors'
 import databaseService from '~/services/database.services'
 import { Request, Response, NextFunction } from 'express'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
-import { ProductState, Role } from '~/constants/enums'
+import { FilterBrandState, ProductState, Role } from '~/constants/enums'
 import { validate } from '~/utils/validation'
 import { ParamSchema, checkSchema } from 'express-validator'
 import filterBrandService from '~/services/filterBrand.services'
@@ -502,7 +502,7 @@ export const createNewProductValidator = validate(
       state: {
         optional: true,
         isString: {
-          errorMessage: 'State must be a string'
+          errorMessage: ADMIN_MESSAGES.STATE_MUST_BE_A_STRING
         },
         isIn: {
           options: [Object.values(ProductState)],
@@ -538,3 +538,45 @@ export const isValidToActiveValidator = async (req: Request, res: Response, next
     res.status(status).json({ message })
   }
 }
+
+export const createNewFilterBrandValidator = validate(
+  checkSchema({
+    option_name: {
+      notEmpty: {
+        errorMessage: ADMIN_MESSAGES.FILTER_BRAND_OPTION_NAME_IS_REQUIRED
+      },
+      isString: {
+        errorMessage: ADMIN_MESSAGES.FILTER_BRAND_OPTION_NAME_MUST_BE_A_STRING
+      },
+      trim: true
+    },
+    category_name: {
+      notEmpty: {
+        errorMessage: ADMIN_MESSAGES.FILTER_BRAND_CATEGORY_NAME_IS_REQUIRED
+      },
+      isString: {
+        errorMessage: ADMIN_MESSAGES.FILTER_BRAND_CATEGORY_NAME_MUST_BE_A_STRING
+      },
+      trim: true
+    },
+    category_param: {
+      notEmpty: {
+        errorMessage: ADMIN_MESSAGES.FILTER_BRAND_CATEGORY_PARAM_IS_REQUIRED
+      },
+      isString: {
+        errorMessage: ADMIN_MESSAGES.FILTER_BRAND_CATEGORY_PARAM_MUST_BE_A_STRING
+      },
+      trim: true
+    },
+    state: {
+      optional: true,
+      isString: {
+        errorMessage: ADMIN_MESSAGES.FILTER_BRAND_STATE_MUST_BE_A_STRING
+      },
+      isIn: {
+        options: [Object.values(FilterBrandState)],
+        errorMessage: `${ADMIN_MESSAGES.FILTER_BRAND_STATE_MUST_BE_ONE_OF}: ${Object.values(FilterBrandState).join(', ')}`
+      }
+    }
+  })
+)
