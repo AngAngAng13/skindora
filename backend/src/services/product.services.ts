@@ -2,9 +2,12 @@ import { ObjectId } from 'mongodb'
 import redisClient from './redis.services'
 import databaseService from './database.services'
 import { ErrorWithStatus } from '~/models/Errors'
-import { PRODUCTS_MESSAGES } from '~/constants/messages'
+import { ADMIN_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ProductInCache } from '~/models/requests/Cart.requests'
+import { CreateNewProductReqBody } from '~/models/requests/Product.requests'
+import Product from '~/models/schemas/Product.schema'
+import { ProductState } from '~/constants/enums'
 
 class ProductsService {
   async addToWishList(userID: string, productIds: string[]) {
@@ -72,7 +75,7 @@ class ProductsService {
     await redisClient.expire(key, 60 * 60 * 24)
   }
 
-  getProductInfoKey(productId: string){
+  getProductInfoKey(productId: string) {
     return `${process.env.PRODUCT_INFO_KEY}${productId}`
   }
   // lấy key trong redis
@@ -109,6 +112,39 @@ class ProductsService {
   //   //ví dụ //state: ProductState.ACTIVE
   //   return paginatedResult
   // }
+
+  async createNewProduct(payload: CreateNewProductReqBody) {
+    const productID = new ObjectId()
+    const currentDate = new Date()
+    const vietnamTimezoneOffset = 7 * 60
+    const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
+
+    const result = await databaseService.products.insertOne(
+      new Product({
+        ...payload,
+        _id: productID,
+        state: payload.state || ProductState.ACTIVE,
+        created_at: localTime,
+        updated_at: localTime
+      })
+    )
+    console.log(payload)
+    console.log(result)
+    return result
+  }
+
+  async getProductDetail(_id: string) {
+    const product = await databaseService.products.findOne({
+      _id: new ObjectId(_id)
+    })
+    if (product == null) {
+      throw new ErrorWithStatus({
+        message: ADMIN_MESSAGES.PRODUCT_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    return product
+  }
 }
 
 const productService = new ProductsService()
