@@ -21,7 +21,6 @@ export const getUserDetailController = async (req: Request, res: Response) => {
   })
 }
 
-
 export const createNewFilterBrandController = async (
   req: Request<ParamsDictionary, any, createNewFilterBrandReqBody>,
   res: Response
@@ -37,4 +36,3 @@ export const createNewFilterBrandController = async (
     res.status(500).json({ error: errorMessage })
   }
 }
-

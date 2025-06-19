@@ -52,7 +52,8 @@ export const USERS_MESSAGES = {
   ACCESS_DENIED_ADMIN_OR_STAFF_ONLY: 'Access denied. Admins or staffs only',
   INVALID_USER_ID: 'UserId is invalid',
   ACCESS_DENIED: 'Access denied',
-  ACCESS_DENIED_STAFF_ONLY: 'Access denied. Staffs only'
+  ACCESS_DENIED_STAFF_ONLY: 'Access denied. Staffs only',
+  ACCESS_DENIED_ADMIN_AND_STAFF_ONLY: 'Access denied. Admins and staffs only'
 } as const
 
 export const PRODUCTS_MESSAGES = {
@@ -69,7 +70,7 @@ export const PRODUCTS_MESSAGES = {
   OUT_OF_STOCK: 'Product is out of stock',
   NOT_ENOUGHT: 'Only %s available in stock',
   PRODUCT_IDS_MUST_BE_ARRAY: 'ProductIds must be an array',
-  INVALID_PRODUCT_ID: 'ProductId is invalid'
+  INVALID_PRODUCT_ID: 'ProductId is invalid',
 } as const
 
 export const REVIEW_MESSAGES = {
@@ -203,6 +204,8 @@ export const ADMIN_MESSAGES = {
   FILTER_BRAND_STATE_MUST_BE_A_STRING: 'Filter brand state must be a string',
   FILTER_BRAND_STATE_MUST_BE_ONE_OF: 'Filter brand state must be one of',
   STATE_MUST_BE_A_STRING: 'State must be a string',
+  GET_PRODUCT_DETAIL_SUCCESS: 'Get product detail successfully',
+  PRODUCT_NOT_FOUND: 'Product not found',
 } as const
 
 export const CART_MESSAGES = {
