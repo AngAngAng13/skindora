@@ -8,6 +8,7 @@ import { Filter } from 'mongodb'
 import Voucher from '~/models/schemas/Voucher.schema'
 import redisClient from '~/services/redis.services'
 import dotenv from 'dotenv'
+import databaseService from '~/services/database.services'
 
 dotenv.config()
 
@@ -30,6 +31,8 @@ export const getAllVoucherController = async (req: Request, res: Response, next:
     if (voucherList) {
       let vouchers: Voucher[] = JSON.parse(voucherList)
 
+      vouchers = vouchers.filter((voucher) => voucher.isActive)
+
       if (req.query.code) {
         const regex = new RegExp(req.query.code as string, 'i')
         vouchers = vouchers.filter((voucher) => regex.test(voucher.code))
@@ -39,7 +42,7 @@ export const getAllVoucherController = async (req: Request, res: Response, next:
       return
     }
 
-    // await sendPaginatedResponse(res, next, databaseService.vouchers, req.query, filter)
+    await sendPaginatedResponse(res, next, databaseService.vouchers, req.query, filter)
   } catch (err) {
     next(err)
   }
