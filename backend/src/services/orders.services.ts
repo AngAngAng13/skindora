@@ -1,7 +1,7 @@
 import cartService from './cart.services'
 import redisClient from './redis.services'
 import databaseService from './database.services'
-import { OrderStatus, OrderType } from '~/constants/enums'
+import { CancelRequestStatus, OrderStatus, OrderType, PaymentMethod, PaymentStatus, RefundStatus } from '~/constants/enums'
 import { ObjectId } from 'mongodb'
 import {
   BuyNowReqBody,
@@ -15,7 +15,7 @@ import { ErrorWithStatus } from '~/models/Errors'
 import { CART_MESSAGES, ORDER_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import OrderDetail from '~/models/schemas/Orders/OrderDetail.schema'
-import Order from '~/models/schemas/Orders/Order.schema'
+import Order, { CancelRequest } from '~/models/schemas/Orders/Order.schema'
 
 class OrdersService {
   private async buildTempOrder(userId: string, selectedProducts: ProductInCart[]): Promise<TempOrder> {
@@ -109,11 +109,10 @@ class OrdersService {
     }
 
     const status = OrderStatus.PENDING
-    //cal totalPrice
+
     const discount = isNaN(Number(payload?.Discount)) ? 0 : Number(payload?.Discount)
     const totalPrice = (1 - discount / 100) * tempOrder.TotalPrice
 
-    //insert order into db
     const order = {
       UserID: new ObjectId(userId),
       ShipAddress: payload.ShipAddress,
@@ -122,12 +121,14 @@ class OrdersService {
       // ShippedDate?: string
       Discount: discount.toString(),
       TotalPrice: totalPrice.toString(),
+      PaymentMethod: payload.PaymentMethod || PaymentMethod.COD,
+      PaymentStatus: payload.PaymentStatus || PaymentStatus.UNPAID,
       Status: status
     }
 
     const insertedOrder = await databaseService.orders.insertOne(order)
     const orderId = insertedOrder.insertedId
-    //insert order details into db
+
     const orderDetail = tempOrder.Products.map((p: ProductInOrder) => {
       return {
         ProductID: new ObjectId(p.ProductID),
@@ -140,7 +141,6 @@ class OrdersService {
 
     await databaseService.orderDetails.insertMany(orderDetail)
 
-    //Xoá những product đã order trong cart, tempOrder khỏi redis
     if (payload.type === OrderType.CART) {
       const cartKey = cartService.getCartKey(userId)
       const cart = await cartService.getCart(cartKey)
@@ -157,7 +157,6 @@ class OrdersService {
     }
 
     await redisClient.del(tempOrderKey)
-    //Trả thông tin đơn hàng đã tạo
     return {
       ...order,
       orderDetails: orderDetail
@@ -249,6 +248,84 @@ class OrdersService {
       ...detail,
       Products: productInfoMap.get(detail.ProductID?.toString())
     }))
+  }
+
+  async approveCancelRequest(
+    payload: { staffNote?: string },
+    userId: string,
+    order: Order,
+    options: { status: CancelRequestStatus }
+  ) {
+    const isPaid = order.PaymentStatus === PaymentStatus.PAID
+
+    const updateSet: Record<string, any> = {
+      Status: OrderStatus.CANCELLED,
+      'CancelRequest.status': options.status,
+      'CancelRequest.approvedAt': new Date(),
+      'CancelRequest.staffId': new ObjectId(userId),
+      'CancelRequest.staffNote': payload?.staffNote ?? '',
+      updated_at: new Date()
+    }
+
+    if(isPaid){
+      updateSet.RefundStatus = RefundStatus.REQUESTED
+    }
+    const updatedOrder = await databaseService.orders.findOneAndUpdate(
+      { _id: order._id },
+      {
+        $set: updateSet
+      },
+      { returnDocument: 'after' }
+    )
+
+    return updatedOrder
+  }
+
+  async rejectCancelRequest(
+    payload: { staffNote?: string },
+    userId: string,
+    order: Order,
+    options: { status: CancelRequestStatus }
+  ) {
+    const updatedOrder = await databaseService.orders.findOneAndUpdate(
+      { _id: order._id },
+      {
+        $set: {
+          'CancelRequest.status': options.status,
+          'CancelRequest.rejectedAt': new Date(),
+          'CancelRequest.staffId': new ObjectId(userId),
+          'CancelRequest.staffNote': payload?.staffNote ?? '',
+          updated_at: new Date()
+        }
+      },
+      { returnDocument: 'after' }
+    )
+
+    return updatedOrder
+  }
+
+  async requestCancelOrder(payload: { reason: string }, order: Order) {
+    const cancelRequest: CancelRequest = {
+      status: CancelRequestStatus.REQUESTED,
+      reason: payload.reason,
+      requestedAt: new Date(),
+      staffId: null as any
+    }
+
+    const updatedOrder = await databaseService.orders.findOneAndUpdate(
+      { _id: order._id },
+      {
+        $set: {
+          CancelRequest: cancelRequest,
+          updated_at: new Date()
+        }
+      },
+      {
+        returnDocument: 'after'
+      }
+    )
+
+    return updatedOrder
   }
 
   async getOrderDetailByOrderId(id: string): Promise<Array<OrderDetail>> {

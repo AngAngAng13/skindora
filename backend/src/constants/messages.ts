@@ -52,7 +52,8 @@ export const USERS_MESSAGES = {
   ACCESS_DENIED_ADMIN_OR_STAFF_ONLY: 'Access denied. Admins or staffs only',
   INVALID_USER_ID: 'UserId is invalid',
   ACCESS_DENIED: 'Access denied',
-  ACCESS_DENIED_STAFF_ONLY: 'Access denied. Staffs only'
+  ACCESS_DENIED_STAFF_ONLY: 'Access denied. Staffs only',
+  ACCESS_DENIED_ADMIN_AND_STAFF_ONLY: 'Access denied. Admins and staffs only'
 } as const
 
 export const PRODUCTS_MESSAGES = {
@@ -69,7 +70,7 @@ export const PRODUCTS_MESSAGES = {
   OUT_OF_STOCK: 'Product is out of stock',
   NOT_ENOUGHT: 'Only %s available in stock',
   PRODUCT_IDS_MUST_BE_ARRAY: 'ProductIds must be an array',
-  INVALID_PRODUCT_ID: 'ProductId is invalid'
+  INVALID_PRODUCT_ID: 'ProductId is invalid',
 } as const
 
 export const REVIEW_MESSAGES = {
@@ -192,7 +193,19 @@ export const ADMIN_MESSAGES = {
   START_DATE_NOT_FOUND: 'Start date is not available to validate end date',
   VOUCHER_ID_IS_REQUIRED: 'Voucher ID is required',
   VOUCHER_ID_NOT_FOUND: 'Voucher ID %s not found',
-  VOUCHER_EXPIRED: 'Voucher has already expired and cannot be reactivated'
+  VOUCHER_EXPIRED: 'Voucher has already expired and cannot be reactivated',
+  GET_USER_DETAIL_SUCCESS: 'Get user detail successfully',
+  FILTER_BRAND_OPTION_NAME_IS_REQUIRED: 'Filter brand option name is required',
+  FILTER_BRAND_OPTION_NAME_MUST_BE_A_STRING: 'Filter brand option name must be a string',
+  FILTER_BRAND_CATEGORY_NAME_IS_REQUIRED: 'Filter brand category name is required',
+  FILTER_BRAND_CATEGORY_NAME_MUST_BE_A_STRING: 'Filter brand category name must be a string',
+  FILTER_BRAND_CATEGORY_PARAM_IS_REQUIRED: 'Filter brand category param is required',
+  FILTER_BRAND_CATEGORY_PARAM_MUST_BE_A_STRING: 'Filter brand category param must be a string',
+  FILTER_BRAND_STATE_MUST_BE_A_STRING: 'Filter brand state must be a string',
+  FILTER_BRAND_STATE_MUST_BE_ONE_OF: 'Filter brand state must be one of',
+  STATE_MUST_BE_A_STRING: 'State must be a string',
+  GET_PRODUCT_DETAIL_SUCCESS: 'Get product detail successfully',
+  PRODUCT_NOT_FOUND: 'Product not found',
 } as const
 
 export const CART_MESSAGES = {
@@ -247,5 +260,10 @@ export const ORDER_MESSAGES = {
   UPDATE_TO_NEXT_STATUS_FAIL: 'Cannot update from %s to %s ',
   UPDATE_TO_NEXT_STATUS_SUCCESS: 'Update to next status successfully',
   INVALID_DISCOUNT_VALUE: 'Invalid discount value, must be a non-negative number and not exceed 100',
+  CANCEL_SUCCESS: 'Order canceled successfully',
+  CANCEL_FAIL: 'Fail to cancel order',
+  REQUIRE_REASON: 'Reason is required',
+  UNABLE_TO_CANCEL: 'Only order with status PENDING or CONFIRMED can be cancelled',
+  NO_CANCELATION_REQUESTED: 'Customer still not request for cancelation',
   GET_ALL_USERS_SUCCESS: 'Get all users successfully'
 } as const

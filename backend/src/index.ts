@@ -16,6 +16,7 @@ import { dailyReport } from './utils/cron/email.services'
 import adminRouter from './routes/admin.routes'
 import cartRouter from './routes/cart.routes'
 import ordersRouter from './routes/orders.routes'
+import staffRouter from './routes/staffs.routes'
 import { connectProducer, waitForKafkaReady } from './services/Kafka/kafka.services'
 import { startVoucherConsumer } from './services/Kafka/consumer'
 
@@ -52,6 +53,7 @@ app.use('/payment', paymentsRouter)
 app.use('/review', reviewRouters)
 app.use('/products', productRouter)
 app.use('/admin', adminRouter)
+app.use('/staffs', staffRouter)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use(defaultErrorHandler)

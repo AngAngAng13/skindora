@@ -3,11 +3,11 @@ import { validate } from '~/utils/validation'
 import { CART_MESSAGES, ORDER_MESSAGES, PRODUCTS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { OrderStatus, OrderType, Role } from '~/constants/enums'
+import { CancelRequestStatus, OrderStatus, OrderType, Role } from '~/constants/enums'
 import { ObjectId } from 'mongodb'
 import databaseService from '~/services/database.services'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
-import { canRoleTransition, getNextOrderStatus } from '~/utils/orderStatus'
+import { canRoleTransition, canTransition, getNextOrderStatus } from '~/utils/orderStatus'
 import { format } from 'util'
 
 export const checkOutValidator = validate(
@@ -151,7 +151,7 @@ export const getOrderByIdValidator = validate(
 
           if (!order) {
             throw new ErrorWithStatus({
-              message: ORDER_MESSAGES.NOT_FOUND,
+              message: ORDER_MESSAGES.NOT_FOUND.replace('%s', value),
               status: HTTP_STATUS.NOT_FOUND
             })
           }
@@ -200,7 +200,7 @@ export const getNextOrderStatusValidator = validate(
 
           if (!order) {
             throw new ErrorWithStatus({
-              message: ORDER_MESSAGES.NOT_FOUND,
+              message: ORDER_MESSAGES.NOT_FOUND.replace('%s', value),
               status: HTTP_STATUS.NOT_FOUND
             })
           }
@@ -233,4 +233,96 @@ export const getNextOrderStatusValidator = validate(
       }
     }
   })
+)
+
+export const requestCancelOrderValidator = validate(
+  checkSchema(
+    {
+      orderId: {
+        in: ['params'],
+        notEmpty: {
+          errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
+        },
+        isMongoId: {
+          errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
+        },
+        custom: {
+          options: async(value, {req}) => {
+            const order = await databaseService.orders.findOne({_id: new ObjectId(value)})
+            if(!order){
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.NOT_FOUND.replace('%s', value),
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+
+            if(!order.Status){
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            if(!canTransition(order.Status, OrderStatus.CANCELLED)){
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.UNABLE_TO_CANCEL,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            req.order = order
+            return true
+          }
+        }
+      },
+      reason: {
+        in: ['body'],
+        notEmpty: {
+          errorMessage: ORDER_MESSAGES.REQUIRE_REASON
+        }
+      }
+    }
+  )
+)
+
+export const cancelledOrderRequestedValidator = validate(
+  checkSchema(
+    {
+      orderId: {
+        in: ['params'],
+        notEmpty: {
+          errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
+        },
+        isMongoId: {
+          errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
+        },
+        custom: {
+          options: async(value, {req}) => {
+            const order = await databaseService.orders.findOne({_id: new ObjectId(value)})
+            if(!order){
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.NOT_FOUND.replace('%s', value),
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+
+            if(!order.Status){
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            if(!order.CancelRequest || !order.CancelRequest.status || order.CancelRequest.status !== CancelRequestStatus.REQUESTED){
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.NO_CANCELATION_REQUESTED,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            req.order = order
+            return true
+          }
+        }
+      }
+    }
+  )
 )

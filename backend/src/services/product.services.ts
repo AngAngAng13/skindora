@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb'
 import redisClient from './redis.services'
 import databaseService from './database.services'
 import { ErrorWithStatus } from '~/models/Errors'
-import { PRODUCTS_MESSAGES } from '~/constants/messages'
+import { ADMIN_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ProductInCache } from '~/models/requests/Cart.requests'
 import { CreateNewProductReqBody } from '~/models/requests/Product.requests'
@@ -131,6 +131,19 @@ class ProductsService {
     console.log(payload)
     console.log(result)
     return result
+  }
+
+  async getProductDetail(_id: string) {
+    const product = await databaseService.products.findOne({
+      _id: new ObjectId(_id)
+    })
+    if (product == null) {
+      throw new ErrorWithStatus({
+        message: ADMIN_MESSAGES.PRODUCT_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    return product
   }
 }
 

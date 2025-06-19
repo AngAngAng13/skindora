@@ -163,3 +163,12 @@ export const createNewProductController = async (
     res.status(500).json({ error: errorMessage })
   }
 }
+
+export const getProductDetailController = async (req: Request, res: Response) => {
+  const { _id } = req.params
+  const product = await productService.getProductDetail(_id)
+  res.json({
+    message: ADMIN_MESSAGES.GET_PRODUCT_DETAIL_SUCCESS,
+    result: product
+  })
+}
