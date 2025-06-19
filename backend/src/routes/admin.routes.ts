@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { createNewFilterBrandController, getAllUserController, getUserDetailController } from '~/controllers/admin.controllers'
-import { createNewProductController, getAllProductController } from '~/controllers/products.controllers'
+import { createNewProductController, getAllProductController, getProductDetailController } from '~/controllers/products.controllers'
 import { createNewFilterBrandValidator, createNewProductValidator, isAdminValidator, isValidToActiveValidator } from '~/middlewares/admin.middlewares'
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
 import { wrapAsync } from '~/utils/handler'
@@ -76,6 +76,7 @@ adminRouter.post(
   createNewProductValidator,
   wrapAsync(createNewProductController)
 )
+adminRouter.get('/manage-products/:_id', accessTokenValidator, isAdminValidator, wrapAsync(getProductDetailController))
 
 //manage filter
 //filter-brand
