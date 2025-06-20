@@ -1,6 +1,12 @@
 import { checkSchema } from 'express-validator'
 import { validate } from '~/utils/validation'
-import { CART_MESSAGES, ORDER_MESSAGES, PRODUCTS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
+import {
+  CART_MESSAGES,
+  ORDER_MESSAGES,
+  PRODUCTS_MESSAGES,
+  USERS_MESSAGES,
+  VOUCHER_MESSAGES
+} from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { CancelRequestStatus, OrderStatus, OrderType, Role } from '~/constants/enums'
@@ -42,16 +48,47 @@ export const checkOutValidator = validate(
           }
         }
       },
-      Discount:{
+      VoucherId: {
         optional: true,
-        custom:{
-          options: (value)=>{
-            if(Number(value) < 0 || Number(value) > 100){
+        isMongoId: {
+          errorMessage: ORDER_MESSAGES.INVALID_VOUCHER_ID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const voucher = await databaseService.vouchers.findOne({ _id: new ObjectId(value) })
+            if (!voucher) {
               throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.INVALID_DISCOUNT_VALUE,
+                message: VOUCHER_MESSAGES.NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+
+            if (voucher.endDate < new Date()) {
+              throw new ErrorWithStatus({
+                message: VOUCHER_MESSAGES.EXPIRED,
                 status: HTTP_STATUS.BAD_REQUEST
               })
             }
+
+            if (voucher.usedCount >= voucher.usageLimit) {
+              throw new ErrorWithStatus({
+                message: VOUCHER_MESSAGES.REACH_LIMIT_USED,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            const orderWithVoucherCount = await databaseService.orders.find({
+              UserID: req.user?._id,
+              'VoucherSnapshot.code': voucher.code
+            }).toArray()
+
+            if(orderWithVoucherCount.length >= voucher.userUsageLimit){
+              throw new ErrorWithStatus({
+                message: VOUCHER_MESSAGES.USE_ONLY_ONCE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            req.voucher = voucher
             return true
           }
         }
@@ -236,93 +273,93 @@ export const getNextOrderStatusValidator = validate(
 )
 
 export const requestCancelOrderValidator = validate(
-  checkSchema(
-    {
-      orderId: {
-        in: ['params'],
-        notEmpty: {
-          errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
-        },
-        isMongoId: {
-          errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
-        },
-        custom: {
-          options: async(value, {req}) => {
-            const order = await databaseService.orders.findOne({_id: new ObjectId(value)})
-            if(!order){
-              throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.NOT_FOUND.replace('%s', value),
-                status: HTTP_STATUS.NOT_FOUND
-              })
-            }
-
-            if(!order.Status){
-              throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
-
-            if(!canTransition(order.Status, OrderStatus.CANCELLED)){
-              throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.UNABLE_TO_CANCEL,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
-            req.order = order
-            return true
-          }
-        }
+  checkSchema({
+    orderId: {
+      in: ['params'],
+      notEmpty: {
+        errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
       },
-      reason: {
-        in: ['body'],
-        notEmpty: {
-          errorMessage: ORDER_MESSAGES.REQUIRE_REASON
+      isMongoId: {
+        errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
+      },
+      custom: {
+        options: async (value, { req }) => {
+          const order = await databaseService.orders.findOne({ _id: new ObjectId(value) })
+          if (!order) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.NOT_FOUND.replace('%s', value),
+              status: HTTP_STATUS.NOT_FOUND
+            })
+          }
+
+          if (!order.Status) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+
+          if (!canTransition(order.Status, OrderStatus.CANCELLED)) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.UNABLE_TO_CANCEL,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+          req.order = order
+          return true
         }
       }
+    },
+    reason: {
+      in: ['body'],
+      notEmpty: {
+        errorMessage: ORDER_MESSAGES.REQUIRE_REASON
+      }
     }
-  )
+  })
 )
 
 export const cancelledOrderRequestedValidator = validate(
-  checkSchema(
-    {
-      orderId: {
-        in: ['params'],
-        notEmpty: {
-          errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
-        },
-        isMongoId: {
-          errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
-        },
-        custom: {
-          options: async(value, {req}) => {
-            const order = await databaseService.orders.findOne({_id: new ObjectId(value)})
-            if(!order){
-              throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.NOT_FOUND.replace('%s', value),
-                status: HTTP_STATUS.NOT_FOUND
-              })
-            }
-
-            if(!order.Status){
-              throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
-
-            if(!order.CancelRequest || !order.CancelRequest.status || order.CancelRequest.status !== CancelRequestStatus.REQUESTED){
-              throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.NO_CANCELATION_REQUESTED,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
-            req.order = order
-            return true
+  checkSchema({
+    orderId: {
+      in: ['params'],
+      notEmpty: {
+        errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
+      },
+      isMongoId: {
+        errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
+      },
+      custom: {
+        options: async (value, { req }) => {
+          const order = await databaseService.orders.findOne({ _id: new ObjectId(value) })
+          if (!order) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.NOT_FOUND.replace('%s', value),
+              status: HTTP_STATUS.NOT_FOUND
+            })
           }
+
+          if (!order.Status) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+
+          if (
+            !order.CancelRequest ||
+            !order.CancelRequest.status ||
+            order.CancelRequest.status !== CancelRequestStatus.REQUESTED
+          ) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.NO_CANCELATION_REQUESTED,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+          req.order = order
+          return true
         }
       }
     }
-  )
+  })
 )

@@ -265,5 +265,13 @@ export const ORDER_MESSAGES = {
   REQUIRE_REASON: 'Reason is required',
   UNABLE_TO_CANCEL: 'Only order with status PENDING or CONFIRMED can be cancelled',
   NO_CANCELATION_REQUESTED: 'Customer still not request for cancelation',
-  GET_ALL_USERS_SUCCESS: 'Get all users successfully'
+  GET_ALL_USERS_SUCCESS: 'Get all users successfully',
+  INVALID_VOUCHER_ID: 'Invalid voucherId'
+} as const
+
+export const VOUCHER_MESSAGES = {
+  NOT_FOUND: "Voucher not found",
+  EXPIRED: "Voucher is expired",
+  REACH_LIMIT_USED: "This voucher has reached the usable limit",
+  USE_ONLY_ONCE: "Each voucher can only use once"
 } as const

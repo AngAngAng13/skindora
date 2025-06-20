@@ -68,8 +68,9 @@ export const checkOutController = async (req: Request<ParamsDictionary, any, Ord
     res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
     return
   }
+  const voucher = req.voucher ?? undefined
   try {
-    const result = await ordersService.checkOut(req.body, user_id)
+    const result = await ordersService.checkOut(req.body, user_id, voucher)
     res.json({
       message: ORDER_MESSAGES.CREATED_SUCCESS,
       result
@@ -266,6 +267,24 @@ export const rejectCancelRequestController = async (req: Request<OrderParams>, r
   try {
     const order = req.order
     const result = await ordersService.rejectCancelRequest(req.body, user_id, order!, {status: CancelRequestStatus.REJECTED})
+    res.json({
+      message: ORDER_MESSAGES.CANCEL_SUCCESS,
+      result,
+    })
+  } catch (error) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: ORDER_MESSAGES.CANCEL_FAIL,
+      error: errorMessage
+    })
+  }
+}
+
+export const getOrderRevenueController = async (req: Request, res: Response) => {
+  try {
+    const result = await ordersService.getOrderRevenue()
     res.json({
       message: ORDER_MESSAGES.CANCEL_SUCCESS,
       result,

@@ -1,5 +1,12 @@
 import { ObjectId } from 'mongodb'
-import { CancelRequestStatus, OrderStatus, PaymentMethod, PaymentStatus, RefundStatus } from '~/constants/enums'
+import {
+  CancelRequestStatus,
+  DiscountType,
+  OrderStatus,
+  PaymentMethod,
+  PaymentStatus,
+  RefundStatus
+} from '~/constants/enums'
 
 export interface CancelRequest {
   status: CancelRequestStatus
@@ -10,6 +17,14 @@ export interface CancelRequest {
   staffId: ObjectId
   staffNote?: string
 }
+
+interface VoucherSnapshot {
+  code: string
+  discountType: DiscountType
+  discountValue: number
+  maxDiscountAmount?: number
+}
+
 interface OrderType {
   _id?: ObjectId
   UserID?: ObjectId
@@ -23,6 +38,7 @@ interface OrderType {
   CancelRequest?: CancelRequest
   RefundStatus?: RefundStatus
   Discount?: string
+  VoucherSnapshot?: VoucherSnapshot
   TotalPrice?: string
   created_at?: Date
   updated_at?: Date
@@ -42,6 +58,7 @@ export default class Order {
   CancelRequest?: CancelRequest
   RefundStatus?: RefundStatus
   Discount?: string
+  VoucherSnapshot?: VoucherSnapshot
   TotalPrice?: string
   created_at?: Date
   updated_at?: Date
@@ -64,9 +81,10 @@ export default class Order {
     this.CancelRequest = order.CancelRequest
     this.RefundStatus = order.RefundStatus || RefundStatus.NONE
     this.Discount = order.Discount || ''
+    this.VoucherSnapshot = order.VoucherSnapshot
     this.TotalPrice = order.TotalPrice || ''
-    this.created_at = localTime || order.created_at
-    this.updated_at = localTime || order.updated_at
+    this.created_at = order.created_at || localTime
+    this.updated_at = order.updated_at || localTime
     this.modified_by = order.modified_by
   }
 }

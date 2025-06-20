@@ -1,7 +1,15 @@
 import cartService from './cart.services'
 import redisClient from './redis.services'
 import databaseService from './database.services'
-import { CancelRequestStatus, OrderStatus, OrderType, PaymentMethod, PaymentStatus, RefundStatus } from '~/constants/enums'
+import {
+  CancelRequestStatus,
+  DiscountType,
+  OrderStatus,
+  OrderType,
+  PaymentMethod,
+  PaymentStatus,
+  RefundStatus
+} from '~/constants/enums'
 import { ObjectId } from 'mongodb'
 import {
   BuyNowReqBody,
@@ -16,6 +24,7 @@ import { CART_MESSAGES, ORDER_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/me
 import HTTP_STATUS from '~/constants/httpStatus'
 import OrderDetail from '~/models/schemas/Orders/OrderDetail.schema'
 import Order, { CancelRequest } from '~/models/schemas/Orders/Order.schema'
+import { VoucherType } from '~/models/schemas/Voucher.schema'
 
 class OrdersService {
   private async buildTempOrder(userId: string, selectedProducts: ProductInCart[]): Promise<TempOrder> {
@@ -97,7 +106,7 @@ class OrdersService {
     return tempOrder
   }
 
-  async checkOut(payload: OrderReqBody, userId: string) {
+  async checkOut(payload: OrderReqBody, userId: string, voucher: VoucherType | undefined) {
     const tempOrderKey = this.getTempOrderKey(userId)
     const tempOrder: TempOrder = await this.getTempOrder(tempOrderKey)
 
@@ -110,21 +119,37 @@ class OrdersService {
 
     const status = OrderStatus.PENDING
 
-    const discount = isNaN(Number(payload?.Discount)) ? 0 : Number(payload?.Discount)
-    const totalPrice = (1 - discount / 100) * tempOrder.TotalPrice
-
-    const order = {
+    const order: Partial<Order> = {
       UserID: new ObjectId(userId),
       ShipAddress: payload.ShipAddress,
       Description: payload.Description ?? '',
       RequireDate: payload.RequireDate || new Date().toISOString(),
       // ShippedDate?: string
-      Discount: discount.toString(),
-      TotalPrice: totalPrice.toString(),
+      // Discount: discount.toString(),
+      // TotalPrice: totalPrice.toString(),
       PaymentMethod: payload.PaymentMethod || PaymentMethod.COD,
       PaymentStatus: payload.PaymentStatus || PaymentStatus.UNPAID,
       Status: status
     }
+
+    let discount = 0
+    if (voucher) {
+      const maxDiscountAmount = isNaN(Number(voucher.maxDiscountAmount)) ? 0 : Number(voucher.maxDiscountAmount)
+      let percentDiscountValue = (voucher.discountValue / 100) * tempOrder.TotalPrice
+      percentDiscountValue = voucher.maxDiscountAmount && percentDiscountValue > maxDiscountAmount ? percentDiscountValue : maxDiscountAmount
+      discount = voucher.discountType === DiscountType.Percentage ? percentDiscountValue : voucher.discountValue
+
+      order.Discount = discount.toString()
+      order.VoucherSnapshot = {
+        code: voucher.code,
+        discountType: voucher.discountType,
+        discountValue: voucher.discountValue,
+        maxDiscountAmount: voucher.maxDiscountAmount
+      }
+    }
+
+    const totalPrice = tempOrder.TotalPrice - discount
+    order.TotalPrice = totalPrice.toString()
 
     const insertedOrder = await databaseService.orders.insertOne(order)
     const orderId = insertedOrder.insertedId
@@ -267,7 +292,7 @@ class OrdersService {
       updated_at: new Date()
     }
 
-    if(isPaid){
+    if (isPaid) {
       updateSet.RefundStatus = RefundStatus.REQUESTED
     }
     const updatedOrder = await databaseService.orders.findOneAndUpdate(
@@ -326,6 +351,11 @@ class OrdersService {
     )
 
     return updatedOrder
+  }
+
+  async getOrderRevenue() {
+    //getAllOrder theo date, fromDate to toDate, filterProduct
+    const orderList = await databaseService.orders.find({}).toArray()
   }
 
   async getOrderDetailByOrderId(id: string): Promise<Array<OrderDetail>> {
