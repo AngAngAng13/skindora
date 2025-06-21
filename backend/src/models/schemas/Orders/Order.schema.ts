@@ -37,7 +37,7 @@ interface OrderType {
   PaymentStatus?: PaymentStatus
   CancelRequest?: CancelRequest
   RefundStatus?: RefundStatus
-  Discount?: string
+  DiscountValue?: string
   VoucherSnapshot?: VoucherSnapshot
   TotalPrice?: string
   created_at?: Date
@@ -57,7 +57,7 @@ export default class Order {
   PaymentStatus?: PaymentStatus
   CancelRequest?: CancelRequest
   RefundStatus?: RefundStatus
-  Discount?: string
+  DiscountValue?: string
   VoucherSnapshot?: VoucherSnapshot
   TotalPrice?: string
   created_at?: Date
@@ -80,7 +80,7 @@ export default class Order {
     this.PaymentStatus = order.PaymentStatus || PaymentStatus.UNPAID
     this.CancelRequest = order.CancelRequest
     this.RefundStatus = order.RefundStatus || RefundStatus.NONE
-    this.Discount = order.Discount || ''
+    this.DiscountValue = order.DiscountValue || ''
     this.VoucherSnapshot = order.VoucherSnapshot
     this.TotalPrice = order.TotalPrice || ''
     this.created_at = order.created_at || localTime

@@ -9,7 +9,7 @@ import {
 } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { CancelRequestStatus, OrderStatus, OrderType, Role } from '~/constants/enums'
+import { CancelRequestStatus, OrderStatus, OrderType, PaymentMethod, Role } from '~/constants/enums'
 import { ObjectId } from 'mongodb'
 import databaseService from '~/services/database.services'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
@@ -48,6 +48,12 @@ export const checkOutValidator = validate(
           }
         }
       },
+      PaymentMethod: {
+        isIn: {
+          options: [[PaymentMethod.COD, PaymentMethod.VNPAY, PaymentMethod.ZALOPAY]],
+          errorMessage: ORDER_MESSAGES.INVALID_PAYMENT_METHOD
+        }
+      },
       VoucherId: {
         optional: true,
         isMongoId: {
@@ -77,12 +83,15 @@ export const checkOutValidator = validate(
               })
             }
 
-            const orderWithVoucherCount = await databaseService.orders.find({
-              UserID: req.user?._id,
-              'VoucherSnapshot.code': voucher.code
-            }).toArray()
+            const { user_id } = req.decoded_authorization as TokenPayLoad
+            const orderWithVoucherCount = await databaseService.orders
+              .find({
+                UserID: new ObjectId(user_id),
+                'VoucherSnapshot.code': voucher.code
+              })
+              .toArray()  
 
-            if(orderWithVoucherCount.length >= voucher.userUsageLimit){
+            if (orderWithVoucherCount.length >= voucher.userUsageLimit) {
               throw new ErrorWithStatus({
                 message: VOUCHER_MESSAGES.USE_ONLY_ONCE,
                 status: HTTP_STATUS.BAD_REQUEST

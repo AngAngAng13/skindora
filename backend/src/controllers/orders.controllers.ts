@@ -286,7 +286,7 @@ export const getOrderRevenueController = async (req: Request, res: Response) => 
   try {
     const result = await ordersService.getOrderRevenue()
     res.json({
-      message: ORDER_MESSAGES.CANCEL_SUCCESS,
+      message: ORDER_MESSAGES.GET_REVENUE_SUCCESS,
       result,
     })
   } catch (error) {

@@ -1,18 +1,14 @@
 import { PaymentStatus } from './../../constants/enums';
 import { ObjectId } from 'mongodb'
-import { CancelRequestStatus, OrderStatus, OrderType, PaymentMethod } from '~/constants/enums'
+import { CancelRequestStatus, OrderType, PaymentMethod } from '~/constants/enums'
 
 export interface OrderReqBody {
-  UserID: string
-  ProductID: Array<string>
   ShipAddress: string
   Description?: string
   RequireDate: string
   ShippedDate: string
-  Discount?: string
   PaymentMethod: PaymentMethod
   PaymentStatus: PaymentStatus
-  Status: OrderStatus
   type?: OrderType
 }
 

@@ -6,7 +6,6 @@ import {
   DiscountType,
   OrderStatus,
   OrderType,
-  PaymentMethod,
   PaymentStatus,
   RefundStatus
 } from '~/constants/enums'
@@ -107,6 +106,10 @@ class OrdersService {
   }
 
   async checkOut(payload: OrderReqBody, userId: string, voucher: VoucherType | undefined) {
+    const currentDate = new Date()
+    const vietnamTimezoneOffset = 7 * 60
+    const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
+
     const tempOrderKey = this.getTempOrderKey(userId)
     const tempOrder: TempOrder = await this.getTempOrder(tempOrderKey)
 
@@ -118,28 +121,28 @@ class OrdersService {
     }
 
     const status = OrderStatus.PENDING
+    const paymentStatus = payload.PaymentStatus ?? PaymentStatus.UNPAID
 
     const order: Partial<Order> = {
       UserID: new ObjectId(userId),
       ShipAddress: payload.ShipAddress,
-      Description: payload.Description ?? '',
-      RequireDate: payload.RequireDate || new Date().toISOString(),
-      // ShippedDate?: string
-      // Discount: discount.toString(),
-      // TotalPrice: totalPrice.toString(),
-      PaymentMethod: payload.PaymentMethod || PaymentMethod.COD,
-      PaymentStatus: payload.PaymentStatus || PaymentStatus.UNPAID,
+      Description: payload.Description || '',
+      RequireDate: payload.RequireDate,
+      PaymentMethod: payload.PaymentMethod,
+      PaymentStatus: paymentStatus,      
       Status: status
     }
 
     let discount = 0
+    const priceBeforeDiscount = tempOrder.TotalPrice
     if (voucher) {
       const maxDiscountAmount = isNaN(Number(voucher.maxDiscountAmount)) ? 0 : Number(voucher.maxDiscountAmount)
       let percentDiscountValue = (voucher.discountValue / 100) * tempOrder.TotalPrice
-      percentDiscountValue = voucher.maxDiscountAmount && percentDiscountValue > maxDiscountAmount ? percentDiscountValue : maxDiscountAmount
+      percentDiscountValue =
+        voucher.maxDiscountAmount && percentDiscountValue > maxDiscountAmount ? percentDiscountValue : maxDiscountAmount
       discount = voucher.discountType === DiscountType.Percentage ? percentDiscountValue : voucher.discountValue
 
-      order.Discount = discount.toString()
+      order.DiscountValue = discount.toString()
       order.VoucherSnapshot = {
         code: voucher.code,
         discountType: voucher.discountType,
@@ -151,7 +154,11 @@ class OrdersService {
     const totalPrice = tempOrder.TotalPrice - discount
     order.TotalPrice = totalPrice.toString()
 
-    const insertedOrder = await databaseService.orders.insertOne(order)
+    const insertedOrder = await databaseService.orders.insertOne({
+      ...order,
+      created_at: localTime,
+      updated_at: localTime
+    })
     const orderId = insertedOrder.insertedId
 
     const orderDetail = tempOrder.Products.map((p: ProductInOrder) => {
@@ -182,8 +189,13 @@ class OrdersService {
     }
 
     await redisClient.del(tempOrderKey)
-    return {
+    const orderResponse = {
       ...order,
+      ...(discount > 0 && {PriceBeforeDiscount: priceBeforeDiscount.toString()})
+    }
+    
+    return {
+      ...orderResponse,
       orderDetails: orderDetail
     }
   }
@@ -355,7 +367,30 @@ class OrdersService {
 
   async getOrderRevenue() {
     //getAllOrder theo date, fromDate to toDate, filterProduct
-    const orderList = await databaseService.orders.find({}).toArray()
+    // const orderList = await databaseService.orders.find().toArray()
+    // const orderRevenue = orderList.reduce((total, order) => {
+    //   const totalPrice = isNaN(Number(order.TotalPrice)) ? 0 : Number(order.TotalPrice)
+    //   return total + totalPrice
+    // },0)
+    // return {order: orderList, orderRevenue}
+    const result = await databaseService.orders
+      .aggregate([
+        {
+          $match: {
+            PaymentStatus: PaymentStatus.PAID
+          }
+        },
+        {
+          $group: {
+            _id: { $dateToString: { format: '%Y-%m-%d', date: '$created_at' } },
+            totalRevenue: { $sum: { $toInt: '$TotalPrice' } },
+            totalOrder: { $sum: 1 }
+          }
+        },
+        { $sort: { _id: 1 } }
+      ])
+      .toArray()
+    return result
   }
 
   async getOrderDetailByOrderId(id: string): Promise<Array<OrderDetail>> {

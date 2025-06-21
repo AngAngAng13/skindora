@@ -266,7 +266,9 @@ export const ORDER_MESSAGES = {
   UNABLE_TO_CANCEL: 'Only order with status PENDING or CONFIRMED can be cancelled',
   NO_CANCELATION_REQUESTED: 'Customer still not request for cancelation',
   GET_ALL_USERS_SUCCESS: 'Get all users successfully',
-  INVALID_VOUCHER_ID: 'Invalid voucherId'
+  INVALID_VOUCHER_ID: 'Invalid voucherId',
+  GET_REVENUE_SUCCESS: 'Get order revenue successfully',
+  INVALID_PAYMENT_METHOD: 'PaymentMethod is invalid'
 } as const
 
 export const VOUCHER_MESSAGES = {
