@@ -12,6 +12,7 @@ import type { ColumnDef, ColumnFiltersState, SortingState, VisibilityState } fro
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import * as React from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -22,8 +23,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
-import { Badge } from "../ui/badge";
 
 export type Order = {
   id: string;
@@ -186,7 +185,7 @@ export const columns: ColumnDef<Order>[] = [
   },
 ];
 
-export function AppTable() {
+export function TableCustomer() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -302,4 +301,4 @@ export function AppTable() {
     </div>
   );
 }
-export default AppTable;
+export default TableCustomer;

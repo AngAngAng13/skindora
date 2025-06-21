@@ -1,7 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, LockKeyhole, Mail } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,15 +12,34 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth.context";
 import { type LoginFormData, loginSchema } from "@/schemas/authSchemas";
+import { logger } from "@/utils";
 
 import { useHandleOAuthCallback } from "../../hooks/useHandleOAuthCallback";
 import GoogleButton from "../GoogleButton";
 import Splitter from "../Splitter";
 
 export function LoginForm() {
-  const { login, isLoading: isAuthLoading, handleGoogleLogin } = useAuth();
+  const navigate = useNavigate();
+  const { actions, handleGoogleLogin, isAuthenticated, user } = useAuth();
   const { isProcessingOAuth } = useHandleOAuthCallback();
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      logger.info("User redirecting la role:", user.role);
 
+      switch (user.role) {
+        case "ADMIN":
+          navigate("/admin", { replace: true });
+          break;
+        case "STAFF":
+          navigate("/staff", { replace: true });
+          break;
+        case "USER":
+        default:
+          navigate("/", { replace: true });
+          break;
+      }
+    }
+  }, [isAuthenticated, user, navigate]);
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -27,16 +48,15 @@ export function LoginForm() {
       rememberMe: false,
     },
   });
-
+  if (isProcessingOAuth) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8">
+        <Loader2 className="text-primary h-12 w-12 animate-spin" />
+      </div>
+    );
+  }
   async function onSubmit(values: LoginFormData) {
-    await login(values);
-    if (isProcessingOAuth) {
-      return (
-        <div className="flex flex-col items-center justify-center p-8">
-          <Loader2 className="text-primary h-12 w-12 animate-spin" />
-        </div>
-      );
-    }
+    actions.login(values);
   }
 
   return (
@@ -58,10 +78,12 @@ export function LoginForm() {
                     <div className="relative">
                       <Mail className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
                       <Input
+                        type="email"
+                        autoComplete="email"
                         placeholder="you@example.com"
                         className="pl-10 placeholder:text-gray-500"
                         {...field}
-                        disabled={isAuthLoading}
+                        disabled={actions.isLoggingIn}
                       />
                     </div>
                   </FormControl>
@@ -81,9 +103,10 @@ export function LoginForm() {
                       <Input
                         type="password"
                         placeholder="••••••••"
+                        autoComplete="current-password"
                         className="pl-10 placeholder:text-gray-500"
                         {...field}
-                        disabled={isAuthLoading}
+                        disabled={actions.isLoggingIn}
                       />
                     </div>
                   </FormControl>
@@ -98,7 +121,7 @@ export function LoginForm() {
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-start space-y-0 space-x-2">
                     <FormControl>
-                      <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={isAuthLoading} />
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={actions.isLoggingIn} />
                     </FormControl>
                     <div className="grid gap-1.5 leading-none">
                       <FormLabel className="cursor-pointer text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -112,8 +135,8 @@ export function LoginForm() {
                 Forgot password?
               </Link>
             </div>
-            <Button type="submit" className="w-full" disabled={isAuthLoading}>
-              {isAuthLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button type="submit" className="w-full" disabled={actions.isLoggingIn}>
+              {actions.isLoggingIn && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign in
             </Button>
           </form>
@@ -121,7 +144,7 @@ export function LoginForm() {
       </CardContent>
       <CardFooter className="flex flex-col items-center space-y-4">
         <Splitter />
-        <GoogleButton handleGoogleLogin={handleGoogleLogin} isAuthLoading={isAuthLoading} />
+        <GoogleButton handleGoogleLogin={handleGoogleLogin} isAuthLoading={actions.isLoggingIn} />
         <p className="text-muted-foreground text-sm">
           Don't have an account?{" "}
           <Link to="/auth/register" className="text-primary font-medium hover:underline">
