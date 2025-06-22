@@ -37,6 +37,7 @@ import {
 } from '~/controllers/products.controllers'
 import { UpdateMeReqBody } from '~/models/requests/Users.requests'
 import { wrapAsync } from '~/utils/handler'
+import { getAllVoucherController } from '~/controllers/voucher.controllers'
 
 const usersRouter = Router()
 usersRouter.route('/').get(loginController)
@@ -85,4 +86,5 @@ usersRouter.patch(
 )
 usersRouter.post('/refresh-token', refreshTokenValidator, wrapAsync(refreshController))
 usersRouter.get('/oauth/google', wrapAsync(oAuthController))
+usersRouter.get('/vouchers', accessTokenValidator, wrapAsync(getAllVoucherController))
 export default usersRouter

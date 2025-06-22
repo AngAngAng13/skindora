@@ -12,6 +12,7 @@ import databaseService from '~/services/database.services'
 
 dotenv.config()
 
+// Get All voucher for Users filter active Status
 export const getAllVoucherController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const filter: Filter<Voucher> = {}
@@ -32,6 +33,39 @@ export const getAllVoucherController = async (req: Request, res: Response, next:
       let vouchers: Voucher[] = JSON.parse(voucherList)
 
       vouchers = vouchers.filter((voucher) => voucher.isActive)
+
+      if (req.query.code) {
+        const regex = new RegExp(req.query.code as string, 'i')
+        vouchers = vouchers.filter((voucher) => regex.test(voucher.code))
+      }
+
+      sendPaginatedResponseFromRedis(res, next, vouchers, req.query)
+      return
+    }
+
+    await sendPaginatedResponse(res, next, databaseService.vouchers, req.query, filter)
+  } catch (err) {
+    next(err)
+  }
+}
+
+// Get all voucher for admin not filter isActive Status
+export const getAllVoucherForAdminController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const filter: Filter<Voucher> = {}
+
+    if (req.query.code) {
+      filter.code = {
+        $regex: req.query.code as string,
+        $options: 'i'
+      }
+    }
+
+    const key = process.env.VOUCHER_KEY ?? ''
+    const voucherList = await redisClient.get(key)
+
+    if (voucherList) {
+      let vouchers: Voucher[] = JSON.parse(voucherList)
 
       if (req.query.code) {
         const regex = new RegExp(req.query.code as string, 'i')
