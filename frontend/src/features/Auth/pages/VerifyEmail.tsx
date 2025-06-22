@@ -16,7 +16,7 @@ const VerifyEmailPage = () => {
       console.error("No email verification token found in URL.");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); 
+  }, []);
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-gray-50">
