@@ -66,7 +66,7 @@ export const createVoucherValidator = validate(
         errorMessage: ADMIN_MESSAGES.DISCOUNT_VALUE_IS_REQUIRED
       },
       isInt: {
-        options: { gt: 0 },
+        options: { gt: 1000 },
         errorMessage: ADMIN_MESSAGES.DISCOUNT_VALUE_INVALID
       },
       custom: {
@@ -81,13 +81,6 @@ export const createVoucherValidator = validate(
                 message: ADMIN_MESSAGES.DISCOUNT_VALUE_PERCENTAGE
               })
             }
-          } else if (type === DiscountType.Fixed) {
-            if (num < 1000) {
-              throw new ErrorWithStatus({
-                status: HTTP_STATUS.BAD_REQUEST,
-                message: ADMIN_MESSAGES.DISCOUNT_VALUE_GREATER_THAN_1000
-              })
-            }
           }
           return true
         }
@@ -100,7 +93,7 @@ export const createVoucherValidator = validate(
       },
       isInt: {
         options: {
-          gt: 0
+          gt: 1000
         },
         errorMessage: ADMIN_MESSAGES.MAX_DISCOUNT_INVALID
       },
@@ -155,6 +148,7 @@ export const createVoucherValidator = validate(
     userUsageLimit: {
       optional: true,
       isInt: {
+        options: { min: 1 },
         errorMessage: ADMIN_MESSAGES.USER_USAGE_LIMIT_MUST_BE_NUMBER
       }
     }
