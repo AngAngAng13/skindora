@@ -36,7 +36,11 @@ class OrdersService {
       UserID: userId,
       Products: selectedProducts.map((p) => {
         const product = productMap.get(p.ProductID)
-        if (!product) throw new ErrorWithStatus({ message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND, status: 404 })
+        if (!product)
+          throw new ErrorWithStatus({
+            message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND.replace('%s', p.ProductID),
+            status: 404
+          })
 
         if (!product.quantity || product.quantity < p.Quantity) {
           throw new ErrorWithStatus({
@@ -74,7 +78,7 @@ class OrdersService {
       payload.selectedProductIDs.includes(p.ProductID)
     )
     if (selectedProducts.length === 0) {
-      throw new ErrorWithStatus({ message: CART_MESSAGES.NOT_SELECTED, status: HTTP_STATUS.NOT_FOUND })
+      throw new ErrorWithStatus({ message: CART_MESSAGES.NOT_SELECTED, status: HTTP_STATUS.BAD_REQUEST })
     }
 
     const tempOrder = await this.buildTempOrder(userId, selectedProducts)
@@ -113,12 +117,34 @@ class OrdersService {
     const tempOrderKey = this.getTempOrderKey(userId)
     const tempOrder: TempOrder = await this.getTempOrder(tempOrderKey)
 
-    if (!tempOrder) {
+    if (!tempOrder || tempOrder.Products.length <= 0) {
       throw new ErrorWithStatus({
         message: ORDER_MESSAGES.EMPTY_OR_EXPIRED,
         status: HTTP_STATUS.NOT_FOUND
       })
     }
+
+    await Promise.all(
+      tempOrder.Products.map(async (p) => {
+        const product = await databaseService.products.findOne({
+          _id: new ObjectId(p.ProductID)
+        })
+
+        if (!product) {
+          throw new ErrorWithStatus({
+            message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND.replace('%s', p.ProductID),
+            status: 404
+          })
+        }
+
+        if ((product.quantity || 0) < p.Quantity) {
+          throw new ErrorWithStatus({
+            message: PRODUCTS_MESSAGES.NOT_ENOUGHT.replace('%s', `${product.quantity} items with id ${p.ProductID}`),
+            status: HTTP_STATUS.BAD_REQUEST
+          })
+        }
+      })
+    )
 
     const status = OrderStatus.PENDING
     const paymentStatus = payload.PaymentStatus ?? PaymentStatus.UNPAID
@@ -129,7 +155,7 @@ class OrdersService {
       Description: payload.Description || '',
       RequireDate: payload.RequireDate,
       PaymentMethod: payload.PaymentMethod,
-      PaymentStatus: paymentStatus,      
+      PaymentStatus: paymentStatus,
       Status: status
     }
 
@@ -154,49 +180,75 @@ class OrdersService {
     const totalPrice = tempOrder.TotalPrice - discount
     order.TotalPrice = totalPrice.toString()
 
-    const insertedOrder = await databaseService.orders.insertOne({
-      ...order,
-      created_at: localTime,
-      updated_at: localTime
-    })
-    const orderId = insertedOrder.insertedId
+    const session = databaseService.getClient().startSession()
 
-    const orderDetail = tempOrder.Products.map((p: ProductInOrder) => {
-      return {
-        ProductID: new ObjectId(p.ProductID),
-        OrderID: orderId,
-        Quantity: p.Quantity.toString(),
-        OrderDate: tempOrder.CreatedAt || new Date(),
-        UnitPrice: p.PricePerUnit.toString()
-      }
-    })
+    let orderDetails: any[] = []
+    try {
+      await session.withTransaction(async () => {
+        const insertedOrder = await databaseService.orders.insertOne(
+          {
+            ...order,
+            created_at: localTime,
+            updated_at: localTime
+          },
+          { session }
+        )
+        const orderId = insertedOrder.insertedId
 
-    await databaseService.orderDetails.insertMany(orderDetail)
+        orderDetails = tempOrder.Products.map((p: ProductInOrder) => {
+          return {
+            ProductID: new ObjectId(p.ProductID),
+            OrderID: orderId,
+            Quantity: p.Quantity.toString(),
+            OrderDate: tempOrder.CreatedAt || new Date(),
+            UnitPrice: p.PricePerUnit.toString()
+          }
+        })
 
-    if (payload.type === OrderType.CART) {
-      const cartKey = cartService.getCartKey(userId)
-      const cart = await cartService.getCart(cartKey)
-      const remainingProducts = cart.Products.filter((p: ProductInCart) => {
-        const orderedProductIds = tempOrder.Products.map((p: ProductInOrder) => p.ProductID)
-        return !orderedProductIds.includes(p.ProductID)
+        await databaseService.orderDetails.insertMany(orderDetails, { session })
+
+        const bulkOps = tempOrder.Products.map((p) => ({
+          updateOne: {
+            filter: { _id: new ObjectId(p.ProductID) },
+            update: { $inc: { quantity: -p.Quantity } }
+          }
+        }))
+
+        await databaseService.products.bulkWrite(bulkOps, { session })
+
+        if (voucher?._id) {
+          await databaseService.vouchers.updateOne(
+            { _id: new ObjectId(voucher._id) },
+            { $inc: { usedCount: 1 } },
+            { session }
+          )
+        }
       })
 
-      if (remainingProducts.length <= 0) {
-        await redisClient.del(cartKey)
-      } else {
-        await cartService.saveCart(cartKey, { Products: remainingProducts })
-      }
-    }
+      if (payload.type === OrderType.CART) {
+        const cartKey = cartService.getCartKey(userId)
+        const cart = await cartService.getCart(cartKey)
+        const remainingProducts = cart.Products.filter((p: ProductInCart) => {
+          const orderedProductIds = tempOrder.Products.map((p: ProductInOrder) => p.ProductID)
+          return !orderedProductIds.includes(p.ProductID)
+        })
 
-    await redisClient.del(tempOrderKey)
-    const orderResponse = {
-      ...order,
-      ...(discount > 0 && {PriceBeforeDiscount: priceBeforeDiscount.toString()})
-    }
-    
-    return {
-      ...orderResponse,
-      orderDetails: orderDetail
+        if (remainingProducts.length <= 0) {
+          await redisClient.del(cartKey)
+        } else {
+          await cartService.saveCart(cartKey, { Products: remainingProducts })
+        }
+      }
+
+      await redisClient.del(tempOrderKey)
+
+      return {
+        ...order,
+        ...(discount > 0 && { PriceBeforeDiscount: priceBeforeDiscount.toString() }),
+        orderDetails: orderDetails.map(({OrderID, ...rest}) => rest)
+      }
+    } finally {
+      await session.endSession()
     }
   }
 
