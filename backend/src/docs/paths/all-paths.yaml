@@ -598,3 +598,188 @@
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '500':
         $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/review/{orderId}/products/{productId}/review:
+  post:
+    tags: [Reviews]
+    summary: Add a new review for a product
+    description: >
+      Allows an authenticated user to add a review (rating and comment) for a specific product
+      they have purchased in a delivered order.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the delivered order.
+        schema:
+          type: string
+          format: mongoId
+      - name: productId
+        in: path
+        required: true
+        description: The ID of the product within the order to be reviewed.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/AddNewReviewReqBody.yaml'
+    responses:
+      '201':
+        description: Review added successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ReviewSuccessResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        description: Forbidden. Order has not been delivered or has already been reviewed.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Order or Product not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+  put:
+    tags: [Reviews]
+    summary: Update an existing review
+    description: Allows an authenticated user to update their existing review for a product.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order containing the product review.
+        schema:
+          type: string
+          format: mongoId
+      - name: productId
+        in: path
+        required: true
+        description: The ID of the product being reviewed.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateReviewReqBody.yaml'
+    responses:
+      '200':
+        description: Review updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ReviewSuccessResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Review, Order, or Product not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+  delete:
+    tags: [Reviews]
+    summary: Delete a review
+    description: Allows an authenticated user to delete their review for a product.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order containing the product review.
+        schema:
+          type: string
+          format: mongoId
+      - name: productId
+        in: path
+        required: true
+        description: The ID of the product being reviewed.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Review deleted successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Review not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/review/{productId}/review:
+  get:
+    tags: [Reviews]
+    summary: Get reviews for a product
+    description: Retrieves a paginated list of all reviews for a specific product. This is a public endpoint.
+    parameters:
+      - name: productId
+        in: path
+        required: true
+        description: The ID of the product to get reviews for.
+        schema:
+          type: string
+          format: mongoId
+      - name: page
+        in: query
+        description: The page number to retrieve.
+        schema:
+          type: integer
+          default: 1
+      - name: limit
+        in: query
+        description: The number of reviews per page.
+        schema:
+          type: integer
+          default: 10
+      - name: rating
+        in: query
+        description: Filter reviews by a specific rating (1-5).
+        schema:
+          type: integer
+          enum: [1, 2, 3, 4, 5]
+    responses:
+      '200':
+        description: A paginated list of reviews.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedReviewResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'

@@ -19,6 +19,8 @@ tags:
     description: Operations related to user authentication, profile, and management.
   - name: Staffs
     description: Operations available only to staff and admin roles.
+  - name: Reviews
+    description: Operations for creating and managing product reviews.
 
 paths:
   $ref: './paths/all-paths.yaml'
@@ -50,10 +52,22 @@ components:
       $ref: './components/schemas/AddToWishListReqBody.yaml'
     RemoveFromWishListReqBody:
       $ref: './components/schemas/RemoveFromWishListReqBody.yaml'
+    # staff 
     PaginatedProductResponse:
       $ref: './components/schemas/PaginatedProductResponse.yaml'
     Product:
       $ref: './components/schemas/Product.yaml'
+    # review
+    AddNewReviewReqBody:
+      $ref: './components/schemas/AddNewReviewReqBody.yaml'
+    UpdateReviewReqBody:
+      $ref: './components/schemas/UpdateReviewReqBody.yaml'
+    Review:
+      $ref: './components/schemas/Review.yaml'
+    ReviewSuccessResponse:
+      $ref: './components/schemas/ReviewSuccessResponse.yaml'
+    PaginatedReviewResponse:
+      $ref: './components/schemas/PaginatedReviewResponse.yaml'
 
     # --- Response Schemas ---
     AuthSuccessResponse:
