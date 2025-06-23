@@ -920,14 +920,14 @@
     security:
       - BearerAuth: []
     parameters:
-      - name: userId
-        in: path
-        required: true
-        description: The ID of the user to retrieve orders for.
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: status
+        in: query
+        description: Filter orders by status.
         schema:
           type: string
-          format: mongoId
-      - $ref: '../parameters/all-parameters.yaml'
+          enum: [PENDING, CONFIRMED, PROCESSING, SHIPPING, DELIVERED, CANCELLED, RETURNED, FAILED]
     responses:
       '200':
         description: A paginated list of orders for the specified user.

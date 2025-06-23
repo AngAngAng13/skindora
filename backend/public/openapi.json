@@ -1576,17 +1576,28 @@
         ],
         "parameters": [
           {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "description": "The ID of the user to retrieve orders for.",
-            "schema": {
-              "type": "string",
-              "format": "mongoId"
-            }
+            "$ref": "#/components/parameters/PageQuery"
           },
           {
-            "$ref": "#/components/parameters"
+            "$ref": "#/components/parameters/LimitQuery"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter orders by status.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "CONFIRMED",
+                "PROCESSING",
+                "SHIPPING",
+                "DELIVERED",
+                "CANCELLED",
+                "RETURNED",
+                "FAILED"
+              ]
+            }
           }
         ],
         "responses": {
