@@ -1048,3 +1048,39 @@ export const updateUserStateValidator = validate(
     ['params', 'body']
   )
 );
+
+export const updateProductStateValidator = validate(
+  checkSchema(
+    {
+      _id: {
+        in: ['params'],
+        isMongoId: {
+          errorMessage: ADMIN_MESSAGES.INVALID_PRODUCT_ID
+        },
+        custom: {
+          options: async (value) => {
+            const product = await databaseService.products.findOne({ _id: new ObjectId(value) });
+            if (product === null) {
+              throw new Error(ADMIN_MESSAGES.PRODUCT_NOT_FOUND);
+            }
+            return true;
+          }
+        }
+      },
+      state: {
+        in: ['body'],
+        notEmpty: {
+          errorMessage: ADMIN_MESSAGES.STATE_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: ADMIN_MESSAGES.STATE_MUST_BE_A_STRING
+        },
+        isIn: {
+          options: [Object.values(ProductState)],
+          errorMessage: `${ADMIN_MESSAGES.STATE_MUST_BE_ONE_OF}: ${Object.values(ProductState).join(', ')}`
+        }
+      }
+    },
+    ['params', 'body']
+  )
+);

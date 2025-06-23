@@ -4,6 +4,7 @@ import {
   getAllUserController,
   getUserDetailController,
   updateProductController,
+  updateProductStateController,
   updateUserStateController
 } from '~/controllers/admin.controllers'
 import {
@@ -16,6 +17,7 @@ import {
   createNewProductValidator,
   isAdminValidator,
   isValidToActiveValidator,
+  updateProductStateValidator,
   updateProductValidator,
   updateUserStateValidator
 } from '~/middlewares/admin.middlewares'
@@ -140,6 +142,13 @@ adminRouter.put(
   updateProductValidator,
   wrapAsync(updateProductController)
 )
+adminRouter.put(
+  '/manage-products/update-state/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  updateProductStateValidator,
+  wrapAsync(updateProductStateController)
+);
 
 //manage filter
 //filter-brand

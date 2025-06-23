@@ -1844,3 +1844,62 @@
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '422':
         $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-products/update-state/{_id}:
+  put:
+    tags: [Admin]
+    summary: (Admin) Update Product State
+    description: Allows an admin to change the state of a product (e.g., set it to ACTIVE, INACTIVE, OUT_OF_STOCK, etc.).
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the product to update.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateProductStateReqBody.yaml'
+    responses:
+      '200':
+        description: Product state updated successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Update product state successfully"
+                data:
+                  $ref: '../components/schemas/Product.yaml'
+      '401':
+        description: Unauthorized.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        description: Forbidden. User is not an admin.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Product not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Validation error.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
