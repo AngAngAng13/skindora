@@ -3,8 +3,10 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ADMIN_MESSAGES } from '~/constants/messages'
 import { createNewFilterBrandReqBody } from '~/models/requests/Admin.requests'
+import { updateProductReqBody } from '~/models/requests/Product.requests'
 import databaseService from '~/services/database.services'
 import filterBrandService from '~/services/filterBrand.services'
+import productService from '~/services/product.services'
 import usersService from '~/services/users.services'
 import { sendPaginatedResponse } from '~/utils/pagination.helper'
 
@@ -34,5 +36,37 @@ export const createNewFilterBrandController = async (
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : HTTP_STATUS.INTERNAL_SERVER_ERROR
     res.status(500).json({ error: errorMessage })
+  }
+}
+
+export const updateProductController = async (
+  req: Request<ParamsDictionary, any, updateProductReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { _id } = req.params
+    const result = await productService.updateProduct(_id, req.body)
+    if (!result) {
+      res.status(404).json({
+        message: ADMIN_MESSAGES.PRODUCT_NOT_FOUND
+      })
+    }
+    res.json({
+      message: ADMIN_MESSAGES.UPDATE_PRODUCT_SUCCESS,
+      result
+    })
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        message: ADMIN_MESSAGES.UPDATE_PRODUCT_FAILED,
+        error: error.message
+      })
+    } else {
+      res.status(500).json({
+        message: ADMIN_MESSAGES.UPDATE_PRODUCT_FAILED,
+        error: 'An unexpected error occurred'
+      })
+    }
   }
 }

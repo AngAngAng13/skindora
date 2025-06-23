@@ -11,7 +11,8 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 
 servers:
-  - url: https://api.skindora.site/api-docs
+  # - url: https://api.skindora.site/
+  - url: http://localhost:4000/
     description: Server development
 
 tags:
