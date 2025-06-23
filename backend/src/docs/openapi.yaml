@@ -17,9 +17,11 @@ servers:
 tags:
   - name: Users
     description: Operations related to user authentication, profile, and management.
+  - name: Staffs
+    description: Operations available only to staff and admin roles.
 
 paths:
-  $ref: './paths/users.yaml'
+  $ref: './paths/all-paths.yaml'
 
 components:
   schemas:
@@ -48,7 +50,11 @@ components:
       $ref: './components/schemas/AddToWishListReqBody.yaml'
     RemoveFromWishListReqBody:
       $ref: './components/schemas/RemoveFromWishListReqBody.yaml'
-    
+    PaginatedProductResponse:
+      $ref: './components/schemas/PaginatedProductResponse.yaml'
+    Product:
+      $ref: './components/schemas/Product.yaml'
+
     # --- Response Schemas ---
     AuthSuccessResponse:
       $ref: './components/schemas/AuthSuccessResponse.yaml'

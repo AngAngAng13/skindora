@@ -552,3 +552,49 @@
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '500':
         $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/staffs/manage-products/get-all:
+  get:
+    tags: [Staffs]
+    summary: (Staff) Get all products with pagination
+    description: >
+      Allows authenticated staff members to retrieve a paginated list of all products in the system.
+      This provides a comprehensive view of products for management purposes.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: page
+        in: query
+        description: The page number to retrieve.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: limit
+        in: query
+        description: The number of products to return per page.
+        schema:
+          type: integer
+          default: 10
+          minimum: 1
+    responses:
+      '200':
+        description: A paginated list of products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '401':
+        description: Unauthorized. Access token is missing or invalid.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        description: Forbidden. The user is not a staff or admin.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'

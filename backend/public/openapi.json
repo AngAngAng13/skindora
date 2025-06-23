@@ -23,6 +23,10 @@
     {
       "name": "Users",
       "description": "Operations related to user authentication, profile, and management."
+    },
+    {
+      "name": "Staffs",
+      "description": "Operations available only to staff and admin roles."
     }
   ],
   "paths": {
@@ -944,6 +948,77 @@
           }
         }
       }
+    },
+    "/staffs/manage-products/get-all": {
+      "get": {
+        "tags": [
+          "Staffs"
+        ],
+        "summary": "(Staff) Get all products with pagination",
+        "description": "Allows authenticated staff members to retrieve a paginated list of all products in the system. This provides a comprehensive view of products for management purposes.\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve.",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of products to return per page.",
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of products.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedProductResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Access token is missing or invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. The user is not a staff or admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1199,6 +1274,181 @@
         "required": [
           "productId"
         ]
+      },
+      "PaginatedProductResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "example": 10
+              },
+              "currentPage": {
+                "type": "integer",
+                "example": 1
+              },
+              "totalPages": {
+                "type": "integer",
+                "example": 15
+              },
+              "totalRecords": {
+                "type": "integer",
+                "example": 147
+              }
+            }
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "description": "Represents a full product object with all details.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "name_on_list": {
+            "type": "string"
+          },
+          "engName_on_list": {
+            "type": "string"
+          },
+          "price_on_list": {
+            "type": "string"
+          },
+          "image_on_list": {
+            "type": "string",
+            "format": "uri"
+          },
+          "hover_image_on_list": {
+            "type": "string",
+            "format": "uri"
+          },
+          "productName_detail": {
+            "type": "string"
+          },
+          "engName_detail": {
+            "type": "string"
+          },
+          "description_detail": {
+            "type": "object",
+            "properties": {
+              "rawHtml": {
+                "type": "string"
+              },
+              "plainText": {
+                "type": "string"
+              }
+            }
+          },
+          "ingredients_detail": {
+            "type": "object",
+            "properties": {
+              "rawHtml": {
+                "type": "string"
+              },
+              "plainText": {
+                "type": "string"
+              }
+            }
+          },
+          "guide_detail": {
+            "type": "object",
+            "properties": {
+              "rawHtml": {
+                "type": "string"
+              },
+              "plainText": {
+                "type": "string"
+              }
+            }
+          },
+          "specification_detail": {
+            "type": "object",
+            "properties": {
+              "rawHtml": {
+                "type": "string"
+              },
+              "plainText": {
+                "type": "string"
+              }
+            }
+          },
+          "main_images_detail": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "sub_images_detail": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "filter_brand": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_dac_tinh": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_hsk_ingredients": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_hsk_product_type": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_hsk_size": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_hsk_skin_type": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_hsk_uses": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_origin": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "quantity": {
+            "type": "integer"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE",
+              "OUT_OF_STOCK",
+              "DISCONTINUED"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       },
       "AuthSuccessResponse": {
         "type": "object",
