@@ -40,8 +40,8 @@ import { wrapAsync } from '~/utils/handler'
 import { getAllVoucherController } from '~/controllers/voucher.controllers'
 
 const usersRouter = Router()
-usersRouter.route('/').get(loginController)
-usersRouter.route('/').get(loginController)
+// usersRouter.route('/').get(loginController)
+// usersRouter.route('/').get(loginController)
 
 usersRouter.post('/login', loginValidator, wrapAsync(loginController))
 usersRouter.post('/register', registerValidator, wrapAsync(registerController))
