@@ -70,7 +70,7 @@ export const PRODUCTS_MESSAGES = {
   OUT_OF_STOCK: 'Product is out of stock',
   NOT_ENOUGHT: 'Only %s available in stock',
   PRODUCT_IDS_MUST_BE_ARRAY: 'ProductIds must be an array',
-  INVALID_PRODUCT_ID: 'ProductId is invalid',
+  INVALID_PRODUCT_ID: 'ProductId is invalid'
 } as const
 
 export const REVIEW_MESSAGES = {
@@ -173,14 +173,14 @@ export const ADMIN_MESSAGES = {
   DESCRIPTION_MUST_BE_STRING: 'Description must be a string',
   DESCRIPTION_LENGTH_INVALID: 'Description must be between 1 and 20 characters',
   DISCOUNT_VALUE_IS_REQUIRED: 'Discount value is required',
-  DISCOUNT_VALUE_INVALID: 'Discount value must be a number',
+  DISCOUNT_VALUE_INVALID: 'Discount value must be a number and greater than 1000',
   DISCOUNT_VALUE_GREATER_THAN_0: 'Discount value must be a number greater than 0',
   DISCOUNT_VALUE_GREATER_THAN_1000: 'Discount value must be a number greater than 1000',
   DISCOUNT_VALUE_PERCENTAGE: 'Percentage discount must be between 0 and 100',
   DISCOUNT_TYPE_IS_REQUIRED: 'Discount type is required',
   DISCOUNT_TYPE_INVALID: 'Discount type must be one of: %s',
   MAX_DISCOUNT_IS_REQUIRED: 'Max Discount Amount is required',
-  MAX_DISCOUNT_INVALID: 'Max Discount Amount must greate than 1000',
+  MAX_DISCOUNT_INVALID: 'Max Discount Amount must greater than 1000',
   MIN_ORDER_IS_REQUIRED: 'Min Order Value is required',
   MIN_ORDER_INVALID: 'Min Order Value must greate than 1000',
   START_DATE_IS_REQUIRED: 'Start Date is required',
@@ -205,7 +205,7 @@ export const ADMIN_MESSAGES = {
   FILTER_BRAND_STATE_MUST_BE_ONE_OF: 'Filter brand state must be one of',
   STATE_MUST_BE_A_STRING: 'State must be a string',
   GET_PRODUCT_DETAIL_SUCCESS: 'Get product detail successfully',
-  PRODUCT_NOT_FOUND: 'Product not found',
+  PRODUCT_NOT_FOUND: 'Product not found'
 } as const
 
 export const CART_MESSAGES = {
