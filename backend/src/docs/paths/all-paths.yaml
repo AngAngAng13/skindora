@@ -815,3 +815,116 @@
               $ref: '../components/schemas/PaginatedProductResponse.yaml'
       '500':
         $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/payment/zalopay:
+  post:
+    tags: [Payments]
+    summary: Create ZaloPay Payment Order
+    description: >
+      Allows an authenticated user to create a payment order with ZaloPay.
+      The endpoint receives order details and returns a ZaloPay payment URL.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ZaloPayOrderReqBody.yaml'
+    responses:
+      '200':
+        description: ZaloPay order created successfully, payment URL returned.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                return_code:
+                  type: integer
+                  example: 1
+                return_message:
+                  type: string
+                  example: "Success"
+                order_url:
+                  type: string
+                  format: uri
+                  example: "https://sbgateway.zalopay.vn/openinapp?order=..."
+                zp_trans_token:
+                  type: string
+                  example: "240624000000123_1a2b3c4d"
+      '400':
+        description: Bad Request (e.g., missing orderDetails).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        description: Unauthorized. Access token is missing or invalid.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        description: Internal Server Error.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/payment/vnpay:
+  post:
+    tags: [Payments]
+    summary: Create VNPay Payment URL
+    description: >
+      Allows an authenticated user to create a VNPay payment URL.
+      The endpoint receives payment details and returns a URL to redirect the user for payment.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/VNPayOrderReqBody.yaml'
+    responses:
+      '200':
+        description: VNPay payment URL created successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Success"
+                data:
+                  type: object
+                  properties:
+                    paymentUrl:
+                      type: string
+                      format: uri
+                      example: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=..."
+      '401':
+        description: Unauthorized. Access token is missing or invalid.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        description: Internal Server Error.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/payment/payments_return:
+  post:
+    tags: [Payments]
+    summary: Payment Return Callback
+    description: >
+      A callback endpoint for payment gateways to send return information.
+      This endpoint is typically called by the payment gateway service, not by the client directly.
+      Currently, it only logs the callback event.
+    responses:
+      '200':
+        description: Callback received.

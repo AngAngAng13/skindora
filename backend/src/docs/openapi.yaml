@@ -23,7 +23,8 @@ tags:
     description: Operations for creating and managing product reviews.
   - name: Products
     description: Operations for viewing and managing products.
-
+  - name: Payments
+    description: Operations related to payment gateways like ZaloPay and VNPay.
 paths:
   $ref: './paths/all-paths.yaml'
 
@@ -70,6 +71,11 @@ components:
       $ref: './components/schemas/ReviewSuccessResponse.yaml'
     PaginatedReviewResponse:
       $ref: './components/schemas/PaginatedReviewResponse.yaml'
+    # payment
+    ZaloPayOrderReqBody:
+      $ref: './components/schemas/ZaloPayOrderReqBody.yaml'
+    VNPayOrderReqBody:
+      $ref: './components/schemas/VNPayOrderReqBody.yaml'
 
     # --- Response Schemas ---
     AuthSuccessResponse:
