@@ -1363,3 +1363,162 @@
               $ref: '../components/schemas/ErrorValidationResponse.yaml'
       '500':
         $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/carts:
+  get:
+    tags: [Carts]
+    summary: Get the current user's cart
+    description: Retrieves all items currently in the authenticated user's shopping cart.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Cart content retrieved successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/CartResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '500':
+        $ref: '../openapi.yaml#/components/schemas/ErrorServerResponse'
+  post:
+    tags: [Carts]
+    summary: Add a product to the cart
+    description: >
+      Adds a specified quantity of a product to the user's cart. If the product is already in the cart,
+      the quantity is updated.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/AddToCartReqBody'
+    responses:
+      '200':
+        description: Product added to cart successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/CartResponse'
+      '400':
+        description: Bad Request (e.g., product out of stock, invalid quantity).
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        description: Product not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+      '500':
+        $ref: '../openapi.yaml#/components/schemas/ErrorServerResponse'
+  delete:
+    tags: [Carts]
+    summary: Clear the entire cart
+    description: Removes all items from the authenticated user's shopping cart.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Cart cleared successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/MessageResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        description: Cart is already empty or does not exist.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '500':
+        $ref: '../openapi.yaml#/components/schemas/ErrorServerResponse'
+
+/carts/{productId}:
+  patch:
+    tags: [Carts]
+    summary: Update product quantity in cart
+    description: Updates the quantity of a specific product in the cart. Setting quantity to 0 removes the item.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: productId
+        in: path
+        required: true
+        description: The ID of the product to update in the cart.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/UpdateCartReqBody'
+    responses:
+      '200':
+        description: Cart updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/CartResponse'
+      '400':
+        description: Bad Request (e.g., quantity exceeds stock).
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        description: Product not found in the database or in the cart.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+      '500':
+        $ref: '../openapi.yaml#/components/schemas/ErrorServerResponse'
+  delete:
+    tags: [Carts]
+    summary: Remove a product from the cart
+    description: Removes a single specific product from the authenticated user's cart, regardless of quantity.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: productId
+        in: path
+        required: true
+        description: The ID of the product to remove from the cart.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Product removed successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/CartResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        description: Product not found in the cart.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '500':
+        $ref: '../openapi.yaml#/components/schemas/ErrorServerResponse'

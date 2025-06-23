@@ -27,6 +27,8 @@ tags:
     description: Operations related to payment gateways like ZaloPay and VNPay.
   - name: Orders
     description: Operations related to creating and managing customer orders.
+  - name: Carts
+    description: Operations for managing the user's shopping cart.
 paths:
   $ref: './paths/all-paths.yaml'
 
@@ -101,6 +103,13 @@ components:
       $ref: './components/schemas/UpdateOrderStatusResponse.yaml'
     OrderCreationResponse:
       $ref: './components/schemas/OrderCreationResponse.yaml'
+    # carts
+    AddToCartReqBody:
+      $ref: './components/schemas/AddToCartReqBody.yaml'
+    UpdateCartReqBody:
+      $ref: './components/schemas/UpdateCartReqBody.yaml'
+    CartResponse:
+      $ref: './components/schemas/CartResponse.yaml'
 
     # --- Response Schemas ---
     AuthSuccessResponse:
@@ -131,6 +140,7 @@ components:
       $ref: './components/schemas/User.yaml'
     Voucher:
       $ref: './components/schemas/Voucher.yaml'
+    
 
   securitySchemes:
     BearerAuth:

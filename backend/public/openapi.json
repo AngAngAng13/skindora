@@ -43,6 +43,10 @@
     {
       "name": "Orders",
       "description": "Operations related to creating and managing customer orders."
+    },
+    {
+      "name": "Carts",
+      "description": "Operations for managing the user's shopping cart."
     }
   ],
   "paths": {
@@ -2271,6 +2275,270 @@
           }
         }
       }
+    },
+    "/carts": {
+      "get": {
+        "tags": [
+          "Carts"
+        ],
+        "summary": "Get the current user's cart",
+        "description": "Retrieves all items currently in the authenticated user's shopping cart.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cart content retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Carts"
+        ],
+        "summary": "Add a product to the cart",
+        "description": "Adds a specified quantity of a product to the user's cart. If the product is already in the cart, the quantity is updated.\n",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddToCartReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product added to cart successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request (e.g., product out of stock, invalid quantity).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "description": "Product not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Carts"
+        ],
+        "summary": "Clear the entire cart",
+        "description": "Removes all items from the authenticated user's shopping cart.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cart cleared successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "description": "Cart is already empty or does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      }
+    },
+    "/carts/{productId}": {
+      "patch": {
+        "tags": [
+          "Carts"
+        ],
+        "summary": "Update product quantity in cart",
+        "description": "Updates the quantity of a specific product in the cart. Setting quantity to 0 removes the item.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the product to update in the cart.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCartReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cart updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request (e.g., quantity exceeds stock).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "description": "Product not found in the database or in the cart.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Carts"
+        ],
+        "summary": "Remove a product from the cart",
+        "description": "Removes a single specific product from the authenticated user's cart, regardless of quantity.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the product to remove from the cart.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product removed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "description": "Product not found in the cart.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3430,6 +3698,87 @@
                     },
                     "UnitPrice": {
                       "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AddToCartReqBody": {
+        "type": "object",
+        "properties": {
+          "ProductID": {
+            "type": "string",
+            "format": "mongoId",
+            "description": "The ID of the product to add to the cart.",
+            "example": "60d5ec49e0f6e9001f8d6b1a"
+          },
+          "Quantity": {
+            "type": "integer",
+            "description": "The quantity of the product to add.",
+            "example": 2,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "ProductID",
+          "Quantity"
+        ]
+      },
+      "UpdateCartReqBody": {
+        "type": "object",
+        "properties": {
+          "Quantity": {
+            "type": "integer",
+            "description": "The new quantity for the product. Set to 0 to remove the item.",
+            "example": 3,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "Quantity"
+        ]
+      },
+      "CartResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Cart fetched successfully"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "Products": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "ProductID": {
+                      "type": "string",
+                      "format": "mongoId"
+                    },
+                    "Quantity": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Toner Pad"
+                    },
+                    "image": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://example.com/image.jpg"
+                    },
+                    "unitPrice": {
+                      "type": "number",
+                      "example": 250000
+                    },
+                    "totalPrice": {
+                      "type": "number",
+                      "example": 500000
                     }
                   }
                 }
