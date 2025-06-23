@@ -17,6 +17,8 @@ import adminRouter from './routes/admin.routes'
 import cartRouter from './routes/cart.routes'
 import ordersRouter from './routes/orders.routes'
 import staffRouter from './routes/staffs.routes'
+import { connectProducer, waitForKafkaReady } from './services/Kafka/kafka.services'
+import { startVoucherConsumer } from './services/Kafka/consumer'
 
 config()
 // const swaggerDocument = YAML.load(path.join(__dirname, './openapi.yml'))
@@ -31,9 +33,13 @@ app.use(
   app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-databaseService.connect().then(() => {
+databaseService.connect().then(async () => {
   databaseService.indexUsers()
   databaseService.indexVouchers()
+
+  await waitForKafkaReady()
+  await connectProducer()
+  await startVoucherConsumer()
 })
 
 app.get('/', (req, res) => {

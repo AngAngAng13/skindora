@@ -20,10 +20,10 @@ import {
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
 import { wrapAsync } from '~/utils/handler'
 import {
-  getAllVoucherController,
   createVoucherController,
   updateVoucherController,
-  inactiveVoucherController
+  inactiveVoucherController,
+  getAllVoucherForAdminController
 } from '~/controllers/voucher.controllers'
 import { filterMiddleware, parseDateFieldsMiddleware } from '~/middlewares/common.middlewares'
 import { createVoucherValidator, updateVoucherValidator, voucherIdValidator } from '~/middlewares/voucher.middlewares'
@@ -34,7 +34,12 @@ const adminRouter = Router()
 //user management
 adminRouter.get('/manage-users/get-all', accessTokenValidator, isAdminValidator, wrapAsync(getAllUserController))
 adminRouter.get('/manage-users/:_id', accessTokenValidator, isAdminValidator, wrapAsync(getUserDetailController))
-adminRouter.get('/manage-vouchers/get-all', accessTokenValidator, isAdminValidator, wrapAsync(getAllVoucherController))
+adminRouter.get(
+  '/manage-vouchers/get-all',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getAllVoucherForAdminController)
+)
 adminRouter.post(
   '/manage-vouchers',
   accessTokenValidator,

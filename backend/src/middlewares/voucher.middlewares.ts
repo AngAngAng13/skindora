@@ -65,30 +65,20 @@ export const createVoucherValidator = validate(
       notEmpty: {
         errorMessage: ADMIN_MESSAGES.DISCOUNT_VALUE_IS_REQUIRED
       },
+      isInt: {
+        options: { gt: 1000 },
+        errorMessage: ADMIN_MESSAGES.DISCOUNT_VALUE_INVALID
+      },
       custom: {
         options: (value, { req }) => {
           const type = req.body.discountType
           const num = parseInt(value, 10)
-
-          if (isNaN(num)) {
-            throw new ErrorWithStatus({
-              status: HTTP_STATUS.BAD_REQUEST,
-              message: ADMIN_MESSAGES.DISCOUNT_VALUE_INVALID
-            })
-          }
 
           if (type === DiscountType.Percentage) {
             if (num <= 0 || num >= 100) {
               throw new ErrorWithStatus({
                 status: HTTP_STATUS.BAD_REQUEST,
                 message: ADMIN_MESSAGES.DISCOUNT_VALUE_PERCENTAGE
-              })
-            }
-          } else if (type === DiscountType.Fixed) {
-            if (num < 1000) {
-              throw new ErrorWithStatus({
-                status: HTTP_STATUS.BAD_REQUEST,
-                message: ADMIN_MESSAGES.DISCOUNT_VALUE_GREATER_THAN_1000
               })
             }
           }
@@ -101,25 +91,11 @@ export const createVoucherValidator = validate(
       notEmpty: {
         errorMessage: ADMIN_MESSAGES.MAX_DISCOUNT_IS_REQUIRED
       },
-      custom: {
-        options: (value) => {
-          const num = parseInt(value, 10)
-
-          if (isNaN(num)) {
-            throw new ErrorWithStatus({
-              status: HTTP_STATUS.BAD_REQUEST,
-              message: ADMIN_MESSAGES.MAX_DISCOUNT_INVALID
-            })
-          }
-
-          if (num < 1000) {
-            throw new ErrorWithStatus({
-              status: HTTP_STATUS.BAD_REQUEST,
-              message: ADMIN_MESSAGES.MAX_DISCOUNT_INVALID
-            })
-          }
-          return true
-        }
+      isInt: {
+        options: {
+          gt: 1000
+        },
+        errorMessage: ADMIN_MESSAGES.MAX_DISCOUNT_INVALID
       },
       trim: true
     },
@@ -172,6 +148,7 @@ export const createVoucherValidator = validate(
     userUsageLimit: {
       optional: true,
       isInt: {
+        options: { min: 1 },
         errorMessage: ADMIN_MESSAGES.USER_USAGE_LIMIT_MUST_BE_NUMBER
       }
     }
@@ -212,6 +189,9 @@ export const updateVoucherValidator = validate(
       notEmpty: {
         errorMessage: ADMIN_MESSAGES.DISCOUNT_VALUE_IS_REQUIRED
       },
+      isNumeric: {
+        errorMessage: ADMIN_MESSAGES.DISCOUNT_VALUE_INVALID
+      },
       custom: {
         options: async (value, { req }) => {
           let type = req.body.discountType
@@ -220,13 +200,6 @@ export const updateVoucherValidator = validate(
             type = voucher?.discountType
           }
           const num = parseInt(value, 10)
-
-          if (isNaN(num)) {
-            throw new ErrorWithStatus({
-              status: HTTP_STATUS.BAD_REQUEST,
-              message: ADMIN_MESSAGES.DISCOUNT_VALUE_INVALID
-            })
-          }
 
           if (type === DiscountType.Percentage) {
             if (num <= 0 || num >= 100) {
@@ -253,25 +226,11 @@ export const updateVoucherValidator = validate(
       notEmpty: {
         errorMessage: ADMIN_MESSAGES.MAX_DISCOUNT_IS_REQUIRED
       },
-      custom: {
-        options: (value) => {
-          const num = parseInt(value, 10)
-
-          if (isNaN(num)) {
-            throw new ErrorWithStatus({
-              status: HTTP_STATUS.BAD_REQUEST,
-              message: ADMIN_MESSAGES.MAX_DISCOUNT_INVALID
-            })
-          }
-
-          if (num < 1000) {
-            throw new ErrorWithStatus({
-              status: HTTP_STATUS.BAD_REQUEST,
-              message: ADMIN_MESSAGES.MAX_DISCOUNT_INVALID
-            })
-          }
-          return true
-        }
+      isInt: {
+        options: {
+          min: 0
+        },
+        errorMessage: ADMIN_MESSAGES.MAX_DISCOUNT_INVALID
       },
       trim: true
     },
@@ -280,25 +239,11 @@ export const updateVoucherValidator = validate(
       notEmpty: {
         errorMessage: ADMIN_MESSAGES.MIN_ORDER_IS_REQUIRED
       },
-      custom: {
-        options: (value) => {
-          const num = parseInt(value, 10)
-
-          if (isNaN(num)) {
-            throw new ErrorWithStatus({
-              status: HTTP_STATUS.BAD_REQUEST,
-              message: ADMIN_MESSAGES.MIN_ORDER_INVALID
-            })
-          }
-
-          if (num < 1000) {
-            throw new ErrorWithStatus({
-              status: HTTP_STATUS.BAD_REQUEST,
-              message: ADMIN_MESSAGES.MIN_ORDER_INVALID
-            })
-          }
-          return true
-        }
+      isInt: {
+        options: {
+          min: 1000
+        },
+        errorMessage: ADMIN_MESSAGES.MIN_ORDER_INVALID
       },
       trim: true
     },
