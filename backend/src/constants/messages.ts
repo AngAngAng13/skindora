@@ -208,7 +208,11 @@ export const ADMIN_MESSAGES = {
   GET_PRODUCT_DETAIL_SUCCESS: 'Get product detail successfully',
   PRODUCT_NOT_FOUND: 'Product not found',
   UPDATE_PRODUCT_FAILED: 'Update product failed',
-  UPDATE_PRODUCT_SUCCESS: 'Update product successfully'
+  UPDATE_PRODUCT_SUCCESS: 'Update product successfully',
+  CANNOT_UPDATE_OWN_STATUS: 'Cannot update own status',
+  VERIFY_STATUS_IS_REQUIRED: 'Verify status is required',
+  VERIFY_STATUS_MUST_BE_A_NUMBER: 'Verify status must be a number',
+  UPDATE_USER_STATE_SUCCESS: 'Update user state successfully',
 } as const
 
 export const CART_MESSAGES = {

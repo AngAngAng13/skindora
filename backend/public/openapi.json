@@ -3032,6 +3032,92 @@
           }
         }
       }
+    },
+    "/admin/manage-users/update-user-states/{id}": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "(Admin) Update a User's Verification Status",
+        "description": "Allows an admin to update the verification status of a user (e.g., verify, ban, or unverify). An admin cannot update their own status.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to update.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserStateReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User state updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Update user state successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request (e.g., trying to update own status).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "description": "User to be updated not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4619,6 +4705,24 @@
           },
           "plainText": {
             "type": "string"
+          }
+        }
+      },
+      "UpdateUserStateReqBody": {
+        "type": "object",
+        "required": [
+          "verify"
+        ],
+        "properties": {
+          "verify": {
+            "type": "integer",
+            "description": "The new verification status for the user. (0 - Unverified, 1 - Verified, 2 - Banned)",
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "example": 1
           }
         }
       },

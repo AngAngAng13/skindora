@@ -131,6 +131,8 @@ components:
       $ref: './components/schemas/CreateFilterBrandReqBody.yaml'
     DetailSection:
       $ref: './components/schemas/DetailSection.yaml'
+    UpdateUserStateReqBody:
+      $ref: './components/schemas/UpdateUserStateReqBody.yaml'
 
     # --- Response Schemas ---
     AuthSuccessResponse:

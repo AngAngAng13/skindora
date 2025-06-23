@@ -3,7 +3,8 @@ import {
   createNewFilterBrandController,
   getAllUserController,
   getUserDetailController,
-  updateProductController
+  updateProductController,
+  updateUserStateController
 } from '~/controllers/admin.controllers'
 import {
   createNewProductController,
@@ -15,7 +16,8 @@ import {
   createNewProductValidator,
   isAdminValidator,
   isValidToActiveValidator,
-  updateProductValidator
+  updateProductValidator,
+  updateUserStateValidator
 } from '~/middlewares/admin.middlewares'
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
 import { wrapAsync } from '~/utils/handler'
@@ -34,6 +36,14 @@ const adminRouter = Router()
 //user management
 adminRouter.get('/manage-users/get-all', accessTokenValidator, isAdminValidator, wrapAsync(getAllUserController))
 adminRouter.get('/manage-users/:_id', accessTokenValidator, isAdminValidator, wrapAsync(getUserDetailController))
+adminRouter.put(
+  '/manage-users/update-user-states/:id',
+  accessTokenValidator,
+  isAdminValidator,
+  updateUserStateValidator,
+  wrapAsync(updateUserStateController)
+)
+//voucher management
 adminRouter.get(
   '/manage-vouchers/get-all',
   accessTokenValidator,

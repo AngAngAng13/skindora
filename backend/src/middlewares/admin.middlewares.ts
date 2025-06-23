@@ -5,7 +5,7 @@ import { ErrorWithStatus } from '~/models/Errors'
 import databaseService from '~/services/database.services'
 import { Request, Response, NextFunction } from 'express'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
-import { FilterBrandState, ProductState, Role } from '~/constants/enums'
+import { FilterBrandState, ProductState, Role, UserVerifyStatus } from '~/constants/enums'
 import { validate } from '~/utils/validation'
 import { ParamSchema, checkSchema } from 'express-validator'
 import filterBrandService from '~/services/filterBrand.services'
@@ -1008,3 +1008,43 @@ export const updateProductValidator = validate(
     ['body']
   )
 )
+
+export const updateUserStateValidator = validate(
+  checkSchema(
+    {
+      id: {
+        in: ['params'],
+        isMongoId: {
+          errorMessage: USERS_MESSAGES.INVALID_USER_ID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const {user_id} = req.decoded_authorization as TokenPayLoad;
+            if (value === user_id) {
+              throw new Error(ADMIN_MESSAGES.CANNOT_UPDATE_OWN_STATUS);
+            }
+            const user = await databaseService.users.findOne({ _id: new ObjectId(value) });
+            if (user === null) {
+              throw new Error(USERS_MESSAGES.USER_NOT_FOUND);
+            }
+            return true;
+          }
+        }
+      },
+      verify: {
+        in: ['body'],
+        notEmpty: {
+          errorMessage: ADMIN_MESSAGES.VERIFY_STATUS_IS_REQUIRED
+        },
+        isNumeric: {
+          errorMessage: ADMIN_MESSAGES.VERIFY_STATUS_MUST_BE_A_NUMBER
+        },
+        isIn: {
+          options: [[UserVerifyStatus.Unverified, UserVerifyStatus.Verified, UserVerifyStatus.Banned]],
+          errorMessage: `Verify status must be one of: 0 (Unverified), 1 (Verified), 2 (Banned)`
+        }
+      }
+    },
+    ['params', 'body']
+  )
+);
