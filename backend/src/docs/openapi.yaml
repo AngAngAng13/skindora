@@ -21,6 +21,8 @@ tags:
     description: Operations available only to staff and admin roles.
   - name: Reviews
     description: Operations for creating and managing product reviews.
+  - name: Products
+    description: Operations for viewing and managing products.
 
 paths:
   $ref: './paths/all-paths.yaml'
@@ -52,7 +54,7 @@ components:
       $ref: './components/schemas/AddToWishListReqBody.yaml'
     RemoveFromWishListReqBody:
       $ref: './components/schemas/RemoveFromWishListReqBody.yaml'
-    # staff 
+    # staff
     PaginatedProductResponse:
       $ref: './components/schemas/PaginatedProductResponse.yaml'
     Product:

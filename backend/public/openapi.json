@@ -31,6 +31,10 @@
     {
       "name": "Reviews",
       "description": "Operations for creating and managing product reviews."
+    },
+    {
+      "name": "Products",
+      "description": "Operations for viewing and managing products."
     }
   ],
   "paths": {
@@ -1313,6 +1317,52 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaginatedReviewResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      }
+    },
+    "/products/get-all": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "(Public) Get all products with pagination",
+        "description": "Retrieves a paginated list of all products for public viewing. This endpoint returns a simplified version of the product object, suitable for list displays.\n",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve.",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of products to return per page.",
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of products.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedProductResponse"
                 }
               }
             }
