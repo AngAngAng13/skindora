@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Skindora API
   version: '1.0.0'
-  description: API for the Skindora application, primarily handling user authentication and management.
+  description: API for the Skindora application, handling user authentication, management, and other core features.
   contact:
     name: Skindora Team
     email: skindora.site@gmail.com
@@ -11,20 +11,19 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 
 servers:
-  # - url: https://api.skindora.site/
-  - url: http://localhost:4000/
-    description: Server development
+  - url: http://localhost:4000
+    description: Development Server
 
 tags:
   - name: Users
-    description: User authentication and management operations
+    description: Operations related to user authentication, profile, and management.
 
 paths:
   $ref: './paths/users.yaml'
 
 components:
   schemas:
-    #Schemas cho Request Body
+    # --- Request Body Schemas ---
     RegisterReqBody:
       $ref: './components/schemas/RegisterReqBody.yaml'
     LoginReqBody:
@@ -45,30 +44,41 @@ components:
       $ref: './components/schemas/UpdateMeReqBody.yaml'
     RefreshTokenReqBody:
       $ref: './components/schemas/RefreshTokenReqBody.yaml'
-
-    #Schemas cho Response
+    AddToWishListReqBody:
+      $ref: './components/schemas/AddToWishListReqBody.yaml'
+    RemoveFromWishListReqBody:
+      $ref: './components/schemas/RemoveFromWishListReqBody.yaml'
+    
+    # --- Response Schemas ---
     AuthSuccessResponse:
       $ref: './components/schemas/AuthSuccessResponse.yaml'
+    LoginSuccessResponse:
+      $ref: './components/schemas/LoginSuccessResponse.yaml'
+    GetMeSuccessResponse:
+      $ref: './components/schemas/GetMeSuccessResponse.yaml'
+    RefreshTokenSuccessResponse:
+      $ref: './components/schemas/RefreshTokenSuccessResponse.yaml'
     MessageResponse:
       $ref: './components/schemas/MessageResponse.yaml'
+    WishListResponse:
+      $ref: './components/schemas/WishListResponse.yaml'
+    PaginatedVoucherResponse:
+      $ref: './components/schemas/PaginatedVoucherResponse.yaml'
+
+    # --- Error Schemas ---
     ErrorValidationResponse:
       $ref: './components/schemas/ErrorValidationResponse.yaml'
     ErrorStatusResponse:
       $ref: './components/schemas/ErrorStatusResponse.yaml'
     ErrorServerResponse:
       $ref: './components/schemas/ErrorServerResponse.yaml'
-    GetMeSuccessResponse:
-      $ref: './components/schemas/GetMeSuccessResponse.yaml'
-    RefreshTokenSuccessResponse:
-      $ref: './components/schemas/RefreshTokenSuccessResponse.yaml'
 
-    #Schema cho Model
+    # --- Model Schemas ---
     User:
       $ref: './components/schemas/User.yaml'
+    Voucher:
+      $ref: './components/schemas/Voucher.yaml'
 
   securitySchemes:
     BearerAuth:
       $ref: './components/securitySchemes/BearerAuth.yaml'
-
-security:
-  - BearerAuth: []

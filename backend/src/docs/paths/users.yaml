@@ -2,7 +2,7 @@
   post:
     tags: [Users]
     summary: Register a new user
-    description: Creates a new user account and returns access and refresh tokens.
+    description: Creates a new user account, sends a verification email, and returns access/refresh tokens.
     requestBody:
       required: true
       content:
@@ -10,12 +10,12 @@
           schema:
             $ref: '../components/schemas/RegisterReqBody.yaml'
     responses:
-      '200':
-        description: Registration successful, tokens returned.
+      '201':
+        description: Registration successful.
         content:
           application/json:
             schema:
-              $ref: '../components/schemas/AuthSuccessResponse.yaml'
+              $ref: '../components/schemas/LoginSuccessResponse.yaml'
       '422':
         description: Validation error (e.g., email exists, password mismatch).
         content:
@@ -23,17 +23,13 @@
             schema:
               $ref: '../components/schemas/ErrorValidationResponse.yaml'
       '500':
-        description: Internal server error.
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorServerResponse.yaml'
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
 
 /users/login:
   post:
     tags: [Users]
-    summary: Log in an existing user
-    description: Authenticates a user and returns access and refresh tokens.
+    summary: Log in a user
+    description: Authenticates a user with email and password, returning access and refresh tokens.
     requestBody:
       required: true
       content:
@@ -42,11 +38,11 @@
             $ref: '../components/schemas/LoginReqBody.yaml'
     responses:
       '200':
-        description: Login successful, tokens returned.
+        description: Login successful.
         content:
           application/json:
             schema:
-              $ref: '../components/schemas/AuthSuccessResponse.yaml'
+              $ref: '../components/schemas/LoginSuccessResponse.yaml'
       '422':
         description: Validation error (e.g., incorrect email/password).
         content:
@@ -54,17 +50,48 @@
             schema:
               $ref: '../components/schemas/ErrorValidationResponse.yaml'
       '500':
-        description: Internal server error.
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/logout:
+  post:
+    tags: [Users]
+    summary: Logout a user
+    description: Invalidates the provided refresh token, effectively logging the user out. Requires a valid access token for authentication.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/LogoutReqBody.yaml'
+    responses:
+      '200':
+        description: Logout successful.
         content:
           application/json:
             schema:
-              $ref: '../components/schemas/ErrorServerResponse.yaml'
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        description: Unauthorized (invalid access token or refresh token).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Unprocessable Entity (missing refresh_token in body).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
 
 /users/forgot-password:
   post:
     tags: [Users]
-    summary: Request a password reset token
-    description: Sends a password reset token to the user's email.
+    summary: Request a password reset
+    description: Sends a forgot password token to the user's email if the email exists.
     requestBody:
       required: true
       content:
@@ -73,7 +100,7 @@
             $ref: '../components/schemas/ForgotPasswordReqBody.yaml'
     responses:
       '200':
-        description: Forgot password request acknowledged.
+        description: Request acknowledged.
         content:
           application/json:
             schema:
@@ -85,22 +112,18 @@
             schema:
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '422':
-        description: Validation error (e.g., email format incorrect).
+        description: Validation error (e.g., invalid email format).
         content:
           application/json:
             schema:
               $ref: '../components/schemas/ErrorValidationResponse.yaml'
       '500':
-        description: Internal server error.
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorServerResponse.yaml'
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
 
 /users/verify-forgot-password:
   post:
     tags: [Users]
-    summary: Verify the forgot password token
+    summary: Verify forgot password token
     description: Checks if the provided forgot password token is valid.
     requestBody:
       required: true
@@ -110,34 +133,24 @@
             $ref: '../components/schemas/VerifyForgotPasswordTokenReqBody.yaml'
     responses:
       '200':
-        description: Token verification successful.
+        description: Token is valid.
         content:
           application/json:
             schema:
               $ref: '../components/schemas/MessageResponse.yaml'
       '401':
-        description: Unauthorized (e.g., token is invalid, expired, or incorrect).
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorStatusResponse.yaml'
-      '404':
-        description: User associated with the token not found.
+        description: Unauthorized (token is invalid or incorrect).
         content:
           application/json:
             schema:
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '500':
-        description: Internal server error.
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorServerResponse.yaml'
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
 
 /users/reset-password:
   post:
     tags: [Users]
-    summary: Reset the user's password
+    summary: Reset user password
     description: Sets a new password for the user using a valid forgot password token.
     requestBody:
       required: true
@@ -147,41 +160,31 @@
             $ref: '../components/schemas/ResetPasswordReqBody.yaml'
     responses:
       '200':
-        description: Password reset successful.
+        description: Password has been reset successfully.
         content:
           application/json:
             schema:
               $ref: '../components/schemas/MessageResponse.yaml'
       '401':
-        description: Unauthorized (e.g., forgot password token is invalid or incorrect).
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorStatusResponse.yaml'
-      '404':
-        description: User not found for the token.
+        description: Unauthorized (forgot password token is invalid).
         content:
           application/json:
             schema:
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '422':
-        description: Validation error (e.g., password format, passwords don't match).
+        description: Validation error (e.g., passwords don't match).
         content:
           application/json:
             schema:
               $ref: '../components/schemas/ErrorValidationResponse.yaml'
       '500':
-        description: Internal server error.
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorServerResponse.yaml'
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
 
 /users/verify-email:
   post:
     tags: [Users]
-    summary: Verify user's email address
-    description: Verifies the user's email using the provided email verification token and returns new tokens.
+    summary: Verify user email
+    description: Verifies a user's email with the provided token. Returns new tokens upon successful first-time verification.
     requestBody:
       required: true
       content:
@@ -190,15 +193,15 @@
             $ref: '../components/schemas/VerifyEmailReqBody.yaml'
     responses:
       '200':
-        description: Email verification status.
+        description: Email verification status. Can be a success message or a new set of tokens.
         content:
           application/json:
             schema:
               oneOf:
-                - $ref: '../components/schemas/AuthSuccessResponse.yaml'
+                - $ref: '../components/schemas/LoginSuccessResponse.yaml'
                 - $ref: '../components/schemas/MessageResponse.yaml'
       '401':
-        description: Unauthorized (e.g., email verify token is incorrect, invalid or required).
+        description: Unauthorized (email verify token is incorrect).
         content:
           application/json:
             schema:
@@ -210,17 +213,13 @@
             schema:
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '500':
-        description: Internal server error.
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorServerResponse.yaml'
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
 
 /users/resend-verify-email:
   post:
     tags: [Users]
     summary: Resend email verification token
-    description: Resends a new email verification token to the authenticated user's email address. Requires Bearer token authentication.
+    description: Resends a new email verification token to the authenticated user's email.
     security:
       - BearerAuth: []
     responses:
@@ -231,13 +230,13 @@
             schema:
               $ref: '../components/schemas/MessageResponse.yaml'
       '401':
-        description: Unauthorized.
+        description: Unauthorized (invalid access token).
         content:
           application/json:
             schema:
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '403':
-        description: Forbidden (e.g., user is banned).
+        description: Forbidden (user is banned or already verified).
         content:
           application/json:
             schema:
@@ -249,21 +248,16 @@
             schema:
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '500':
-        description: Internal server error.
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorServerResponse.yaml'
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
 
 /users/change-password:
   put:
     tags: [Users]
-    summary: Change password
-    description: Allows an authenticated and verified user to change their password.
+    summary: Change user password
+    description: Allows an authenticated and verified user to change their password by providing the old and new password.
     security:
       - BearerAuth: []
     requestBody:
-      description: User's old password and new password information.
       required: true
       content:
         application/json:
@@ -271,88 +265,37 @@
             $ref: '../components/schemas/ChangePasswordReqBody.yaml'
     responses:
       '200':
-        description: Change password successful.
+        description: Password changed successfully.
         content:
           application/json:
             schema:
               $ref: '../components/schemas/MessageResponse.yaml'
       '401':
-        description: Unauthorized.
+        description: Unauthorized (invalid access token or old password does not match).
         content:
           application/json:
             schema:
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '403':
-        description: Forbidden. The user has not verified their email address yet.
+        description: Forbidden (user is not verified).
         content:
           application/json:
             schema:
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '422':
-        description: Unprocessable Entity. The request body is invalid.
+        description: Validation error (e.g., new passwords don't match).
         content:
           application/json:
             schema:
               $ref: '../components/schemas/ErrorValidationResponse.yaml'
       '500':
-        description: Internal server error.
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorServerResponse.yaml'
-
-/users/logout:
-  post:
-    tags: [Users]
-    summary: Logout a user
-    description: >
-      Logs out an authenticated user by invalidating their refresh token.
-      Requires both a valid Access Token in the Authorization header and the Refresh Token in the body.
-    security:
-      - BearerAuth: []
-    requestBody:
-      description: The refresh token to be invalidated.
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '../components/schemas/LogoutReqBody.yaml'
-    responses:
-      '200':
-        description: Logout successful. The refresh token has been invalidated.
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/MessageResponse.yaml'
-      '401':
-        description: >
-          Unauthorized. This can occur for several reasons:
-          - The Access Token in the Authorization header is missing, invalid, or expired.
-          - The Refresh Token provided in the body is invalid, expired, or does not exist in the database.
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorStatusResponse.yaml'
-      '422':
-        description: Unprocessable Entity. The request body is missing the required `refresh_token` field.
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorValidationResponse.yaml'
-      '500':
-        description: Internal server error.
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorServerResponse.yaml'
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
 
 /users/me:
   get:
     tags: [Users]
     summary: Get current user's profile
-    description: >
-      Retrieves the profile information of the currently authenticated user based on the provided Access Token.
-      The returned user object will not contain sensitive fields like 'password' or 'tokens'.
+    description: Retrieves the profile information of the currently authenticated user.
     security:
       - BearerAuth: []
     responses:
@@ -363,28 +306,20 @@
             schema:
               $ref: '../components/schemas/GetMeSuccessResponse.yaml'
       '401':
-        description: Unauthorized. The Access Token is missing, invalid, or expired.
+        description: Unauthorized (invalid access token).
         content:
           application/json:
             schema:
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '500':
-        description: Internal server error.
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorServerResponse.yaml'
-
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
   patch:
     tags: [Users]
     summary: Update current user's profile
-    description: >
-      Partially updates the profile information of the currently authenticated user.
-      Only include the fields you want to change in the request body.
+    description: Partially updates the profile information of the authenticated user. Only include the fields to be changed.
     security:
       - BearerAuth: []
     requestBody:
-      description: The fields to update in the user's profile. All fields are optional.
       required: true
       content:
         application/json:
@@ -392,39 +327,32 @@
             $ref: '../components/schemas/UpdateMeReqBody.yaml'
     responses:
       '200':
-        description: Profile updated successfully. Returns the updated user object.
+        description: Profile updated successfully.
         content:
           application/json:
             schema:
               $ref: '../components/schemas/GetMeSuccessResponse.yaml'
       '401':
-        description: Unauthorized. The Access Token is missing, invalid, or expired.
+        description: Unauthorized (invalid access token).
         content:
           application/json:
             schema:
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '422':
-        description: Unprocessable Entity. The request body contains invalid data (e.g., username already exists, invalid format).
+        description: Validation error (e.g., username already exists).
         content:
           application/json:
             schema:
               $ref: '../components/schemas/ErrorValidationResponse.yaml'
       '500':
-        description: Internal server error.
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/ErrorServerResponse.yaml'
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
 
 /users/refresh-token:
   post:
     tags: [Users]
-    summary: Refresh user's access token
-    description: >
-      Provides a new access token and a new refresh token in exchange for a valid, unexpired refresh token.
-      This endpoint does not require Bearer authentication via an access token.
+    summary: Refresh access token
+    description: Issues a new access token and refresh token in exchange for a valid refresh token.
     requestBody:
-      description: A valid refresh token.
       required: true
       content:
         application/json:
@@ -438,20 +366,189 @@
             schema:
               $ref: '../components/schemas/RefreshTokenSuccessResponse.yaml'
       '401':
-        description: Unauthorized. The provided refresh token is invalid, expired, or was not found in the database.
+        description: Unauthorized (refresh token is invalid, used, or non-existent).
         content:
           application/json:
             schema:
               $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '422':
-        description: Unprocessable Entity. The request body is missing the required `refresh_token` field.
+        description: Unprocessable Entity (missing refresh_token in body).
         content:
           application/json:
             schema:
               $ref: '../components/schemas/ErrorValidationResponse.yaml'
       '500':
-        description: Internal server error.
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/oauth/google:
+  get:
+    tags: [Users]
+    summary: Google OAuth Callback
+    description: >
+      Callback endpoint for the Google OAuth 2.0 flow. This should not be called directly.
+      The user is redirected here by Google after authentication. The service then redirects the user
+      to the client application with tokens in the URL.
+    parameters:
+      - name: code
+        in: query
+        description: The authorization code provided by Google.
+        required: true
+        schema:
+          type: string
+    responses:
+      '302':
+        description: Redirect to the client application with tokens in the query parameters.
+        headers:
+          Location:
+            description: The URL to redirect the user's browser to.
+            schema:
+              type: string
+              format: uri
+      '400':
+        description: Bad Request (e.g., Google account's email is not verified).
         content:
           application/json:
             schema:
-              $ref: '../components/schemas/ErrorServerResponse.yaml'
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/addToWishList:
+  post:
+    tags: [Users]
+    summary: Add products to wishlist
+    description: Adds one or more products to the authenticated user's wishlist.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/AddToWishListReqBody.yaml'
+    responses:
+      '200':
+        description: Products added to wishlist successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '400':
+        description: Bad Request (e.g., empty product list).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        description: Unauthorized.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: User or Product not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/removeFromWishList:
+  put:
+    tags: [Users]
+    summary: Remove products from wishlist
+    description: Removes one or more products from the authenticated user's wishlist.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/RemoveFromWishListReqBody.yaml'
+    responses:
+      '200':
+        description: Products removed from wishlist successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        description: Unauthorized.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Product not found in wishlist.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/getWishList:
+  get:
+    tags: [Users]
+    summary: Get user's wishlist
+    description: Retrieves the list of product IDs in the authenticated user's wishlist.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Wishlist fetched successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/WishListResponse.yaml'
+      '401':
+        description: Unauthorized.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/vouchers:
+  get:
+    tags: [Users]
+    summary: Get all active vouchers
+    description: Retrieves a paginated list of all active vouchers available for users.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: page
+        in: query
+        description: The page number to retrieve.
+        schema:
+          type: integer
+          default: 1
+      - name: limit
+        in: query
+        description: The number of items per page.
+        schema:
+          type: integer
+          default: 10
+      - name: code
+        in: query
+        description: Filter vouchers by a search term in their code.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: A paginated list of active vouchers.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedVoucherResponse.yaml'
+      '401':
+        description: Unauthorized.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'

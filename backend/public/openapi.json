@@ -3,7 +3,7 @@
   "info": {
     "title": "Skindora API",
     "version": "1.0.0",
-    "description": "API for the Skindora application, primarily handling user authentication and management.",
+    "description": "API for the Skindora application, handling user authentication, management, and other core features.",
     "contact": {
       "name": "Skindora Team",
       "email": "skindora.site@gmail.com"
@@ -15,14 +15,14 @@
   },
   "servers": [
     {
-      "url": "http://localhost:4000/",
-      "description": "Server development"
+      "url": "http://localhost:4000",
+      "description": "Development Server"
     }
   ],
   "tags": [
     {
       "name": "Users",
-      "description": "User authentication and management operations"
+      "description": "Operations related to user authentication, profile, and management."
     }
   ],
   "paths": {
@@ -32,7 +32,7 @@
           "Users"
         ],
         "summary": "Register a new user",
-        "description": "Creates a new user account and returns access and refresh tokens.",
+        "description": "Creates a new user account, sends a verification email, and returns access/refresh tokens.",
         "requestBody": {
           "required": true,
           "content": {
@@ -44,12 +44,12 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Registration successful, tokens returned.",
+          "201": {
+            "description": "Registration successful.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthSuccessResponse"
+                  "$ref": "#/components/schemas/LoginSuccessResponse"
                 }
               }
             }
@@ -65,14 +65,7 @@
             }
           },
           "500": {
-            "description": "Internal server error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorServerResponse"
-                }
-              }
-            }
+            "$ref": "#/components/schemas/ErrorServerResponse"
           }
         }
       }
@@ -82,8 +75,8 @@
         "tags": [
           "Users"
         ],
-        "summary": "Log in an existing user",
-        "description": "Authenticates a user and returns access and refresh tokens.",
+        "summary": "Log in a user",
+        "description": "Authenticates a user with email and password, returning access and refresh tokens.",
         "requestBody": {
           "required": true,
           "content": {
@@ -96,11 +89,11 @@
         },
         "responses": {
           "200": {
-            "description": "Login successful, tokens returned.",
+            "description": "Login successful.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthSuccessResponse"
+                  "$ref": "#/components/schemas/LoginSuccessResponse"
                 }
               }
             }
@@ -116,14 +109,66 @@
             }
           },
           "500": {
-            "description": "Internal server error.",
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      }
+    },
+    "/users/logout": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Logout a user",
+        "description": "Invalidates the provided refresh token, effectively logging the user out. Requires a valid access token for authentication.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogoutReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logout successful.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorServerResponse"
+                  "$ref": "#/components/schemas/MessageResponse"
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token or refresh token).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity (missing refresh_token in body).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorValidationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
           }
         }
       }
@@ -133,8 +178,8 @@
         "tags": [
           "Users"
         ],
-        "summary": "Request a password reset token",
-        "description": "Sends a password reset token to the user's email.",
+        "summary": "Request a password reset",
+        "description": "Sends a forgot password token to the user's email if the email exists.",
         "requestBody": {
           "required": true,
           "content": {
@@ -147,7 +192,7 @@
         },
         "responses": {
           "200": {
-            "description": "Forgot password request acknowledged.",
+            "description": "Request acknowledged.",
             "content": {
               "application/json": {
                 "schema": {
@@ -167,7 +212,7 @@
             }
           },
           "422": {
-            "description": "Validation error (e.g., email format incorrect).",
+            "description": "Validation error (e.g., invalid email format).",
             "content": {
               "application/json": {
                 "schema": {
@@ -177,14 +222,7 @@
             }
           },
           "500": {
-            "description": "Internal server error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorServerResponse"
-                }
-              }
-            }
+            "$ref": "#/components/schemas/ErrorServerResponse"
           }
         }
       }
@@ -194,7 +232,7 @@
         "tags": [
           "Users"
         ],
-        "summary": "Verify the forgot password token",
+        "summary": "Verify forgot password token",
         "description": "Checks if the provided forgot password token is valid.",
         "requestBody": {
           "required": true,
@@ -208,7 +246,7 @@
         },
         "responses": {
           "200": {
-            "description": "Token verification successful.",
+            "description": "Token is valid.",
             "content": {
               "application/json": {
                 "schema": {
@@ -218,17 +256,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized (e.g., token is invalid, expired, or incorrect).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorStatusResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User associated with the token not found.",
+            "description": "Unauthorized (token is invalid or incorrect).",
             "content": {
               "application/json": {
                 "schema": {
@@ -238,14 +266,7 @@
             }
           },
           "500": {
-            "description": "Internal server error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorServerResponse"
-                }
-              }
-            }
+            "$ref": "#/components/schemas/ErrorServerResponse"
           }
         }
       }
@@ -255,7 +276,7 @@
         "tags": [
           "Users"
         ],
-        "summary": "Reset the user's password",
+        "summary": "Reset user password",
         "description": "Sets a new password for the user using a valid forgot password token.",
         "requestBody": {
           "required": true,
@@ -269,7 +290,7 @@
         },
         "responses": {
           "200": {
-            "description": "Password reset successful.",
+            "description": "Password has been reset successfully.",
             "content": {
               "application/json": {
                 "schema": {
@@ -279,17 +300,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized (e.g., forgot password token is invalid or incorrect).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorStatusResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found for the token.",
+            "description": "Unauthorized (forgot password token is invalid).",
             "content": {
               "application/json": {
                 "schema": {
@@ -299,7 +310,7 @@
             }
           },
           "422": {
-            "description": "Validation error (e.g., password format, passwords don't match).",
+            "description": "Validation error (e.g., passwords don't match).",
             "content": {
               "application/json": {
                 "schema": {
@@ -309,14 +320,7 @@
             }
           },
           "500": {
-            "description": "Internal server error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorServerResponse"
-                }
-              }
-            }
+            "$ref": "#/components/schemas/ErrorServerResponse"
           }
         }
       }
@@ -326,8 +330,8 @@
         "tags": [
           "Users"
         ],
-        "summary": "Verify user's email address",
-        "description": "Verifies the user's email using the provided email verification token and returns new tokens.",
+        "summary": "Verify user email",
+        "description": "Verifies a user's email with the provided token. Returns new tokens upon successful first-time verification.",
         "requestBody": {
           "required": true,
           "content": {
@@ -340,13 +344,13 @@
         },
         "responses": {
           "200": {
-            "description": "Email verification status.",
+            "description": "Email verification status. Can be a success message or a new set of tokens.",
             "content": {
               "application/json": {
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/AuthSuccessResponse"
+                      "$ref": "#/components/schemas/LoginSuccessResponse"
                     },
                     {
                       "$ref": "#/components/schemas/MessageResponse"
@@ -357,7 +361,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized (e.g., email verify token is incorrect, invalid or required).",
+            "description": "Unauthorized (email verify token is incorrect).",
             "content": {
               "application/json": {
                 "schema": {
@@ -377,14 +381,7 @@
             }
           },
           "500": {
-            "description": "Internal server error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorServerResponse"
-                }
-              }
-            }
+            "$ref": "#/components/schemas/ErrorServerResponse"
           }
         }
       }
@@ -395,7 +392,7 @@
           "Users"
         ],
         "summary": "Resend email verification token",
-        "description": "Resends a new email verification token to the authenticated user's email address. Requires Bearer token authentication.",
+        "description": "Resends a new email verification token to the authenticated user's email.",
         "security": [
           {
             "BearerAuth": []
@@ -413,7 +410,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized.",
+            "description": "Unauthorized (invalid access token).",
             "content": {
               "application/json": {
                 "schema": {
@@ -423,7 +420,7 @@
             }
           },
           "403": {
-            "description": "Forbidden (e.g., user is banned).",
+            "description": "Forbidden (user is banned or already verified).",
             "content": {
               "application/json": {
                 "schema": {
@@ -443,14 +440,7 @@
             }
           },
           "500": {
-            "description": "Internal server error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorServerResponse"
-                }
-              }
-            }
+            "$ref": "#/components/schemas/ErrorServerResponse"
           }
         }
       }
@@ -460,15 +450,14 @@
         "tags": [
           "Users"
         ],
-        "summary": "Change password",
-        "description": "Allows an authenticated and verified user to change their password.",
+        "summary": "Change user password",
+        "description": "Allows an authenticated and verified user to change their password by providing the old and new password.",
         "security": [
           {
             "BearerAuth": []
           }
         ],
         "requestBody": {
-          "description": "User's old password and new password information.",
           "required": true,
           "content": {
             "application/json": {
@@ -480,7 +469,7 @@
         },
         "responses": {
           "200": {
-            "description": "Change password successful.",
+            "description": "Password changed successfully.",
             "content": {
               "application/json": {
                 "schema": {
@@ -490,7 +479,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized.",
+            "description": "Unauthorized (invalid access token or old password does not match).",
             "content": {
               "application/json": {
                 "schema": {
@@ -500,7 +489,7 @@
             }
           },
           "403": {
-            "description": "Forbidden. The user has not verified their email address yet.",
+            "description": "Forbidden (user is not verified).",
             "content": {
               "application/json": {
                 "schema": {
@@ -510,7 +499,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Entity. The request body is invalid.",
+            "description": "Validation error (e.g., new passwords don't match).",
             "content": {
               "application/json": {
                 "schema": {
@@ -520,81 +509,7 @@
             }
           },
           "500": {
-            "description": "Internal server error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorServerResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users/logout": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Logout a user",
-        "description": "Logs out an authenticated user by invalidating their refresh token. Requires both a valid Access Token in the Authorization header and the Refresh Token in the body.\n",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "description": "The refresh token to be invalidated.",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LogoutReqBody"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Logout successful. The refresh token has been invalidated.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MessageResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized. This can occur for several reasons: - The Access Token in the Authorization header is missing, invalid, or expired. - The Refresh Token provided in the body is invalid, expired, or does not exist in the database.\n",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorStatusResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Unprocessable Entity. The request body is missing the required `refresh_token` field.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorValidationResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorServerResponse"
-                }
-              }
-            }
+            "$ref": "#/components/schemas/ErrorServerResponse"
           }
         }
       }
@@ -605,7 +520,7 @@
           "Users"
         ],
         "summary": "Get current user's profile",
-        "description": "Retrieves the profile information of the currently authenticated user based on the provided Access Token. The returned user object will not contain sensitive fields like 'password' or 'tokens'.\n",
+        "description": "Retrieves the profile information of the currently authenticated user.",
         "security": [
           {
             "BearerAuth": []
@@ -623,7 +538,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized. The Access Token is missing, invalid, or expired.",
+            "description": "Unauthorized (invalid access token).",
             "content": {
               "application/json": {
                 "schema": {
@@ -633,14 +548,7 @@
             }
           },
           "500": {
-            "description": "Internal server error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorServerResponse"
-                }
-              }
-            }
+            "$ref": "#/components/schemas/ErrorServerResponse"
           }
         }
       },
@@ -649,14 +557,13 @@
           "Users"
         ],
         "summary": "Update current user's profile",
-        "description": "Partially updates the profile information of the currently authenticated user. Only include the fields you want to change in the request body.\n",
+        "description": "Partially updates the profile information of the authenticated user. Only include the fields to be changed.",
         "security": [
           {
             "BearerAuth": []
           }
         ],
         "requestBody": {
-          "description": "The fields to update in the user's profile. All fields are optional.",
           "required": true,
           "content": {
             "application/json": {
@@ -668,7 +575,7 @@
         },
         "responses": {
           "200": {
-            "description": "Profile updated successfully. Returns the updated user object.",
+            "description": "Profile updated successfully.",
             "content": {
               "application/json": {
                 "schema": {
@@ -678,7 +585,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized. The Access Token is missing, invalid, or expired.",
+            "description": "Unauthorized (invalid access token).",
             "content": {
               "application/json": {
                 "schema": {
@@ -688,7 +595,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Entity. The request body contains invalid data (e.g., username already exists, invalid format).",
+            "description": "Validation error (e.g., username already exists).",
             "content": {
               "application/json": {
                 "schema": {
@@ -698,14 +605,7 @@
             }
           },
           "500": {
-            "description": "Internal server error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorServerResponse"
-                }
-              }
-            }
+            "$ref": "#/components/schemas/ErrorServerResponse"
           }
         }
       }
@@ -715,10 +615,9 @@
         "tags": [
           "Users"
         ],
-        "summary": "Refresh user's access token",
-        "description": "Provides a new access token and a new refresh token in exchange for a valid, unexpired refresh token. This endpoint does not require Bearer authentication via an access token.\n",
+        "summary": "Refresh access token",
+        "description": "Issues a new access token and refresh token in exchange for a valid refresh token.",
         "requestBody": {
-          "description": "A valid refresh token.",
           "required": true,
           "content": {
             "application/json": {
@@ -740,7 +639,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized. The provided refresh token is invalid, expired, or was not found in the database.",
+            "description": "Unauthorized (refresh token is invalid, used, or non-existent).",
             "content": {
               "application/json": {
                 "schema": {
@@ -750,7 +649,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Entity. The request body is missing the required `refresh_token` field.",
+            "description": "Unprocessable Entity (missing refresh_token in body).",
             "content": {
               "application/json": {
                 "schema": {
@@ -760,14 +659,288 @@
             }
           },
           "500": {
-            "description": "Internal server error.",
-            "content": {
-              "application/json": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      }
+    },
+    "/users/oauth/google": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Google OAuth Callback",
+        "description": "Callback endpoint for the Google OAuth 2.0 flow. This should not be called directly. The user is redirected here by Google after authentication. The service then redirects the user to the client application with tokens in the URL.\n",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "The authorization code provided by Google.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to the client application with tokens in the query parameters.",
+            "headers": {
+              "Location": {
+                "description": "The URL to redirect the user's browser to.",
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorServerResponse"
+                  "type": "string",
+                  "format": "uri"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request (e.g., Google account's email is not verified).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      }
+    },
+    "/users/addToWishList": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Add products to wishlist",
+        "description": "Adds one or more products to the authenticated user's wishlist.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddToWishListReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Products added to wishlist successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request (e.g., empty product list).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User or Product not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      }
+    },
+    "/users/removeFromWishList": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Remove products from wishlist",
+        "description": "Removes one or more products from the authenticated user's wishlist.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveFromWishListReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Products removed from wishlist successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found in wishlist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      }
+    },
+    "/users/getWishList": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user's wishlist",
+        "description": "Retrieves the list of product IDs in the authenticated user's wishlist.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wishlist fetched successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WishListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      }
+    },
+    "/users/vouchers": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get all active vouchers",
+        "description": "Retrieves a paginated list of all active vouchers available for users.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve.",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of items per page.",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "description": "Filter vouchers by a search term in their code.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of active vouchers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedVoucherResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
           }
         }
       }
@@ -988,6 +1161,45 @@
           "refresh_token"
         ]
       },
+      "AddToWishListReqBody": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "description": "An array of product IDs to add to the wishlist.",
+            "example": [
+              "60c72b2f9b1d8e001f8e8e8e",
+              "60c72b2f9b1d8e001f8e8e8f"
+            ]
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      },
+      "RemoveFromWishListReqBody": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "description": "An array of product IDs to remove from the wishlist.",
+            "example": [
+              "60c72b2f9b1d8e001f8e8e8e"
+            ]
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      },
       "AuthSuccessResponse": {
         "type": "object",
         "properties": {
@@ -1010,12 +1222,101 @@
           }
         }
       },
+      "LoginSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Login successful"
+          },
+          "result": {
+            "$ref": "#/components/schemas/AuthSuccessResponse"
+          }
+        }
+      },
+      "GetMeSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Get my profile successfully"
+          },
+          "result": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "RefreshTokenSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Refresh token successful"
+          },
+          "result": {
+            "$ref": "#/components/schemas/AuthSuccessResponse"
+          }
+        }
+      },
       "MessageResponse": {
         "type": "object",
         "properties": {
           "message": {
             "type": "string",
             "example": "Operation was successful."
+          }
+        }
+      },
+      "WishListResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Wishlist fetched successfully"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "description": "An array of product IDs in the user's wishlist.",
+            "example": [
+              "60c72b2f9b1d8e001f8e8e8e",
+              "60c72b2f9b1d8e001f8e8e8f"
+            ]
+          }
+        }
+      },
+      "PaginatedVoucherResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Voucher"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "example": 10
+              },
+              "currentPage": {
+                "type": "integer",
+                "example": 1
+              },
+              "totalPages": {
+                "type": "integer",
+                "example": 5
+              },
+              "totalRecords": {
+                "type": "integer",
+                "example": 48
+              }
+            }
           }
         }
       },
@@ -1063,103 +1364,139 @@
           }
         }
       },
-      "GetMeSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "example": "Get my profile successfully"
-          },
-          "result": {
-            "$ref": "#/components/schemas/User"
-          }
-        }
-      },
-      "RefreshTokenSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "example": "Refresh token successful"
-          },
-          "result": {
-            "$ref": "#/components/schemas/AuthSuccessResponse"
-          }
-        }
-      },
       "User": {
         "type": "object",
+        "description": "Represents a user object.",
         "properties": {
           "_id": {
             "type": "string",
-            "format": "objectId",
-            "description": "User's unique identifier",
-            "example": "60d0fe4f5311236168a109ca"
+            "format": "mongoId",
+            "example": "60c72b2f9b1d8e001f8e8e8e"
           },
           "first_name": {
             "type": "string",
-            "example": "John"
+            "example": "Van A"
           },
           "last_name": {
             "type": "string",
-            "example": "Doe"
+            "example": "Nguyen"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "example": "john.doe@example.com"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2023-05-15T10:30:00Z"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2023-05-16T11:00:00Z"
-          },
-          "verify": {
-            "type": "integer",
-            "format": "int32",
-            "description": "User verification status. 0: Unverified, 1: Verified, 2: Banned",
-            "enum": [
-              0,
-              1,
-              2
-            ],
-            "example": 0
-          },
-          "location": {
-            "type": "string",
-            "nullable": true,
-            "example": "New York, USA"
+            "example": "user@example.com"
           },
           "username": {
             "type": "string",
-            "example": "johndoe123"
+            "example": "user12345"
+          },
+          "location": {
+            "type": "string",
+            "example": "Hanoi, Vietnam"
           },
           "phone_number": {
             "type": "string",
-            "nullable": true,
-            "example": "+11234567890"
+            "example": "0987654321"
           },
           "avatar": {
             "type": "string",
-            "format": "url",
-            "nullable": true,
-            "example": "https://example.com/avatars/johndoe.jpg"
+            "format": "uri",
+            "example": "https://example.com/avatar.png"
+          },
+          "verify": {
+            "type": "integer",
+            "description": "Verification status of the user.",
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "example": 1
           },
           "roleid": {
             "type": "integer",
-            "format": "int32",
-            "description": "User role. 0: User, 1: Staff, 2: Admin",
+            "description": "Role of the user.",
             "enum": [
               0,
               1,
               2
             ],
             "example": 0
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Voucher": {
+        "type": "object",
+        "description": "Represents a voucher object.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "code": {
+            "type": "string",
+            "example": "SUMMER25"
+          },
+          "description": {
+            "type": "string",
+            "example": "Summer sale discount"
+          },
+          "discountType": {
+            "type": "string",
+            "enum": [
+              "PERCENTAGE",
+              "FIXED"
+            ],
+            "example": "PERCENTAGE"
+          },
+          "discountValue": {
+            "type": "number",
+            "example": 15
+          },
+          "maxDiscountAmount": {
+            "type": "number",
+            "example": 50000
+          },
+          "minOrderValue": {
+            "type": "number",
+            "example": 200000
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "usageLimit": {
+            "type": "integer"
+          },
+          "usedCount": {
+            "type": "integer"
+          },
+          "userUsageLimit": {
+            "type": "integer"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }
@@ -1169,13 +1506,8 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT",
-        "description": "Enter JWT Bearer token **only**"
+        "description": "Enter JWT access token in the format: Bearer <token>"
       }
     }
-  },
-  "security": [
-    {
-      "BearerAuth": []
-    }
-  ]
+  }
 }
