@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
-
+const StorePage = lazy(() => import("@/features/Store"));
 const PublicLayout = lazy(() => import("@/layouts/publicLayout"));
 
 const VerifyEmailPage = lazy(() => import("@/features/Auth/pages/VerifyEmail"));
@@ -25,7 +25,10 @@ const publicRoutes: RouteObject[] = [
         path: "contact",
         element: <ContactPage />,
       },
-
+      {
+        path: "products",
+        element: <StorePage />,
+      },
 
       {
         path: "profile",
