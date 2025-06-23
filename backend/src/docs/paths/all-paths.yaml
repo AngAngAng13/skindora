@@ -928,3 +928,438 @@
     responses:
       '200':
         description: Callback received.
+
+/orders:
+  get:
+    tags: [Orders]
+    summary: (Staff/Admin) Get All Orders
+    description: Retrieves a paginated list of all orders in the system. Available for staff and admin roles.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../parameters/all-parameters.yaml'
+      - name: status
+        in: query
+        description: Filter orders by status.
+        schema:
+          type: string
+          enum: [PENDING, CONFIRMED, PROCESSING, SHIPPING, DELIVERED, CANCELLED, RETURNED, FAILED]
+    responses:
+      '200':
+        description: A paginated list of orders.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedOrderResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/users/{userId}:
+  get:
+    tags: [Orders]
+    summary: (Staff/Admin) Get All Orders by User ID
+    description: Retrieves a paginated list of all orders for a specific user. Available for staff and admin roles.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        description: The ID of the user to retrieve orders for.
+        schema:
+          type: string
+          format: mongoId
+      - $ref: '../parameters/all-parameters.yaml'
+    responses:
+      '200':
+        description: A paginated list of orders for the specified user.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedOrderResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: User not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/current:
+  get:
+    tags: [Orders]
+    summary: Get Current Prepared Order
+    description: Retrieves the temporary order that is being prepared for checkout from the user's session.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Successfully retrieved the prepared order.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PreparedOrderResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: No prepared order found or it has expired.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/me:
+  get:
+    tags: [Orders]
+    summary: Get My Orders
+    description: Retrieves a list of all past orders for the authenticated user.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: A list of the user's orders.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Get all your orders successfully"
+                result:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/OrderWithDetailsResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/{orderId}:
+  get:
+    tags: [Orders]
+    summary: Get Order by ID
+    description: Retrieves details of a specific order. Accessible by the order owner, staff, or admin.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order to retrieve.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Order details retrieved successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/OrderWithDetailsResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Order not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/{orderId}/next-status:
+  patch:
+    tags: [Orders]
+    summary: (Staff/Admin) Move Order to Next Status
+    description: Updates the status of an order to the next stage in the lifecycle (e.g., PENDING to CONFIRMED).
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order to update.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Order status updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/UpdateOrderStatusResponse.yaml'
+      '400':
+        description: Bad Request (e.g., cannot transition from the current status).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Order not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/{orderId}/cancel-request:
+  post:
+    tags: [Orders]
+    summary: Request to Cancel an Order
+    description: Allows an authenticated user to submit a request to cancel their order.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order to request cancellation for.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CancelOrderReqBody.yaml'
+    responses:
+      '200':
+        description: Cancellation request submitted successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/OrderWithDetailsResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        description: Forbidden (Order status is not PENDING or CONFIRMED).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Order not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/{orderId}/cancel-request/approve:
+  patch:
+    tags: [Orders]
+    summary: (Staff/Admin) Approve Order Cancellation
+    description: Allows a staff or admin to approve a user's request to cancel an order.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order whose cancellation request is to be approved.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ApproveRejectCancelReqBody.yaml'
+    responses:
+      '200':
+        description: Cancellation request approved successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/OrderWithDetailsResponse.yaml'
+      '400':
+        description: Bad Request (e.g., no cancellation was requested).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Order not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/{orderId}/cancel-request/reject:
+  patch:
+    tags: [Orders]
+    summary: (Staff/Admin) Reject Order Cancellation
+    description: Allows a staff or admin to reject a user's request to cancel an order.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order whose cancellation request is to be rejected.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ApproveRejectCancelReqBody.yaml'
+    responses:
+      '200':
+        description: Cancellation request rejected successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/OrderWithDetailsResponse.yaml'
+      '400':
+        description: Bad Request (e.g., no cancellation was requested).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Order not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/cart:
+  post:
+    tags: [Orders]
+    summary: Prepare Order from Cart
+    description: >
+      Prepares a temporary order based on selected items from the user's cart.
+      This temporary order is stored for 30 minutes and must be checked out within that time.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/PrepareOrderReqBody.yaml'
+    responses:
+      '200':
+        description: Order prepared successfully for checkout.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PreparedOrderResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Cart is empty or selected products are not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/buy-now:
+  post:
+    tags: [Orders]
+    summary: Prepare Order for Buy Now
+    description: >
+      Prepares a temporary order for a single product using the "Buy Now" feature.
+      This temporary order is stored for 30 minutes.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/BuyNowReqBody.yaml'
+    responses:
+      '200':
+        description: Order prepared successfully for checkout.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PreparedOrderResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Product not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/checkout:
+  post:
+    tags: [Orders]
+    summary: Checkout Order
+    description: >
+      Finalizes and creates a permanent order from a prepared temporary order.
+      Requires shipping details and payment information.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CheckoutReqBody.yaml'
+    responses:
+      '201':
+        description: Order created successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/OrderCreationResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Prepared order is not found or has expired.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Validation error for shipping details.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'

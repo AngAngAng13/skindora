@@ -25,6 +25,8 @@ tags:
     description: Operations for viewing and managing products.
   - name: Payments
     description: Operations related to payment gateways like ZaloPay and VNPay.
+  - name: Orders
+    description: Operations related to creating and managing customer orders.
 paths:
   $ref: './paths/all-paths.yaml'
 
@@ -76,6 +78,29 @@ components:
       $ref: './components/schemas/ZaloPayOrderReqBody.yaml'
     VNPayOrderReqBody:
       $ref: './components/schemas/VNPayOrderReqBody.yaml'
+    # orders
+    PrepareOrderReqBody:
+      $ref: './components/schemas/PrepareOrderReqBody.yaml'
+    BuyNowReqBody:
+      $ref: './components/schemas/BuyNowReqBody.yaml'
+    CheckoutReqBody:
+      $ref: './components/schemas/CheckoutReqBody.yaml'
+    CancelOrderReqBody:
+      $ref: './components/schemas/CancelOrderReqBody.yaml'
+    ApproveRejectCancelReqBody:
+      $ref: './components/schemas/ApproveRejectCancelReqBody.yaml'
+    Order:
+      $ref: './components/schemas/Order.yaml'
+    PreparedOrderResponse:
+      $ref: './components/schemas/PreparedOrderResponse.yaml'
+    OrderWithDetailsResponse:
+      $ref: './components/schemas/OrderWithDetailsResponse.yaml'
+    PaginatedOrderResponse:
+      $ref: './components/schemas/PaginatedOrderResponse.yaml'
+    UpdateOrderStatusResponse:
+      $ref: './components/schemas/UpdateOrderStatusResponse.yaml'
+    OrderCreationResponse:
+      $ref: './components/schemas/OrderCreationResponse.yaml'
 
     # --- Response Schemas ---
     AuthSuccessResponse:
@@ -110,3 +135,5 @@ components:
   securitySchemes:
     BearerAuth:
       $ref: './components/securitySchemes/BearerAuth.yaml'
+  parameters:
+    $ref: './parameters/all-parameters.yaml' 
