@@ -13,6 +13,8 @@ info:
 servers:
   - url: http://localhost:4000
     description: Development Server
+  - url: https://skindora.site
+    description: Production Server
 
 tags:
   - name: Users
@@ -29,6 +31,8 @@ tags:
     description: Operations related to creating and managing customer orders.
   - name: Carts
     description: Operations for managing the user's shopping cart.
+  - name: Admin
+    description: Operations for managing the system.
 paths:
   $ref: './paths/all-paths.yaml'
 
@@ -110,6 +114,23 @@ components:
       $ref: './components/schemas/UpdateCartReqBody.yaml'
     CartResponse:
       $ref: './components/schemas/CartResponse.yaml'
+    # admin
+    PaginatedUserResponse:
+      $ref: './components/schemas/PaginatedUserResponse.yaml'
+    CreateVoucherReqBody:
+      $ref: './components/schemas/CreateVoucherReqBody.yaml'
+    UpdateVoucherReqBody:
+      $ref: './components/schemas/UpdateVoucherReqBody.yaml'
+    VoucherCreationResponse:
+      $ref: './components/schemas/VoucherCreationResponse.yaml'
+    CreateProductReqBody:
+      $ref: './components/schemas/CreateProductReqBody.yaml'
+    UpdateProductReqBody:
+      $ref: './components/schemas/UpdateProductReqBody.yaml'
+    CreateFilterBrandReqBody:
+      $ref: './components/schemas/CreateFilterBrandReqBody.yaml'
+    DetailSection:
+      $ref: './components/schemas/DetailSection.yaml'
 
     # --- Response Schemas ---
     AuthSuccessResponse:
@@ -140,10 +161,9 @@ components:
       $ref: './components/schemas/User.yaml'
     Voucher:
       $ref: './components/schemas/Voucher.yaml'
-    
 
   securitySchemes:
     BearerAuth:
       $ref: './components/securitySchemes/BearerAuth.yaml'
   parameters:
-    $ref: './parameters/all-parameters.yaml' 
+    $ref: './parameters/all-parameters.yaml'

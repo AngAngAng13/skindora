@@ -1476,3 +1476,318 @@
               $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
       '500':
         $ref: '../openapi.yaml#/components/schemas/ErrorServerResponse'
+
+# ======================== USER MANAGEMENT ========================
+/admin/manage-users/get-all:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get All Users
+    description: Retrieves a paginated list of all users. Requires admin privileges.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of users.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/PaginatedUserResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+
+/admin/manage-users/{_id}:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get User Detail
+    description: Retrieves detailed information for a specific user by their ID.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the user to retrieve.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: User details retrieved successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/GetMeSuccessResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+
+# ======================== VOUCHER MANAGEMENT =======================
+/admin/manage-vouchers/get-all:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get All Vouchers
+    description: Retrieves a paginated list of all vouchers, including inactive ones.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: code
+        in: query
+        description: Filter vouchers by code.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: A paginated list of all vouchers.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/PaginatedVoucherResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+
+/admin/manage-vouchers:
+  post:
+    tags: [Admin]
+    summary: (Admin) Create a New Voucher
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/CreateVoucherReqBody'
+    responses:
+      '200':
+        description: Voucher created successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/VoucherCreationResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+
+/admin/manage-vouchers/{voucherId}:
+  put:
+    tags: [Admin]
+    summary: (Admin) Update a Voucher
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: voucherId
+        in: path
+        required: true
+        description: The ID of the voucher to update.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/UpdateVoucherReqBody'
+    responses:
+      '200':
+        description: Voucher updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/VoucherCreationResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+
+/admin/manage-vouchers/{voucherId}/status:
+  put:
+    tags: [Admin]
+    summary: (Admin) Toggle Voucher Active Status
+    description: Activates or deactivates a voucher.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: voucherId
+        in: path
+        required: true
+        description: The ID of the voucher to activate/deactivate.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Voucher status toggled successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/VoucherCreationResponse'
+      '400':
+        description: Cannot reactivate an expired voucher.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+
+# ====================== PRODUCT MANAGEMENT =======================
+/admin/manage-products/get-all:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get All Products
+    description: Retrieves a paginated list of all products with full details.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of products.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/PaginatedProductResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+
+/admin/manage-products/create-new-product:
+  post:
+    tags: [Admin]
+    summary: (Admin) Create a New Product
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/CreateProductReqBody'
+    responses:
+      '200':
+        description: Product created successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/MessageResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+
+/admin/manage-products/{_id}:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get Product Detail
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the product.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Product details retrieved successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/Product'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+  put:
+    tags: [Admin]
+    summary: (Admin) Update a Product
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the product to update.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/UpdateProductReqBody'
+    responses:
+      '200':
+        description: Product updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/MessageResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+
+# ======================= FILTER MANAGEMENT =======================
+/admin/manage-filters/create-new-filter-brand:
+  post:
+    tags: [Admin]
+    summary: (Admin) Create a New Filter Brand
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/CreateFilterBrandReqBody'
+    responses:
+      '200':
+        description: Filter brand created successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/MessageResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'

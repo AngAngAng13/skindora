@@ -17,6 +17,10 @@
     {
       "url": "http://localhost:4000",
       "description": "Development Server"
+    },
+    {
+      "url": "https://skindora.site",
+      "description": "Production Server"
     }
   ],
   "tags": [
@@ -47,6 +51,10 @@
     {
       "name": "Carts",
       "description": "Operations for managing the user's shopping cart."
+    },
+    {
+      "name": "Admin",
+      "description": "Operations for managing the system."
     }
   ],
   "paths": {
@@ -2498,6 +2506,532 @@
           }
         }
       }
+    },
+    "/admin/manage-users/get-all": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "(Admin) Get All Users",
+        "description": "Retrieves a paginated list of all users. Requires admin privileges.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of users.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-users/{_id}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "(Admin) Get User Detail",
+        "description": "Retrieves detailed information for a specific user by their ID.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to retrieve.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User details retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMeSuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-vouchers/get-all": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "(Admin) Get All Vouchers",
+        "description": "Retrieves a paginated list of all vouchers, including inactive ones.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "description": "Filter vouchers by code.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of all vouchers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedVoucherResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-vouchers": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "(Admin) Create a New Voucher",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVoucherReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Voucher created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoucherCreationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-vouchers/{voucherId}": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "(Admin) Update a Voucher",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "voucherId",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the voucher to update.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVoucherReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Voucher updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoucherCreationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-vouchers/{voucherId}/status": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "(Admin) Toggle Voucher Active Status",
+        "description": "Activates or deactivates a voucher.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "voucherId",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the voucher to activate/deactivate.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Voucher status toggled successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoucherCreationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cannot reactivate an expired voucher.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-products/get-all": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "(Admin) Get All Products",
+        "description": "Retrieves a paginated list of all products with full details.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of products.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedProductResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-products/create-new-product": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "(Admin) Create a New Product",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-products/{_id}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "(Admin) Get Product Detail",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the product.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product details retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "(Admin) Update a Product",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the product to update.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/create-new-filter-brand": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "(Admin) Create a New Filter Brand",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFilterBrandReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter brand created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3743,6 +4277,348 @@
                 }
               }
             }
+          }
+        }
+      },
+      "PaginatedUserResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "description": "Number of items per page",
+                "example": 10
+              },
+              "currentPage": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Current page number",
+                "example": 1
+              },
+              "totalPages": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Total number of pages",
+                "example": 5
+              },
+              "totalRecords": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Total number of records",
+                "example": 50
+              }
+            },
+            "required": [
+              "limit",
+              "currentPage",
+              "totalPages",
+              "totalRecords"
+            ]
+          }
+        }
+      },
+      "CreateVoucherReqBody": {
+        "type": "object",
+        "required": [
+          "code",
+          "discountType",
+          "discountValue",
+          "maxDiscountAmount",
+          "minOrderValue",
+          "startDate",
+          "endDate"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Unique voucher code (3-10 alphanumeric characters).",
+            "example": "SUMMER25"
+          },
+          "description": {
+            "type": "string",
+            "description": "A short description.",
+            "example": "Summer Sale 25%"
+          },
+          "discountType": {
+            "type": "string",
+            "enum": [
+              "PERCENTAGE",
+              "FIXED"
+            ]
+          },
+          "discountValue": {
+            "type": "number",
+            "description": "Discount value. If percentage, must be >0 and <100. If fixed, must be >1000.",
+            "example": 25
+          },
+          "maxDiscountAmount": {
+            "type": "number",
+            "description": "Maximum discount amount.",
+            "example": 50000
+          },
+          "minOrderValue": {
+            "type": "number",
+            "description": "Minimum order value to apply the voucher.",
+            "example": 200000
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "usageLimit": {
+            "type": "integer",
+            "description": "Total usage limit.",
+            "example": 100
+          },
+          "userUsageLimit": {
+            "type": "integer",
+            "description": "Usage limit per user.",
+            "example": 1
+          }
+        }
+      },
+      "UpdateVoucherReqBody": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "discountType": {
+            "type": "string",
+            "enum": [
+              "PERCENTAGE",
+              "FIXED"
+            ]
+          },
+          "discountValue": {
+            "type": "number"
+          },
+          "maxDiscountAmount": {
+            "type": "number"
+          },
+          "minOrderValue": {
+            "type": "number"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "usageLimit": {
+            "type": "integer"
+          },
+          "userUsageLimit": {
+            "type": "integer"
+          }
+        }
+      },
+      "VoucherCreationResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "acknowledged": {
+                "type": "boolean",
+                "example": true
+              },
+              "insertedId": {
+                "type": "string",
+                "format": "mongoId"
+              }
+            }
+          }
+        }
+      },
+      "CreateProductReqBody": {
+        "type": "object",
+        "required": [
+          "name_on_list",
+          "engName_on_list",
+          "price_on_list",
+          "image_on_list",
+          "hover_image_on_list",
+          "productName_detail",
+          "engName_detail",
+          "description_detail",
+          "ingredients_detail",
+          "guide_detail",
+          "specification_detail",
+          "main_images_detail",
+          "sub_images_detail",
+          "quantity"
+        ],
+        "properties": {
+          "name_on_list": {
+            "type": "string"
+          },
+          "engName_on_list": {
+            "type": "string"
+          },
+          "price_on_list": {
+            "type": "string"
+          },
+          "image_on_list": {
+            "type": "string",
+            "format": "uri"
+          },
+          "hover_image_on_list": {
+            "type": "string",
+            "format": "uri"
+          },
+          "productName_detail": {
+            "type": "string"
+          },
+          "engName_detail": {
+            "type": "string"
+          },
+          "description_detail": {
+            "$ref": "#/components/schemas/DetailSection"
+          },
+          "ingredients_detail": {
+            "$ref": "#/components/schemas/DetailSection"
+          },
+          "guide_detail": {
+            "$ref": "#/components/schemas/DetailSection"
+          },
+          "specification_detail": {
+            "$ref": "#/components/schemas/DetailSection"
+          },
+          "main_images_detail": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "sub_images_detail": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "filter_brand": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_dac_tinh": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_hsk_ingredients": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_hsk_product_type": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_hsk_size": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_hsk_skin_type": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_hsk_uses": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "filter_origin": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "quantity": {
+            "type": "integer"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE",
+              "OUT_OF_STOCK",
+              "DISCONTINUED"
+            ]
+          }
+        }
+      },
+      "UpdateProductReqBody": {
+        "type": "object",
+        "properties": {
+          "name_on_list": {
+            "type": "string"
+          },
+          "engName_on_list": {
+            "type": "string"
+          },
+          "price_on_list": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateFilterBrandReqBody": {
+        "type": "object",
+        "required": [
+          "option_name",
+          "category_name",
+          "category_param"
+        ],
+        "properties": {
+          "option_name": {
+            "type": "string",
+            "example": "La Roche-Posay"
+          },
+          "category_name": {
+            "type": "string",
+            "example": "Thương hiệu"
+          },
+          "category_param": {
+            "type": "string",
+            "example": "la-roche-posay"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE",
+              "COLLABORATION",
+              "PARTNERSHIP",
+              "EXCLUSIVE",
+              "LIMITED_EDITION",
+              "SUSPENDED",
+              "DISCONTINUED"
+            ],
+            "default": "ACTIVE"
+          }
+        }
+      },
+      "DetailSection": {
+        "type": "object",
+        "properties": {
+          "rawHtml": {
+            "type": "string"
+          },
+          "plainText": {
+            "type": "string"
           }
         }
       },
