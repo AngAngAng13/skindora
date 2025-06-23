@@ -53,7 +53,8 @@ export const USERS_MESSAGES = {
   INVALID_USER_ID: 'UserId is invalid',
   ACCESS_DENIED: 'Access denied',
   ACCESS_DENIED_STAFF_ONLY: 'Access denied. Staffs only',
-  ACCESS_DENIED_ADMIN_AND_STAFF_ONLY: 'Access denied. Admins and staffs only'
+  ACCESS_DENIED_ADMIN_AND_STAFF_ONLY: 'Access denied. Admins and staffs only',
+  UPDATE_ME_ERROR: 'Update me error'
 } as const
 
 export const PRODUCTS_MESSAGES = {
@@ -205,7 +206,9 @@ export const ADMIN_MESSAGES = {
   FILTER_BRAND_STATE_MUST_BE_ONE_OF: 'Filter brand state must be one of',
   STATE_MUST_BE_A_STRING: 'State must be a string',
   GET_PRODUCT_DETAIL_SUCCESS: 'Get product detail successfully',
-  PRODUCT_NOT_FOUND: 'Product not found'
+  PRODUCT_NOT_FOUND: 'Product not found',
+  UPDATE_PRODUCT_FAILED: 'Update product failed',
+  UPDATE_PRODUCT_SUCCESS: 'Update product successfully'
 } as const
 
 export const CART_MESSAGES = {
