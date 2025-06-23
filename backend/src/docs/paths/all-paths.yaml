@@ -520,21 +520,10 @@
     security:
       - BearerAuth: []
     parameters:
-      - name: page
-        in: query
-        description: The page number to retrieve.
-        schema:
-          type: integer
-          default: 1
-      - name: limit
-        in: query
-        description: The number of items per page.
-        schema:
-          type: integer
-          default: 10
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
       - name: code
         in: query
-        description: Filter vouchers by a search term in their code.
         schema:
           type: string
     responses:
@@ -563,20 +552,8 @@
     security:
       - BearerAuth: []
     parameters:
-      - name: page
-        in: query
-        description: The page number to retrieve.
-        schema:
-          type: integer
-          default: 1
-          minimum: 1
-      - name: limit
-        in: query
-        description: The number of products to return per page.
-        schema:
-          type: integer
-          default: 10
-          minimum: 1
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
     responses:
       '200':
         description: A paginated list of products.
@@ -752,25 +729,13 @@
       - name: productId
         in: path
         required: true
-        description: The ID of the product to get reviews for.
         schema:
           type: string
           format: mongoId
-      - name: page
-        in: query
-        description: The page number to retrieve.
-        schema:
-          type: integer
-          default: 1
-      - name: limit
-        in: query
-        description: The number of reviews per page.
-        schema:
-          type: integer
-          default: 10
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
       - name: rating
         in: query
-        description: Filter reviews by a specific rating (1-5).
         schema:
           type: integer
           enum: [1, 2, 3, 4, 5]
@@ -792,20 +757,8 @@
       Retrieves a paginated list of all products for public viewing.
       This endpoint returns a simplified version of the product object, suitable for list displays.
     parameters:
-      - name: page
-        in: query
-        description: The page number to retrieve.
-        schema:
-          type: integer
-          default: 1
-          minimum: 1
-      - name: limit
-        in: query
-        description: The number of products to return per page.
-        schema:
-          type: integer
-          default: 10
-          minimum: 1
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
     responses:
       '200':
         description: A paginated list of products.
@@ -937,7 +890,8 @@
     security:
       - BearerAuth: []
     parameters:
-      - $ref: '../parameters/all-parameters.yaml'
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
       - name: status
         in: query
         description: Filter orders by status.

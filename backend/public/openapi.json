@@ -916,27 +916,14 @@
         ],
         "parameters": [
           {
-            "name": "page",
-            "in": "query",
-            "description": "The page number to retrieve.",
-            "schema": {
-              "type": "integer",
-              "default": 1
-            }
+            "$ref": "#/components/parameters/PageQuery"
           },
           {
-            "name": "limit",
-            "in": "query",
-            "description": "The number of items per page.",
-            "schema": {
-              "type": "integer",
-              "default": 10
-            }
+            "$ref": "#/components/parameters/LimitQuery"
           },
           {
             "name": "code",
             "in": "query",
-            "description": "Filter vouchers by a search term in their code.",
             "schema": {
               "type": "string"
             }
@@ -983,24 +970,10 @@
         ],
         "parameters": [
           {
-            "name": "page",
-            "in": "query",
-            "description": "The page number to retrieve.",
-            "schema": {
-              "type": "integer",
-              "default": 1,
-              "minimum": 1
-            }
+            "$ref": "#/components/parameters/PageQuery"
           },
           {
-            "name": "limit",
-            "in": "query",
-            "description": "The number of products to return per page.",
-            "schema": {
-              "type": "integer",
-              "default": 10,
-              "minimum": 1
-            }
+            "$ref": "#/components/parameters/LimitQuery"
           }
         ],
         "responses": {
@@ -1282,34 +1255,20 @@
             "name": "productId",
             "in": "path",
             "required": true,
-            "description": "The ID of the product to get reviews for.",
             "schema": {
               "type": "string",
               "format": "mongoId"
             }
           },
           {
-            "name": "page",
-            "in": "query",
-            "description": "The page number to retrieve.",
-            "schema": {
-              "type": "integer",
-              "default": 1
-            }
+            "$ref": "#/components/parameters/PageQuery"
           },
           {
-            "name": "limit",
-            "in": "query",
-            "description": "The number of reviews per page.",
-            "schema": {
-              "type": "integer",
-              "default": 10
-            }
+            "$ref": "#/components/parameters/LimitQuery"
           },
           {
             "name": "rating",
             "in": "query",
-            "description": "Filter reviews by a specific rating (1-5).",
             "schema": {
               "type": "integer",
               "enum": [
@@ -1348,24 +1307,10 @@
         "description": "Retrieves a paginated list of all products for public viewing. This endpoint returns a simplified version of the product object, suitable for list displays.\n",
         "parameters": [
           {
-            "name": "page",
-            "in": "query",
-            "description": "The page number to retrieve.",
-            "schema": {
-              "type": "integer",
-              "default": 1,
-              "minimum": 1
-            }
+            "$ref": "#/components/parameters/PageQuery"
           },
           {
-            "name": "limit",
-            "in": "query",
-            "description": "The number of products to return per page.",
-            "schema": {
-              "type": "integer",
-              "default": 10,
-              "minimum": 1
-            }
+            "$ref": "#/components/parameters/LimitQuery"
           }
         ],
         "responses": {
@@ -1570,7 +1515,10 @@
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters"
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
           },
           {
             "name": "status",
