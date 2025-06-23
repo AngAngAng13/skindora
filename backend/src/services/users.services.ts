@@ -416,6 +416,30 @@ class UsersService {
     }
     return user
   }
+
+  async updateUserState(userIdToUpdate: string, newStatus: UserVerifyStatus, adminId: string) {
+    const currentDate = new Date()
+    const vietnamTimezoneOffset = 7 * 60
+    const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
+    const result = await databaseService.users.findOneAndUpdate(
+      { _id: new ObjectId(userIdToUpdate) },
+      {
+        $set: {
+          verify: newStatus,
+          updated_at: localTime
+        }
+      },
+      {
+        returnDocument: 'after',
+        projection: {
+          password: 0,
+          email_verify_token: 0,
+          forgot_password_token: 0
+        }
+      }
+    )
+    return result
+  }
 }
 
 const usersService = new UsersService()

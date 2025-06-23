@@ -1791,3 +1791,56 @@
         $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
       '422':
         $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+
+/admin/manage-users/update-user-states/{id}:
+  put:
+    tags: [Admin]
+    summary: (Admin) Update a User's Verification Status
+    description: Allows an admin to update the verification status of a user (e.g., verify, ban, or unverify). An admin cannot update their own status.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the user to update.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateUserStateReqBody.yaml'
+    responses:
+      '200':
+        description: User state updated successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Update user state successfully"
+                data:
+                  $ref: '../components/schemas/User.yaml'
+      '400':
+        description: Bad Request (e.g., trying to update own status).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: User to be updated not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
