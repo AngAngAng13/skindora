@@ -241,7 +241,9 @@ export const approveCancelRequestController = async (req: Request<OrderParams>, 
   }
   try {
     const order = req.order
-    const result = await ordersService.approveCancelRequest(req.body, user_id, order!, {status: CancelRequestStatus.APPROVED})
+    const result = await ordersService.approveCancelRequest(req.body, user_id, order!, {
+      status: CancelRequestStatus.APPROVED
+    })
     res.json({
       message: ORDER_MESSAGES.CANCEL_SUCCESS,
       result
@@ -266,10 +268,12 @@ export const rejectCancelRequestController = async (req: Request<OrderParams>, r
   }
   try {
     const order = req.order
-    const result = await ordersService.rejectCancelRequest(req.body, user_id, order!, {status: CancelRequestStatus.REJECTED})
+    const result = await ordersService.rejectCancelRequest(req.body, user_id, order!, {
+      status: CancelRequestStatus.REJECTED
+    })
     res.json({
       message: ORDER_MESSAGES.CANCEL_SUCCESS,
-      result,
+      result
     })
   } catch (error) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
@@ -284,10 +288,36 @@ export const rejectCancelRequestController = async (req: Request<OrderParams>, r
 
 export const getOrderRevenueController = async (req: Request, res: Response) => {
   try {
-    const result = await ordersService.getOrderRevenue()
+    const {
+      date,
+      from,
+      to,
+      filter_brand,
+      filter_dac_tinh,
+      filter_hsk_ingredients,
+      filter_hsk_product_type,
+      filter_hsk_size,
+      filter_hsk_skin_type,
+      filter_hsk_uses,
+      filter_origin
+    } = req.query
+
+    const result = await ordersService.getOrderRevenue({
+      specificDate: typeof date === 'string' ? date : undefined,
+      fromDate: typeof from === 'string' ? from : undefined,
+      toDate: typeof to === 'string' ? to : undefined,
+      filterBrand: filter_brand ? new ObjectId(filter_brand as string) : undefined,
+      filterDacTinh: filter_dac_tinh ? new ObjectId(filter_dac_tinh as string) : undefined,
+      filterHskIngredients: filter_hsk_ingredients ? new ObjectId(filter_hsk_ingredients as string) : undefined,
+      filterHskProductType: filter_hsk_product_type ? new ObjectId(filter_hsk_product_type as string) : undefined,
+      filterHskSize: filter_hsk_size ? new ObjectId(filter_hsk_size as string) : undefined,
+      filterHskSkinType: filter_hsk_skin_type ? new ObjectId(filter_hsk_skin_type as string) : undefined,
+      filterHskUses: filter_hsk_uses ? new ObjectId(filter_hsk_uses as string) : undefined,
+      filterOrigin: filter_origin ? new ObjectId(filter_origin as string) : undefined
+    })
     res.json({
       message: ORDER_MESSAGES.GET_REVENUE_SUCCESS,
-      result,
+      result
     })
   } catch (error) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500

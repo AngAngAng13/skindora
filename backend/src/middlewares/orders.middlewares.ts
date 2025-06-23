@@ -89,7 +89,7 @@ export const checkOutValidator = validate(
                 UserID: new ObjectId(user_id),
                 'VoucherSnapshot.code': voucher.code
               })
-              .toArray()  
+              .toArray()
 
             if (orderWithVoucherCount.length >= voucher.userUsageLimit) {
               throw new ErrorWithStatus({
@@ -371,4 +371,115 @@ export const cancelledOrderRequestedValidator = validate(
       }
     }
   })
+)
+
+const idFields = [
+  'filter_brand',
+  'filter_dac_tinh',
+  'filter_hsk_ingredients',
+  'filter_hsk_product_type',
+  'filter_hsk_size',
+  'filter_hsk_skin_type',
+  'filter_hsk_uses',
+  'filter_origin'
+]
+
+const idFieldSchema = idFields.reduce((schema, fieldName) => {
+  schema[fieldName] = {
+    optional: true,
+    custom: {
+      options: (value: string) => {
+        if(!ObjectId.isValid(value)){
+          throw new ErrorWithStatus({
+            message: ORDER_MESSAGES.INVALID_FILTER_ID,
+            status: HTTP_STATUS.BAD_REQUEST
+          })
+        }
+        return true
+      }
+    }
+  }
+  return schema
+}, {} as Record<string, any>)
+
+export const getOrderRevenueValidator = validate(
+  checkSchema(
+    {
+      ...idFieldSchema,
+      date: {
+        optional: true,
+        isISO8601: {
+          errorMessage: ORDER_MESSAGES.INVALID_DATE
+        },
+        custom: {
+          options: (value) => {
+            if (new Date(value) > new Date()) {
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.NOT_ALLOW_FUTURE_DATE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            return true
+          }
+        }
+      },
+      from: {
+        optional: true,
+        isISO8601: {
+          errorMessage: ORDER_MESSAGES.INVALID_DATE
+        },
+        custom: {
+          options: (value, { req }) => {
+            if (value && !req.query?.to) {
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.REQUIRE_TO_DATE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            if (new Date(value) > new Date()) {
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.NOT_ALLOW_FUTURE_DATE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            if (new Date(value) > new Date(req.query?.toDate)) {
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.INVALID_FROM_DATE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            return true
+          }
+        }
+      },
+      to: {
+        optional: true,
+        isISO8601: {
+          errorMessage: ORDER_MESSAGES.INVALID_DATE
+        },
+        custom: {
+          options: (value, { req }) => {
+            if (value && !req.query?.from) {
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.REQUIRE_FROM_DATE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            if (new Date(value) > new Date()) {
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.NOT_ALLOW_FUTURE_DATE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            
+            return true
+          }
+        }
+      }
+    },
+    ['query']
+  )
 )

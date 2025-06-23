@@ -51,3 +51,17 @@ export interface RejectCancelRequest {
   staffId: ObjectId
   staffNote?: string
 }
+
+export interface RevenueFilterOptions {
+  specificDate?: string
+  fromDate?: string
+  toDate?: string
+  filterBrand?: ObjectId
+  filterDacTinh?: ObjectId
+  filterHskIngredients?: ObjectId
+  filterHskProductType?: ObjectId
+  filterHskSize?: ObjectId
+  filterHskSkinType?: ObjectId
+  filterHskUses?: ObjectId
+  filterOrigin?: ObjectId
+}

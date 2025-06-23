@@ -249,7 +249,7 @@ export const ORDER_MESSAGES = {
   SHIP_ADDRESS_REQUIRED: 'ShipAddress is required',
   SHIP_ADDRESS_MUST_BE_STRING: 'ShipAddress must be a string',
   REQUIRE_DATE_REQUIRED: 'RequireDate is required',
-  INVALID_REQUIRE_DATE: 'RequireDate must be a valid ISO8601 date',
+  INVALID_REQUIRE_DATE: 'RequireDate must be a valid ISO8601 format',
   PRESENT_REQUIRE_DATE: 'RequireDate cannot be in the past',
   INVALID_CHECKOUT_TYPE: 'Invalid check-out type',
   REQUIRE_USER_ID: 'UserId is required',
@@ -268,7 +268,13 @@ export const ORDER_MESSAGES = {
   GET_ALL_USERS_SUCCESS: 'Get all users successfully',
   INVALID_VOUCHER_ID: 'Invalid voucherId',
   GET_REVENUE_SUCCESS: 'Get order revenue successfully',
-  INVALID_PAYMENT_METHOD: 'PaymentMethod is invalid'
+  INVALID_PAYMENT_METHOD: 'PaymentMethod is invalid',
+  INVALID_DATE: 'Date must be a valid ISO8601 format',
+  REQUIRE_TO_DATE: 'ToDate is required',
+  REQUIRE_FROM_DATE: 'FromDate is required',
+  INVALID_FROM_DATE: 'FromDate cannot larger than ToDate',
+  NOT_ALLOW_FUTURE_DATE: 'Future date is not allowed',
+  INVALID_FILTER_ID: 'FilterId must be a valid ObjectId'  
 } as const
 
 export const VOUCHER_MESSAGES = {

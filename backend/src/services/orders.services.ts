@@ -15,6 +15,7 @@ import {
   OrderReqBody,
   PrepareOrderPayload,
   ProductInOrder,
+  RevenueFilterOptions,
   TempOrder
 } from '~/models/requests/Orders.requests'
 import { ProductInCart } from '~/models/requests/Cart.requests'
@@ -24,6 +25,7 @@ import HTTP_STATUS from '~/constants/httpStatus'
 import OrderDetail from '~/models/schemas/Orders/OrderDetail.schema'
 import Order, { CancelRequest } from '~/models/schemas/Orders/Order.schema'
 import { VoucherType } from '~/models/schemas/Voucher.schema'
+import c from 'config'
 
 class OrdersService {
   private async buildTempOrder(userId: string, selectedProducts: ProductInCart[]): Promise<TempOrder> {
@@ -245,7 +247,7 @@ class OrdersService {
       return {
         ...order,
         ...(discount > 0 && { PriceBeforeDiscount: priceBeforeDiscount.toString() }),
-        orderDetails: orderDetails.map(({OrderID, ...rest}) => rest)
+        orderDetails: orderDetails.map(({ OrderID, ...rest }) => rest)
       }
     } finally {
       await session.endSession()
@@ -417,32 +419,94 @@ class OrdersService {
     return updatedOrder
   }
 
-  async getOrderRevenue() {
-    //getAllOrder theo date, fromDate to toDate, filterProduct
-    // const orderList = await databaseService.orders.find().toArray()
-    // const orderRevenue = orderList.reduce((total, order) => {
-    //   const totalPrice = isNaN(Number(order.TotalPrice)) ? 0 : Number(order.TotalPrice)
-    //   return total + totalPrice
-    // },0)
-    // return {order: orderList, orderRevenue}
-    const result = await databaseService.orders
-      .aggregate([
-        {
-          $match: {
-            PaymentStatus: PaymentStatus.PAID
-          }
-        },
-        {
-          $group: {
-            _id: { $dateToString: { format: '%Y-%m-%d', date: '$created_at' } },
-            totalRevenue: { $sum: { $toInt: '$TotalPrice' } },
-            totalOrder: { $sum: 1 }
-          }
-        },
-        { $sort: { _id: 1 } }
-      ])
-      .toArray()
-    return result
+  async getOrderRevenue(options: RevenueFilterOptions) {
+    const {
+      specificDate,
+      fromDate,
+      toDate,
+      filterBrand,
+      filterDacTinh,
+      filterHskIngredients,
+      filterHskProductType,
+      filterHskSize,
+      filterHskSkinType,
+      filterHskUses,
+      filterOrigin
+    } = options
+
+    const match: any = {
+      PaymentStatus: PaymentStatus.PAID
+    }
+
+    if (specificDate) {
+      const date = new Date(specificDate)
+      const nextDate = new Date(date)
+      nextDate.setDate(date.getDate() + 1)
+
+      match.created_at = {
+        $gte: date,
+        $lt: nextDate
+      }
+    } else if (fromDate && toDate) {
+      const startDate = new Date(fromDate)
+      const endDate = new Date(toDate)
+      endDate.setDate(endDate.getDate() + 1)
+      match.created_at = {
+        $gte: startDate,
+        $lt: endDate
+      }
+    }
+
+    const filters: any = {}
+
+    filterBrand && (filters.filter_brand = filterBrand)
+    filterDacTinh && (filters.filter_dac_tinh = filterDacTinh)
+    filterHskIngredients && (filters.filter_hsk_ingredients = filterHskIngredients)
+    filterHskProductType && (filters.filter_hsk_product_type = filterHskProductType)
+    filterHskSize && (filters.filter_hsk_size = filterHskSize)
+    filterHskSkinType && (filters.filter_hsk_skin_type = filterHskSkinType)
+    filterHskUses && (filters.filter_hsk_uses = filterHskUses)
+    filterOrigin && (filters.filter_origin = filterOrigin)
+
+    const totalOrder = await databaseService.orders.find(match).toArray()
+    const orderIds = totalOrder.map((o) => o._id)
+    const orderDetails = await databaseService.orderDetails.find({ OrderID: { $in: orderIds } }).toArray()
+
+    const productIds = orderDetails.map((detail) => new ObjectId(detail.ProductID))
+
+    const products = await databaseService.products.find({ _id: { $in: productIds }, ...filters }).toArray()
+
+    const matchedProductIds = new Set(products.map((p) => p._id.toString()))
+
+    const matchedOrderDetails = orderDetails.filter(
+      (detail) => detail.ProductID && matchedProductIds.has(detail.ProductID.toString())
+    )
+
+    const matchedOrderIds = [...new Set(matchedOrderDetails.map((detail) => detail.OrderID?.toString()))]
+    const filteredOrder = totalOrder.filter((order) => matchedOrderIds.includes(order._id.toString()))
+
+    const ordersByDate: { [key: string]: any[] } = {}
+
+    filteredOrder.forEach((order) => {
+      const date = order.created_at?.toISOString().split('T')[0]!
+      if(!ordersByDate[date]){
+        ordersByDate[date] = []
+      }
+      ordersByDate[date].push(order)
+    })
+
+    const dailyResult = Object.keys(ordersByDate).map(date => {
+      const orders = ordersByDate[date]
+      const totalRevenue = orders.reduce((total, order) => total + Number(order.TotalPrice), 0)
+
+      return {
+        date,
+        totalOrder: orders.length,
+        totalRevenue
+      }
+    })
+
+    return dailyResult
   }
 
   async getOrderDetailByOrderId(id: string): Promise<Array<OrderDetail>> {
