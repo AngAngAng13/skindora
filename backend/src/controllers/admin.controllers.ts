@@ -3,7 +3,7 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ADMIN_MESSAGES } from '~/constants/messages'
 import { createNewFilterBrandReqBody, UpdateUserStateReqBody } from '~/models/requests/Admin.requests'
-import { updateProductReqBody } from '~/models/requests/Product.requests'
+import { updateProductReqBody, UpdateProductStateReqBody } from '~/models/requests/Product.requests'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
 import databaseService from '~/services/database.services'
 import filterBrandService from '~/services/filterBrand.services'
@@ -78,14 +78,35 @@ export const updateUserStateController = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
-    const { verify } = req.body;
-    const {user_id} = req.decoded_authorization as TokenPayLoad;
+    const { id } = req.params
+    const { verify } = req.body
+    const { user_id } = req.decoded_authorization as TokenPayLoad
 
-    const result = await usersService.updateUserState(id, verify, user_id);
+    const result = await usersService.updateUserState(id, verify, user_id)
 
     res.json({
       message: ADMIN_MESSAGES.UPDATE_USER_STATE_SUCCESS,
+      data: result
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const updateProductStateController = async (
+  req: Request<ParamsDictionary, any, UpdateProductStateReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { _id } = req.params;
+    const { state } = req.body;
+    const {user_id} = req.decoded_authorization as TokenPayLoad;
+
+    const result = await productService.updateProductState(_id, state, user_id);
+
+    res.json({
+      message: ADMIN_MESSAGES.UPDATE_PRODUCT_STATE_SUCCESS,
       data: result
     });
   } catch (error) {

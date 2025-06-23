@@ -53,3 +53,6 @@ export interface updateProductReqBody {
   state?: ProductState
 }
 
+export interface UpdateProductStateReqBody {
+  state: ProductState;
+}

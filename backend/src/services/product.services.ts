@@ -172,6 +172,30 @@ class ProductsService {
       })
     }
   }
+
+  async updateProductState(productId: string, newState: ProductState, adminId: string) {
+    const currentDate = new Date()
+    const vietnamTimezoneOffset = 7 * 60
+    const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
+    const result = await databaseService.products.findOneAndUpdate(
+      { _id: new ObjectId(productId) },
+      {
+        $set: {
+          state: newState, //Cập nhật trạng thái mới
+          updated_at: localTime,
+        }
+      },
+      {
+        returnDocument: 'after',
+        projection: {
+          name_on_list: 1,
+          state: 1,
+          updated_at: 1
+        }
+      }
+    );
+    return result;
+  }
 }
 
 const productService = new ProductsService()

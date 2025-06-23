@@ -213,6 +213,9 @@ export const ADMIN_MESSAGES = {
   VERIFY_STATUS_IS_REQUIRED: 'Verify status is required',
   VERIFY_STATUS_MUST_BE_A_NUMBER: 'Verify status must be a number',
   UPDATE_USER_STATE_SUCCESS: 'Update user state successfully',
+  INVALID_PRODUCT_ID: 'Product ID is invalid',
+  UPDATE_PRODUCT_STATE_SUCCESS: 'Update product state successfully',
+  STATE_IS_REQUIRED: 'State is required',
 } as const
 
 export const CART_MESSAGES = {
