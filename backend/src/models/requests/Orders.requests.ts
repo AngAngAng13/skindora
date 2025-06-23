@@ -6,9 +6,10 @@ export interface OrderReqBody {
   ShipAddress: string
   Description?: string
   RequireDate: string
-  ShippedDate: string
+  ShippedDate?: string
   PaymentMethod: PaymentMethod
-  PaymentStatus: PaymentStatus
+  PaymentStatus?: PaymentStatus,
+  voucherCode?: string,
   type?: OrderType
 }
 

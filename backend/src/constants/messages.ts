@@ -279,6 +279,7 @@ export const ORDER_MESSAGES = {
 
 export const VOUCHER_MESSAGES = {
   NOT_FOUND: "Voucher not found",
+  NOT_ACTIVE: "Inactive voucher",
   EXPIRED: "Voucher is expired",
   REACH_LIMIT_USED: "This voucher has reached the usable limit",
   USE_ONLY_ONCE: "Each voucher can only use once"

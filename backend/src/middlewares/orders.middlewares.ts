@@ -54,18 +54,22 @@ export const checkOutValidator = validate(
           errorMessage: ORDER_MESSAGES.INVALID_PAYMENT_METHOD
         }
       },
-      VoucherId: {
+      voucherCode: {
         optional: true,
-        isMongoId: {
-          errorMessage: ORDER_MESSAGES.INVALID_VOUCHER_ID
-        },
         custom: {
           options: async (value, { req }) => {
-            const voucher = await databaseService.vouchers.findOne({ _id: new ObjectId(value) })
+            const voucher = await databaseService.vouchers.findOne({ code: value })
             if (!voucher) {
               throw new ErrorWithStatus({
                 message: VOUCHER_MESSAGES.NOT_FOUND,
                 status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+
+            if(!voucher.isActive){
+              throw new ErrorWithStatus({
+                message: VOUCHER_MESSAGES.NOT_ACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
               })
             }
 
@@ -110,7 +114,7 @@ export const checkOutValidator = validate(
         }
       }
     },
-    ['body']
+    ['body'],
   )
 )
 
