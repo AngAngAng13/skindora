@@ -33,6 +33,7 @@ import { filterMiddleware, parseDateFieldsMiddleware } from '~/middlewares/commo
 import { createVoucherValidator, updateVoucherValidator, voucherIdValidator } from '~/middlewares/voucher.middlewares'
 import { CreateNewVoucherReqBody, UpdateVoucherReqBody } from '~/models/requests/Vouchers.request'
 import { updateProductReqBody } from '~/models/requests/Product.requests'
+import { getAllFilterBrandsController } from '~/controllers/filterBrand.controllers'
 
 const adminRouter = Router()
 //user management
@@ -158,5 +159,12 @@ adminRouter.post(
   isAdminValidator,
   createNewFilterBrandValidator,
   wrapAsync(createNewFilterBrandController)
+)
+//get all filter brands
+adminRouter.get(
+  '/manage-filters/get-all-filter-brands',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getAllFilterBrandsController)
 )
 export default adminRouter
