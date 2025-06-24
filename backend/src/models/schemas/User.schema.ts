@@ -46,8 +46,8 @@ export default class User {
     this.last_name = user.last_name
     this.email = user.email
     this.password = user.password
-    this.created_at = localTime || user.created_at
-    this.updated_at = localTime || user.updated_at
+    this.created_at =  user.created_at || localTime
+    this.updated_at = user.updated_at || localTime
     this.email_verify_token = user.email_verify_token || ''
     this.forgot_password_token = user.forgot_password_token || ''
     this.verify = user.verify || UserVerifyStatus.Unverified

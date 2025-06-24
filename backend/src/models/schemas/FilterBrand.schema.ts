@@ -30,7 +30,7 @@ export default class FilterBrand {
     this.state = filterBrand.state || FilterBrandState.ACTIVE
     this.category_name = filterBrand.category_name || ''
     this.category_param = filterBrand.category_param || ''
-    this.created_at = localTime || filterBrand.created_at
-    this.updated_at = localTime || filterBrand.updated_at
+    this.created_at = filterBrand.created_at || localTime
+    this.updated_at = filterBrand.updated_at || localTime
   }
 }

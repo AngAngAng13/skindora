@@ -2,10 +2,10 @@ import { ObjectId } from 'mongodb'
 import redisClient from './redis.services'
 import databaseService from './database.services'
 import { ErrorWithStatus } from '~/models/Errors'
-import { PRODUCTS_MESSAGES } from '~/constants/messages'
+import { ADMIN_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ProductInCache } from '~/models/requests/Cart.requests'
-import { CreateNewProductReqBody } from '~/models/requests/Product.requests'
+import { CreateNewProductReqBody, updateProductReqBody } from '~/models/requests/Product.requests'
 import Product from '~/models/schemas/Product.schema'
 import { ProductState } from '~/constants/enums'
 
@@ -131,6 +131,70 @@ class ProductsService {
     console.log(payload)
     console.log(result)
     return result
+  }
+
+  async getProductDetail(_id: string) {
+    const product = await databaseService.products.findOne({
+      _id: new ObjectId(_id)
+    })
+    if (product == null) {
+      throw new ErrorWithStatus({
+        message: ADMIN_MESSAGES.PRODUCT_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    return product
+  }
+
+  async updateProduct(_id: string, payload: updateProductReqBody) {
+    try {
+      const updatedPayload = { ...payload }
+      const currentDate = new Date()
+      const vietnamTimezoneOffset = 7 * 60
+      const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
+      const result = await databaseService.products.findOneAndUpdate(
+        { _id: new ObjectId(_id) },
+        {
+          $set: {
+            ...updatedPayload,
+            updated_at: localTime
+          }
+        },
+        {
+          returnDocument: 'after'
+        }
+      )
+      return result
+    } catch (error) {
+      throw new ErrorWithStatus({
+        message: ADMIN_MESSAGES.UPDATE_PRODUCT_FAILED,
+        status: HTTP_STATUS.INTERNAL_SERVER_ERROR
+      })
+    }
+  }
+
+  async updateProductState(productId: string, newState: ProductState, adminId: string) {
+    const currentDate = new Date()
+    const vietnamTimezoneOffset = 7 * 60
+    const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
+    const result = await databaseService.products.findOneAndUpdate(
+      { _id: new ObjectId(productId) },
+      {
+        $set: {
+          state: newState, //Cập nhật trạng thái mới
+          updated_at: localTime,
+        }
+      },
+      {
+        returnDocument: 'after',
+        projection: {
+          name_on_list: 1,
+          state: 1,
+          updated_at: 1
+        }
+      }
+    );
+    return result;
   }
 }
 
