@@ -216,6 +216,10 @@ export const ADMIN_MESSAGES = {
   INVALID_PRODUCT_ID: 'Product ID is invalid',
   UPDATE_PRODUCT_STATE_SUCCESS: 'Update product state successfully',
   STATE_IS_REQUIRED: 'State is required',
+  FILTER_BRAND_ID_IS_INVALID: 'Filter brand ID is invalid',
+  FILTER_BRAND_NOT_FOUND: 'Filter brand not found',
+  UPDATE_FILTER_BRAND_SUCCESS: 'Update filter brand successfully',
+  UPDATE_FILTER_BRAND_FAILED: 'Update filter brand failed',
 } as const
 
 export const CART_MESSAGES = {

@@ -33,7 +33,9 @@ import { filterMiddleware, parseDateFieldsMiddleware } from '~/middlewares/commo
 import { createVoucherValidator, updateVoucherValidator, voucherIdValidator } from '~/middlewares/voucher.middlewares'
 import { CreateNewVoucherReqBody, UpdateVoucherReqBody } from '~/models/requests/Vouchers.request'
 import { updateProductReqBody } from '~/models/requests/Product.requests'
-import { getAllFilterBrandsController } from '~/controllers/filterBrand.controllers'
+import { getAllFilterBrandsController, updateFilterBrandController } from '~/controllers/filterBrand.controllers'
+import { updateFilterBrandReqBody } from '~/models/requests/Admin.requests'
+import { updateFilterBrandValidator } from '~/middlewares/filterBrand.middlewares'
 
 const adminRouter = Router()
 //user management
@@ -149,7 +151,7 @@ adminRouter.put(
   isAdminValidator,
   updateProductStateValidator,
   wrapAsync(updateProductStateController)
-);
+)
 
 //manage filter
 //filter-brand
@@ -167,4 +169,13 @@ adminRouter.get(
   isAdminValidator,
   wrapAsync(getAllFilterBrandsController)
 )
+adminRouter.put(
+  '/manage-filters/update-filter-brand/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<updateFilterBrandReqBody>(['option_name', 'category_name', 'category_param']),
+  updateFilterBrandValidator,
+  wrapAsync(updateFilterBrandController)
+)
+
 export default adminRouter
