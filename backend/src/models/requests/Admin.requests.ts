@@ -21,3 +21,7 @@ export interface updateFilterBrandReqBody {
   category_name: string
   category_param: string
 }
+
+export interface disableFilterBrandReqBody {
+  state: FilterBrandState
+}

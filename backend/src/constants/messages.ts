@@ -220,6 +220,9 @@ export const ADMIN_MESSAGES = {
   FILTER_BRAND_NOT_FOUND: 'Filter brand not found',
   UPDATE_FILTER_BRAND_SUCCESS: 'Update filter brand successfully',
   UPDATE_FILTER_BRAND_FAILED: 'Update filter brand failed',
+  STATE_MUST_BE_ONE_OF_THE_FILTER_BRAND_STATE:
+    'State must be one of the filter brand state: INACTIVE, ACTIVE, COLLABORATION, PARTNERSHIP, EXCLUSIVE, LIMITED_EDITION, SUSPENDED, DISCONTINUED',
+    FILTER_BRAND_DISABLE_SUCCESS: 'Filter brand disabled successfully',
 } as const
 
 export const CART_MESSAGES = {
