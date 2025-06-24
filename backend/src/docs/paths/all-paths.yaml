@@ -15,7 +15,7 @@
         content:
           application/json:
             schema:
-              $ref: '../components/schemas/LoginSuccessResponse.yaml'
+              $ref: '../components/schemas/RegisterSuccessResponse.yaml'
       '422':
         description: Validation error (e.g., email exists, password mismatch).
         content:
@@ -797,14 +797,14 @@
                   example: 1
                 return_message:
                   type: string
-                  example: "Success"
+                  example: 'Success'
                 order_url:
                   type: string
                   format: uri
-                  example: "https://sbgateway.zalopay.vn/openinapp?order=..."
+                  example: 'https://sbgateway.zalopay.vn/openinapp?order=...'
                 zp_trans_token:
                   type: string
-                  example: "240624000000123_1a2b3c4d"
+                  example: '240624000000123_1a2b3c4d'
       '400':
         description: Bad Request (e.g., missing orderDetails).
         content:
@@ -849,14 +849,14 @@
               properties:
                 message:
                   type: string
-                  example: "Success"
+                  example: 'Success'
                 data:
                   type: object
                   properties:
                     paymentUrl:
                       type: string
                       format: uri
-                      example: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=..."
+                      example: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=...'
       '401':
         description: Unauthorized. Access token is missing or invalid.
         content:
@@ -990,7 +990,7 @@
               properties:
                 message:
                   type: string
-                  example: "Get all your orders successfully"
+                  example: 'Get all your orders successfully'
                 result:
                   type: array
                   items:
@@ -1768,7 +1768,7 @@
 # ======================= FILTER MANAGEMENT =======================
 /admin/manage-filters/create-new-filter-brand:
   post:
-    tags: [Admin]
+    tags: [Admin - Filter Management]
     summary: (Admin) Create a New Filter Brand
     security:
       - BearerAuth: []
@@ -1823,7 +1823,7 @@
               properties:
                 message:
                   type: string
-                  example: "Update user state successfully"
+                  example: 'Update user state successfully'
                 data:
                   $ref: '../components/schemas/User.yaml'
       '400':
@@ -1876,7 +1876,7 @@
               properties:
                 message:
                   type: string
-                  example: "Update product state successfully"
+                  example: 'Update product state successfully'
                 data:
                   $ref: '../components/schemas/Product.yaml'
       '401':

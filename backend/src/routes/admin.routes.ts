@@ -29,7 +29,7 @@ import {
   inactiveVoucherController,
   getAllVoucherForAdminController
 } from '~/controllers/voucher.controllers'
-import { filterMiddleware, parseDateFieldsMiddleware } from '~/middlewares/common.middlewares'
+import { filterMiddleware, paginationValidator, parseDateFieldsMiddleware } from '~/middlewares/common.middlewares'
 import { createVoucherValidator, updateVoucherValidator, voucherIdValidator } from '~/middlewares/voucher.middlewares'
 import { CreateNewVoucherReqBody, UpdateVoucherReqBody } from '~/models/requests/Vouchers.request'
 import { updateProductReqBody } from '~/models/requests/Product.requests'
@@ -104,7 +104,7 @@ adminRouter.put(
 )
 
 //product management
-adminRouter.get('/manage-products/get-all', accessTokenValidator, isAdminValidator, wrapAsync(getAllProductController))
+adminRouter.get('/manage-products/get-all', accessTokenValidator, isAdminValidator, paginationValidator, wrapAsync(getAllProductController))
 adminRouter.post(
   '/manage-products/create-new-product',
   accessTokenValidator,

@@ -85,7 +85,26 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LoginSuccessResponse"
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Register successful"
+                    },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "access_token": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjA5..."
+                        },
+                        "refresh_token": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjA5..."
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2996,7 +3015,7 @@
     "/admin/manage-filters/create-new-filter-brand": {
       "post": {
         "tags": [
-          "Admin"
+          "Admin - Filter Management"
         ],
         "summary": "(Admin) Create a New Filter Brand",
         "security": [
@@ -3455,21 +3474,27 @@
           "email": {
             "type": "string",
             "format": "email",
-            "example": "john.doe@example.com"
+            "example": "user@example.com"
           },
           "password": {
             "type": "string",
             "format": "password",
+            "example": "password123",
             "minLength": 8,
-            "maxLength": 30,
-            "example": "Str0ngP@sswOrd"
+            "maxLength": 30
           },
           "confirm_password": {
             "type": "string",
             "format": "password",
+            "example": "password123",
             "minLength": 8,
-            "maxLength": 30,
-            "example": "Str0ngP@sswOrd"
+            "maxLength": 30
+          },
+          "avatar": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional avatar URL.",
+            "example": "https://example.com/avatar.jpg"
           }
         }
       },
