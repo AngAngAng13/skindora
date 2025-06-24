@@ -1,10 +1,9 @@
 import { Request, Response } from 'express'
 import { NextFunction, ParamsDictionary } from 'express-serve-static-core'
 import { Filter, ObjectId } from 'mongodb'
-import { OrderStatus, Role } from '~/constants/enums'
+import { CancelRequestStatus, OrderStatus, Role } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ORDER_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
-import { isAdminOrStaffValidator } from '~/middlewares/admin.middlewares'
 import { ErrorWithStatus } from '~/models/Errors'
 import { OrderParams, OrderReqBody } from '~/models/requests/Orders.requests'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
@@ -139,7 +138,7 @@ export const getOrderByIdController = async (req: Request<OrderParams>, res: Res
   const isAdminOrStaff = [Role.Admin, Role.Staff].includes(req.user?.roleid || 0)
   const isOwner = req.user?._id?.toString() === order?.UserID?.toString()
 
-  if(!isAdminOrStaff && !isOwner){
+  if (!isAdminOrStaff && !isOwner) {
     res.status(HTTP_STATUS.FORBIDDEN).json({
       status: HTTP_STATUS.FORBIDDEN,
       message: USERS_MESSAGES.ACCESS_DENIED
@@ -164,21 +163,43 @@ export const getOrderByIdController = async (req: Request<OrderParams>, res: Res
   }
 }
 
+export const requestCancelOrderController = async (req: Request<OrderParams>, res: Response) => {
+  try {
+    const order = req.order
+    const result = await ordersService.requestCancelOrder(req.body, order!)
+    res.json({
+      message: ORDER_MESSAGES.CANCEL_SUCCESS,
+      result
+    })
+  } catch (error) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: ORDER_MESSAGES.CANCEL_FAIL,
+      error: errorMessage
+    })
+  }
+}
 //Manage orders: Staff and Admin only
 export const getAllOrdersController = async (req: Request, res: Response, next: NextFunction) => {
   const filter: Filter<Order> = {}
-  if(req.query.status){
+  if (req.query.status) {
     filter.Status = req.query.status as OrderStatus
   }
   await sendPaginatedResponse(res, next, databaseService.orders, req.query, filter)
 }
 
-export const getAllOrdersByUserIdController = async (req: Request<{ userId: string }>, res: Response, next: NextFunction) => {
-    const filter: Filter<Order> = {}
-    if(req.params.userId){
-      filter.UserID = new ObjectId(req.params.userId) as ObjectId
-    }
-    await sendPaginatedResponse(res, next, databaseService.orders, req.query, filter)
+export const getAllOrdersByUserIdController = async (
+  req: Request<{ userId: string }>,
+  res: Response,
+  next: NextFunction
+) => {
+  const filter: Filter<Order> = {}
+  if (req.params.userId) {
+    filter.UserID = new ObjectId(req.params.userId) as ObjectId
+  }
+  await sendPaginatedResponse(res, next, databaseService.orders, req.query, filter)
 }
 
 export const moveToNextStatusController = async (req: Request<OrderParams>, res: Response) => {
@@ -210,4 +231,52 @@ export const moveToNextStatusController = async (req: Request<OrderParams>, res:
   }
 }
 
+export const approveCancelRequestController = async (req: Request<OrderParams>, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
 
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
+  try {
+    const order = req.order
+    const result = await ordersService.approveCancelRequest(req.body, user_id, order!, {status: CancelRequestStatus.APPROVED})
+    res.json({
+      message: ORDER_MESSAGES.CANCEL_SUCCESS,
+      result
+    })
+  } catch (error) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: ORDER_MESSAGES.CANCEL_FAIL,
+      error: errorMessage
+    })
+  }
+}
+
+export const rejectCancelRequestController = async (req: Request<OrderParams>, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
+  try {
+    const order = req.order
+    const result = await ordersService.rejectCancelRequest(req.body, user_id, order!, {status: CancelRequestStatus.REJECTED})
+    res.json({
+      message: ORDER_MESSAGES.CANCEL_SUCCESS,
+      result,
+    })
+  } catch (error) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: ORDER_MESSAGES.CANCEL_FAIL,
+      error: errorMessage
+    })
+  }
+}
