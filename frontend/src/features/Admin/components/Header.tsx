@@ -2,7 +2,6 @@ import { Bell, UserIcon } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
-import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useAuth } from "@/contexts/auth.context";
 
 interface ProfileDropdownProps {
@@ -59,19 +59,23 @@ function ProfileDropdown({ logout, isLoading }: ProfileDropdownProps) {
   );
 }
 export function TopbarActions() {
-  const { user, actions } = useAuth();
+  const { actions } = useAuth();
+  // const navigate = useNavigate();
+  // if (!user) {
+  //   navigate("/auth/login");
+  // }
   return (
     <div className="flex items-center space-x-4">
-      {user ? (
-        <div className="flex items-center gap-4">
-          <NotificationButton />
-          <ProfileDropdown logout={actions.logout} isLoading={actions.isLoggingOut} />
-        </div>
-      ) : (
-        <Link to="/auth/login">
-          <Button variant="outline">Đăng nhập</Button>
-        </Link>
-      )}
+      {/* {user ? ( */}
+      <div className="flex items-center gap-4">
+        <NotificationButton />
+        <ProfileDropdown logout={actions.logout} isLoading={actions.isLoggingOut} />
+      </div>
+      {/* // ) : (
+      //   <Link to="/auth/login">
+      //     <Button variant="outline">Đăng nhập</Button>
+      //   </Link>
+      // )} */}
     </div>
   );
 }
@@ -79,13 +83,19 @@ interface HeaderAdminProps {
   name: string;
 }
 
-const HeaderAdmin: React.FC<HeaderAdminProps> = ({ name }) => {
+const HeaderAdmin: React.FC<HeaderAdminProps> = () => {
   return (
     <>
       <div className="top-0 left-0 box-border w-full border-b bg-white px-6 py-5">
         <div className="flex items-center justify-between">
-          <div>
-            <Typography className="text-primary text-2xl font-bold">{name}</Typography>
+          <div className="flex">
+            {/* <div>
+              <SidebarTrigger />
+            </div> */}
+            <div>
+              <SidebarTrigger />
+              {/* <Typography className="text-primary text-2xl font-bold">{name}</Typography> */}
+            </div>
           </div>
           <div className="flex items-center gap-4">
             <TopbarActions />

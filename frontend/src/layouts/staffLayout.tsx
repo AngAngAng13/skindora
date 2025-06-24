@@ -2,7 +2,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 
-import AppSidebar from "@/components/Sidebar";
+import StaffSidebar from "@/components/StaffSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { HeaderProvider, useHeader } from "@/contexts/header.context";
 import HeaderAdmin from "@/features/Admin/components/Header";
@@ -13,7 +13,7 @@ const LayoutContent = () => {
   return (
     <div className="flex min-h-screen bg-white">
       <SidebarProvider>
-        <AppSidebar />
+        <StaffSidebar />
         <div className="flex-1">
           <div className="relative">
             <HeaderAdmin name={headerName} />
@@ -25,7 +25,7 @@ const LayoutContent = () => {
   );
 };
 
-const AdminLayout: React.FC = () => {
+const StaffLayout: React.FC = () => {
   return (
     <HeaderProvider>
       <LayoutContent />
@@ -33,4 +33,4 @@ const AdminLayout: React.FC = () => {
   );
 };
 
-export default AdminLayout;
+export default StaffLayout;
