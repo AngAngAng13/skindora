@@ -1,6 +1,7 @@
+import { useCartQuery } from "@/hooks/queries/useCartQuery"; 
 import { Bell, Heart, Menu, Search, ShoppingCart, User as UserIcon, X } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation,useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,29 +57,36 @@ function SearchBar() {
 }
 
 function HeaderActions() {
-  const { user, actions } = useAuth();
-  const cartCount = 0; 
+  const { user, actions,isAuthenticated} = useAuth();
+  const { data: cartAPIResponse } = useCartQuery(isAuthenticated);
+  const cartCount = cartAPIResponse?.result.Products.length || 0;
+  const navigate = useNavigate();
 
   return (
     <div className="flex items-center space-x-2 md:space-x-4">
-      <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-        <Heart className="h-5 w-5" />
-      </Button>
-      <Button variant="ghost" size="icon" className="relative">
-        <ShoppingCart className="h-5 w-5" />
-        {cartCount > 0 && (
-          <span className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
-            {cartCount}
-          </span>
-        )}
-      </Button>
+      {isAuthenticated &&(
+        <>
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
+            <Heart className="h-5 w-5" />
+          </Button>
+          <Button variant="ghost" size="icon" className="relative" onClick={() => navigate("/cart")}>
+            <ShoppingCart className="h-5 w-5" />
+            {cartCount > 0 && (
+              <span className="bg-primary absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-xs text-white">
+                {cartCount}
+              </span>
+            )}
+          </Button>
+        </>
+      )}
+      
 
       {user ? (
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
+          {/* <Button variant="ghost" size="icon" className="hidden md:inline-flex">
             <Bell className="h-5 w-5" />
             <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
-          </Button>
+          </Button> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="relative h-9 w-9 rounded-full">
@@ -160,6 +168,7 @@ export default function Topbar({ branding, navItems = [] }: AppHeaderProps = {})
           <nav className="flex flex-col space-y-1 p-4">
             {navItems?.map((item) => (
               <Link
+
                 key={item.path}
                 to={`/${item.path}`}
                 onClick={() => setMobileMenuOpen(false)}

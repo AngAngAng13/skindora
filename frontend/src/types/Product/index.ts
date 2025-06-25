@@ -58,6 +58,7 @@ export interface Product {
   filter_brand: string;
   filter_dac_tinh: string;
   filter_hsk_size: string;
+  quantity: number;
 }
 
 

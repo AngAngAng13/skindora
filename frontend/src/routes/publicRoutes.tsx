@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
+
 const StorePage = lazy(() => import("@/features/Store"));
 const PublicLayout = lazy(() => import("@/layouts/publicLayout"));
 
@@ -9,9 +10,7 @@ const AuthPage = lazy(() => import("@/features/Auth"));
 const Homepage = lazy(() => import("@/features/Homepage"));
 const ContactPage = lazy(() => import("@/features/Contact"));
 const AboutPage = lazy(() => import("@/features/About"));
-const ProfilePage = lazy(() => import("@/features/Profile"));
-
-
+const ProductDetailPage = lazy(() => import("@/features/ProductDetail/index"));
 
 const publicRoutes: RouteObject[] = [
   {
@@ -20,20 +19,19 @@ const publicRoutes: RouteObject[] = [
     children: [
       { index: true, element: <Homepage /> },
 
-    
       {
         path: "contact",
         element: <ContactPage />,
+      },
+      {
+        path: "product/:id",
+        element: <ProductDetailPage />,
       },
       {
         path: "products",
         element: <StorePage />,
       },
 
-      {
-        path: "profile",
-        element: <ProfilePage />,
-      },
       {
         path: "about",
         element: <AboutPage />,
@@ -54,7 +52,6 @@ const publicRoutes: RouteObject[] = [
         path: "register",
         element: null,
       },
-    
     ],
   },
   {
