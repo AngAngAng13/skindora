@@ -1,4 +1,4 @@
-import { Menu, Search, ShoppingCart, User as UserIcon, X } from "lucide-react";
+import {Heart, Menu, Search, ShoppingCart, User as UserIcon, X } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
