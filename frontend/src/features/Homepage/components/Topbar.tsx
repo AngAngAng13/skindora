@@ -1,7 +1,7 @@
-import { useCartQuery } from "@/hooks/queries/useCartQuery"; 
-import { Bell, Heart, Menu, Search, ShoppingCart, User as UserIcon, X } from "lucide-react";
+import { Menu, Search, ShoppingCart, User as UserIcon, X } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation,useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
 import logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth.context";
+import { useCartQuery } from "@/hooks/queries/useCartQuery";
 
 interface AppHeaderProps {
   branding?: string;
@@ -57,14 +58,14 @@ function SearchBar() {
 }
 
 function HeaderActions() {
-  const { user, actions,isAuthenticated} = useAuth();
+  const { user, actions, isAuthenticated } = useAuth();
   const { data: cartAPIResponse } = useCartQuery(isAuthenticated);
   const cartCount = cartAPIResponse?.result.Products.length || 0;
   const navigate = useNavigate();
 
   return (
     <div className="flex items-center space-x-2 md:space-x-4">
-      {isAuthenticated &&(
+      {isAuthenticated && (
         <>
           <Button variant="ghost" size="icon" className="hidden md:inline-flex">
             <Heart className="h-5 w-5" />
@@ -79,7 +80,6 @@ function HeaderActions() {
           </Button>
         </>
       )}
-      
 
       {user ? (
         <div className="flex items-center gap-2">
@@ -121,7 +121,7 @@ function HeaderActions() {
 export default function Topbar({ branding, navItems = [] }: AppHeaderProps = {}) {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const {user} = useAuth();
+  const { user } = useAuth();
   const onProductsPage = location.pathname.startsWith("/products");
 
   return (
@@ -138,13 +138,7 @@ export default function Topbar({ branding, navItems = [] }: AppHeaderProps = {})
               {mobileMenuOpen ? <X /> : <Menu />}
             </Button>
             <Link to="/" aria-label="Go to homepage">
-              <img
-                src={logo}
-                alt="Skindora"
-                title={branding || "Skindora"}
-                loading="eager"
-                className="h-8 w-auto" 
-              />
+              <img src={logo} alt="Skindora" title={branding || "Skindora"} loading="eager" className="h-8 w-auto" />
             </Link>
           </div>
 
@@ -168,7 +162,6 @@ export default function Topbar({ branding, navItems = [] }: AppHeaderProps = {})
           <nav className="flex flex-col space-y-1 p-4">
             {navItems?.map((item) => (
               <Link
-
                 key={item.path}
                 to={`/${item.path}`}
                 onClick={() => setMobileMenuOpen(false)}
