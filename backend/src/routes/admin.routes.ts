@@ -29,11 +29,13 @@ import {
   inactiveVoucherController,
   getAllVoucherForAdminController
 } from '~/controllers/voucher.controllers'
-import { filterMiddleware, parseDateFieldsMiddleware } from '~/middlewares/common.middlewares'
+import { filterMiddleware, paginationValidator, parseDateFieldsMiddleware } from '~/middlewares/common.middlewares'
 import { createVoucherValidator, updateVoucherValidator, voucherIdValidator } from '~/middlewares/voucher.middlewares'
 import { CreateNewVoucherReqBody, UpdateVoucherReqBody } from '~/models/requests/Vouchers.request'
 import { updateProductReqBody } from '~/models/requests/Product.requests'
-import { getAllFilterBrandsController } from '~/controllers/filterBrand.controllers'
+import { disableFilterBrandController, getAllFilterBrandsController, getFilterBrandByIdController, updateFilterBrandController } from '~/controllers/filterBrand.controllers'
+import { disableFilterBrandReqBody, updateFilterBrandReqBody } from '~/models/requests/Admin.requests'
+import { disableFilterBrandValidator, getFilterBrandByIdValidator, updateFilterBrandValidator } from '~/middlewares/filterBrand.middlewares'
 
 const adminRouter = Router()
 //user management
@@ -102,7 +104,7 @@ adminRouter.put(
 )
 
 //product management
-adminRouter.get('/manage-products/get-all', accessTokenValidator, isAdminValidator, wrapAsync(getAllProductController))
+adminRouter.get('/manage-products/get-all', accessTokenValidator, isAdminValidator, paginationValidator, wrapAsync(getAllProductController))
 adminRouter.post(
   '/manage-products/create-new-product',
   accessTokenValidator,
@@ -149,7 +151,7 @@ adminRouter.put(
   isAdminValidator,
   updateProductStateValidator,
   wrapAsync(updateProductStateController)
-);
+)
 
 //manage filter
 //filter-brand
@@ -167,4 +169,31 @@ adminRouter.get(
   isAdminValidator,
   wrapAsync(getAllFilterBrandsController)
 )
+//update filter brand
+adminRouter.put(
+  '/manage-filters/update-filter-brand/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<updateFilterBrandReqBody>(['option_name', 'category_name', 'category_param']),
+  updateFilterBrandValidator,
+  wrapAsync(updateFilterBrandController)
+)
+//disable filter brand
+adminRouter.put(
+  '/manage-filters/update-filter-brand-state/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<disableFilterBrandReqBody>(['state']),
+  disableFilterBrandValidator,
+  wrapAsync(disableFilterBrandController)
+)
+//get filter brand by id
+adminRouter.get(
+  '/manage-filters/get-filter-brand-detail/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  getFilterBrandByIdValidator,
+  wrapAsync(getFilterBrandByIdController)
+)
+
 export default adminRouter
