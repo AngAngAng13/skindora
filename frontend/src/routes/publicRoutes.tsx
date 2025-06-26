@@ -3,7 +3,7 @@ import type { RouteObject } from "react-router-dom";
 
 const StorePage = lazy(() => import("@/features/Store"));
 const PublicLayout = lazy(() => import("@/layouts/publicLayout"));
-
+const PaymentReturnPage = lazy(() => import("@/features/PaymentReturnPage"));
 const VerifyEmailPage = lazy(() => import("@/features/Auth/pages/VerifyEmail"));
 
 const AuthPage = lazy(() => import("@/features/Auth"));
@@ -53,6 +53,10 @@ const publicRoutes: RouteObject[] = [
         element: null,
       },
     ],
+  },
+  {
+    path: "/payment/return",
+    element: <PaymentReturnPage />,
   },
   {
     path: "/auth/verify-email",
