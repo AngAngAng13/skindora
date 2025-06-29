@@ -142,7 +142,8 @@ export const userGetAllProductController = async (req: Request, res: Response, n
     product_detail_url: 1,
     productName_detail: 1,
     engName_detail: 1,
-    _id: 0
+    filter_brand: 1,
+    _id: 1
   }
   const filter = {}
   await sendPaginatedResponse(res, next, databaseService.products, req.query, filter, projection)
