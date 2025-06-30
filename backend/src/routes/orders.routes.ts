@@ -17,11 +17,13 @@ import {
 } from '~/controllers/orders.controllers'
 import { isAdminOrStaffValidator } from '~/middlewares/admin.middlewares'
 import {
+  buyNowValidator,
   cancelledOrderRequestedValidator,
   checkOutValidator,
   getAllOrdersValidator,
   getNextOrderStatusValidator,
   getOrderByIdValidator,
+  prepareOrderValidator,
   requestCancelOrderValidator
 } from '~/middlewares/orders.middlewares'
 import { isStaffValidator } from '~/middlewares/staff.middlewares'
@@ -58,9 +60,9 @@ ordersRouter
 
 ordersRouter.route('/:orderId').get(accessTokenValidator, getOrderByIdValidator, wrapAsync(getOrderByIdController))
 
-ordersRouter.route('/cart').post(accessTokenValidator, wrapAsync(prepareOrderController))
+ordersRouter.route('/cart').post(accessTokenValidator, prepareOrderValidator, wrapAsync(prepareOrderController))
 
-ordersRouter.route('/buy-now').post(accessTokenValidator, wrapAsync(buyNowController))
+ordersRouter.route('/buy-now').post(accessTokenValidator, buyNowValidator, wrapAsync(buyNowController))
 
 ordersRouter
   .route('/checkout')

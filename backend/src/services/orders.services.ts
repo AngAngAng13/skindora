@@ -7,6 +7,7 @@ import {
   OrderStatus,
   OrderType,
   PaymentStatus,
+  ProductState,
   RefundStatus
 } from '~/constants/enums'
 import { ObjectId } from 'mongodb'
@@ -25,7 +26,7 @@ import HTTP_STATUS from '~/constants/httpStatus'
 import OrderDetail from '~/models/schemas/Orders/OrderDetail.schema'
 import Order, { CancelRequest } from '~/models/schemas/Orders/Order.schema'
 import { VoucherType } from '~/models/schemas/Voucher.schema'
-import c from 'config'
+import Product from '~/models/schemas/Product.schema'
 
 class OrdersService {
   private async buildTempOrder(userId: string, selectedProducts: ProductInCart[]): Promise<TempOrder> {
@@ -38,11 +39,19 @@ class OrdersService {
       UserID: userId,
       Products: selectedProducts.map((p) => {
         const product = productMap.get(p.ProductID)
-        if (!product)
+        if (!product) {
           throw new ErrorWithStatus({
             message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND.replace('%s', p.ProductID),
             status: 404
           })
+        }
+
+        if (product.state !== ProductState.ACTIVE) {
+          throw new ErrorWithStatus({
+            message: PRODUCTS_MESSAGES.NOT_ACTIVE,
+            status: HTTP_STATUS.BAD_REQUEST
+          })
+        }
 
         if (!product.quantity || product.quantity < p.Quantity) {
           throw new ErrorWithStatus({
@@ -90,16 +99,11 @@ class OrdersService {
     return tempOrder
   }
 
-  async buyNow(userId: string, payload: BuyNowReqBody): Promise<TempOrder> {
-    const { productId, quantity } = payload
-    const product = await databaseService.products.findOne({ _id: new ObjectId(productId) })
-    if (!product) {
-      throw new ErrorWithStatus({ message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND, status: HTTP_STATUS.NOT_FOUND })
-    }
+  async buyNow(userId: string, quantity: number, product: Product): Promise<TempOrder> {
 
     const selectedProducts: ProductInCart[] = [
       {
-        ProductID: productId,
+        ProductID: product._id?.toString()!,
         Quantity: quantity
       }
     ]
@@ -489,13 +493,13 @@ class OrdersService {
 
     filteredOrder.forEach((order) => {
       const date = order.created_at?.toISOString().split('T')[0]!
-      if(!ordersByDate[date]){
+      if (!ordersByDate[date]) {
         ordersByDate[date] = []
       }
       ordersByDate[date].push(order)
     })
 
-    const dailyResult = Object.keys(ordersByDate).map(date => {
+    const dailyResult = Object.keys(ordersByDate).map((date) => {
       const orders = ordersByDate[date]
       const totalRevenue = orders.reduce((total, order) => total + Number(order.TotalPrice), 0)
 

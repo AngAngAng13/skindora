@@ -44,8 +44,10 @@ export const buyNowController = async (req: Request, res: Response) => {
     res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
     return
   }
+
+  const product = req.product 
   try {
-    const result = await ordersService.buyNow(user_id, req.body)
+    const result = await ordersService.buyNow(user_id, req.body.quantity, product)
     res.json({
       message: ORDER_MESSAGES.PREPARED_SUCCESS,
       result

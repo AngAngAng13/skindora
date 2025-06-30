@@ -15,6 +15,7 @@ import databaseService from '~/services/database.services'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
 import { canRoleTransition, canTransition, getNextOrderStatus } from '~/utils/orderStatus'
 import { format } from 'util'
+import { validateProductExists } from './products.middlewares'
 
 export const checkOutValidator = validate(
   checkSchema(
@@ -131,18 +132,35 @@ export const prepareOrderValidator = validate(
     },
     'selectedProductIDs.*': {
       custom: {
-        options: (value) => {
-          if (!ObjectId.isValid(value)) {
-            throw new ErrorWithStatus({
-              message: CART_MESSAGES.INVALID_PRODUCT_ID,
-              status: HTTP_STATUS.BAD_REQUEST
-            })
-          }
+        options: async(value) => {
+          await validateProductExists(value)
           return true
         }
       }
     }
   })
+)
+
+export const buyNowValidator = validate(
+  checkSchema({
+    productId: {
+      notEmpty: {
+        errorMessage: CART_MESSAGES.PRODUCT_ID_IS_REQUIRED
+      },
+      custom: {
+        options: async(value, {req}) => {
+          const product = await validateProductExists(value)
+          req.product = product
+          return true
+        }
+      }
+    },
+    quantity: {
+      notEmpty: {
+        errorMessage: CART_MESSAGES.QUANTITY_IS_REQUIRED
+      }
+    },
+  },['body'])
 )
 
 export const getAllOrdersByUserIdValidator = validate(
