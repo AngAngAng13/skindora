@@ -2,6 +2,7 @@ import axios from 'axios'
 import CryptoJS from 'crypto-js'
 import { v1 as uuidv1 } from 'uuid'
 import moment from 'moment'
+import cartService from '../cart.services'
 
 interface Item {
   _id: string
@@ -21,6 +22,7 @@ interface Order {
   description: string
   bankcode: string
   mac?: string
+  callback_url?: string
 }
 
 const config = {
@@ -31,6 +33,9 @@ const config = {
 }
 
 const createOrder = async (req: any, res: any): Promise<void> => {
+  const cartKey = cartService.getCartKey(req.decoded_authorization)
+  const cart = cartService.getCart(cartKey)
+
   const embeddata = {
     redirecturl: process.env.FRONTEND_URL,
     orderDetails: req.body.orderDetails
@@ -58,7 +63,8 @@ const createOrder = async (req: any, res: any): Promise<void> => {
     embeddata: JSON.stringify(embeddata),
     amount: req.body.total,
     description: 'Skin Dora Shop',
-    bankcode: ''
+    bankcode: '',
+    callback_url: process.env.VNP_IPNURL
   }
 
   const data = [

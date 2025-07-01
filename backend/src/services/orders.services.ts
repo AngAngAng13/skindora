@@ -1,7 +1,14 @@
 import cartService from './cart.services'
 import redisClient from './redis.services'
 import databaseService from './database.services'
-import { CancelRequestStatus, OrderStatus, OrderType, PaymentMethod, PaymentStatus, RefundStatus } from '~/constants/enums'
+import {
+  CancelRequestStatus,
+  OrderStatus,
+  OrderType,
+  PaymentMethod,
+  PaymentStatus,
+  RefundStatus
+} from '~/constants/enums'
 import { ObjectId } from 'mongodb'
 import {
   BuyNowReqBody,
@@ -267,7 +274,7 @@ class OrdersService {
       updated_at: new Date()
     }
 
-    if(isPaid){
+    if (isPaid) {
       updateSet.RefundStatus = RefundStatus.REQUESTED
     }
     const updatedOrder = await databaseService.orders.findOneAndUpdate(
