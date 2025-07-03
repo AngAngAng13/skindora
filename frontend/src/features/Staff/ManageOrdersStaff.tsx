@@ -25,12 +25,15 @@ const ManageOrdersStaff: React.FC = () => {
   };
 
   const filterOptions = [
+    { value: "", label: "ALL" as const },
     { value: "failed", label: "FAILED" as const },
     { value: "shipping", label: "SHIPPING" as const },
     { value: "delivered", label: "DELIVERED" as const },
     { value: "cancelled", label: "CANCELLED" as const },
     { value: "returned", label: "RETURNED" as const },
     { value: "processing", label: "PROCESSING" as const },
+    { value: "confirmed", label: "CONFIRMED" as const },
+    { value: "pending", label: "PENDING" as const },
   ];
 
   return (
