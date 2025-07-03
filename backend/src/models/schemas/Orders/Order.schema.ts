@@ -1,6 +1,15 @@
 import { ObjectId } from 'mongodb'
-import { OrderStatus } from '~/constants/enums'
+import { CancelRequestStatus, OrderStatus, PaymentMethod, PaymentStatus, RefundStatus } from '~/constants/enums'
 
+export interface CancelRequest {
+  status: CancelRequestStatus
+  reason: string
+  requestedAt: Date
+  approvedAt?: Date
+  rejectedAt?: Date
+  staffId: ObjectId
+  staffNote?: string
+}
 interface OrderType {
   _id?: ObjectId
   UserID?: ObjectId
@@ -9,6 +18,10 @@ interface OrderType {
   RequireDate?: string
   ShippedDate?: string
   Status?: OrderStatus
+  PaymentMethod?: PaymentMethod
+  PaymentStatus?: PaymentStatus
+  CancelRequest?: CancelRequest
+  RefundStatus?: RefundStatus
   Discount?: string
   TotalPrice?: string
   created_at?: Date
@@ -24,6 +37,10 @@ export default class Order {
   RequireDate?: string
   ShippedDate?: string
   Status?: OrderStatus
+  PaymentMethod?: PaymentMethod
+  PaymentStatus?: PaymentStatus
+  CancelRequest?: CancelRequest
+  RefundStatus?: RefundStatus
   Discount?: string
   TotalPrice?: string
   created_at?: Date
@@ -42,6 +59,10 @@ export default class Order {
     this.RequireDate = order.RequireDate || ''
     this.ShippedDate = order.ShippedDate || ''
     this.Status = order.Status || OrderStatus.PENDING
+    this.PaymentMethod = order.PaymentMethod || PaymentMethod.COD
+    this.PaymentStatus = order.PaymentStatus || PaymentStatus.UNPAID
+    this.CancelRequest = order.CancelRequest
+    this.RefundStatus = order.RefundStatus || RefundStatus.NONE
     this.Discount = order.Discount || ''
     this.TotalPrice = order.TotalPrice || ''
     this.created_at = localTime || order.created_at

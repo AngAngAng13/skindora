@@ -52,7 +52,9 @@ export const USERS_MESSAGES = {
   ACCESS_DENIED_ADMIN_OR_STAFF_ONLY: 'Access denied. Admins or staffs only',
   INVALID_USER_ID: 'UserId is invalid',
   ACCESS_DENIED: 'Access denied',
-  ACCESS_DENIED_STAFF_ONLY: 'Access denied. Staffs only'
+  ACCESS_DENIED_STAFF_ONLY: 'Access denied. Staffs only',
+  ACCESS_DENIED_ADMIN_AND_STAFF_ONLY: 'Access denied. Admins and staffs only',
+  UPDATE_ME_ERROR: 'Update me error'
 } as const
 
 export const PRODUCTS_MESSAGES = {
@@ -162,7 +164,65 @@ export const ADMIN_MESSAGES = {
   QUANTITY_MUST_BE_NON_NEGATIVE: 'Product quantity must be a non-negative integer',
   QUANTITY_EXCEEDS_LIMIT: 'Product quantity exceeds the limit of',
   STATE_MUST_BE_ONE_OF: 'State must be one of',
-  CREATE_NEW_PRODUCT_SUCCESS: 'Create new product successfully'
+  CREATE_NEW_PRODUCT_SUCCESS: 'Create new product successfully',
+  CODE_IS_REQUIRED: 'Code is required',
+  CODE_MUST_BE_A_STRING: 'Code must be a string',
+  CODE_IS_DUPLICATED: 'Code %s is duplicate',
+  CODE_LENGTH_INVALID: 'Code must be between 3 and 10 characters',
+  CODE_INVALID_CHARACTERS: 'Code must only contain letters and numbers',
+  DESCRIPTION_IS_REQUIRED: 'Description is required',
+  DESCRIPTION_MUST_BE_STRING: 'Description must be a string',
+  DESCRIPTION_LENGTH_INVALID: 'Description must be between 1 and 20 characters',
+  DISCOUNT_VALUE_IS_REQUIRED: 'Discount value is required',
+  DISCOUNT_VALUE_INVALID: 'Discount value must be a number and greater than 1000',
+  DISCOUNT_VALUE_GREATER_THAN_0: 'Discount value must be a number greater than 0',
+  DISCOUNT_VALUE_GREATER_THAN_1000: 'Discount value must be a number greater than 1000',
+  DISCOUNT_VALUE_PERCENTAGE: 'Percentage discount must be between 0 and 100',
+  DISCOUNT_TYPE_IS_REQUIRED: 'Discount type is required',
+  DISCOUNT_TYPE_INVALID: 'Discount type must be one of: %s',
+  MAX_DISCOUNT_IS_REQUIRED: 'Max Discount Amount is required',
+  MAX_DISCOUNT_INVALID: 'Max Discount Amount must greater than 1000',
+  MIN_ORDER_IS_REQUIRED: 'Min Order Value is required',
+  MIN_ORDER_INVALID: 'Min Order Value must greate than 1000',
+  START_DATE_IS_REQUIRED: 'Start Date is required',
+  START_DATE_INVALID: 'Start Date must be in ISO8601 format',
+  END_DATE_IS_REQUIRED: 'End Date is required',
+  END_DATE_INVALID: 'End Date must be in ISO8601 format',
+  END_DATE_BEFORE_START_DATE: 'End date must be after start date',
+  USAGE_LIMIT_MUST_BE_NUMBER: 'Usage Limit must be a number and greater than 1',
+  USER_USAGE_LIMIT_MUST_BE_NUMBER: 'User Usage Limit must be a number and greater than 1',
+  START_DATE_NOT_FOUND: 'Start date is not available to validate end date',
+  VOUCHER_ID_IS_REQUIRED: 'Voucher ID is required',
+  VOUCHER_ID_NOT_FOUND: 'Voucher ID %s not found',
+  VOUCHER_EXPIRED: 'Voucher has already expired and cannot be reactivated',
+  GET_USER_DETAIL_SUCCESS: 'Get user detail successfully',
+  FILTER_BRAND_OPTION_NAME_IS_REQUIRED: 'Filter brand option name is required',
+  FILTER_BRAND_OPTION_NAME_MUST_BE_A_STRING: 'Filter brand option name must be a string',
+  FILTER_BRAND_CATEGORY_NAME_IS_REQUIRED: 'Filter brand category name is required',
+  FILTER_BRAND_CATEGORY_NAME_MUST_BE_A_STRING: 'Filter brand category name must be a string',
+  FILTER_BRAND_CATEGORY_PARAM_IS_REQUIRED: 'Filter brand category param is required',
+  FILTER_BRAND_CATEGORY_PARAM_MUST_BE_A_STRING: 'Filter brand category param must be a string',
+  FILTER_BRAND_STATE_MUST_BE_A_STRING: 'Filter brand state must be a string',
+  FILTER_BRAND_STATE_MUST_BE_ONE_OF: 'Filter brand state must be one of',
+  STATE_MUST_BE_A_STRING: 'State must be a string',
+  GET_PRODUCT_DETAIL_SUCCESS: 'Get product detail successfully',
+  PRODUCT_NOT_FOUND: 'Product not found',
+  UPDATE_PRODUCT_FAILED: 'Update product failed',
+  UPDATE_PRODUCT_SUCCESS: 'Update product successfully',
+  CANNOT_UPDATE_OWN_STATUS: 'Cannot update own status',
+  VERIFY_STATUS_IS_REQUIRED: 'Verify status is required',
+  VERIFY_STATUS_MUST_BE_A_NUMBER: 'Verify status must be a number',
+  UPDATE_USER_STATE_SUCCESS: 'Update user state successfully',
+  INVALID_PRODUCT_ID: 'Product ID is invalid',
+  UPDATE_PRODUCT_STATE_SUCCESS: 'Update product state successfully',
+  STATE_IS_REQUIRED: 'State is required',
+  FILTER_BRAND_ID_IS_INVALID: 'Filter brand ID is invalid',
+  FILTER_BRAND_NOT_FOUND: 'Filter brand not found',
+  UPDATE_FILTER_BRAND_SUCCESS: 'Update filter brand successfully',
+  UPDATE_FILTER_BRAND_FAILED: 'Update filter brand failed',
+  STATE_MUST_BE_ONE_OF_THE_FILTER_BRAND_STATE:
+    'State must be one of the filter brand state: INACTIVE, ACTIVE, COLLABORATION, PARTNERSHIP, EXCLUSIVE, LIMITED_EDITION, SUSPENDED, DISCONTINUED',
+  FILTER_BRAND_DISABLE_SUCCESS: 'Filter brand disabled successfully'
 } as const
 
 export const CART_MESSAGES = {
@@ -216,5 +276,16 @@ export const ORDER_MESSAGES = {
   CANNOT_UPDATE_STATUS: 'Cannot update from status %s',
   UPDATE_TO_NEXT_STATUS_FAIL: 'Cannot update from %s to %s ',
   UPDATE_TO_NEXT_STATUS_SUCCESS: 'Update to next status successfully',
-  INVALID_DISCOUNT_VALUE: 'Invalid discount value, must be a non-negative number and not exceed 100'
+  INVALID_DISCOUNT_VALUE: 'Invalid discount value, must be a non-negative number and not exceed 100',
+  CANCEL_SUCCESS: 'Order canceled successfully',
+  CANCEL_FAIL: 'Fail to cancel order',
+  REQUIRE_REASON: 'Reason is required',
+  UNABLE_TO_CANCEL: 'Only order with status PENDING or CONFIRMED can be cancelled',
+  NO_CANCELATION_REQUESTED: 'Customer still not request for cancelation',
+  GET_ALL_USERS_SUCCESS: 'Get all users successfully'
 } as const
+
+export const COMMON_MESSAGES = {
+  PAGE_MUST_BE_INTEGER_BETWEEN: 'Page must be between',
+  LIMIT_MUST_BE_INTEGER_BETWEEN: 'Limit must be between'
+}

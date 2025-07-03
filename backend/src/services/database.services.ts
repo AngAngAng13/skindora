@@ -14,6 +14,7 @@ import FilterHskSize from '~/models/schemas/FilterHskSize.schema'
 import FilterHskSkinType from '~/models/schemas/FilterHskSkinType.schema'
 import FilterHskUses from '~/models/schemas/FilterHskUses.schema'
 import FilterOrigin from '~/models/schemas/FilterHskOrigin.schema'
+import Voucher from '~/models/schemas/Voucher.schema'
 
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@skindora.rbbhqia.mongodb.net/?retryWrites=true&w=majority&appName=skindora`
@@ -84,11 +85,29 @@ class DatabaseService {
   get orderDetails(): Collection<OrderDetail> {
     return this.db.collection(process.env.DB_ORDER_DETAIL_COLLECTION as string)
   }
-
+  collection(collectionName: string): Collection<any> {
+    return this.db.collection(collectionName)
+  }
   async indexUsers() {
     await this.users.createIndex({ email: 1 }, { unique: true })
     await this.users.createIndex({ username: 1 }, { unique: true })
     await this.users.createIndex({ email: 1, password: 1 })
+  }
+
+  async indexVouchers() {
+    await this.vouchers.createIndex({ code: 1 }, { unique: true })
+  }
+
+  async indexProducts() {
+    //Index để tối ưu tìm kiếm theo tên sản phẩm `text` index cho phép dùng toán tử $text và $search
+    //await this.products.createIndex({ name_on_list: 'text', engName_on_list: 'text' });
+    
+    //Index để tối ưu sắp xếp cho việc phân trang -1 là sắp xếp giảm dần (mới nhất trước)
+    // await this.products.createIndex({ created_at: -1 });
+
+    //Index cho các trường filter phổ biến
+    //await this.products.createIndex({ filter_brand: 1 });
+    //await this.products.createIndex({ state: 1 });
   }
 
   get refreshTokens(): Collection<RefreshToken> {
@@ -97,6 +116,10 @@ class DatabaseService {
 
   get reviews(): Collection<FeedBack> {
     return this.db.collection(process.env.DB_REVIEW_COLLECTION as string)
+  }
+
+  get vouchers(): Collection<Voucher> {
+    return this.db.collection(process.env.DB_VOUCHER_COLLECTION as string)
   }
 }
 

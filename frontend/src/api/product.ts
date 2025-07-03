@@ -9,7 +9,7 @@ export interface FetchProductProps {
 }
 export const fetchProduct = async (params: FetchProductProps) => {
   return await httpClient
-    .get<API.IResponseSearch<ProductFE>>(`/admin/manage-products/get-all`, {
+    .get<API.IResponseSearch<ProductFE>>("/admin/manage-products/get-all", {
       limit: params.limit,
       page: params.page,
     })
