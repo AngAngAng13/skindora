@@ -1,5 +1,9 @@
+import { Plus, PlusIcon } from "lucide-react";
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
+import Typography from "@/components/Typography";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchVoucher } from "@/hooks/useFetchVoucher";
@@ -12,10 +16,10 @@ import { PaginationDemo } from "./components/Pagination";
 import { DataTable } from "./components/TableCustom";
 
 const ManageVoucher: React.FC = () => {
-  const { setHeaderName } = useHeader();
+  const { setHeaderName, headerName } = useHeader();
   // Giả sử `useFetchUser` có kiểu dữ liệu cho `data` là User[]
   const { loading, params, setParams, voucher, fetchAllVoucher } = useFetchVoucher();
-
+  const navigate = useNavigate();
   useEffect(() => {
     setHeaderName("Quản Lý Voucher");
   }, [setHeaderName]); // Chỉ gọi lại khi setHeaderName thay đổi
@@ -47,59 +51,39 @@ const ManageVoucher: React.FC = () => {
         <>
           <div className="flex-1">
             <div className="mx-auto bg-white px-8 py-15 pt-4">
-              {/* <div>
-                <Typography className="text-2xl font-bold">Danh sách khách hàng</Typography>
-              </div> */}
+              <div className="mt-3 mb-6 flex justify-between">
+                <Typography className="text-2xl font-bold">{headerName}</Typography>
+                <div className="bg-primary hover:bg-primary/90 r rounded-lg text-white">
+                  <Button className="cursor-pointer p-5" onClick={() => navigate("/admin/createProduct")}>
+                    <div className="flex items-center gap-4">
+                      <div>
+                        <Plus />
+                      </div>
+                      <div>
+                        <span className="text-sm font-semibold">Tạo voucher mới</span>
+                      </div>
+                    </div>
+                  </Button>
+                </div>
+              </div>
               <div className="mt-2 mb-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <CardDemo
                   title="Tổng số voucher"
-                  amount={`${params.totalRecords ?? 0}`} // Sử dụng `totalRecords` từ params
+                  amount={`${params.totalRecords ?? 0}`}
                   change="+20.1% so với tháng trước"
                 />
                 {/* <ChartRadialText /> */}
                 <CardDemo
                   title="Tổng số voucher hết hạn"
-                  amount={`${params.totalRecords ?? 0}`} // Sử dụng `totalRecords` từ params
+                  amount={`${params.totalRecords ?? 0}`}
                   change="+20.1% so với tháng trước"
                 />
                 <CardDemo
                   title="Tổng số voucher hoạt động"
-                  amount={`${params.totalRecords ?? 0}`} // Sử dụng `totalRecords` từ params
+                  amount={`${params.totalRecords ?? 0}`}
                   change="+20.1% so với tháng trước"
                 />
-
-                {/* Các CardDemo khác */}
               </div>
-              {/* <div className="mt-5 mb-4 flex gap-2">
-                <div className="w-3/5">
-                  <ChartRadialText
-                    title="Khách hàng có đơn"
-                    description="Trong tháng 6, 2025"
-                    value={152}
-                    label="Khách hàng"
-                    footerContent={
-                      <>
-                        Tăng 5.2% so với tháng trước <TrendingUp className="h-4 w-4 text-green-500" />
-                      </>
-                    }
-                    footerDescription="Dữ liệu cập nhật hàng ngày"
-                  />
-                </div>
-                <div className="w-5/5">
-                  <ChartRadialText
-                    title="Tài khoản mới"
-                    description="Trong tháng 6, 2025"
-                    value={89}
-                    label="Tài khoản"
-                    footerContent={
-                      <>
-                        Giảm 2.1% so với tháng trước <TrendingDown className="h-4 w-4 text-red-500" />
-                      </>
-                    }
-                    footerDescription="Tổng số tài khoản đăng ký mới"
-                  />
-                </div>
-              </div> */}
               <div className="mb-8 gap-2">
                 <div className="mt-3 w-5/5">
                   <Card className="w-5/5">
@@ -121,30 +105,6 @@ const ManageVoucher: React.FC = () => {
                   </Card>
                 </div>
               </div>
-
-              {/* <div className="mt-8">
-            {loading ? (
-              <div className="flex h-[300px] w-full items-center justify-center">
-                <Loader size="lg" />
-              </div>
-            ) : (
-              <>
-                <DataTable
-                  columns={userColumn}
-                  data={data}
-                  filterColumnId="username"
-                  filterPlaceholder="Tìm khách hàng"
-                />
-                <div className="mt-4">
-                  <PaginationDemo
-                    totalPages={params.totalPages ?? 1}
-                    currentPage={params.page ?? 1}
-                    onPageChange={handlePageChange}
-                  />
-                </div>
-              </>
-            )}
-          </div> */}
             </div>
           </div>
         </>

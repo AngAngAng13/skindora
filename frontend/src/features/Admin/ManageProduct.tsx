@@ -38,13 +38,7 @@ const ManageProduct: React.FC = () => {
               </Button>
             </div>
           </div>
-          {/* <div>
-            <Typography className="text-2xl font-bold">Quản lý khách hàng</Typography>
-          </div> */}
-          {/* <div className="mt-8">
-            <TableProduct />
-          </div>
-        </div> */}
+
           <div>
             <ProductOverview onSelectProduct={setSelectedProduct} onEditProduct={() => setActiveView("editor")} />
           </div>

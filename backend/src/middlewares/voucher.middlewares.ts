@@ -66,7 +66,7 @@ export const createVoucherValidator = validate(
         errorMessage: ADMIN_MESSAGES.DISCOUNT_VALUE_IS_REQUIRED
       },
       isInt: {
-        options: { gt: 1000 },
+        options: { gt: 0 },
         errorMessage: ADMIN_MESSAGES.DISCOUNT_VALUE_INVALID
       },
       custom: {
