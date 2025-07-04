@@ -2,7 +2,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -19,6 +18,8 @@ import { productSchema } from "@/lib/productSchema";
 
 // Import logic và component tùy chỉnh
 import TiptapEditor from "./TiptapEditor";
+
+// src/app/admin/add-product/page.tsx
 
 // src/app/admin/add-product/page.tsx
 

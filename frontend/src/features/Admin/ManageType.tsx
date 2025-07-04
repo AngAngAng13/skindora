@@ -1,6 +1,6 @@
 import React from "react";
 
-const ManageType = () => {
+const ManageType: React.FC = () => {
   return <div></div>;
 };
 

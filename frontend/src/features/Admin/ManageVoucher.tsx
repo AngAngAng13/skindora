@@ -1,4 +1,3 @@
-import { TrendingDown, TrendingUp } from "lucide-react";
 import React, { useEffect } from "react";
 
 import { Card } from "@/components/ui/card";
@@ -9,14 +8,13 @@ import { vouchersColumns } from "./columns/vouchersColumn";
 import { CardDemo } from "./components/Card";
 import { Loader } from "./components/Loader";
 import { PaginationDemo } from "./components/Pagination";
-import { ChartRadialText } from "./components/RadialChart";
 // Component đã được cập nhật
 import { DataTable } from "./components/TableCustom";
 
 const ManageVoucher: React.FC = () => {
   const { setHeaderName } = useHeader();
   // Giả sử `useFetchUser` có kiểu dữ liệu cho `data` là User[]
-  const { loading, data, params, setParams, voucher, fetchAllVoucher } = useFetchVoucher();
+  const { loading, params, setParams, voucher, fetchAllVoucher } = useFetchVoucher();
 
   useEffect(() => {
     setHeaderName("Quản Lý Voucher");

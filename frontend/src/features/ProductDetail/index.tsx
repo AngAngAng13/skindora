@@ -13,7 +13,7 @@ import { useAuth } from "@/contexts/auth.context";
 import { useAddToCartMutation } from "@/hooks/mutations/useAddToCartMutation";
 import { useFilterOptionsQuery } from "@/hooks/queries/useFilterOptionsQuery";
 import { useProductByIdQuery } from "@/hooks/queries/useProductByIdQuery";
-import type { Product } from "@/types/Product";
+import type { Product } from "@/types";
 
 import { ProductImageGallery } from "./components/ProductImageGallery";
 
@@ -118,12 +118,11 @@ function ProductStockAndActions({ product, filterIdToNameMap }: ProductStockAndA
     <div className="space-y-4">
       <p className="text-gray-700">{product.engName_detail}</p>
       <ProductBadges product={product} filterIdToNameMap={filterIdToNameMap} />
-       <div className="flex items-center text-green-600">
-          <Check className="mr-1 h-5 w-5" />
-          <span>In Stock ({product.quantity||0} available)</span>
-        </div>
+      <div className="flex items-center text-green-600">
+        <Check className="mr-1 h-5 w-5" />
+        <span>In Stock ({product.quantity || 0} available)</span>
+      </div>
       <div className="flex items-center space-x-4">
-       
         <Button className="flex-1" onClick={handleAddToCart} disabled={isAddingToCart}>
           {isAddingToCart ? (
             <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />

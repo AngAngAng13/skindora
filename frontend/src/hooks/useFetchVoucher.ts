@@ -12,7 +12,7 @@ export const useFetchVoucher = () => {
     totalPages: 1,
     totalRecords: 1,
   });
-  const [data, setData] = useState<Voucher[]>([]);
+  const [data] = useState<Voucher[]>([]);
   const [voucher, setAllVoucher] = useState<Voucher[]>([]);
   const fetchAllVoucher = useCallback(async () => {
     setLoading(true);
@@ -20,7 +20,10 @@ export const useFetchVoucher = () => {
       const response = await fetchListVoucher({ limit: 10, page: params.page });
       logger.debug(response);
       logger.debug(response.pagination);
-      setParams(response.pagination);
+      setParams({
+        ...response.pagination,
+        page: response.pagination.currentPage,
+      });
       setAllVoucher(response.data);
     } catch (error) {
       console.error("Failed to fetch all users:", error);
