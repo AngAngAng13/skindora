@@ -84,8 +84,8 @@ const ManageVoucher: React.FC = () => {
                 />
               </div>
               <div className="mb-8 gap-2">
-                <div className="mt-3 w-5/5">
-                  <Card className="w-5/5">
+                <div className="mt-6 w-5/5">
+                  <Card className="w-full">
                     <div className="p-3">
                       <DataTable
                         columns={vouchersColumns}

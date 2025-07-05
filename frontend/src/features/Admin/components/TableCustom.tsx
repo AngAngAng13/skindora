@@ -81,7 +81,7 @@ export function DataTable<TData, TValue>({
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto p-6">
+              <Button variant="secondary" className="ml-auto p-6">
                 <span className="text-sm">
                   <Funnel className="" />
                 </span>

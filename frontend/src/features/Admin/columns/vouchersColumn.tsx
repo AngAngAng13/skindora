@@ -53,19 +53,6 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
     enableHiding: false,
   },
 
-  // Cột Mã Voucher
-  // {
-  //   accessorKey: "_id",
-  //   header: ({ column }) => (
-  //     <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-  //       ID <ArrowUpDown className="ml-2 h-4 w-4" />
-  //     </Button>
-  //   ),
-  //   cell: ({ row }) => {
-  //     return <div className="font-medium text-blue-600">{row.getValue("_id")}</div>;
-  //   },
-  // },
-
   {
     accessorKey: "code",
     header: ({ column }) => (
@@ -74,7 +61,7 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      return <div className="font-medium text-blue-600">{row.getValue("code")}</div>;
+      return <div className="pl-2 font-medium text-blue-600">{row.getValue("code")}</div>;
     },
   },
 
@@ -100,12 +87,10 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
     cell: ({ row }) => {
       const { discountValue, maxDiscountAmount } = row.original;
 
-      const isPercentage = discountValue.includes("%");
-
-      let discountText = isPercentage ? discountValue : formatCurrency(discountValue);
+      let discountText = discountValue; // Hoặc discountValue + "%" nếu là phần trăm
 
       if (Number(maxDiscountAmount) > 0) {
-        discountText += ` (tối đa ${formatCurrency(maxDiscountAmount)})`;
+        discountText += `% (tối đa ${formatCurrency(maxDiscountAmount)})`;
       }
 
       return <div>{discountText}</div>;
@@ -121,7 +106,7 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      return formatCurrency(row.getValue("minOrderValue"));
+      return <div className="pl-3 font-semibold text-green-500">{formatCurrency(row.getValue("minOrderValue"))}</div>;
     },
   },
 
