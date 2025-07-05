@@ -85,15 +85,17 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
     id: "discount",
     header: "Mức giảm giá",
     cell: ({ row }) => {
-      const { discountValue, maxDiscountAmount } = row.original;
-
-      let discountText = discountValue; // Hoặc discountValue + "%" nếu là phần trăm
-
-      if (Number(maxDiscountAmount) > 0) {
-        discountText += `% (tối đa ${formatCurrency(maxDiscountAmount)})`;
+      const { discountValue, maxDiscountAmount, discountType } = row.original;
+      if (discountType === "PERCENTAGE") {
+        let discountText = discountValue; // Hoặc discountValue + "%" nếu là phần trăm
+        if (Number(maxDiscountAmount) > 0) {
+          discountText += `% (tối đa ${formatCurrency(maxDiscountAmount)})`;
+        }
+        return <div>{discountText}</div>;
       }
-
-      return <div>{discountText}</div>;
+      if (discountType === "FIXED") {
+        return <div> Giảm tối đa {formatCurrency(discountValue)}</div>;
+      }
     },
   },
 

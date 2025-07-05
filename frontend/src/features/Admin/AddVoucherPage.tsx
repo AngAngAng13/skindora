@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import httpClient from "@/lib/axios";
 import { voucherSchema } from "@/lib/voucherSchema";
 import type { VoucherFormValue } from "@/lib/voucherSchema";
@@ -155,9 +156,17 @@ const AddVoucherPage = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Loại giảm giá</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Chọn loại giảm giá" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="PERCENTAGE">Giảm theo phần trăm</SelectItem>
+                              <SelectItem value="FIXED">Giảm giá cố định</SelectItem>
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}

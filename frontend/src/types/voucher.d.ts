@@ -3,6 +3,7 @@ export interface Voucher {
   code: string;
   description: string;
   discountValue: string;
+  discountType: string;
   maxDiscountAmount: string;
   minOrderValue: string;
   startDate: string;
