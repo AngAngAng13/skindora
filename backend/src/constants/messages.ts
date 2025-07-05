@@ -71,7 +71,9 @@ export const PRODUCTS_MESSAGES = {
   OUT_OF_STOCK: 'Product is out of stock',
   NOT_ENOUGHT: 'Only %s available in stock',
   PRODUCT_IDS_MUST_BE_ARRAY: 'ProductIds must be an array',
-  INVALID_PRODUCT_ID: 'ProductId is invalid'
+  INVALID_PRODUCT_ID: 'ProductId is invalid',
+  NOT_ACTIVE: 'Inactive product'
+
 } as const
 
 export const REVIEW_MESSAGES = {
@@ -266,7 +268,7 @@ export const ORDER_MESSAGES = {
   SHIP_ADDRESS_REQUIRED: 'ShipAddress is required',
   SHIP_ADDRESS_MUST_BE_STRING: 'ShipAddress must be a string',
   REQUIRE_DATE_REQUIRED: 'RequireDate is required',
-  INVALID_REQUIRE_DATE: 'RequireDate must be a valid ISO8601 date',
+  INVALID_REQUIRE_DATE: 'RequireDate must be a valid ISO8601 format',
   PRESENT_REQUIRE_DATE: 'RequireDate cannot be in the past',
   INVALID_CHECKOUT_TYPE: 'Invalid check-out type',
   REQUIRE_USER_ID: 'UserId is required',
@@ -282,7 +284,24 @@ export const ORDER_MESSAGES = {
   REQUIRE_REASON: 'Reason is required',
   UNABLE_TO_CANCEL: 'Only order with status PENDING or CONFIRMED can be cancelled',
   NO_CANCELATION_REQUESTED: 'Customer still not request for cancelation',
-  GET_ALL_USERS_SUCCESS: 'Get all users successfully'
+  GET_ALL_USERS_SUCCESS: 'Get all users successfully',
+  INVALID_VOUCHER_ID: 'Invalid voucherId',
+  GET_REVENUE_SUCCESS: 'Get order revenue successfully',
+  INVALID_PAYMENT_METHOD: 'PaymentMethod is invalid',
+  INVALID_DATE: 'Date must be a valid ISO8601 format',
+  REQUIRE_TO_DATE: 'ToDate is required',
+  REQUIRE_FROM_DATE: 'FromDate is required',
+  INVALID_FROM_DATE: 'FromDate cannot larger than ToDate',
+  NOT_ALLOW_FUTURE_DATE: 'Future date is not allowed',
+  INVALID_FILTER_ID: 'FilterId must be a valid ObjectId'  
+} as const
+
+export const VOUCHER_MESSAGES = {
+  NOT_FOUND: "Voucher not found",
+  NOT_ACTIVE: "Inactive voucher",
+  EXPIRED: "Voucher is expired",
+  REACH_LIMIT_USED: "This voucher has reached the usable limit",
+  USE_ONLY_ONCE: "Each voucher can only use once"
 } as const
 
 export const COMMON_MESSAGES = {

@@ -1,14 +1,21 @@
 import { checkSchema } from 'express-validator'
 import { validate } from '~/utils/validation'
-import { CART_MESSAGES, ORDER_MESSAGES, PRODUCTS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
+import {
+  CART_MESSAGES,
+  ORDER_MESSAGES,
+  PRODUCTS_MESSAGES,
+  USERS_MESSAGES,
+  VOUCHER_MESSAGES
+} from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { CancelRequestStatus, OrderStatus, OrderType, Role } from '~/constants/enums'
+import { CancelRequestStatus, OrderStatus, OrderType, PaymentMethod, Role } from '~/constants/enums'
 import { ObjectId } from 'mongodb'
 import databaseService from '~/services/database.services'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
 import { canRoleTransition, canTransition, getNextOrderStatus } from '~/utils/orderStatus'
 import { format } from 'util'
+import { validateProductExists } from './products.middlewares'
 
 export const checkOutValidator = validate(
   checkSchema(
@@ -42,16 +49,60 @@ export const checkOutValidator = validate(
           }
         }
       },
-      Discount:{
+      PaymentMethod: {
+        isIn: {
+          options: [[PaymentMethod.COD, PaymentMethod.VNPAY, PaymentMethod.ZALOPAY]],
+          errorMessage: ORDER_MESSAGES.INVALID_PAYMENT_METHOD
+        }
+      },
+      voucherCode: {
         optional: true,
-        custom:{
-          options: (value)=>{
-            if(Number(value) < 0 || Number(value) > 100){
+        custom: {
+          options: async (value, { req }) => {
+            const voucher = await databaseService.vouchers.findOne({ code: value })
+            if (!voucher) {
               throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.INVALID_DISCOUNT_VALUE,
+                message: VOUCHER_MESSAGES.NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+
+            if(!voucher.isActive){
+              throw new ErrorWithStatus({
+                message: VOUCHER_MESSAGES.NOT_ACTIVE,
                 status: HTTP_STATUS.BAD_REQUEST
               })
             }
+
+            if (voucher.endDate < new Date()) {
+              throw new ErrorWithStatus({
+                message: VOUCHER_MESSAGES.EXPIRED,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            if (voucher.usedCount >= voucher.usageLimit) {
+              throw new ErrorWithStatus({
+                message: VOUCHER_MESSAGES.REACH_LIMIT_USED,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            const { user_id } = req.decoded_authorization as TokenPayLoad
+            const orderWithVoucherCount = await databaseService.orders
+              .find({
+                UserID: new ObjectId(user_id),
+                'VoucherSnapshot.code': voucher.code
+              })
+              .toArray()
+
+            if (orderWithVoucherCount.length >= voucher.userUsageLimit) {
+              throw new ErrorWithStatus({
+                message: VOUCHER_MESSAGES.USE_ONLY_ONCE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            req.voucher = voucher
             return true
           }
         }
@@ -64,7 +115,7 @@ export const checkOutValidator = validate(
         }
       }
     },
-    ['body']
+    ['body'],
   )
 )
 
@@ -81,18 +132,35 @@ export const prepareOrderValidator = validate(
     },
     'selectedProductIDs.*': {
       custom: {
-        options: (value) => {
-          if (!ObjectId.isValid(value)) {
-            throw new ErrorWithStatus({
-              message: CART_MESSAGES.INVALID_PRODUCT_ID,
-              status: HTTP_STATUS.BAD_REQUEST
-            })
-          }
+        options: async(value) => {
+          await validateProductExists(value)
           return true
         }
       }
     }
   })
+)
+
+export const buyNowValidator = validate(
+  checkSchema({
+    productId: {
+      notEmpty: {
+        errorMessage: CART_MESSAGES.PRODUCT_ID_IS_REQUIRED
+      },
+      custom: {
+        options: async(value, {req}) => {
+          const product = await validateProductExists(value)
+          req.product = product
+          return true
+        }
+      }
+    },
+    quantity: {
+      notEmpty: {
+        errorMessage: CART_MESSAGES.QUANTITY_IS_REQUIRED
+      }
+    },
+  },['body'])
 )
 
 export const getAllOrdersByUserIdValidator = validate(
@@ -236,93 +304,204 @@ export const getNextOrderStatusValidator = validate(
 )
 
 export const requestCancelOrderValidator = validate(
+  checkSchema({
+    orderId: {
+      in: ['params'],
+      notEmpty: {
+        errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
+      },
+      isMongoId: {
+        errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
+      },
+      custom: {
+        options: async (value, { req }) => {
+          const order = await databaseService.orders.findOne({ _id: new ObjectId(value) })
+          if (!order) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.NOT_FOUND.replace('%s', value),
+              status: HTTP_STATUS.NOT_FOUND
+            })
+          }
+
+          if (!order.Status) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+
+          if (!canTransition(order.Status, OrderStatus.CANCELLED)) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.UNABLE_TO_CANCEL,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+          req.order = order
+          return true
+        }
+      }
+    },
+    reason: {
+      in: ['body'],
+      notEmpty: {
+        errorMessage: ORDER_MESSAGES.REQUIRE_REASON
+      }
+    }
+  })
+)
+
+export const cancelledOrderRequestedValidator = validate(
+  checkSchema({
+    orderId: {
+      in: ['params'],
+      notEmpty: {
+        errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
+      },
+      isMongoId: {
+        errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
+      },
+      custom: {
+        options: async (value, { req }) => {
+          const order = await databaseService.orders.findOne({ _id: new ObjectId(value) })
+          if (!order) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.NOT_FOUND.replace('%s', value),
+              status: HTTP_STATUS.NOT_FOUND
+            })
+          }
+
+          if (!order.Status) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+
+          if (
+            !order.CancelRequest ||
+            !order.CancelRequest.status ||
+            order.CancelRequest.status !== CancelRequestStatus.REQUESTED
+          ) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.NO_CANCELATION_REQUESTED,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+          req.order = order
+          return true
+        }
+      }
+    }
+  })
+)
+
+const idFields = [
+  'filter_brand',
+  'filter_dac_tinh',
+  'filter_hsk_ingredients',
+  'filter_hsk_product_type',
+  'filter_hsk_size',
+  'filter_hsk_skin_type',
+  'filter_hsk_uses',
+  'filter_origin'
+]
+
+const idFieldSchema = idFields.reduce((schema, fieldName) => {
+  schema[fieldName] = {
+    optional: true,
+    custom: {
+      options: (value: string) => {
+        if(!ObjectId.isValid(value)){
+          throw new ErrorWithStatus({
+            message: ORDER_MESSAGES.INVALID_FILTER_ID,
+            status: HTTP_STATUS.BAD_REQUEST
+          })
+        }
+        return true
+      }
+    }
+  }
+  return schema
+}, {} as Record<string, any>)
+
+export const getOrderRevenueValidator = validate(
   checkSchema(
     {
-      orderId: {
-        in: ['params'],
-        notEmpty: {
-          errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
-        },
-        isMongoId: {
-          errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
+      ...idFieldSchema,
+      date: {
+        optional: true,
+        isISO8601: {
+          errorMessage: ORDER_MESSAGES.INVALID_DATE
         },
         custom: {
-          options: async(value, {req}) => {
-            const order = await databaseService.orders.findOne({_id: new ObjectId(value)})
-            if(!order){
+          options: (value) => {
+            if (new Date(value) > new Date()) {
               throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.NOT_FOUND.replace('%s', value),
-                status: HTTP_STATUS.NOT_FOUND
-              })
-            }
-
-            if(!order.Status){
-              throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
+                message: ORDER_MESSAGES.NOT_ALLOW_FUTURE_DATE,
                 status: HTTP_STATUS.BAD_REQUEST
               })
             }
-
-            if(!canTransition(order.Status, OrderStatus.CANCELLED)){
-              throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.UNABLE_TO_CANCEL,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
-            req.order = order
             return true
           }
         }
       },
-      reason: {
-        in: ['body'],
-        notEmpty: {
-          errorMessage: ORDER_MESSAGES.REQUIRE_REASON
-        }
-      }
-    }
-  )
-)
-
-export const cancelledOrderRequestedValidator = validate(
-  checkSchema(
-    {
-      orderId: {
-        in: ['params'],
-        notEmpty: {
-          errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
-        },
-        isMongoId: {
-          errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
+      from: {
+        optional: true,
+        isISO8601: {
+          errorMessage: ORDER_MESSAGES.INVALID_DATE
         },
         custom: {
-          options: async(value, {req}) => {
-            const order = await databaseService.orders.findOne({_id: new ObjectId(value)})
-            if(!order){
+          options: (value, { req }) => {
+            if (value && !req.query?.to) {
               throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.NOT_FOUND.replace('%s', value),
-                status: HTTP_STATUS.NOT_FOUND
-              })
-            }
-
-            if(!order.Status){
-              throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
+                message: ORDER_MESSAGES.REQUIRE_TO_DATE,
                 status: HTTP_STATUS.BAD_REQUEST
               })
             }
 
-            if(!order.CancelRequest || !order.CancelRequest.status || order.CancelRequest.status !== CancelRequestStatus.REQUESTED){
+            if (new Date(value) > new Date()) {
               throw new ErrorWithStatus({
-                message: ORDER_MESSAGES.NO_CANCELATION_REQUESTED,
+                message: ORDER_MESSAGES.NOT_ALLOW_FUTURE_DATE,
                 status: HTTP_STATUS.BAD_REQUEST
               })
             }
-            req.order = order
+
+            if (new Date(value) > new Date(req.query?.toDate)) {
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.INVALID_FROM_DATE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            return true
+          }
+        }
+      },
+      to: {
+        optional: true,
+        isISO8601: {
+          errorMessage: ORDER_MESSAGES.INVALID_DATE
+        },
+        custom: {
+          options: (value, { req }) => {
+            if (value && !req.query?.from) {
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.REQUIRE_FROM_DATE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            if (new Date(value) > new Date()) {
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.NOT_ALLOW_FUTURE_DATE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            
             return true
           }
         }
       }
-    }
+    },
+    ['query']
   )
 )
