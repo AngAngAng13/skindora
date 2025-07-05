@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { Loader } from "@/components/ui/loader";
 import { useHeader } from "@/contexts/header.context";
-import { useFetchOrder } from "@/hooks/useFetchOrders";
+import { useFetchOrder } from "@/hooks/Orders/useFetchOrders";
 
 import { orderColumn } from "../Admin/columns/ordersColumns";
 import { PaginationDemo } from "../Admin/components/Pagination";

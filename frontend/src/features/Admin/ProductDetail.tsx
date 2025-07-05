@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // Hook và Type của bạn
-import { useFetchProductByID } from "@/hooks/useFetchProductByID";
+import { useFetchProductByID } from "@/hooks/Product/useFetchProductByID";
 import type { ProductFE } from "@/types/product";
 
 // Hàm tiện ích để định dạng tiền tệ

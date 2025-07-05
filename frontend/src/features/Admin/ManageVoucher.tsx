@@ -6,7 +6,7 @@ import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
-import { useFetchVoucher } from "@/hooks/useFetchVoucher";
+import { useFetchVoucher } from "@/hooks/Voucher/useFetchVoucher";
 
 import { vouchersColumns } from "./columns/vouchersColumn";
 import { CardDemo } from "./components/Card";

@@ -14,7 +14,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUpdateStatus } from "@/hooks/useUpdateStatus";
+import { useUpdateStatus } from "@/hooks/Orders/useUpdateStatus";
 import type { Order } from "@/types/order";
 
 export const orderColumn: ColumnDef<Order, unknown>[] = [

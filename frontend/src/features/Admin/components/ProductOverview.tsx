@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader } from "@/components/ui/loader";
-import { useFetchProduct } from "@/hooks/useFetchProduct";
+import { useFetchProduct } from "@/hooks/Product/useFetchProduct";
 
 import { PaginationDemo } from "./Pagination";
 

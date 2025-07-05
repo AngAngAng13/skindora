@@ -4,7 +4,6 @@ import { updateStatusOrder } from "@/api/order";
 
 export const useUpdateStatus = () => {
   const [loading, setLoading] = useState<boolean>();
-
   const updateStatus = useCallback(async (params: { orderID: string }) => {
     setLoading(true);
     try {

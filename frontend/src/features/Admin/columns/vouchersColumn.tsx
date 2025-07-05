@@ -14,10 +14,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+// Đảm bảo đã import type này
+import { useToggleStatusVoucher } from "@/hooks/Voucher/useToggleStatusVoucher";
 // 1. Import định nghĩa type Voucher
 import type { Voucher } from "@/types/voucher";
 
-// Hàm trợ giúp định dạng tiền tệ (Giả sử bạn có hàm này)
+// Đặt component này ở trên cùng file vouchersColumns.tsx
+
 const formatCurrency = (amount: number | string) => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -25,14 +28,57 @@ const formatCurrency = (amount: number | string) => {
   }).format(Number(amount));
 };
 
-// Hàm trợ giúp định dạng ngày
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString("vi-VN");
 };
 
+const ActionsCell = ({ row }: { row: { original: Voucher } }) => {
+  const { _id, isActive, code } = row.original;
+  console.log(_id);
+  const { updateStatusVoucher, loading } = useToggleStatusVoucher(String(_id));
+  const handleUpdateStatus = () => {
+    updateStatusVoucher();
+    window.location.reload();
+  };
+  return (
+    <div className="text-right">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Mở menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(code)}>Copy mã voucher</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
+          <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
+          {isActive ? (
+            <DropdownMenuItem
+              disabled={loading}
+              onClick={() => handleUpdateStatus()}
+              className="font-bold text-red-600 focus:text-red-600"
+            >
+              {loading ? "Đang xử lý..." : "Vô hiệu hóa"}
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem
+              disabled={loading}
+              onClick={() => handleUpdateStatus()}
+              className="font-bold text-green-600 focus:text-green-600"
+            >
+              {loading ? "Đang xử lý..." : "Kích hoạt"}
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+};
 // 2. Định nghĩa các cột cho bảng Voucher
 export const vouchersColumns: ColumnDef<Voucher>[] = [
-  // Cột Checkbox
   {
     id: "select",
     header: ({ table }) => (
@@ -52,6 +98,17 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
     enableSorting: false,
     enableHiding: false,
   },
+  {
+    accessorKey: "_id",
+    header: ({ column }) => (
+      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        Mã Voucher <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      return <div className="pl-2 font-medium text-blue-600">{row.getValue("_id")}</div>;
+    },
+  },
 
   {
     accessorKey: "code",
@@ -65,12 +122,10 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
     },
   },
 
-  // Cột Mô tả
   {
     accessorKey: "description",
     header: "Mô tả",
     cell: ({ row }) => {
-      // Cắt ngắn mô tả nếu quá dài để hiển thị trong bảng
       const description = row.getValue("description") as string;
       return (
         <div className="max-w-[250px] truncate" title={description}>
@@ -79,15 +134,13 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
       );
     },
   },
-
-  // Cột Mức giảm giá
   {
     id: "discount",
     header: "Mức giảm giá",
     cell: ({ row }) => {
       const { discountValue, maxDiscountAmount, discountType } = row.original;
       if (discountType === "PERCENTAGE") {
-        let discountText = discountValue; // Hoặc discountValue + "%" nếu là phần trăm
+        let discountText = discountValue;
         if (Number(maxDiscountAmount) > 0) {
           discountText += `% (tối đa ${formatCurrency(maxDiscountAmount)})`;
         }
@@ -98,8 +151,6 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
       }
     },
   },
-
-  // Cột Đơn hàng tối thiểu
   {
     accessorKey: "minOrderValue",
     header: ({ column }) => (
@@ -112,7 +163,6 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
     },
   },
 
-  // Cột Lượt sử dụng
   {
     id: "usage",
     header: "Sử dụng",
@@ -137,12 +187,12 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
       const isExpired = new Date(endDate) < now;
       const isNotStarted = new Date(startDate) > now;
 
-      if (isExpired) {
-        return <Badge variant="destructive">Hết hạn</Badge>;
-      }
-      if (isNotStarted) {
-        return <Badge variant="secondary">Chưa bắt đầu</Badge>;
-      }
+      // if (isExpired) {
+      //   return <Badge variant="destructive">Hết hạn</Badge>;
+      // }
+      // if (isNotStarted) {
+      //   return <Badge variant="secondary">Chưa bắt đầu</Badge>;
+      // }
       if (isActive) {
         return <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>;
       }
@@ -163,30 +213,6 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
   // Cột Actions
   {
     id: "actions",
-    cell: ({ row }) => {
-      const voucher = row.original;
-      return (
-        <div className="text-right">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Mở menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(voucher.code)}>
-                Copy mã voucher
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
-              <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
-              <DropdownMenuItem className="text-red-600 focus:text-red-500">Xóa</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
-    },
+    cell: ({ row }) => <ActionsCell row={row} />,
   },
 ];
