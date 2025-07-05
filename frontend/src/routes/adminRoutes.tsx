@@ -11,6 +11,7 @@ import ManageSkin from "@/features/Admin/ManageSkin";
 import ManageStatics from "@/features/Admin/ManageStatics";
 import ManageUse from "@/features/Admin/ManageUse";
 import ManageVoucher from "@/features/Admin/ManageVoucher";
+import ProductDetail from "@/features/Admin/ProductDetail";
 import ProfileAdmin from "@/features/Admin/ProfileAdmin";
 import AddProductPage from "@/features/Admin/components/AddProduct";
 import AdminLayout from "@/layouts/adminLayout";
@@ -48,6 +49,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "voucher",
         element: <ManageVoucher />,
+      },
+      {
+        path: "/admin/:id/detail",
+        element: <ProductDetail />,
       },
       {
         path: "createProduct",

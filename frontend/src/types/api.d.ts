@@ -8,6 +8,7 @@ declare namespace API {
     refreshToken: string;
   }
   export interface IResponse<T> {
+    result: T;
     data: T;
     errorCode?: string;
     message?: string;
@@ -27,6 +28,7 @@ declare namespace API {
   export interface IListResponse<T> {
     data: T[];
   }
+
   export interface IChangePassword {
     userName: string;
     oldPassword: string;

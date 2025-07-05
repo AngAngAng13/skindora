@@ -1,5 +1,6 @@
 import { Edit, Eye, Package, Star } from "lucide-react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,6 @@ import { useFetchProduct } from "@/hooks/useFetchProduct";
 
 import { PaginationDemo } from "./Pagination";
 
-// Định nghĩa interface cho Product
 export interface Product {
   _id: string;
   name_on_list: string;
@@ -36,8 +36,8 @@ export interface Product {
     rawHtml: string;
     plainText: string;
   };
-  main_images_detail: string[]; // Giả sử đây là mảng các chuỗi URL
-  sub_images_detail: string[]; // Giả sử đây là mảng các chuỗi URL
+  main_images_detail: string[];
+  sub_images_detail: string[];
   filter_hsk_ingredient: string;
   filter_hsk_skin_type: string;
   filter_hsk_uses: string;
@@ -46,16 +46,15 @@ export interface Product {
 }
 
 interface ProductOverviewProps {
-  onSelectProduct: (product: Product) => void; // Sử dụng Product interface
+  onSelectProduct: (product: Product) => void;
   onEditProduct: () => void;
 }
 
 export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverviewProps) {
-  // Giả sử useFetchProduct trả về data có kiểu Product[]
+  const navigate = useNavigate();
   const { fetchListProduct, data, params, changePage, loading } = useFetchProduct();
 
   const formatPrice = (price: string) => {
-    // Thêm kiểm tra nếu price không hợp lệ
     const priceValue = parseInt(price, 10);
     if (isNaN(priceValue)) {
       return "N/A";
@@ -68,10 +67,8 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
 
   useEffect(() => {
     fetchListProduct();
-  }, [params.page]); // Giả sử fetchListProduct đã được tối ưu với useCallback
-
+  }, [params.page, fetchListProduct]);
   useEffect(() => {
-    // Dành cho việc debug, có thể giữ lại hoặc xóa đi
     console.log(data);
   }, [data]);
 
@@ -94,7 +91,6 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-blue-100">Tổng sản phẩm</p>
-                    {/* TODO: Cập nhật các giá trị này từ API nếu có */}
                     <p className="text-3xl font-bold">{params.totalRecords}</p>
                   </div>
                   <Package className="h-8 w-8 text-blue-200" />
@@ -136,7 +132,6 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
             </Card>
           </div>
 
-          {/* Phần danh sách sản phẩm mới nhất */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
@@ -148,11 +143,10 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {/* Lặp qua dữ liệu sản phẩm từ API */}
                 {data && data.length > 0 ? (
                   data.map((product: Product) => (
                     <div
-                      key={product._id} // Sử dụng _id làm key cho mỗi item
+                      key={product._id}
                       className="flex items-center space-x-4 rounded-lg border p-4 transition-shadow hover:shadow-md"
                     >
                       <img
@@ -171,7 +165,14 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
                         </div>
                       </div>
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="icon">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => {
+                            console.log("Navigating to:", `/admin/${product._id}/detail`);
+                            navigate(`/admin/${product._id}/detail`);
+                          }}
+                        >
                           <Eye className="h-4 w-4" />
                         </Button>
                         <Button variant="outline" size="icon" onClick={() => handleEdit(product)}>

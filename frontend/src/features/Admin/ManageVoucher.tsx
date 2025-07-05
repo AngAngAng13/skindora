@@ -1,4 +1,4 @@
-import { Plus, PlusIcon } from "lucide-react";
+import { Plus } from "lucide-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -17,25 +17,16 @@ import { DataTable } from "./components/TableCustom";
 
 const ManageVoucher: React.FC = () => {
   const { setHeaderName, headerName } = useHeader();
-  // Giả sử `useFetchUser` có kiểu dữ liệu cho `data` là User[]
+
   const { loading, params, setParams, voucher, fetchAllVoucher } = useFetchVoucher();
   const navigate = useNavigate();
   useEffect(() => {
     setHeaderName("Quản Lý Voucher");
-  }, [setHeaderName]); // Chỉ gọi lại khi setHeaderName thay đổi
-
-  // useEffect này sẽ gọi API khi trang thay đổi
+  }, [setHeaderName]);
   useEffect(() => {
     fetchAllVoucher();
-  }, [params.page]);
-  useEffect(() => {
-    console.log(voucher);
-  }, [voucher]);
-  useEffect(() => {
-    console.log(params);
-  }, [voucher]);
+  }, [params.page, fetchAllVoucher]);
   const handlePageChange = (page: number) => {
-    // Cập nhật lại state `params` để trigger useEffect ở trên
     setParams((prevParams) => ({
       ...prevParams,
       page: page,

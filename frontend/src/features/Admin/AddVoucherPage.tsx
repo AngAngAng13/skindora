@@ -1,10 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { ArrowLeft } from "lucide-react";
-import { Link2 } from "lucide-react";
 import React from "react";
 import { useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -18,7 +17,7 @@ import httpClient from "@/lib/axios";
 import { voucherSchema } from "@/lib/voucherSchema";
 import type { VoucherFormValue } from "@/lib/voucherSchema";
 
-const AddVoucherPage = () => {
+const AddVoucherPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
   const form = useForm<VoucherFormValue>({
