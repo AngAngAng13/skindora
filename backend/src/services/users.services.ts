@@ -298,26 +298,33 @@ class UsersService {
 
   async updateMe(user_id: string, payload: UpdateMeReqBody) {
     const _payload = payload
-    const user = await databaseService.users.findOneAndUpdate(
-      { _id: new ObjectId(user_id) },
-      [
+    try {
+      const user = await databaseService.users.findOneAndUpdate(
+        { _id: new ObjectId(user_id) },
+        [
+          {
+            $set: {
+              ..._payload,
+              updated_at: '$$NOW'
+            }
+          }
+        ],
         {
-          $set: {
-            ..._payload,
-            updated_at: '$$NOW'
+          returnDocument: 'after',
+          projection: {
+            password: 0,
+            email_verify_token: 0,
+            forgot_password_token: 0
           }
         }
-      ],
-      {
-        returnDocument: 'after',
-        projection: {
-          password: 0,
-          email_verify_token: 0,
-          forgot_password_token: 0
-        }
-      }
-    )
-    return user
+      )
+      return user
+    } catch (error) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.UPDATE_ME_ERROR,
+        status: HTTP_STATUS.INTERNAL_SERVER_ERROR
+      })
+    }
   }
 
   async refreshToken({
@@ -408,6 +415,30 @@ class UsersService {
       })
     }
     return user
+  }
+
+  async updateUserState(userIdToUpdate: string, newStatus: UserVerifyStatus, adminId: string) {
+    const currentDate = new Date()
+    const vietnamTimezoneOffset = 7 * 60
+    const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
+    const result = await databaseService.users.findOneAndUpdate(
+      { _id: new ObjectId(userIdToUpdate) },
+      {
+        $set: {
+          verify: newStatus,
+          updated_at: localTime
+        }
+      },
+      {
+        returnDocument: 'after',
+        projection: {
+          password: 0,
+          email_verify_token: 0,
+          forgot_password_token: 0
+        }
+      }
+    )
+    return result
   }
 }
 
