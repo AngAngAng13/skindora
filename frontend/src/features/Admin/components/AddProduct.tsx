@@ -1,4 +1,3 @@
-// src/app/admin/add-product/page.tsx
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,70 +18,6 @@ import type { ProductFormValues } from "@/lib/productSchema";
 import { productSchema } from "@/lib/productSchema";
 
 import TiptapEditor from "./TiptapEditor";
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
-
-// src/app/admin/add-product/page.tsx
 
 export default function AddProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -141,7 +76,7 @@ export default function AddProductPage() {
     console.log("FINAL PAYLOAD TO SERVER:", payload);
 
     try {
-      const response = await httpClient.post(`/admin/manage-products/create-new-product`, payload);
+      const response = await httpClient.post("/admin/manage-products/create-new-product", payload);
       if (response.status === 200 || response.status === 201) {
         toast.success("Thành công!", {
           description: "Sản phẩm đã được thêm vào hệ thống.",
@@ -158,7 +93,7 @@ export default function AddProductPage() {
       setIsSubmitting(false);
     }
   }
-  // Tạo một component riêng cho việc nhập URL ảnh
+
   const ImageUrlInput = ({ control, name, label, placeholder }) => (
     <FormField
       control={control}
@@ -197,9 +132,6 @@ export default function AddProductPage() {
       )}
     />
   );
-  // Giả lập các component Form từ shadcn/ui
-
-  // Component mới của chúng ta
   const EditorWithPreview = ({ control, name, label }) => {
     return (
       <FormField
@@ -248,7 +180,6 @@ export default function AddProductPage() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <h1 className="mb-6 text-3xl font-bold">Thêm sản phẩm mới</h1>
-
             <Card>
               <CardHeader>
                 <CardTitle>Thông tin sản phẩm</CardTitle>

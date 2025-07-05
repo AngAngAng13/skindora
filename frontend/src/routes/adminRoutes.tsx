@@ -1,6 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 
 import Admin from "@/features/Admin";
+import AddVoucherPage from "@/features/Admin/AddVoucherPage";
 import ManageBrand from "@/features/Admin/ManageBrand";
 import ManageUsers from "@/features/Admin/ManageCustomer";
 import ManageOrders from "@/features/Admin/ManageOrders";
@@ -51,6 +52,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "createProduct",
         element: <AddProductPage />,
+      },
+      {
+        path: "createVoucher",
+        element: <AddVoucherPage />,
       },
       {
         path: "orders",

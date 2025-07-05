@@ -54,7 +54,7 @@ const ManageVoucher: React.FC = () => {
               <div className="mt-3 mb-6 flex justify-between">
                 <Typography className="text-2xl font-bold">{headerName}</Typography>
                 <div className="bg-primary hover:bg-primary/90 r rounded-lg text-white">
-                  <Button className="cursor-pointer p-5" onClick={() => navigate("/admin/createProduct")}>
+                  <Button className="cursor-pointer p-5" onClick={() => navigate("/admin/createVoucher")}>
                     <div className="flex items-center gap-4">
                       <div>
                         <Plus />
@@ -72,7 +72,6 @@ const ManageVoucher: React.FC = () => {
                   amount={`${params.totalRecords ?? 0}`}
                   change="+20.1% so với tháng trước"
                 />
-                {/* <ChartRadialText /> */}
                 <CardDemo
                   title="Tổng số voucher hết hạn"
                   amount={`${params.totalRecords ?? 0}`}
