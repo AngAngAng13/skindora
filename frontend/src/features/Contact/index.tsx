@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "framer-motion";
+import { easeOut, motion } from "framer-motion";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -30,7 +30,7 @@ const containerVariants = {
 };
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, easeOut } },
 };
 const cardHoverVariants = {
   hover: { scale: 1.02, y: -5, transition: { duration: 0.3 } },
