@@ -13,15 +13,28 @@ import {
   moveToNextStatusController,
   prepareOrderController,
   rejectCancelRequestController,
-  requestCancelOrderController,
+  requestCancelOrderController
 } from '~/controllers/orders.controllers'
 import { isAdminOrStaffValidator } from '~/middlewares/admin.middlewares'
-import { cancelledOrderRequestedValidator, checkOutValidator, getAllOrdersValidator, getNextOrderStatusValidator, getOrderByIdValidator, requestCancelOrderValidator } from '~/middlewares/orders.middlewares'
+import {
+  buyNowValidator,
+  cancelledOrderRequestedValidator,
+  checkOutValidator,
+  getAllOrdersValidator,
+  getNextOrderStatusValidator,
+  getOrderByIdValidator,
+  prepareOrderValidator,
+  requestCancelOrderValidator
+} from '~/middlewares/orders.middlewares'
 import { isStaffValidator } from '~/middlewares/staff.middlewares'
+import { filterMiddleware } from '~/middlewares/common.middlewares'
+import { OrderReqBody } from '~/models/requests/Orders.requests'
 
 const ordersRouter = Router()
 
-ordersRouter.route('/').get(accessTokenValidator, isAdminOrStaffValidator, getAllOrdersValidator, wrapAsync(getAllOrdersController))
+ordersRouter
+  .route('/')
+  .get(accessTokenValidator, isAdminOrStaffValidator, getAllOrdersValidator, wrapAsync(getAllOrdersController))
 
 ordersRouter
   .route('/users/:userId')
@@ -31,18 +44,33 @@ ordersRouter.route('/current').get(accessTokenValidator, wrapAsync(getCurrentOrd
 
 ordersRouter.route('/me').get(accessTokenValidator, wrapAsync(getAllOrdersByAuthUserController))
 
-ordersRouter.route('/:orderId/next-status').patch(accessTokenValidator, isStaffValidator, getNextOrderStatusValidator, wrapAsync(moveToNextStatusController))
+ordersRouter
+  .route('/:orderId/next-status')
+  .patch(accessTokenValidator, isStaffValidator, getNextOrderStatusValidator, wrapAsync(moveToNextStatusController))
 
-ordersRouter.route('/:orderId/cancel-request').post(accessTokenValidator, requestCancelOrderValidator, wrapAsync(requestCancelOrderController))
-ordersRouter.route('/:orderId/cancel-request/approve').patch(accessTokenValidator, cancelledOrderRequestedValidator, wrapAsync(approveCancelRequestController))
-ordersRouter.route('/:orderId/cancel-request/reject').patch(accessTokenValidator, cancelledOrderRequestedValidator, wrapAsync(rejectCancelRequestController))
+ordersRouter
+  .route('/:orderId/cancel-request')
+  .post(accessTokenValidator, requestCancelOrderValidator, wrapAsync(requestCancelOrderController))
+ordersRouter
+  .route('/:orderId/cancel-request/approve')
+  .patch(accessTokenValidator, cancelledOrderRequestedValidator, wrapAsync(approveCancelRequestController))
+ordersRouter
+  .route('/:orderId/cancel-request/reject')
+  .patch(accessTokenValidator, cancelledOrderRequestedValidator, wrapAsync(rejectCancelRequestController))
 
 ordersRouter.route('/:orderId').get(accessTokenValidator, getOrderByIdValidator, wrapAsync(getOrderByIdController))
 
-ordersRouter.route('/cart').post(accessTokenValidator, wrapAsync(prepareOrderController))
+ordersRouter.route('/cart').post(accessTokenValidator, prepareOrderValidator, wrapAsync(prepareOrderController))
 
-ordersRouter.route('/buy-now').post(accessTokenValidator, wrapAsync(buyNowController))
+ordersRouter.route('/buy-now').post(accessTokenValidator, buyNowValidator, wrapAsync(buyNowController))
 
-ordersRouter.route('/checkout').post(accessTokenValidator, checkOutValidator, wrapAsync(checkOutController))
+ordersRouter
+  .route('/checkout')
+  .post(
+    accessTokenValidator,
+    filterMiddleware<OrderReqBody>(['ShipAddress', 'Description', 'RequireDate', 'ShippedDate', 'PaymentMethod', 'PaymentStatus', 'voucherCode', 'type']),
+    checkOutValidator,
+    wrapAsync(checkOutController)
+  )
 
 export default ordersRouter

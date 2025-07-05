@@ -1,13 +1,22 @@
 import cartService from './cart.services'
 import redisClient from './redis.services'
 import databaseService from './database.services'
-import { CancelRequestStatus, OrderStatus, OrderType, PaymentMethod, PaymentStatus, RefundStatus } from '~/constants/enums'
+import {
+  CancelRequestStatus,
+  DiscountType,
+  OrderStatus,
+  OrderType,
+  PaymentStatus,
+  ProductState,
+  RefundStatus
+} from '~/constants/enums'
 import { ObjectId } from 'mongodb'
 import {
   BuyNowReqBody,
   OrderReqBody,
   PrepareOrderPayload,
   ProductInOrder,
+  RevenueFilterOptions,
   TempOrder
 } from '~/models/requests/Orders.requests'
 import { ProductInCart } from '~/models/requests/Cart.requests'
@@ -16,6 +25,8 @@ import { CART_MESSAGES, ORDER_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/me
 import HTTP_STATUS from '~/constants/httpStatus'
 import OrderDetail from '~/models/schemas/Orders/OrderDetail.schema'
 import Order, { CancelRequest } from '~/models/schemas/Orders/Order.schema'
+import { VoucherType } from '~/models/schemas/Voucher.schema'
+import Product from '~/models/schemas/Product.schema'
 
 class OrdersService {
   private async buildTempOrder(userId: string, selectedProducts: ProductInCart[]): Promise<TempOrder> {
@@ -28,7 +39,19 @@ class OrdersService {
       UserID: userId,
       Products: selectedProducts.map((p) => {
         const product = productMap.get(p.ProductID)
-        if (!product) throw new ErrorWithStatus({ message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND, status: 404 })
+        if (!product) {
+          throw new ErrorWithStatus({
+            message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND.replace('%s', p.ProductID),
+            status: 404
+          })
+        }
+
+        if (product.state !== ProductState.ACTIVE) {
+          throw new ErrorWithStatus({
+            message: PRODUCTS_MESSAGES.NOT_ACTIVE,
+            status: HTTP_STATUS.BAD_REQUEST
+          })
+        }
 
         if (!product.quantity || product.quantity < p.Quantity) {
           throw new ErrorWithStatus({
@@ -66,7 +89,7 @@ class OrdersService {
       payload.selectedProductIDs.includes(p.ProductID)
     )
     if (selectedProducts.length === 0) {
-      throw new ErrorWithStatus({ message: CART_MESSAGES.NOT_SELECTED, status: HTTP_STATUS.NOT_FOUND })
+      throw new ErrorWithStatus({ message: CART_MESSAGES.NOT_SELECTED, status: HTTP_STATUS.BAD_REQUEST })
     }
 
     const tempOrder = await this.buildTempOrder(userId, selectedProducts)
@@ -76,16 +99,11 @@ class OrdersService {
     return tempOrder
   }
 
-  async buyNow(userId: string, payload: BuyNowReqBody): Promise<TempOrder> {
-    const { productId, quantity } = payload
-    const product = await databaseService.products.findOne({ _id: new ObjectId(productId) })
-    if (!product) {
-      throw new ErrorWithStatus({ message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND, status: HTTP_STATUS.NOT_FOUND })
-    }
+  async buyNow(userId: string, quantity: number, product: Product): Promise<TempOrder> {
 
     const selectedProducts: ProductInCart[] = [
       {
-        ProductID: productId,
+        ProductID: product._id?.toString()!,
         Quantity: quantity
       }
     ]
@@ -97,69 +115,146 @@ class OrdersService {
     return tempOrder
   }
 
-  async checkOut(payload: OrderReqBody, userId: string) {
+  async checkOut(payload: OrderReqBody, userId: string, voucher: VoucherType | undefined) {
+    const currentDate = new Date()
+    const vietnamTimezoneOffset = 7 * 60
+    const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
+
     const tempOrderKey = this.getTempOrderKey(userId)
     const tempOrder: TempOrder = await this.getTempOrder(tempOrderKey)
 
-    if (!tempOrder) {
+    if (!tempOrder || tempOrder.Products.length <= 0) {
       throw new ErrorWithStatus({
         message: ORDER_MESSAGES.EMPTY_OR_EXPIRED,
         status: HTTP_STATUS.NOT_FOUND
       })
     }
 
+    await Promise.all(
+      tempOrder.Products.map(async (p) => {
+        const product = await databaseService.products.findOne({
+          _id: new ObjectId(p.ProductID)
+        })
+
+        if (!product) {
+          throw new ErrorWithStatus({
+            message: PRODUCTS_MESSAGES.PRODUCT_NOT_FOUND.replace('%s', p.ProductID),
+            status: 404
+          })
+        }
+
+        if ((product.quantity || 0) < p.Quantity) {
+          throw new ErrorWithStatus({
+            message: PRODUCTS_MESSAGES.NOT_ENOUGHT.replace('%s', `${product.quantity} items with id ${p.ProductID}`),
+            status: HTTP_STATUS.BAD_REQUEST
+          })
+        }
+      })
+    )
+
     const status = OrderStatus.PENDING
+    const paymentStatus = payload.PaymentStatus ?? PaymentStatus.UNPAID
 
-    const discount = isNaN(Number(payload?.Discount)) ? 0 : Number(payload?.Discount)
-    const totalPrice = (1 - discount / 100) * tempOrder.TotalPrice
-
-    const order = {
+    const order: Partial<Order> = {
       UserID: new ObjectId(userId),
       ShipAddress: payload.ShipAddress,
-      Description: payload.Description ?? '',
-      RequireDate: payload.RequireDate || new Date().toISOString(),
-      // ShippedDate?: string
-      Discount: discount.toString(),
-      TotalPrice: totalPrice.toString(),
-      PaymentMethod: payload.PaymentMethod || PaymentMethod.COD,
-      PaymentStatus: payload.PaymentStatus || PaymentStatus.UNPAID,
+      Description: payload.Description || '',
+      RequireDate: payload.RequireDate,
+      PaymentMethod: payload.PaymentMethod,
+      PaymentStatus: paymentStatus,
       Status: status
     }
 
-    const insertedOrder = await databaseService.orders.insertOne(order)
-    const orderId = insertedOrder.insertedId
+    let discount = 0
+    const priceBeforeDiscount = tempOrder.TotalPrice
+    if (voucher) {
+      const maxDiscountAmount = isNaN(Number(voucher.maxDiscountAmount)) ? 0 : Number(voucher.maxDiscountAmount)
+      let percentDiscountValue = (voucher.discountValue / 100) * tempOrder.TotalPrice
+      percentDiscountValue =
+        voucher.maxDiscountAmount && percentDiscountValue > maxDiscountAmount ? percentDiscountValue : maxDiscountAmount
+      discount = voucher.discountType === DiscountType.Percentage ? percentDiscountValue : voucher.discountValue
 
-    const orderDetail = tempOrder.Products.map((p: ProductInOrder) => {
-      return {
-        ProductID: new ObjectId(p.ProductID),
-        OrderID: orderId,
-        Quantity: p.Quantity.toString(),
-        OrderDate: tempOrder.CreatedAt || new Date(),
-        UnitPrice: p.PricePerUnit.toString()
-      }
-    })
-
-    await databaseService.orderDetails.insertMany(orderDetail)
-
-    if (payload.type === OrderType.CART) {
-      const cartKey = cartService.getCartKey(userId)
-      const cart = await cartService.getCart(cartKey)
-      const remainingProducts = cart.Products.filter((p: ProductInCart) => {
-        const orderedProductIds = tempOrder.Products.map((p: ProductInOrder) => p.ProductID)
-        return !orderedProductIds.includes(p.ProductID)
-      })
-
-      if (remainingProducts.length <= 0) {
-        await redisClient.del(cartKey)
-      } else {
-        await cartService.saveCart(cartKey, { Products: remainingProducts })
+      order.DiscountValue = discount.toString()
+      order.VoucherSnapshot = {
+        code: voucher.code,
+        discountType: voucher.discountType,
+        discountValue: voucher.discountValue,
+        maxDiscountAmount: voucher.maxDiscountAmount
       }
     }
 
-    await redisClient.del(tempOrderKey)
-    return {
-      ...order,
-      orderDetails: orderDetail
+    const totalPrice = tempOrder.TotalPrice - discount
+    order.TotalPrice = totalPrice.toString()
+
+    const session = databaseService.getClient().startSession()
+
+    let orderDetails: any[] = []
+    try {
+      await session.withTransaction(async () => {
+        const insertedOrder = await databaseService.orders.insertOne(
+          {
+            ...order,
+            created_at: localTime,
+            updated_at: localTime
+          },
+          { session }
+        )
+        const orderId = insertedOrder.insertedId
+
+        orderDetails = tempOrder.Products.map((p: ProductInOrder) => {
+          return {
+            ProductID: new ObjectId(p.ProductID),
+            OrderID: orderId,
+            Quantity: p.Quantity.toString(),
+            OrderDate: tempOrder.CreatedAt || new Date(),
+            UnitPrice: p.PricePerUnit.toString()
+          }
+        })
+
+        await databaseService.orderDetails.insertMany(orderDetails, { session })
+
+        const bulkOps = tempOrder.Products.map((p) => ({
+          updateOne: {
+            filter: { _id: new ObjectId(p.ProductID) },
+            update: { $inc: { quantity: -p.Quantity } }
+          }
+        }))
+
+        await databaseService.products.bulkWrite(bulkOps, { session })
+
+        if (voucher?._id) {
+          await databaseService.vouchers.updateOne(
+            { _id: new ObjectId(voucher._id) },
+            { $inc: { usedCount: 1 } },
+            { session }
+          )
+        }
+      })
+
+      if (payload.type === OrderType.CART) {
+        const cartKey = cartService.getCartKey(userId)
+        const cart = await cartService.getCart(cartKey)
+        const remainingProducts = cart.Products.filter((p: ProductInCart) => {
+          const orderedProductIds = tempOrder.Products.map((p: ProductInOrder) => p.ProductID)
+          return !orderedProductIds.includes(p.ProductID)
+        })
+
+        if (remainingProducts.length <= 0) {
+          await redisClient.del(cartKey)
+        } else {
+          await cartService.saveCart(cartKey, { Products: remainingProducts })
+        }
+      }
+
+      await redisClient.del(tempOrderKey)
+
+      return {
+        ...order,
+        ...(discount > 0 && { PriceBeforeDiscount: priceBeforeDiscount.toString() }),
+        orderDetails: orderDetails.map(({ OrderID, ...rest }) => rest)
+      }
+    } finally {
+      await session.endSession()
     }
   }
 
@@ -267,7 +362,7 @@ class OrdersService {
       updated_at: new Date()
     }
 
-    if(isPaid){
+    if (isPaid) {
       updateSet.RefundStatus = RefundStatus.REQUESTED
     }
     const updatedOrder = await databaseService.orders.findOneAndUpdate(
@@ -326,6 +421,96 @@ class OrdersService {
     )
 
     return updatedOrder
+  }
+
+  async getOrderRevenue(options: RevenueFilterOptions) {
+    const {
+      specificDate,
+      fromDate,
+      toDate,
+      filterBrand,
+      filterDacTinh,
+      filterHskIngredients,
+      filterHskProductType,
+      filterHskSize,
+      filterHskSkinType,
+      filterHskUses,
+      filterOrigin
+    } = options
+
+    const match: any = {
+      PaymentStatus: PaymentStatus.PAID
+    }
+
+    if (specificDate) {
+      const date = new Date(specificDate)
+      const nextDate = new Date(date)
+      nextDate.setDate(date.getDate() + 1)
+
+      match.created_at = {
+        $gte: date,
+        $lt: nextDate
+      }
+    } else if (fromDate && toDate) {
+      const startDate = new Date(fromDate)
+      const endDate = new Date(toDate)
+      endDate.setDate(endDate.getDate() + 1)
+      match.created_at = {
+        $gte: startDate,
+        $lt: endDate
+      }
+    }
+
+    const filters: any = {}
+
+    filterBrand && (filters.filter_brand = filterBrand)
+    filterDacTinh && (filters.filter_dac_tinh = filterDacTinh)
+    filterHskIngredients && (filters.filter_hsk_ingredients = filterHskIngredients)
+    filterHskProductType && (filters.filter_hsk_product_type = filterHskProductType)
+    filterHskSize && (filters.filter_hsk_size = filterHskSize)
+    filterHskSkinType && (filters.filter_hsk_skin_type = filterHskSkinType)
+    filterHskUses && (filters.filter_hsk_uses = filterHskUses)
+    filterOrigin && (filters.filter_origin = filterOrigin)
+
+    const totalOrder = await databaseService.orders.find(match).toArray()
+    const orderIds = totalOrder.map((o) => o._id)
+    const orderDetails = await databaseService.orderDetails.find({ OrderID: { $in: orderIds } }).toArray()
+
+    const productIds = orderDetails.map((detail) => new ObjectId(detail.ProductID))
+
+    const products = await databaseService.products.find({ _id: { $in: productIds }, ...filters }).toArray()
+
+    const matchedProductIds = new Set(products.map((p) => p._id.toString()))
+
+    const matchedOrderDetails = orderDetails.filter(
+      (detail) => detail.ProductID && matchedProductIds.has(detail.ProductID.toString())
+    )
+
+    const matchedOrderIds = [...new Set(matchedOrderDetails.map((detail) => detail.OrderID?.toString()))]
+    const filteredOrder = totalOrder.filter((order) => matchedOrderIds.includes(order._id.toString()))
+
+    const ordersByDate: { [key: string]: any[] } = {}
+
+    filteredOrder.forEach((order) => {
+      const date = order.created_at?.toISOString().split('T')[0]!
+      if (!ordersByDate[date]) {
+        ordersByDate[date] = []
+      }
+      ordersByDate[date].push(order)
+    })
+
+    const dailyResult = Object.keys(ordersByDate).map((date) => {
+      const orders = ordersByDate[date]
+      const totalRevenue = orders.reduce((total, order) => total + Number(order.TotalPrice), 0)
+
+      return {
+        date,
+        totalOrder: orders.length,
+        totalRevenue
+      }
+    })
+
+    return dailyResult
   }
 
   async getOrderDetailByOrderId(id: string): Promise<Array<OrderDetail>> {

@@ -1,18 +1,15 @@
 import { PaymentStatus } from './../../constants/enums';
 import { ObjectId } from 'mongodb'
-import { CancelRequestStatus, OrderStatus, OrderType, PaymentMethod } from '~/constants/enums'
+import { CancelRequestStatus, OrderType, PaymentMethod } from '~/constants/enums'
 
 export interface OrderReqBody {
-  UserID: string
-  ProductID: Array<string>
   ShipAddress: string
   Description?: string
   RequireDate: string
-  ShippedDate: string
-  Discount?: string
+  ShippedDate?: string
   PaymentMethod: PaymentMethod
-  PaymentStatus: PaymentStatus
-  Status: OrderStatus
+  PaymentStatus?: PaymentStatus,
+  voucherCode?: string,
   type?: OrderType
 }
 
@@ -54,4 +51,18 @@ export interface RejectCancelRequest {
   rejectedAt: Date
   staffId: ObjectId
   staffNote?: string
+}
+
+export interface RevenueFilterOptions {
+  specificDate?: string
+  fromDate?: string
+  toDate?: string
+  filterBrand?: ObjectId
+  filterDacTinh?: ObjectId
+  filterHskIngredients?: ObjectId
+  filterHskProductType?: ObjectId
+  filterHskSize?: ObjectId
+  filterHskSkinType?: ObjectId
+  filterHskUses?: ObjectId
+  filterOrigin?: ObjectId
 }

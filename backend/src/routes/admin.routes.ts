@@ -32,6 +32,8 @@ import {
 import { filterMiddleware, paginationValidator, parseDateFieldsMiddleware } from '~/middlewares/common.middlewares'
 import { createVoucherValidator, updateVoucherValidator, voucherIdValidator } from '~/middlewares/voucher.middlewares'
 import { CreateNewVoucherReqBody, UpdateVoucherReqBody } from '~/models/requests/Vouchers.request'
+import { getOrderRevenueController } from '~/controllers/orders.controllers'
+import { getOrderRevenueValidator } from '~/middlewares/orders.middlewares'
 import { updateProductReqBody } from '~/models/requests/Product.requests'
 import { disableFilterBrandController, getAllFilterBrandsController, getFilterBrandByIdController, updateFilterBrandController } from '~/controllers/filterBrand.controllers'
 import { disableFilterBrandReqBody, updateFilterBrandReqBody } from '~/models/requests/Admin.requests'
@@ -162,6 +164,10 @@ adminRouter.post(
   createNewFilterBrandValidator,
   wrapAsync(createNewFilterBrandController)
 )
+
+//manage order revenue
+adminRouter.get('/manage-orders/revenue', accessTokenValidator, isAdminValidator, getOrderRevenueValidator, wrapAsync(getOrderRevenueController))
+
 //get all filter brands
 adminRouter.get(
   '/manage-filters/get-all-filter-brands',
@@ -195,5 +201,4 @@ adminRouter.get(
   getFilterBrandByIdValidator,
   wrapAsync(getFilterBrandByIdController)
 )
-
 export default adminRouter
