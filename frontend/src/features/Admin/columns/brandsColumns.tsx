@@ -14,26 +14,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useToggleStatusVoucher } from "@/hooks/Voucher/useToggleStatusVoucher";
+import { useUpdateStatusBrand } from "@/hooks/Brand/useUpdateStatusBrand";
 import type { Brand } from "@/types/brand";
 
-const formatCurrency = (amount: number | string) => {
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(Number(amount));
-};
+// const formatCurrency = (amount: number | string) => {
+//   return new Intl.NumberFormat("vi-VN", {
+//     style: "currency",
+//     currency: "VND",
+//   }).format(Number(amount));
+// };
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString("vi-VN");
 };
+
 export const ActionsCell = ({ row }: { row: { original: Brand } }) => {
   const { _id, option_name, state } = row.original;
-  console.log(_id);
-  const { updateStatusVoucher, loading } = useToggleStatusVoucher(String(_id));
+  const payload = {
+    state: state === "ACTIVE" ? "INACTIVE" : "ACTIVE",
+  };
+  const { updateStateBrand, loading } = useUpdateStatusBrand({
+    id: String(_id),
+    payload,
+  });
   const handleUpdateStatus = () => {
-    updateStatusVoucher();
+    updateStateBrand();
     window.location.reload();
   };
+
   return (
     <div className="text-right">
       <DropdownMenu>
@@ -49,7 +56,7 @@ export const ActionsCell = ({ row }: { row: { original: Brand } }) => {
           <DropdownMenuSeparator />
           <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
           <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
-          {state ? (
+          {state === "ACTIVE" ? (
             <DropdownMenuItem
               disabled={loading}
               onClick={() => handleUpdateStatus()}
@@ -121,7 +128,7 @@ export const brandsColumn: ColumnDef<Brand>[] = [
     header: "Trạng thái",
     cell: ({ row }) => {
       const state = row.getValue("state");
-      if (state) {
+      if (state === "ACTIVE") {
         return <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>;
       }
       return <Badge variant="secondary">Không hoạt động</Badge>;

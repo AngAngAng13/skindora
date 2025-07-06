@@ -15,3 +15,12 @@ export const fetchAllBrand = async (params: FetchAllBrandProps) => {
     })
     .then((response) => response.data);
 };
+
+export interface UpdateStateProps {
+  id: string;
+}
+export const updateStatusBrand = async (params: UpdateStateProps, payload: { state: string }) => {
+  return await httpClient
+    .put(`/admin/manage-filters/update-filter-brand-state/${params.id}`, payload)
+    .then((response) => response.data);
+};
