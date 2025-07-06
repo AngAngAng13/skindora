@@ -11,7 +11,6 @@ const Homepage = lazy(() => import("@/features/Homepage"));
 const ContactPage = lazy(() => import("@/features/Contact"));
 const AboutPage = lazy(() => import("@/features/About"));
 const ProductDetailPage = lazy(() => import("@/features/ProductDetail/index"));
-
 const publicRoutes: RouteObject[] = [
   {
     path: "/",
@@ -52,8 +51,17 @@ const publicRoutes: RouteObject[] = [
         path: "register",
         element: null,
       },
+      {
+        path: "forgot-password",
+        element: null
+      },
+      {
+    path: "reset-password",
+    element: null
+  },
     ],
   },
+  
   {
     path: "/payment/return",
     element: <PaymentReturnPage />,
