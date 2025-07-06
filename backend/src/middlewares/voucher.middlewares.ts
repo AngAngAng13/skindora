@@ -288,6 +288,9 @@ export const voucherIdValidator = validate(
       notEmpty: {
         errorMessage: ADMIN_MESSAGES.VOUCHER_ID_IS_REQUIRED
       },
+      isMongoId: {
+        errorMessage: ADMIN_MESSAGES.VOUCHER_ID_INVALID
+      },
       custom: {
         options: async (value: string, { req }) => {
           const voucher = await databaseService.vouchers.findOne({ _id: new ObjectId(value.toString()) })

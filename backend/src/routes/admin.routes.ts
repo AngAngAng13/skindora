@@ -27,7 +27,8 @@ import {
   createVoucherController,
   updateVoucherController,
   inactiveVoucherController,
-  getAllVoucherForAdminController
+  getAllVoucherForAdminController,
+  getVoucherDetailController
 } from '~/controllers/voucher.controllers'
 import { filterMiddleware, paginationValidator, parseDateFieldsMiddleware } from '~/middlewares/common.middlewares'
 import { createVoucherValidator, updateVoucherValidator, voucherIdValidator } from '~/middlewares/voucher.middlewares'
@@ -35,9 +36,18 @@ import { CreateNewVoucherReqBody, UpdateVoucherReqBody } from '~/models/requests
 import { getOrderRevenueController } from '~/controllers/orders.controllers'
 import { getOrderRevenueValidator } from '~/middlewares/orders.middlewares'
 import { updateProductReqBody } from '~/models/requests/Product.requests'
-import { disableFilterBrandController, getAllFilterBrandsController, getFilterBrandByIdController, updateFilterBrandController } from '~/controllers/filterBrand.controllers'
+import {
+  disableFilterBrandController,
+  getAllFilterBrandsController,
+  getFilterBrandByIdController,
+  updateFilterBrandController
+} from '~/controllers/filterBrand.controllers'
 import { disableFilterBrandReqBody, updateFilterBrandReqBody } from '~/models/requests/Admin.requests'
-import { disableFilterBrandValidator, getFilterBrandByIdValidator, updateFilterBrandValidator } from '~/middlewares/filterBrand.middlewares'
+import {
+  disableFilterBrandValidator,
+  getFilterBrandByIdValidator,
+  updateFilterBrandValidator
+} from '~/middlewares/filterBrand.middlewares'
 
 const adminRouter = Router()
 //user management
@@ -56,6 +66,13 @@ adminRouter.get(
   accessTokenValidator,
   isAdminValidator,
   wrapAsync(getAllVoucherForAdminController)
+)
+adminRouter.get(
+  '/manage-voucher/:voucherId',
+  accessTokenValidator,
+  isAdminValidator,
+  voucherIdValidator,
+  wrapAsync(getVoucherDetailController)
 )
 adminRouter.post(
   '/manage-vouchers',
@@ -106,7 +123,13 @@ adminRouter.put(
 )
 
 //product management
-adminRouter.get('/manage-products/get-all', accessTokenValidator, isAdminValidator, paginationValidator, wrapAsync(getAllProductController))
+adminRouter.get(
+  '/manage-products/get-all',
+  accessTokenValidator,
+  isAdminValidator,
+  paginationValidator,
+  wrapAsync(getAllProductController)
+)
 adminRouter.post(
   '/manage-products/create-new-product',
   accessTokenValidator,
@@ -166,7 +189,13 @@ adminRouter.post(
 )
 
 //manage order revenue
-adminRouter.get('/manage-orders/revenue', accessTokenValidator, isAdminValidator, getOrderRevenueValidator, wrapAsync(getOrderRevenueController))
+adminRouter.get(
+  '/manage-orders/revenue',
+  accessTokenValidator,
+  isAdminValidator,
+  getOrderRevenueValidator,
+  wrapAsync(getOrderRevenueController)
+)
 
 //get all filter brands
 adminRouter.get(

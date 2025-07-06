@@ -35,9 +35,8 @@ export const createPaymentUrl = (data: PaymentData, clientIp: string): string =>
   const secretKey = process.env.VNPAY_HASHSECRET
   const vnpUrl = process.env.VNP_URL
   const returnUrl = process.env.VNP_RETURNURL
-  const ipnUrl = process.env.VNP_IPNURL
 
-  if (!tmnCode || !secretKey || !vnpUrl || !returnUrl || !ipnUrl) {
+  if (!tmnCode || !secretKey || !vnpUrl || !returnUrl) {
     throw new Error('Missing required VNPay configuration')
   }
 
@@ -54,7 +53,6 @@ export const createPaymentUrl = (data: PaymentData, clientIp: string): string =>
     vnp_OrderType: orderType,
     vnp_Amount: amount * 100,
     vnp_ReturnUrl: returnUrl,
-    // vnp_IpnUrl: ipnUrl,
     vnp_IpAddr: clientIp,
     vnp_CreateDate: createDate
   }

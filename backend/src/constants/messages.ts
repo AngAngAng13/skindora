@@ -73,7 +73,6 @@ export const PRODUCTS_MESSAGES = {
   PRODUCT_IDS_MUST_BE_ARRAY: 'ProductIds must be an array',
   INVALID_PRODUCT_ID: 'ProductId is invalid',
   NOT_ACTIVE: 'Inactive product'
-
 } as const
 
 export const REVIEW_MESSAGES = {
@@ -224,7 +223,8 @@ export const ADMIN_MESSAGES = {
   UPDATE_FILTER_BRAND_FAILED: 'Update filter brand failed',
   STATE_MUST_BE_ONE_OF_THE_FILTER_BRAND_STATE:
     'State must be one of the filter brand state: INACTIVE, ACTIVE, COLLABORATION, PARTNERSHIP, EXCLUSIVE, LIMITED_EDITION, SUSPENDED, DISCONTINUED',
-  FILTER_BRAND_DISABLE_SUCCESS: 'Filter brand disabled successfully'
+  FILTER_BRAND_DISABLE_SUCCESS: 'Filter brand disabled successfully',
+  VOUCHER_ID_INVALID: 'Please provide a valid voucher ID'
 } as const
 
 export const CART_MESSAGES = {
@@ -293,15 +293,15 @@ export const ORDER_MESSAGES = {
   REQUIRE_FROM_DATE: 'FromDate is required',
   INVALID_FROM_DATE: 'FromDate cannot larger than ToDate',
   NOT_ALLOW_FUTURE_DATE: 'Future date is not allowed',
-  INVALID_FILTER_ID: 'FilterId must be a valid ObjectId'  
+  INVALID_FILTER_ID: 'FilterId must be a valid ObjectId'
 } as const
 
 export const VOUCHER_MESSAGES = {
-  NOT_FOUND: "Voucher not found",
-  NOT_ACTIVE: "Inactive voucher",
-  EXPIRED: "Voucher is expired",
-  REACH_LIMIT_USED: "This voucher has reached the usable limit",
-  USE_ONLY_ONCE: "Each voucher can only use once"
+  NOT_FOUND: 'Voucher not found',
+  NOT_ACTIVE: 'Inactive voucher',
+  EXPIRED: 'Voucher is expired',
+  REACH_LIMIT_USED: 'This voucher has reached the usable limit',
+  USE_ONLY_ONCE: 'Each voucher can only use once'
 } as const
 
 export const COMMON_MESSAGES = {

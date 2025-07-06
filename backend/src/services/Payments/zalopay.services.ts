@@ -37,7 +37,7 @@ const createOrder = async (req: any, res: any): Promise<void> => {
   const cart = cartService.getCart(cartKey)
 
   const embeddata = {
-    redirecturl: process.env.FRONTEND_URL,
+    redirecturl: process.env.VNP_RETURNURL,
     orderDetails: req.body.orderDetails
   }
 
