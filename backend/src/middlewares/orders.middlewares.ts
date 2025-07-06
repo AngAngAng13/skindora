@@ -351,7 +351,7 @@ export const requestCancelOrderValidator = validate(
 
           if (!canTransition(order.Status, OrderStatus.CANCELLED)) {
             throw new ErrorWithStatus({
-              message: ORDER_MESSAGES.UNABLE_TO_CANCEL,
+              message: ORDER_MESSAGES.VALID_STATUS_CAN_CANCEL,
               status: HTTP_STATUS.BAD_REQUEST
             })
           }
@@ -396,6 +396,13 @@ export const cancelledOrderRequestedValidator = validate(
             })
           }
 
+          if(order.Status === OrderStatus.CANCELLED){
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.ORDER_CANCELLED,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+
           if (
             !order.CancelRequest ||
             !order.CancelRequest.status ||
@@ -403,6 +410,54 @@ export const cancelledOrderRequestedValidator = validate(
           ) {
             throw new ErrorWithStatus({
               message: ORDER_MESSAGES.NO_CANCELATION_REQUESTED,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+          req.order = order
+          return true
+        }
+      }
+    }
+  })
+)
+
+export const cancelOrderValidator = validate(
+  checkSchema({
+    reason: {
+      in: ['body'],
+      notEmpty: {
+        errorMessage: ORDER_MESSAGES.REQUIRE_REASON
+      }
+    },
+    orderId: {
+      in: ['params'],
+      notEmpty: {
+        errorMessage: ORDER_MESSAGES.REQUIRE_ORDER_ID
+      },
+      isMongoId: {
+        errorMessage: ORDER_MESSAGES.INVALID_ORDER_ID
+      },
+      custom: {
+        options: async (value, { req }) => {
+          const order = await databaseService.orders.findOne({ _id: new ObjectId(value) })
+          if (!order) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.NOT_FOUND.replace('%s', value),
+              status: HTTP_STATUS.NOT_FOUND
+            })
+          }
+
+          if (!order.Status) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.INVALID_ORDER_STATUS,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+
+          const canCancel = canRoleTransition(Role.Admin || Role.Staff, order.Status, OrderStatus.CANCELLED)
+          if (!canCancel) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.UNABLE_TO_CANCEL,
               status: HTTP_STATUS.BAD_REQUEST
             })
           }

@@ -289,6 +289,31 @@ export const rejectCancelRequestController = async (req: Request<OrderParams>, r
   }
 }
 
+export const cancelOrderController = async (req: Request, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
+  try {
+    const order = req.order
+    const result = await ordersService.cancelOrder(req.body, user_id, order!)
+    res.json({
+      message: ORDER_MESSAGES.CANCEL_SUCCESS,
+      result
+    })
+  } catch (error) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: ORDER_MESSAGES.CANCEL_FAIL,
+      error: errorMessage
+    })
+  }
+}
+
 export const getOrderRevenueController = async (req: Request, res: Response) => {
   try {
     const {

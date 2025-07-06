@@ -4,6 +4,7 @@ import { Router } from 'express'
 import {
   approveCancelRequestController,
   buyNowController,
+  cancelOrderController,
   checkOutController,
   getAllOrdersByAuthUserController,
   getAllOrdersByUserIdController,
@@ -19,6 +20,7 @@ import { isAdminOrStaffValidator } from '~/middlewares/admin.middlewares'
 import {
   buyNowValidator,
   cancelledOrderRequestedValidator,
+  cancelOrderValidator,
   checkOutValidator,
   getAllOrdersValidator,
   getNextOrderStatusValidator,
@@ -57,6 +59,8 @@ ordersRouter
 ordersRouter
   .route('/:orderId/cancel-request/reject')
   .patch(accessTokenValidator, cancelledOrderRequestedValidator, wrapAsync(rejectCancelRequestController))
+
+ordersRouter.route('/:orderId/cancel').patch(accessTokenValidator, isAdminOrStaffValidator, cancelOrderValidator, wrapAsync(cancelOrderController))
 
 ordersRouter.route('/:orderId').get(accessTokenValidator, getOrderByIdValidator, wrapAsync(getOrderByIdController))
 

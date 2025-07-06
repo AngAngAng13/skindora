@@ -11,7 +11,7 @@ import {
   ProductState,
   RefundStatus
 } from '~/constants/enums'
-import { ObjectId } from 'mongodb'
+import { ClientSession, ObjectId } from 'mongodb'
 import {
   BuyNowReqBody,
   OrderReqBody,
@@ -345,35 +345,69 @@ class OrdersService {
     }))
   }
 
+  async cancelOrder(payload: { staffNote?: string; reason: string }, userId: string, order: Order) {
+    const session = databaseService.getClient().startSession()
+    try {
+      let updatedOrder: Order | null = null
+      await session.withTransaction(async () => {
+        const now = getLocalTime()
+        const updateSet = {
+          Status: OrderStatus.CANCELLED,
+          updated_at: now,
+          'CancelRequest.status': CancelRequestStatus.APPROVED,
+          'CancelRequest.reason': payload.reason,
+          'CancelRequest.requestedAt': now,
+          'CancelRequest.approvedAt': now,
+          'CancelRequest.staffId': new ObjectId(userId),
+          'CancelRequest.staffNote': payload.staffNote ?? ''
+        }
+
+        updatedOrder = await this.handleOrderCancellation({ order, updateSet, session })
+      })
+      return updatedOrder
+    } catch (error) {
+      console.error('Transaction failed:', error)
+      throw new ErrorWithStatus({
+        message: ORDER_MESSAGES.CANCEL_FAIL,
+        status: HTTP_STATUS.INTERNAL_SERVER_ERROR
+      })
+    } finally {
+      await session.endSession()
+    }
+  }
+
   async approveCancelRequest(
     payload: { staffNote?: string },
     userId: string,
     order: Order,
     options: { status: CancelRequestStatus }
   ) {
-    const isPaid = order.PaymentStatus === PaymentStatus.PAID
+    const session = databaseService.getClient().startSession()
+    try {
+      let updatedOrder: Order | null = null
+      await session.withTransaction(async () => {
+        const now = getLocalTime()
+        const updateSet = {
+          Status: OrderStatus.CANCELLED,
+          'CancelRequest.status': options.status,
+          'CancelRequest.approvedAt': now,
+          'CancelRequest.staffId': new ObjectId(userId),
+          'CancelRequest.staffNote': payload?.staffNote ?? '',
+          updated_at: now
+        }
 
-    const updateSet: Record<string, any> = {
-      Status: OrderStatus.CANCELLED,
-      'CancelRequest.status': options.status,
-      'CancelRequest.approvedAt': new Date(),
-      'CancelRequest.staffId': new ObjectId(userId),
-      'CancelRequest.staffNote': payload?.staffNote ?? '',
-      updated_at: new Date()
+        updatedOrder = await this.handleOrderCancellation({ order, updateSet, session })
+      })
+      return updatedOrder
+    } catch (error) {
+      console.error('Transaction failed:', error)
+      throw new ErrorWithStatus({
+        message: ORDER_MESSAGES.CANCEL_FAIL,
+        status: HTTP_STATUS.INTERNAL_SERVER_ERROR
+      })
+    } finally {
+      await session.endSession()
     }
-
-    if (isPaid) {
-      updateSet.RefundStatus = RefundStatus.REQUESTED
-    }
-    const updatedOrder = await databaseService.orders.findOneAndUpdate(
-      { _id: order._id },
-      {
-        $set: updateSet
-      },
-      { returnDocument: 'after' }
-    )
-
-    return updatedOrder
   }
 
   async rejectCancelRequest(
@@ -382,15 +416,16 @@ class OrdersService {
     order: Order,
     options: { status: CancelRequestStatus }
   ) {
+    const now = getLocalTime()
     const updatedOrder = await databaseService.orders.findOneAndUpdate(
       { _id: order._id },
       {
         $set: {
           'CancelRequest.status': options.status,
-          'CancelRequest.rejectedAt': new Date(),
+          'CancelRequest.rejectedAt': now,
           'CancelRequest.staffId': new ObjectId(userId),
           'CancelRequest.staffNote': payload?.staffNote ?? '',
-          updated_at: new Date()
+          updated_at: now
         }
       },
       { returnDocument: 'after' }
@@ -399,11 +434,56 @@ class OrdersService {
     return updatedOrder
   }
 
+  private async handleOrderCancellation({
+    order,
+    updateSet,
+    session
+  }: {
+    order: Order
+    updateSet: Record<string, any>
+    session: ClientSession
+  }) {
+    if (order.PaymentStatus === PaymentStatus.PAID) {
+      updateSet.RefundStatus = RefundStatus.REQUESTED
+    }
+
+    const updatedOrder = await databaseService.orders.findOneAndUpdate(
+      { _id: order._id },
+      { $set: updateSet },
+      { returnDocument: 'after', session }
+    )
+
+    await this.returnStock(order._id!, session, order.VoucherSnapshot?.code)
+
+    return updatedOrder
+  }
+
+  async returnStock(orderId: ObjectId, session: ClientSession, voucherCode?: string) {
+    const orderDetail = await databaseService.orderDetails.find({ OrderID: orderId }).toArray()
+    if (!orderDetail.length) return
+
+    const bulkStockOps = orderDetail.map((detail) => ({
+      updateOne: {
+        filter: { _id: new ObjectId(detail.ProductID) },
+        update: { $inc: { quantity: parseInt(detail.Quantity || '0') } }
+      }
+    }))
+
+    if (bulkStockOps.length) {
+      await databaseService.products.bulkWrite(bulkStockOps, { session })
+    }
+
+    if (voucherCode) {
+      await databaseService.vouchers.updateOne({ code: voucherCode }, { $inc: { usedCount: -1 } }, { session })
+    }
+  }
+
   async requestCancelOrder(payload: { reason: string }, order: Order) {
+    const now = getLocalTime()
     const cancelRequest: CancelRequest = {
       status: CancelRequestStatus.REQUESTED,
       reason: payload.reason,
-      requestedAt: new Date(),
+      requestedAt: now,
       staffId: null as any
     }
 
@@ -412,7 +492,7 @@ class OrdersService {
       {
         $set: {
           CancelRequest: cancelRequest,
-          updated_at: new Date()
+          updated_at: now
         }
       },
       {
@@ -542,16 +622,16 @@ class OrdersService {
       _id: orderId,
       ...order,
       UserID: new ObjectId(order.UserID),
-      PaymentStatus: order.PaymentMethod!== PaymentMethod.COD ? PaymentStatus.PAID : PaymentStatus.UNPAID,
+      PaymentStatus: order.PaymentMethod !== PaymentMethod.COD ? PaymentStatus.PAID : PaymentStatus.UNPAID,
       Status: OrderStatus.PENDING,
       created_at: getLocalTime(),
       updated_at: getLocalTime()
     }
 
-    const orderDetail = Details.map(d => ({
+    const orderDetail = Details.map((d) => ({
       ...d,
       ProductID: new ObjectId(d.ProductID),
-      OrderID: orderId,
+      OrderID: orderId
     }))
 
     const session = databaseService.getClient().startSession()
