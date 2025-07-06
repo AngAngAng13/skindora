@@ -185,25 +185,6 @@ export const requestCancelOrderController = async (req: Request<OrderParams>, re
   }
 }
 
-export const checkPendingOrderController = async (req: Request, res: Response) => {
-  try {
-    const pendingOrderId = req.redis_order_id as ObjectId
-    const result = await ordersService.saveOrderToDB(pendingOrderId)
-
-    res.json({
-      message: 'Save order to db successfully',
-      result
-    })
-  } catch (error) {
-    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
-
-    res.status(statusCode).json({
-      message: 'Fail to save order to db',
-      error: errorMessage
-    })
-  }
-}
 //Manage orders: Staff and Admin only
 export const getAllOrdersController = async (req: Request, res: Response, next: NextFunction) => {
   const filter: Filter<Order> = {}
