@@ -72,7 +72,7 @@ export const PRODUCTS_MESSAGES = {
   NOT_ENOUGHT: 'Only %s available in stock',
   PRODUCT_IDS_MUST_BE_ARRAY: 'ProductIds must be an array',
   INVALID_PRODUCT_ID: 'ProductId is invalid',
-  NOT_ACTIVE: 'Inactive product'
+  NOT_ACTIVE: 'This product is not available now'
 } as const
 
 export const REVIEW_MESSAGES = {
@@ -282,7 +282,7 @@ export const ORDER_MESSAGES = {
   CANCEL_SUCCESS: 'Order canceled successfully',
   CANCEL_FAIL: 'Fail to cancel order',
   REQUIRE_REASON: 'Reason is required',
-  UNABLE_TO_CANCEL: 'Only order with status PENDING or CONFIRMED can be cancelled',
+  VALID_STATUS_CAN_CANCEL: 'Only order with status PENDING, CONFIRMED, or PROCESSING can be cancelled',
   NO_CANCELATION_REQUESTED: 'Customer still not request for cancelation',
   GET_ALL_USERS_SUCCESS: 'Get all users successfully',
   INVALID_VOUCHER_ID: 'Invalid voucherId',
@@ -293,7 +293,9 @@ export const ORDER_MESSAGES = {
   REQUIRE_FROM_DATE: 'FromDate is required',
   INVALID_FROM_DATE: 'FromDate cannot larger than ToDate',
   NOT_ALLOW_FUTURE_DATE: 'Future date is not allowed',
-  INVALID_FILTER_ID: 'FilterId must be a valid ObjectId'
+  INVALID_FILTER_ID: 'FilterId must be a valid ObjectId',
+  UNABLE_TO_CANCEL: 'This order cannot be cancelled',
+  ORDER_CANCELLED: 'Order has been cancelled'
 } as const
 
 export const VOUCHER_MESSAGES = {
