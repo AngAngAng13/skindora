@@ -44,8 +44,10 @@ export const buyNowController = async (req: Request, res: Response) => {
     res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
     return
   }
+
+  const product = req.product
   try {
-    const result = await ordersService.buyNow(user_id, req.body)
+    const result = await ordersService.buyNow(user_id, req.body.quantity, product)
     res.json({
       message: ORDER_MESSAGES.PREPARED_SUCCESS,
       result
@@ -68,8 +70,9 @@ export const checkOutController = async (req: Request<ParamsDictionary, any, Ord
     res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
     return
   }
+  const voucher = req.voucher ?? undefined
   try {
-    const result = await ordersService.checkOut(req.body, user_id)
+    const result = await ordersService.checkOut(req.body, user_id, voucher)
     res.json({
       message: ORDER_MESSAGES.CREATED_SUCCESS,
       result
@@ -181,6 +184,7 @@ export const requestCancelOrderController = async (req: Request<OrderParams>, re
     })
   }
 }
+
 //Manage orders: Staff and Admin only
 export const getAllOrdersController = async (req: Request, res: Response, next: NextFunction) => {
   const filter: Filter<Order> = {}
@@ -240,7 +244,9 @@ export const approveCancelRequestController = async (req: Request<OrderParams>, 
   }
   try {
     const order = req.order
-    const result = await ordersService.approveCancelRequest(req.body, user_id, order!, {status: CancelRequestStatus.APPROVED})
+    const result = await ordersService.approveCancelRequest(req.body, user_id, order!, {
+      status: CancelRequestStatus.APPROVED
+    })
     res.json({
       message: ORDER_MESSAGES.CANCEL_SUCCESS,
       result
@@ -265,10 +271,81 @@ export const rejectCancelRequestController = async (req: Request<OrderParams>, r
   }
   try {
     const order = req.order
-    const result = await ordersService.rejectCancelRequest(req.body, user_id, order!, {status: CancelRequestStatus.REJECTED})
+    const result = await ordersService.rejectCancelRequest(req.body, user_id, order!, {
+      status: CancelRequestStatus.REJECTED
+    })
     res.json({
       message: ORDER_MESSAGES.CANCEL_SUCCESS,
-      result,
+      result
+    })
+  } catch (error) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: ORDER_MESSAGES.CANCEL_FAIL,
+      error: errorMessage
+    })
+  }
+}
+
+export const cancelOrderController = async (req: Request, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
+  try {
+    const order = req.order
+    const result = await ordersService.cancelOrder(req.body, user_id, order!)
+    res.json({
+      message: ORDER_MESSAGES.CANCEL_SUCCESS,
+      result
+    })
+  } catch (error) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: ORDER_MESSAGES.CANCEL_FAIL,
+      error: errorMessage
+    })
+  }
+}
+
+export const getOrderRevenueController = async (req: Request, res: Response) => {
+  try {
+    const {
+      date,
+      from,
+      to,
+      filter_brand,
+      filter_dac_tinh,
+      filter_hsk_ingredients,
+      filter_hsk_product_type,
+      filter_hsk_size,
+      filter_hsk_skin_type,
+      filter_hsk_uses,
+      filter_origin
+    } = req.query
+
+    const result = await ordersService.getOrderRevenue({
+      specificDate: typeof date === 'string' ? date : undefined,
+      fromDate: typeof from === 'string' ? from : undefined,
+      toDate: typeof to === 'string' ? to : undefined,
+      filterBrand: filter_brand ? new ObjectId(filter_brand as string) : undefined,
+      filterDacTinh: filter_dac_tinh ? new ObjectId(filter_dac_tinh as string) : undefined,
+      filterHskIngredients: filter_hsk_ingredients ? new ObjectId(filter_hsk_ingredients as string) : undefined,
+      filterHskProductType: filter_hsk_product_type ? new ObjectId(filter_hsk_product_type as string) : undefined,
+      filterHskSize: filter_hsk_size ? new ObjectId(filter_hsk_size as string) : undefined,
+      filterHskSkinType: filter_hsk_skin_type ? new ObjectId(filter_hsk_skin_type as string) : undefined,
+      filterHskUses: filter_hsk_uses ? new ObjectId(filter_hsk_uses as string) : undefined,
+      filterOrigin: filter_origin ? new ObjectId(filter_origin as string) : undefined
+    })
+    res.json({
+      message: ORDER_MESSAGES.GET_REVENUE_SUCCESS,
+      result
     })
   } catch (error) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500

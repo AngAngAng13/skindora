@@ -40,6 +40,10 @@ class VouchersService {
     return result
   }
 
+  async getVoucherDetail(voucherId: string) {
+    return await databaseService.vouchers.findOne({ _id: new ObjectId(voucherId) })
+  }
+
   async updateVoucher(voucherId: string, reqBody: UpdateVoucherReqBody) {
     const currentDate = new Date()
     const vietnamTimezoneOffset = 7 * 60
@@ -59,10 +63,14 @@ class VouchersService {
 
     if (result) {
       const topic = process.env.VOUCHER_UPDATED ?? 'voucher_updated'
-      await sendMessage(topic, result._id.toHexString(), JSON.stringify({
-        ...result,
-        _id: result._id.toHexString()
-      }))
+      await sendMessage(
+        topic,
+        result._id.toHexString(),
+        JSON.stringify({
+          ...result,
+          _id: result._id.toHexString()
+        })
+      )
     }
 
     return result
@@ -88,10 +96,14 @@ class VouchersService {
     if (result) {
       const voucher = result
       const topic = process.env.VOUCHER_UPDATED ?? 'voucher_updated'
-      await sendMessage(topic, voucher._id.toHexString(), JSON.stringify({
-        ...voucher,
-        _id: voucher._id.toHexString()
-      }))
+      await sendMessage(
+        topic,
+        voucher._id.toHexString(),
+        JSON.stringify({
+          ...voucher,
+          _id: voucher._id.toHexString()
+        })
+      )
     }
 
     return result

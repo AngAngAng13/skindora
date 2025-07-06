@@ -66,7 +66,7 @@ export const createVoucherValidator = validate(
         errorMessage: ADMIN_MESSAGES.DISCOUNT_VALUE_IS_REQUIRED
       },
       isInt: {
-        options: { gt: 1000 },
+        options: { gt: 0 },
         errorMessage: ADMIN_MESSAGES.DISCOUNT_VALUE_INVALID
       },
       custom: {
@@ -189,16 +189,13 @@ export const updateVoucherValidator = validate(
       notEmpty: {
         errorMessage: ADMIN_MESSAGES.DISCOUNT_VALUE_IS_REQUIRED
       },
-      isNumeric: {
+      isInt: {
+        options: { gt: 0 },
         errorMessage: ADMIN_MESSAGES.DISCOUNT_VALUE_INVALID
       },
       custom: {
-        options: async (value, { req }) => {
-          let type = req.body.discountType
-          if (!type) {
-            const voucher = await databaseService.vouchers.findOne({ _id: new ObjectId(req.params?.voucherId) })
-            type = voucher?.discountType
-          }
+        options: (value, { req }) => {
+          const type = req.body.discountType
           const num = parseInt(value, 10)
 
           if (type === DiscountType.Percentage) {
@@ -206,13 +203,6 @@ export const updateVoucherValidator = validate(
               throw new ErrorWithStatus({
                 status: HTTP_STATUS.BAD_REQUEST,
                 message: ADMIN_MESSAGES.DISCOUNT_VALUE_PERCENTAGE
-              })
-            }
-          } else if (type === DiscountType.Fixed) {
-            if (num < 1000) {
-              throw new ErrorWithStatus({
-                status: HTTP_STATUS.BAD_REQUEST,
-                message: ADMIN_MESSAGES.DISCOUNT_VALUE_GREATER_THAN_1000
               })
             }
           }
@@ -297,6 +287,9 @@ export const voucherIdValidator = validate(
       in: 'params',
       notEmpty: {
         errorMessage: ADMIN_MESSAGES.VOUCHER_ID_IS_REQUIRED
+      },
+      isMongoId: {
+        errorMessage: ADMIN_MESSAGES.VOUCHER_ID_INVALID
       },
       custom: {
         options: async (value: string, { req }) => {
