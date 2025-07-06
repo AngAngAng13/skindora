@@ -4,6 +4,7 @@ import { Router } from 'express'
 import {
   approveCancelRequestController,
   buyNowController,
+  cancelOrderController,
   checkOutController,
   getAllOrdersByAuthUserController,
   getAllOrdersByUserIdController,
@@ -19,12 +20,13 @@ import { isAdminOrStaffValidator } from '~/middlewares/admin.middlewares'
 import {
   buyNowValidator,
   cancelledOrderRequestedValidator,
+  cancelOrderValidator,
   checkOutValidator,
   getAllOrdersValidator,
   getNextOrderStatusValidator,
   getOrderByIdValidator,
   prepareOrderValidator,
-  requestCancelOrderValidator
+  requestCancelOrderValidator,
 } from '~/middlewares/orders.middlewares'
 import { isStaffValidator } from '~/middlewares/staff.middlewares'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
@@ -58,6 +60,8 @@ ordersRouter
   .route('/:orderId/cancel-request/reject')
   .patch(accessTokenValidator, cancelledOrderRequestedValidator, wrapAsync(rejectCancelRequestController))
 
+ordersRouter.route('/:orderId/cancel').patch(accessTokenValidator, isAdminOrStaffValidator, cancelOrderValidator, wrapAsync(cancelOrderController))
+
 ordersRouter.route('/:orderId').get(accessTokenValidator, getOrderByIdValidator, wrapAsync(getOrderByIdController))
 
 ordersRouter.route('/cart').post(accessTokenValidator, prepareOrderValidator, wrapAsync(prepareOrderController))
@@ -68,7 +72,15 @@ ordersRouter
   .route('/checkout')
   .post(
     accessTokenValidator,
-    filterMiddleware<OrderReqBody>(['ShipAddress', 'Description', 'RequireDate', 'ShippedDate', 'PaymentMethod', 'PaymentStatus', 'voucherCode', 'type']),
+    filterMiddleware<OrderReqBody>([
+      'ShipAddress',
+      'Description',
+      'RequireDate',
+      'PaymentMethod',
+      'PaymentStatus',
+      'voucherCode',
+      'type'
+    ]),
     checkOutValidator,
     wrapAsync(checkOutController)
   )
