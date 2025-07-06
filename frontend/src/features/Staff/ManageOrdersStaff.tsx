@@ -6,6 +6,7 @@ import { useFetchOrder } from "@/hooks/Orders/useFetchOrders";
 
 import { orderColumn } from "../Admin/columns/ordersColumns";
 import { PaginationDemo } from "../Admin/components/Pagination";
+import type { FilterOptionsProps } from "../Admin/components/TableCustom";
 import { DataTable } from "../Admin/components/TableCustom";
 
 const ManageOrdersStaff: React.FC = () => {
@@ -19,12 +20,13 @@ const ManageOrdersStaff: React.FC = () => {
     console.log(data);
     console.log(params.page);
     console.log(params.limit);
+    console.log(params.status);
   }, [params.page, params.status]);
   const handlePageChange = (page: number) => {
     changePage(page);
   };
 
-  const filterOptions = [
+  const filterOptions: FilterOptionsProps[] = [
     { value: "", label: "ALL" as const },
     { value: "failed", label: "FAILED" as const },
     { value: "shipping", label: "SHIPPING" as const },
@@ -50,6 +52,7 @@ const ManageOrdersStaff: React.FC = () => {
                   <DataTable
                     columns={orderColumn}
                     data={data}
+                    status={params.status}
                     filterColumnId="_id"
                     filterPlaceholder="Tìm khách hàng"
                     isHaveFilter={true}
@@ -59,7 +62,9 @@ const ManageOrdersStaff: React.FC = () => {
                 </div>
                 <div className="mt-4">
                   <PaginationDemo
+                    // eslint-disable-next-line no-constant-binary-expression
                     totalPages={Number(params.totalPages) ?? 1}
+                    // eslint-disable-next-line no-constant-binary-expression
                     currentPage={Number(params.page) ?? 1}
                     onPageChange={handlePageChange}
                   />

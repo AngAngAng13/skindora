@@ -18,17 +18,17 @@ export const useFetchOrder = () => {
   const changePage = useCallback((page: number) => {
     setParams((prev) => ({ ...prev, page }));
   }, []);
+
   const changeStatus = useCallback((status: FetchListOrderProps["status"]) => {
-    setParams((prev) => ({ ...prev, status }));
+    setParams((prev) => ({ ...prev, page: 1, status }));
   }, []);
 
   const changeLimit = useCallback((limit: number) => {
     setParams((prev) => ({ ...prev, page: 1, limit }));
   }, []);
 
-  // 3. Cập nhật hàm fetchUser với quản lý loading
   const fetchOrder = useCallback(async () => {
-    setLoading(true); // Bắt đầu loading
+    setLoading(true);
     try {
       const response = await fetchListOrder({
         limit: params.limit,

@@ -29,9 +29,11 @@ interface DataTableProps<TData, TValue> {
   filterPlaceholder: string;
   isHaveFilter?: boolean;
   callBackFunction?: (status?: "SHIPPING" | "FAILED" | "CANCELLED" | "RETURNED" | "DELIVERED" | "PROCESSING") => void;
+  status?: string;
 }
 
 export function DataTable<TData, TValue>({
+  status,
   columns,
   data,
   filterColumnId,
@@ -44,7 +46,6 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [activeFilter, setActiveFilter] = React.useState("all");
   const table = useReactTable({
     data,
     columns,
@@ -95,14 +96,13 @@ export function DataTable<TData, TValue>({
         <div className="mt-2 flex gap-2">
           {filterOptions?.map((option) => {
             const handleClick = async () => {
-              setActiveFilter(option.value);
               if (callBackFunction) {
                 callBackFunction(option.label);
               }
             };
             return (
               <div key={option.value}>
-                <Button variant={activeFilter === option.value ? "default" : "secondary"} onClick={handleClick}>
+                <Button variant={status === option.label ? "default" : "secondary"} onClick={handleClick}>
                   {option.label}
                 </Button>
               </div>

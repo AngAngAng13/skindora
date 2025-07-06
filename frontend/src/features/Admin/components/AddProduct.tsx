@@ -195,7 +195,6 @@ export default function AddProductPage() {
                 <Typography>Cung cấp các thông tin chi tiết cho sản phẩm của bạn.</Typography>
               </CardHeader>
               <CardContent className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                {/* --- NHÓM TÊN SẢN PHẨM --- */}
                 <div className="md:col-span-2">
                   <h3 className="mb-4 text-lg font-medium">Tên sản phẩm</h3>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -422,7 +421,7 @@ export default function AddProductPage() {
                   name="filter_brand"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Brand</FormLabel> {/* Changed label to 'Brand' for better clarity */}
+                      <FormLabel>Brand</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
