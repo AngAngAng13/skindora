@@ -35,6 +35,7 @@ declare namespace API {
     newPassword: string;
   }
   export interface IResponseAPI<T = any> {
+    result: T;
     data: T;
     statusCode: number;
     success: boolean;

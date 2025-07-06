@@ -1,15 +1,12 @@
-import { ArrowLeft, FilePenLine, Loader2, ShoppingCart, Trash2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { ArrowLeft, FilePenLine, Loader2, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-// ShadCN UI Components
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// Hook và Type của bạn
 import { useFetchProductByID } from "@/hooks/Product/useFetchProductByID";
-import type { ProductFE } from "@/types/product";
 
 // Hàm tiện ích để định dạng tiền tệ
 const formatCurrency = (price: string | number) => {
@@ -47,7 +44,6 @@ const ProductDetail = () => {
       console.log("Deleting product with ID:", id);
     }
   };
-
   if (loading) {
     return (
       <div className="flex h-[70vh] w-full items-center justify-center">
@@ -55,7 +51,6 @@ const ProductDetail = () => {
       </div>
     );
   }
-
   if (!data) {
     return (
       <div className="flex h-[60vh] items-center justify-center">
@@ -63,11 +58,11 @@ const ProductDetail = () => {
       </div>
     );
   }
-
   return (
     <div>
       <div className="mt-3 ml-10">
         <Button
+          variant="ghost"
           onClick={() => {
             navigate("/admin/products");
           }}

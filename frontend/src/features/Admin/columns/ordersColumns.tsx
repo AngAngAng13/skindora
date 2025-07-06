@@ -2,6 +2,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
@@ -12,11 +13,57 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUpdateStatus } from "@/hooks/Orders/useUpdateStatus";
 import type { Order } from "@/types/order";
 
+export const ActionsCell = ({ row }: { row: { original: Order } }) => {
+  const navigate = useNavigate();
+  const { _id } = row.original;
+  console.log(_id);
+  // const { updateStatusVoucher, loading } = useToggleStatusVoucher(String(_id));
+  // const handleUpdateStatus = () => {
+  //   updateStatusVoucher();
+  //   window.location.reload();
+  // };
+  return (
+    <div className="text-right">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Mở menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(_id)}>Copy mã voucher</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => navigate(`/admin/order-detail/${_id}`)}>Xem chi tiết</DropdownMenuItem>
+          <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
+          {/* {isActive ? (
+            <DropdownMenuItem
+              disabled={loading}
+              onClick={() => handleUpdateStatus()}
+              className="font-bold text-red-600 focus:text-red-600"
+            >
+              {loading ? "Đang xử lý..." : "Vô hiệu hóa"}
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem
+              disabled={loading}
+              onClick={() => handleUpdateStatus()}
+              className="font-bold text-green-600 focus:text-green-600"
+            >
+              {loading ? "Đang xử lý..." : "Kích hoạt"}
+            </DropdownMenuItem>
+          )} */}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+};
 export const orderColumn: ColumnDef<Order, unknown>[] = [
   {
     id: "select",
@@ -64,7 +111,7 @@ export const orderColumn: ColumnDef<Order, unknown>[] = [
     header: "Địa chỉ giao hàng",
     cell: ({ row }) => {
       const address = row.getValue("ShipAddress") as string;
-      // Cắt ngắn địa chỉ để hiển thị cho gọn
+
       return (
         <div title={address} className="max-w-[250px] truncate">
           {address}
@@ -73,7 +120,6 @@ export const orderColumn: ColumnDef<Order, unknown>[] = [
     },
   },
 
-  // Cột Ngày yêu cầu
   {
     accessorKey: "RequireDate",
     header: ({ column }) => (
@@ -83,11 +129,11 @@ export const orderColumn: ColumnDef<Order, unknown>[] = [
     ),
     cell: ({ row }) => {
       const dateString = row.getValue("RequireDate") as string;
-      // Định dạng lại ngày tháng cho nhất quán
+
       try {
         return <p className="px-3">{new Date(dateString).toLocaleDateString("vi-VN")}</p>;
       } catch (e) {
-        return <p className="text-center">{dateString}</p>; // Hiển thị nguyên gốc nếu không parse được
+        return <p className="text-center">{dateString}</p>;
       }
     },
   },
@@ -112,13 +158,12 @@ export const orderColumn: ColumnDef<Order, unknown>[] = [
 
       return <Badge variant={variant}>{status}</Badge>;
     },
-    // Cho phép filter theo cột này
+
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
   },
 
-  // Cột Ngày cập nhật
   {
     accessorKey: "updatedAt",
     header: ({ column }) => (
@@ -129,45 +174,15 @@ export const orderColumn: ColumnDef<Order, unknown>[] = [
     ),
     cell: ({ row }) => {
       const dateString = row.getValue("updatedAt") as string;
-      // Định dạng lại ngày tháng cho dễ đọc
+
       return <Typography className="ml-3">{new Date(dateString).toLocaleString("vi-VN")}</Typography>;
     },
   },
 
-  // Cột Actions
   {
     id: "actions",
     cell: ({ row }) => {
-      const order = row.original;
-      const { loading, updateStatus } = useUpdateStatus();
-      return (
-        <div className="text-right">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Mở menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(order._id)}>
-                Copy Mã đơn hàng
-              </DropdownMenuItem>
-              <DropdownMenu>
-                <DropdownMenuItem
-                  onClick={() => updateStatus({ orderID: order._id })} // ✅ Gọi hàm xử lý sự kiện
-                  disabled={loading} // Tùy chọn: vô hiệu hóa nút khi đang xử lý
-                >
-                  {loading ? "Đang cập nhật..." : "Cập nhật trạng thái đơn hàng"}
-                </DropdownMenuItem>
-              </DropdownMenu>
-              <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
-              <DropdownMenuItem className="text-red-600">Hủy đơn hàng</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
+      return <ActionsCell row={row} />;
     },
   },
 ];

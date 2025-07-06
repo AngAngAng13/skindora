@@ -190,7 +190,9 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
           </Card>
           <div className="mt-4">
             <PaginationDemo
+              // eslint-disable-next-line no-constant-binary-expression
               totalPages={Number(params.totalPages) ?? 1}
+              // eslint-disable-next-line no-constant-binary-expression
               currentPage={Number(params.page) ?? 1}
               onPageChange={changePage}
             />

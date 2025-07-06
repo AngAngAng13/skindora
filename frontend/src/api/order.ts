@@ -11,9 +11,12 @@ export interface FetchListOrderProps {
 export interface UpdateStatusOrderProps {
   orderID: string;
 }
+export interface FetchOrderByIdProps {
+  orderId: string;
+}
 export const fetchListOrder = async (params: FetchListOrderProps) => {
   return await httpClient
-    .get<API.IResponseSearch<Order>>(`/orders`, {
+    .get<API.IResponseSearch<Order>>("/orders", {
       limit: params.limit,
       page: params.page,
       status: params.status,
@@ -24,4 +27,7 @@ export const updateStatusOrder = async (params: UpdateStatusOrderProps) => {
   return await httpClient
     .patch<API.IUpdateStatusOrder>(`/orders/${params.orderID}/next-status`)
     .then((response) => response.data);
+};
+export const fetchOrderById = async (params: FetchOrderByIdProps) => {
+  return await httpClient.get<API.IResponseAPI<Order>>(`/orders/${params.orderId}`).then((response) => response.data);
 };
