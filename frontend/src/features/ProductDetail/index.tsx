@@ -3,7 +3,8 @@ import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
+import { useRemoveFromWishlistMutation } from "@/hooks/mutations/useRemoveFromWishlistMutation";
+import { useWishlistQuery } from "@/hooks/queries/useWishlistQuery";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/auth.context";
 import { useAddToCartMutation } from "@/hooks/mutations/useAddToCartMutation";
+import { useAddToWishlistMutation } from "@/hooks/mutations/useAddToWishlistMutation";
 import { useFilterOptionsQuery } from "@/hooks/queries/useFilterOptionsQuery";
 import { useProductByIdQuery } from "@/hooks/queries/useProductByIdQuery";
 import type { Product } from "@/types/Product";
@@ -47,13 +49,30 @@ function ProductBadges({ product, filterIdToNameMap }: ProductBadgesProps) {
 
 interface ProductHeaderProps {
   product: Product;
+   onToggleWishlist: () => void;
+  isAddingToWishlist: boolean;
+  isRemovingFromWishlist: boolean;
+  isInWishlist: boolean;
 }
-function ProductHeader({ product }: ProductHeaderProps) {
+function ProductHeader({ product, isAddingToWishlist,isInWishlist,isRemovingFromWishlist,onToggleWishlist }: ProductHeaderProps) {
+  const isWishlistLoading = isAddingToWishlist || isRemovingFromWishlist;
   return (
     <div>
       <div className="flex items-start justify-end">
-        <Button variant="ghost" size="icon" className="flex-shrink-0">
-          <Heart className="h-5 w-5" />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="flex-shrink-0"
+          onClick={onToggleWishlist}
+          disabled={isWishlistLoading}
+        >
+          {isWishlistLoading ? (
+            <LoaderCircle className="h-5 w-5 animate-spin" />
+          ) : (
+            <Heart
+              className={`h-5 w-5 transition-colors ${isInWishlist ? "fill-red-500 text-red-500" : "text-gray-500"}`}
+            />
+          )}
         </Button>
       </div>
       <h1 className="mt-2 text-3xl font-bold">{product.productName_detail}</h1>
@@ -98,9 +117,7 @@ function ProductStockAndActions({ product, filterIdToNameMap }: ProductStockAndA
   const location = useLocation();
   const { mutate: addToCart, isPending: isAddingToCart } = useAddToCartMutation();
   const handleAddToCart = () => {
-    // 1. Check if the user is logged in
     if (!isAuthenticated) {
-      // 2. If not, show a toast and redirect to the login page
       toast.info("Please log in to continue", {
         description: "You need to be logged in to add items to your cart.",
       });
@@ -108,22 +125,20 @@ function ProductStockAndActions({ product, filterIdToNameMap }: ProductStockAndA
       return;
     }
 
-    // 3. If logged in, call the mutation to add the product to the cart
     addToCart({
       ProductID: product._id,
-      Quantity: 1, // Defaulting to 1, can be updated with a quantity selector later
+      Quantity: 1,
     });
   };
   return (
     <div className="space-y-4">
       <p className="text-gray-700">{product.engName_detail}</p>
       <ProductBadges product={product} filterIdToNameMap={filterIdToNameMap} />
-       <div className="flex items-center text-green-600">
-          <Check className="mr-1 h-5 w-5" />
-          <span>In Stock ({product.quantity||0} available)</span>
-        </div>
+      <div className="flex items-center text-green-600">
+        <Check className="mr-1 h-5 w-5" />
+        <span>In Stock ({product.quantity || 0} available)</span>
+      </div>
       <div className="flex items-center space-x-4">
-       
         <Button className="flex-1" onClick={handleAddToCart} disabled={isAddingToCart}>
           {isAddingToCart ? (
             <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
@@ -192,8 +207,36 @@ function ProductTabs({ product }: ProductTabsProps) {
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { isAuthenticated } = useAuth();
+  
   const { data: product, isLoading, isError, error } = useProductByIdQuery(id);
   const { data: filterOptions } = useFilterOptionsQuery();
+  
+  // Wishlist hooks
+  const { data: wishlist, isLoading: isWishlistLoading } = useWishlistQuery(isAuthenticated);
+  const { mutate: addToWishlist, isPending: isAddingToWishlist } = useAddToWishlistMutation();
+  const { mutate: removeFromWishlist, isPending: isRemovingFromWishlist } = useRemoveFromWishlistMutation();
+
+  const isInWishlist = useMemo(() => {
+    return !!(product && wishlist?.includes(product._id));
+  }, [product, wishlist]);
+
+  const handleToggleWishlist = () => {
+    if (!isAuthenticated) {
+      toast.info("Please log in to save items to your wishlist.");
+      navigate("/auth/login", { state: { from: location }, replace: true });
+      return;
+    }
+    if (product) {
+      if (isInWishlist) {
+        removeFromWishlist([product._id]);
+      } else {
+        addToWishlist([product._id]);
+      }
+    }
+  };
 
   const filterIdToNameMap = useMemo(() => {
     if (!filterOptions) return new Map<string, string>();
@@ -208,7 +251,7 @@ const ProductDetailPage = () => {
     return map;
   }, [filterOptions]);
 
-  if (isLoading) {
+  if (isLoading || (isAuthenticated && isWishlistLoading)) {
     return (
       <div className="flex h-[80vh] items-center justify-center">
         <LoaderCircle className="text-primary h-12 w-12 animate-spin" />
@@ -235,7 +278,13 @@ const ProductDetailPage = () => {
       <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
         <ProductImageGallery images={product.main_images_detail} name={product.productName_detail} autoSlide={false} />
         <div className="space-y-6">
-          <ProductHeader product={product} />
+          <ProductHeader 
+            product={product} 
+            onToggleWishlist={handleToggleWishlist}
+            isAddingToWishlist={isAddingToWishlist}
+            isRemovingFromWishlist={isRemovingFromWishlist}
+            isInWishlist={isInWishlist}
+          />
           <ProductPrice product={product} />
           <Separator />
           <ProductStockAndActions product={product} filterIdToNameMap={filterIdToNameMap} />

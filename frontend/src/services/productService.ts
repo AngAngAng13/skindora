@@ -30,7 +30,31 @@ export const productService = {
     }
     return result.value.data;
   },
-
+  addToWishlist: async (productIds: string[]) => {
+    const result = await apiClient.post<{ message: string }, { productId: string[] }>("/users/addToWishList", {
+      productId: productIds,
+    });
+    if (result.isErr()) {
+      throw result.error;
+    }
+    return result.value.data;
+  },
+  getWishlist: async (): Promise<string[]> => {
+    const result = await apiClient.get<{ status: number; data: string[] }>("/users/getWishList");
+    if (result.isErr()) {
+      throw result.error;
+    }
+    return result.value.data.data;
+  },
+  removeFromWishlist: async (productIds: string[]) => {
+    const result = await apiClient.put<{ message: string }, { productId: string[] }>("/users/removeFromWishList", {
+      productId: productIds,
+    });
+    if (result.isErr()) {
+      throw result.error;
+    }
+    return result.value.data;
+  },
   getProductById: async (productId: string): Promise<Product> => {
     const result = await apiClient.get<{ message: string; result: Product }>(`/products/${productId}`);
     if (result.isErr()) {
