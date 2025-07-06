@@ -18,6 +18,8 @@ export const createPaymentUrlController = (req: Request, res: Response): void =>
   }
 }
 
-export const paymentReturn = (): void => {
+export const paymentReturn = (req: Request, res: Response): void => {
   console.log('callbackurl')
+
+  res.redirect(process.env.FRONTEND_URL ?? 'https://skindora.site')
 }

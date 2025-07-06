@@ -8,6 +8,6 @@ const paymentsRouter = Router()
 
 paymentsRouter.post('/zalopay', accessTokenValidator, wrapAsync(createOrder))
 paymentsRouter.post('/vnpay', accessTokenValidator, wrapAsync(createPaymentUrlController))
-paymentsRouter.post('/payments_return', wrapAsync(paymentReturn))
+paymentsRouter.get('/payments_return', wrapAsync(paymentReturn))
 
 export default paymentsRouter
