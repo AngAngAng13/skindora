@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { Link2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useFetchBrand } from "@/hooks/Brand/useFetchBrand";
 import httpClient from "@/lib/axios";
 import type { ProductFormValues } from "@/lib/productSchema";
 import { productSchema } from "@/lib/productSchema";
@@ -21,6 +23,11 @@ import TiptapEditor from "./TiptapEditor";
 
 export default function AddProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { fetchListBrand, data, loading } = useFetchBrand();
+  useEffect(() => {
+    fetchListBrand();
+  }, [data]);
   const navigate = useNavigate();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -415,10 +422,21 @@ export default function AddProductPage() {
                   name="filter_brand"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Brand ID</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="string" />
-                      </FormControl>
+                      <FormLabel>Brand</FormLabel> {/* Changed label to 'Brand' for better clarity */}
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a brand" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {data.map((brand) => (
+                            <SelectItem key={brand._id} value={brand._id}>
+                              {brand.option_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}

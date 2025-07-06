@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from "react";
 
 import { fetchAllBrand } from "@/api/brand";
-import type { FetchAllBrandProps } from "@/api/brand";
 import type { Brand } from "@/types/brand";
 
 export const useFetchBrand = () => {
