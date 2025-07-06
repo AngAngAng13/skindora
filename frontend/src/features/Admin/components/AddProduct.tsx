@@ -168,6 +168,8 @@ export default function AddProductPage() {
     <div>
       <div className="mt-3 ml-10">
         <Button
+          variant="ghost"
+          className="hover:bg-transparent hover:text-green-600"
           onClick={() => {
             navigate("/admin/products");
           }}

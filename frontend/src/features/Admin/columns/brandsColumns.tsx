@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToggleStatusVoucher } from "@/hooks/Voucher/useToggleStatusVoucher";
-import type { Voucher } from "@/types/voucher";
+import type { Brand } from "@/types/brand";
 
 const formatCurrency = (amount: number | string) => {
   return new Intl.NumberFormat("vi-VN", {
@@ -26,8 +26,8 @@ const formatCurrency = (amount: number | string) => {
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString("vi-VN");
 };
-export const ActionsCell = ({ row }: { row: { original: Voucher } }) => {
-  const { _id, isActive, code } = row.original;
+export const ActionsCell = ({ row }: { row: { original: Brand } }) => {
+  const { _id, option_name, state } = row.original;
   console.log(_id);
   const { updateStatusVoucher, loading } = useToggleStatusVoucher(String(_id));
   const handleUpdateStatus = () => {
@@ -45,11 +45,11 @@ export const ActionsCell = ({ row }: { row: { original: Voucher } }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(code)}>Copy mã voucher</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>Copy tên hãng</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
           <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
-          {isActive ? (
+          {state ? (
             <DropdownMenuItem
               disabled={loading}
               onClick={() => handleUpdateStatus()}
@@ -72,7 +72,7 @@ export const ActionsCell = ({ row }: { row: { original: Voucher } }) => {
   );
 };
 
-export const vouchersColumns: ColumnDef<Voucher>[] = [
+export const brandsColumn: ColumnDef<Brand>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -105,83 +105,23 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
   },
 
   {
-    accessorKey: "code",
+    accessorKey: "option_name",
     header: ({ column }) => (
       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Mã Voucher <ArrowUpDown className="ml-2 h-4 w-4" />
+        Tên thương hiệu <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
-      return <div className="pl-2 font-medium text-blue-600">{row.getValue("code")}</div>;
+      return <div className="pl-2 font-medium text-blue-600">{row.getValue("option_name")}</div>;
     },
   },
-
-  {
-    accessorKey: "description",
-    header: "Mô tả",
-    cell: ({ row }) => {
-      const description = row.getValue("description") as string;
-      return (
-        <div className="max-w-[250px] truncate" title={description}>
-          {description}
-        </div>
-      );
-    },
-  },
-  {
-    id: "discount",
-    header: "Mức giảm giá",
-    cell: ({ row }) => {
-      const { discountValue, maxDiscountAmount, discountType } = row.original;
-      if (discountType === "PERCENTAGE") {
-        let discountText = discountValue;
-        if (Number(maxDiscountAmount) > 0) {
-          discountText += `% (tối đa ${formatCurrency(maxDiscountAmount)})`;
-        }
-        return <div>{discountText}</div>;
-      }
-      if (discountType === "FIXED") {
-        return <div> Giảm tối đa {formatCurrency(discountValue)}</div>;
-      }
-    },
-  },
-  {
-    accessorKey: "minOrderValue",
-    header: ({ column }) => (
-      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Đơn tối thiểu <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => {
-      return <div className="pl-3 font-semibold text-green-500">{formatCurrency(row.getValue("minOrderValue"))}</div>;
-    },
-  },
-
-  {
-    id: "usage",
-    header: "Sử dụng",
-    cell: ({ row }) => {
-      const { usedCount, usageLimit } = row.original;
-      return (
-        <div>
-          {usedCount} / {usageLimit}
-        </div>
-      );
-    },
-  },
-
   // Cột Trạng thái
   {
-    accessorKey: "isActive",
+    accessorKey: "state",
     header: "Trạng thái",
     cell: ({ row }) => {
-      const isActive = row.getValue("isActive");
-      const { startDate, endDate } = row.original;
-      const now = new Date();
-      const isExpired = new Date(endDate) < now;
-      const isNotStarted = new Date(startDate) > now;
-
-      if (isActive) {
+      const state = row.getValue("state");
+      if (state) {
         return <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>;
       }
       return <Badge variant="secondary">Không hoạt động</Badge>;
@@ -190,11 +130,11 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
 
   // Cột Ngày hiệu lực
   {
-    accessorKey: "startDate",
+    accessorKey: "created_at",
     header: "Thời gian hiệu lực",
     cell: ({ row }) => {
-      const { startDate, endDate } = row.original;
-      return <div>{`${formatDate(startDate)} - ${formatDate(endDate)}`}</div>;
+      const { created_at } = row.original;
+      return <div>{`${formatDate(created_at)}`}</div>;
     },
   },
 

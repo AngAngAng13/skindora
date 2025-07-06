@@ -82,6 +82,8 @@ const AddVoucherPage: React.FC = () => {
     <div>
       <div className="mt-3 ml-10">
         <Button
+          className="hover:bg-transparent hover:text-green-600"
+          variant="ghost"
           onClick={() => {
             navigate("/admin/voucher");
           }}
