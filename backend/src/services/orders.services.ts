@@ -6,6 +6,7 @@ import {
   DiscountType,
   OrderStatus,
   OrderType,
+  PaymentMethod,
   PaymentStatus,
   ProductState,
   RefundStatus
@@ -14,6 +15,7 @@ import { ObjectId } from 'mongodb'
 import {
   BuyNowReqBody,
   OrderReqBody,
+  PendingOrder,
   PrepareOrderPayload,
   ProductInOrder,
   RevenueFilterOptions,
@@ -27,6 +29,7 @@ import OrderDetail from '~/models/schemas/Orders/OrderDetail.schema'
 import Order, { CancelRequest } from '~/models/schemas/Orders/Order.schema'
 import { VoucherType } from '~/models/schemas/Voucher.schema'
 import Product from '~/models/schemas/Product.schema'
+import { getLocalTime } from '~/utils/date'
 
 class OrdersService {
   private async buildTempOrder(userId: string, selectedProducts: ProductInCart[]): Promise<TempOrder> {
@@ -100,7 +103,6 @@ class OrdersService {
   }
 
   async buyNow(userId: string, quantity: number, product: Product): Promise<TempOrder> {
-
     const selectedProducts: ProductInCart[] = [
       {
         ProductID: product._id?.toString()!,
@@ -116,9 +118,7 @@ class OrdersService {
   }
 
   async checkOut(payload: OrderReqBody, userId: string, voucher: VoucherType | undefined) {
-    const currentDate = new Date()
-    const vietnamTimezoneOffset = 7 * 60
-    const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
+    const localTime = getLocalTime()
 
     const tempOrderKey = this.getTempOrderKey(userId)
     const tempOrder: TempOrder = await this.getTempOrder(tempOrderKey)
@@ -520,6 +520,78 @@ class OrdersService {
 
   private async saveOrderToRedis(orderKey: string, orderData: TempOrder) {
     await redisClient.set(orderKey, JSON.stringify(orderData), { EX: 30 * 60 })
+  }
+
+  getPendingOrderKey(orderId: string) {
+    return `${process.env.PENDING_ORDER_KEY}${orderId}`
+  }
+
+  async getPendingOrder(key: string) {
+    const existingOrder = await redisClient.get(key)
+    if (existingOrder) {
+      return JSON.parse(existingOrder)
+    }
+  }
+
+  async saveOrderToDB(orderId: ObjectId) {
+    const pendingOrderKey = ordersService.getPendingOrderKey(orderId?.toString())
+    const pendingOrder: PendingOrder = await ordersService.getPendingOrder(pendingOrderKey)
+
+    const { Details, ...order } = pendingOrder
+    const savedOrder = {
+      _id: orderId,
+      ...order,
+      UserID: new ObjectId(order.UserID),
+      PaymentStatus: order.PaymentMethod!== PaymentMethod.COD ? PaymentStatus.PAID : PaymentStatus.UNPAID,
+      Status: OrderStatus.PENDING,
+      created_at: getLocalTime(),
+      updated_at: getLocalTime()
+    }
+
+    const orderDetail = Details.map(d => ({
+      ...d,
+      ProductID: new ObjectId(d.ProductID),
+      OrderID: orderId,
+    }))
+
+    const session = databaseService.getClient().startSession()
+    try {
+      await session.withTransaction(async () => {
+        await databaseService.orders.insertOne(savedOrder, { session })
+        await databaseService.orderDetails.insertMany(orderDetail, { session })
+        const bulkOps = Details.map((d) => ({
+          updateOne: {
+            filter: { _id: new ObjectId(d.ProductID) },
+            update: { $inc: { quantity: -parseInt(d.Quantity ?? '0') } }
+          }
+        }))
+
+        await databaseService.products.bulkWrite(bulkOps, { session })
+
+        if (order.VoucherSnapshot) {
+          await databaseService.vouchers.updateOne(
+            { code: order.VoucherSnapshot.code },
+            { $inc: { usedCount: 1 } },
+            { session }
+          )
+        }
+      })
+      const cartKey = cartService.getCartKey(order.UserID.toString())
+      await redisClient.del(cartKey)
+      await redisClient.del(pendingOrderKey)
+      return {
+        order: savedOrder,
+        orderDetail: Details
+      }
+    } catch (error) {
+      console.error('Transaction failed:', error)
+      throw new ErrorWithStatus({
+        message: 'Failed to save order to database',
+        status: 500
+      })
+    } finally {
+      await session.endSession()
+    }
   }
 }
 

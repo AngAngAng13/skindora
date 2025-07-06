@@ -7,6 +7,7 @@ import {
   PaymentStatus,
   RefundStatus
 } from '~/constants/enums'
+import { getBaseRequiredDate, getLocalTime } from '~/utils/date'
 
 export interface CancelRequest {
   status: CancelRequestStatus
@@ -18,7 +19,7 @@ export interface CancelRequest {
   staffNote?: string
 }
 
-interface VoucherSnapshot {
+export interface VoucherSnapshot {
   code: string
   discountType: DiscountType
   discountValue: number
@@ -30,6 +31,7 @@ interface OrderType {
   UserID?: ObjectId
   ShipAddress?: string
   Description?: string
+  OrderDate?: string
   RequireDate?: string
   ShippedDate?: string
   Status?: OrderStatus
@@ -50,6 +52,7 @@ export default class Order {
   UserID?: ObjectId
   ShipAddress?: string
   Description?: string
+  OrderDate?: string
   RequireDate?: string
   ShippedDate?: string
   Status?: OrderStatus
@@ -65,15 +68,12 @@ export default class Order {
   modified_by?: ObjectId
 
   constructor(order: OrderType) {
-    const currentDate = new Date()
-    const vietnamTimezoneOffset = 7 * 60
-    const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
-
     this._id = order._id || new ObjectId()
     this.UserID = order.UserID
     this.ShipAddress = order.ShipAddress || ''
     this.Description = order.Description || ''
-    this.RequireDate = order.RequireDate || ''
+    this.OrderDate = order.OrderDate || getLocalTime().toISOString()
+    this.RequireDate = order.RequireDate || getBaseRequiredDate().toISOString()
     this.ShippedDate = order.ShippedDate || ''
     this.Status = order.Status || OrderStatus.PENDING
     this.PaymentMethod = order.PaymentMethod || PaymentMethod.COD
@@ -83,8 +83,8 @@ export default class Order {
     this.DiscountValue = order.DiscountValue || ''
     this.VoucherSnapshot = order.VoucherSnapshot
     this.TotalPrice = order.TotalPrice || ''
-    this.created_at = order.created_at || localTime
-    this.updated_at = order.updated_at || localTime
+    this.created_at = order.created_at || getLocalTime()
+    this.updated_at = order.updated_at || getLocalTime()
     this.modified_by = order.modified_by
   }
 }

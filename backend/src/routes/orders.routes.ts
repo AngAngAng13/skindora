@@ -5,6 +5,7 @@ import {
   approveCancelRequestController,
   buyNowController,
   checkOutController,
+  checkPendingOrderController,
   getAllOrdersByAuthUserController,
   getAllOrdersByUserIdController,
   getAllOrdersController,
@@ -24,7 +25,9 @@ import {
   getNextOrderStatusValidator,
   getOrderByIdValidator,
   prepareOrderValidator,
-  requestCancelOrderValidator
+  productInStockValidator,
+  requestCancelOrderValidator,
+  savePendingOrderToRedis
 } from '~/middlewares/orders.middlewares'
 import { isStaffValidator } from '~/middlewares/staff.middlewares'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
@@ -68,9 +71,35 @@ ordersRouter
   .route('/checkout')
   .post(
     accessTokenValidator,
-    filterMiddleware<OrderReqBody>(['ShipAddress', 'Description', 'RequireDate', 'ShippedDate', 'PaymentMethod', 'PaymentStatus', 'voucherCode', 'type']),
+    filterMiddleware<OrderReqBody>([
+      'ShipAddress',
+      'Description',
+      'RequireDate',
+      'PaymentMethod',
+      'PaymentStatus',
+      'voucherCode',
+      'type'
+    ]),
     checkOutValidator,
     wrapAsync(checkOutController)
+  )
+
+ordersRouter
+  .route('/test')
+  .post(
+    accessTokenValidator,
+    productInStockValidator,
+    filterMiddleware<OrderReqBody>([
+      'ShipAddress',
+      'Description',
+      'RequireDate',
+      'PaymentMethod',
+      'PaymentStatus',
+      'voucherCode'
+    ]),
+    checkOutValidator,
+    savePendingOrderToRedis,
+    wrapAsync(checkPendingOrderController)
   )
 
 export default ordersRouter

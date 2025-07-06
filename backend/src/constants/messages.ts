@@ -72,7 +72,7 @@ export const PRODUCTS_MESSAGES = {
   NOT_ENOUGHT: 'Only %s available in stock',
   PRODUCT_IDS_MUST_BE_ARRAY: 'ProductIds must be an array',
   INVALID_PRODUCT_ID: 'ProductId is invalid',
-  NOT_ACTIVE: 'Inactive product'
+  NOT_ACTIVE: 'This product is not available now'
 
 } as const
 

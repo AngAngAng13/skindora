@@ -45,7 +45,7 @@ export const buyNowController = async (req: Request, res: Response) => {
     return
   }
 
-  const product = req.product 
+  const product = req.product
   try {
     const result = await ordersService.buyNow(user_id, req.body.quantity, product)
     res.json({
@@ -180,6 +180,26 @@ export const requestCancelOrderController = async (req: Request<OrderParams>, re
 
     res.status(statusCode).json({
       message: ORDER_MESSAGES.CANCEL_FAIL,
+      error: errorMessage
+    })
+  }
+}
+
+export const checkPendingOrderController = async (req: Request, res: Response) => {
+  try {
+    const pendingOrderId = req.redis_order_id as ObjectId
+    const result = await ordersService.saveOrderToDB(pendingOrderId)
+
+    res.json({
+      message: 'Save order to db successfully',
+      result
+    })
+  } catch (error) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: 'Fail to save order to db',
       error: errorMessage
     })
   }
