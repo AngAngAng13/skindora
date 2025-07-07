@@ -5,6 +5,7 @@ import type { ProductFE } from "@/types/product";
 
 export const useFetchProductByID = (id: string) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [dataID, setDataID] = useState<ProductFE>();
   const [data, setData] = useState<ProductFE>();
   const FetchProductByID = useCallback(async () => {
     setLoading(true);
@@ -14,6 +15,7 @@ export const useFetchProductByID = (id: string) => {
       });
 
       setData(response.result);
+      setDataID(response.result);
     } catch (error) {
       console.error("Failed to fetch paginated users:", error);
       setData(undefined);
@@ -23,6 +25,7 @@ export const useFetchProductByID = (id: string) => {
   }, []);
   return {
     loading,
+    dataID,
     data,
     FetchProductByID,
   };

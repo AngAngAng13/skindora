@@ -42,7 +42,7 @@ export const ActionsCell = ({ row }: { row: { original: Order } }) => {
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(_id)}>Copy mã voucher</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/order-detail/${_id}`)}>Xem chi tiết</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("")}>Chỉnh sửa</DropdownMenuItem>
+          {/* <DropdownMenuItem onClick={() => navigate("")}>Chỉnh sửa</DropdownMenuItem> */}
           <DropdownMenuItem onClick={() => handleUpdateStatus()}>Cập nhật</DropdownMenuItem>
           {/* {isActive ? (
             <DropdownMenuItem

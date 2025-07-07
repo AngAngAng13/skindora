@@ -1,7 +1,7 @@
 // Import icons từ lucide-react cho trực quan
 import { Calendar, ChevronLeft, FileText, MoreVertical, Truck, User } from "lucide-react";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Import các component từ shadcn/ui
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,7 @@ type OrderStatus = "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancell
 
 const OrderDetailPage = () => {
   const { orderId } = useParams<{ orderId: string }>();
+  const navigate = useNavigate();
   // Đổi tên hook cho nhất quán với việc fetch order
   const { loading, data: order, FetchProductByID } = useFetchOrderByID(String(orderId));
   useEffect(() => {
@@ -86,9 +87,8 @@ const OrderDetailPage = () => {
           {/* Header */}
           <div className="mx-auto grid w-full max-w-6xl flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
-              <Button variant="outline" size="icon" className="h-7 w-7">
+              <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => navigate("/admin/orders")}>
                 <ChevronLeft className="h-4 w-4" />
-                <span className="sr-only">Back</span>
               </Button>
               <h1 className="flex-1 shrink-0 text-xl font-semibold tracking-tight whitespace-nowrap sm:grow-0">
                 Chi tiết đơn hàng

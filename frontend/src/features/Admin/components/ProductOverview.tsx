@@ -71,11 +71,6 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
     console.log(data);
   }, [data]);
 
-  const handleEdit = (product: Product) => {
-    onSelectProduct(product);
-    onEditProduct();
-  };
-
   return (
     <div>
       {loading ? (
@@ -174,7 +169,11 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="outline" size="icon" onClick={() => handleEdit(product)}>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => navigate(`/admin/${product._id}/update-product`)}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
                       </div>
