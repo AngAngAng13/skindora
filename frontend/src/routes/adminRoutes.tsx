@@ -2,6 +2,7 @@ import type { RouteObject } from "react-router-dom";
 
 import Admin from "@/features/Admin";
 import AddVoucherPage from "@/features/Admin/AddVoucherPage";
+import CreateBrand from "@/features/Admin/CreateBrand";
 import ManageBrand from "@/features/Admin/ManageBrand";
 import ManageUsers from "@/features/Admin/ManageCustomer";
 import ManageOrders from "@/features/Admin/ManageOrders";
@@ -14,6 +15,7 @@ import ManageVoucher from "@/features/Admin/ManageVoucher";
 import OrderDetailPage from "@/features/Admin/OrderDetailPage";
 import ProductDetail from "@/features/Admin/ProductDetail";
 import ProfileAdmin from "@/features/Admin/ProfileAdmin";
+import UpdateBrand from "@/features/Admin/UpdateBrand";
 import UpdateDetailProduct from "@/features/Admin/UpdateDetail";
 import UpdateVoucher from "@/features/Admin/UpdateVoucher";
 import VoucherDetail from "@/features/Admin/VoucherDetail";
@@ -34,10 +36,17 @@ const adminRoutes: RouteObject[] = [
         path: "products",
         element: <ManageProducts />,
       },
-
       {
         path: "brand",
         element: <ManageBrand />,
+      },
+      {
+        path: "create-brand",
+        element: <CreateBrand />,
+      },
+      {
+        path: ":id/update-brand",
+        element: <UpdateBrand />,
       },
       {
         path: "typeskin",
