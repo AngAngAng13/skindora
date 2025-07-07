@@ -75,7 +75,23 @@ export const removeFromWishListController = async (req: Request, res: Response):
     res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
+export const getProductFromWishListController = async (req: Request, res: Response): Promise<void> => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+  const productID = await productService.getWishList(user_id)
+  
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
 
+  try {
+    const wishList = await productService.getProductsFromWishList(productID)
+    res.status(200).json({ status: 200, data: wishList })
+  } catch (error: any) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
+  }
+}
 export const addNewReviewController = async (req: Request, res: Response) => {
   const { user_id } = req.decoded_authorization as TokenPayLoad
 
