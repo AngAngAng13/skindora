@@ -6,16 +6,20 @@ export const productService = {
     page = 1,
     limit = 12,
     filters = {},
+    q = "",
   }: {
     page: number;
     limit: number;
     filters?: Record<string, string[]>;
+    q?: string;
   }) => {
     const params = new URLSearchParams({
       page: String(page),
       limit: String(limit),
     });
-
+    if (q) {
+      params.append("q", q);
+    }
     Object.entries(filters).forEach(([key, value]) => {
       if (value && value.length > 0) {
         params.append(key, value.join(","));
@@ -39,7 +43,7 @@ export const productService = {
     }
     return result.value.data;
   },
-    getWishlistProducts: async (): Promise<Product[]> => {
+  getWishlistProducts: async (): Promise<Product[]> => {
     const result = await apiClient.get<{ status: number; data: Product[] }>("/users/wishlist-products");
     if (result.isErr()) {
       throw result.error;
@@ -68,5 +72,13 @@ export const productService = {
       throw result.error;
     }
     return result.value.data.result;
+  },
+  getProductsByIds: async (productIds: string[]): Promise<Product[]> => {
+    const result = await apiClient.get<PaginatedProductsResponse>("/products/get-all?limit=1000");
+    if (result.isErr()) {
+      throw result.error;
+    }
+    const allProducts = result.value.data.data;
+    return allProducts.filter((p) => productIds.includes(p._id));
   },
 };

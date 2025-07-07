@@ -11,6 +11,7 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { sendPaginatedResponse } from '~/utils/pagination.helper'
 import { CreateNewProductReqBody } from '~/models/requests/Product.requests'
 import Review from '~/models/schemas/Reviewschema'
+import logger from '~/utils/logger'
 
 export const addToWishListController = async (req: Request, res: Response): Promise<void> => {
   const { productId } = req.body
@@ -161,7 +162,30 @@ export const userGetAllProductController = async (req: Request, res: Response, n
     filter_brand: 1,
     _id: 1
   }
-  const filter = {}
+  // const filter = {} as any
+   const filter: Filter<any> = {};
+  if (req.query.q){
+    const searchQuery = req.query.q as string
+    filter.name_on_list = { $regex: searchQuery, $options: 'i' };
+  }
+  const validFilterKeys = [
+    'filter_brand',
+    'filter_hsk_skin_type',
+    'filter_hsk_uses',
+    'filter_hsk_product_type',
+    'filter_dac_tinh',
+    'filter_hsk_ingredient',
+    'filter_hsk_size',
+    'filter_origin'
+  ];
+  for ( const key of validFilterKeys){if(req.query[key]){
+    const filterValues = (req.query[key] as string).split(',');
+    const objectIds = filterValues.map(id => new ObjectId(id));
+    if (objectIds.length > 0) {
+      filter[key] = { $in: objectIds };
+    }
+  }}
+  logger.info(filter);
   await sendPaginatedResponse(res, next, databaseService.products, req.query, filter, projection)
 }
 

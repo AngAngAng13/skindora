@@ -1,7 +1,7 @@
 import { Heart, Menu, Search, ShoppingCart, User as UserIcon, X } from "lucide-react";
-import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-
+import { useState ,useEffect} from "react";
+import { Link, useLocation, useNavigate,useSearchParams } from "react-router-dom";
+import { useDebounce } from "@/hooks/useDebounce";
 import logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,16 +49,38 @@ function NavigationItems({ navItems }: { navItems: AppHeaderProps["navItems"] })
 }
 
 function SearchBar() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [inputValue, setInputValue] = useState(searchParams.get("q") || "");
+  const debouncedSearchTerm = useDebounce(inputValue, 500);
+
+  useEffect(() => {
+    navigate(`/products?q=${debouncedSearchTerm}`);
+  }, [debouncedSearchTerm, navigate]);
+
+  useEffect(() => {
+    setInputValue(searchParams.get("q") || "");
+  }, [searchParams]);
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate(`/products?q=${inputValue}`);
+  };
+
   return (
     <div className="mx-6 hidden flex-1 justify-center md:flex">
-      <div className="relative w-full max-w-lg">
+      <form onSubmit={handleSearch} className="relative w-full max-w-lg">
         <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-        <Input placeholder="Search for products, brands, and more..." className="pl-10" />
-      </div>
+        <Input
+          placeholder="Search for products, brands, and more..."
+          className="pl-10"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+        />
+      </form>
     </div>
   );
 }
-
 function HeaderActions() {
   const { user, actions, isAuthenticated } = useAuth();
   const navigate = useNavigate();
