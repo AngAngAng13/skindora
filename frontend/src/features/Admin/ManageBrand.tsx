@@ -32,10 +32,13 @@ const ManageBrand: React.FC = () => {
     setHeaderName("Quản Lý Voucher");
   }, [setHeaderName]);
   return (
-    <div className="flex min-h-screen bg-white">
-      {loading || !data ? (
-        <div className="flex h-[300px] w-full items-center justify-center">
-          <Loader2 size="lg" />
+    <div className="">
+      {loading ? (
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <div className="text-muted-foreground flex items-center gap-2">
+            <Loader2 className="text-primary h-8 w-8 animate-spin" />
+            <span className="text-lg">Đang tải dữ liệu...</span>
+          </div>
         </div>
       ) : (
         <>

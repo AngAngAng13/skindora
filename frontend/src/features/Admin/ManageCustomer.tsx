@@ -1,4 +1,4 @@
-import { TrendingDown, TrendingUp } from "lucide-react";
+import { Loader2, TrendingDown, TrendingUp } from "lucide-react";
 import React, { useEffect, useMemo } from "react";
 
 import { Card } from "@/components/ui/card";
@@ -7,7 +7,6 @@ import { useFetchUser } from "@/hooks/User/useFetchUser";
 
 import { userColumn } from "./columns/usersColums";
 import { CardDemo } from "./components/Card";
-import { Loader } from "./components/Loader";
 import { PaginationDemo } from "./components/Pagination";
 import { ChartRadialText } from "./components/RadialChart";
 // Component đã được cập nhật
@@ -67,10 +66,13 @@ const ManageCustomer: React.FC = () => {
   }, [allUser]);
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="">
       {loading || !data || !allUser || monthlyUserData.length === 0 ? (
-        <div className="flex h-[300px] w-full items-center justify-center">
-          <Loader size="lg" />
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <div className="text-muted-foreground flex items-center gap-2">
+            <Loader2 className="text-primary h-8 w-8 animate-spin" />
+            <span className="text-lg">Đang tải dữ liệu...</span>
+          </div>
         </div>
       ) : (
         <>

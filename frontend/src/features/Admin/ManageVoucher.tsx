@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -10,7 +10,6 @@ import { useFetchVoucher } from "@/hooks/Voucher/useFetchVoucher";
 
 import { vouchersColumns } from "./columns/vouchersColumn";
 import { CardDemo } from "./components/Card";
-import { Loader } from "./components/Loader";
 import { PaginationDemo } from "./components/Pagination";
 // Component đã được cập nhật
 import { DataTable } from "./components/TableCustom";
@@ -33,10 +32,13 @@ const ManageVoucher: React.FC = () => {
     }));
   };
   return (
-    <div className="flex min-h-screen bg-white">
-      {loading || !voucher ? (
-        <div className="flex h-[300px] w-full items-center justify-center">
-          <Loader size="lg" />
+    <div className="">
+      {loading ? (
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <div className="text-muted-foreground flex items-center gap-2">
+            <Loader2 className="text-primary h-8 w-8 animate-spin" />
+            <span className="text-lg">Đang tải dữ liệu...</span>
+          </div>
         </div>
       ) : (
         <>

@@ -87,7 +87,6 @@ const VoucherDetail = () => {
     );
   }
 
-  // --- Render Giao diện chính khi có dữ liệu ---
   const usagePercentage = (voucher.usedCount / voucher.usageLimit) * 100;
   const isExpired = new Date(voucher.endDate) < new Date();
 

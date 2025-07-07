@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      <div className="bg-card text-card-foreground flex items-center gap-2 rounded-lg border p-4">
+      <div className="bg-card text-card-foreground flex items-center gap-2 p-4">
         <div className="flex-grow">
           <div className="relative flex items-center">
             <Search className="text-muted-foreground absolute left-3 h-4 w-4" />
@@ -75,7 +75,7 @@ export function DataTable<TData, TValue>({
               placeholder={filterPlaceholder}
               value={(table.getColumn(filterColumnId)?.getFilterValue() as string) ?? ""}
               onChange={(event) => table.getColumn(filterColumnId)?.setFilterValue(event.target.value)}
-              className="p-6 pl-10"
+              className="rounded-lg border border-gray-300 p-6 pl-10 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
         </div>

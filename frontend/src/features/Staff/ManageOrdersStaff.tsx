@@ -1,6 +1,6 @@
+import { Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 
-import { Loader } from "@/components/ui/loader";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchOrder } from "@/hooks/Orders/useFetchOrders";
 
@@ -40,14 +40,17 @@ const ManageOrdersStaff: React.FC = () => {
   return (
     <div>
       {loading ? (
-        <div className="text-primary flex h-[300px] w-full items-center justify-center">
-          <Loader size="lg" />
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <div className="text-muted-foreground flex items-center gap-2">
+            <Loader2 className="text-primary h-8 w-8 animate-spin" />
+            <span className="text-lg">Đang tải dữ liệu...</span>
+          </div>
         </div>
       ) : (
         <div>
-          <div className="flex min-h-screen bg-white">
+          <div className="">
             <div className="flex-1">
-              <div className="mx-auto bg-white px-8 py-15 pt-4">
+              <div className="mx-auto rounded-sm bg-white px-8 py-15 pt-3 shadow-md">
                 <div>
                   <DataTable
                     columns={orderColumn}

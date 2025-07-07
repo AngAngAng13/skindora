@@ -46,8 +46,11 @@ const ProductDetail = () => {
   };
   if (loading) {
     return (
-      <div className="flex h-[70vh] w-full items-center justify-center">
-        <Loader2 className="text-primary h-12 w-12 animate-spin" />
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="text-muted-foreground flex items-center gap-2">
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
+          <span className="text-lg">Đang tải dữ liệu...</span>
+        </div>
       </div>
     );
   }

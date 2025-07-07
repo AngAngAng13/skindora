@@ -1,11 +1,10 @@
-import { Edit, Eye, Package, Star } from "lucide-react";
+import { Edit, Eye, Loader2, Package, Star } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader } from "@/components/ui/loader";
 import { useFetchProduct } from "@/hooks/Product/useFetchProduct";
 
 import { PaginationDemo } from "./Pagination";
@@ -80,8 +79,11 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
   return (
     <div>
       {loading ? (
-        <div className="text-primary flex h-[300px] w-full items-center justify-center">
-          <Loader size="lg" />
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <div className="text-muted-foreground flex items-center gap-2">
+            <Loader2 className="text-primary h-8 w-8 animate-spin" />
+            <span className="text-lg">Đang tải dữ liệu...</span>
+          </div>
         </div>
       ) : (
         <div className="space-y-6">
