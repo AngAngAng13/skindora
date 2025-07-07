@@ -295,7 +295,8 @@ export const ORDER_MESSAGES = {
   NOT_ALLOW_FUTURE_DATE: 'Future date is not allowed',
   INVALID_FILTER_ID: 'FilterId must be a valid ObjectId',
   UNABLE_TO_CANCEL: 'This order cannot be cancelled',
-  ORDER_CANCELLED: 'Order has been cancelled'
+  ORDER_CANCELLED: 'Order has been cancelled',
+  INVALID_CANCELLED_STATUS: 'Invalid Cancelled status'
 } as const
 
 export const VOUCHER_MESSAGES = {
