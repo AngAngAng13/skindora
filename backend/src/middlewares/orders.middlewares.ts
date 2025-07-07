@@ -271,6 +271,27 @@ export const getAllOrdersValidator = validate(
   })
 )
 
+export const getAllCancelledOrdersValidator = validate(
+  checkSchema({
+    status: {
+      in: ['query'],
+      optional: true,
+      custom: {
+        options: (value) => {
+          if (!Object.values(CancelRequestStatus).includes(value)) {
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.INVALID_CANCELLED_STATUS,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+          return true
+        }
+      }
+    }
+  })
+)
+
+
 export const getNextOrderStatusValidator = validate(
   checkSchema({
     orderId: {

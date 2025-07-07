@@ -194,6 +194,16 @@ export const getAllOrdersController = async (req: Request, res: Response, next: 
   await sendPaginatedResponse(res, next, databaseService.orders, req.query, filter)
 }
 
+export const getAllCancelledOrdersController = async (req: Request, res: Response, next: NextFunction) => {
+  const filter: Filter<Order> = {}
+  filter['CancelRequest'] = { $exists: true }
+
+  if (req.query.status) {
+    filter['CancelRequest.status'] = req.query.status as CancelRequestStatus
+  }
+  await sendPaginatedResponse(res, next, databaseService.orders, req.query, filter)
+}
+
 export const getAllOrdersByUserIdController = async (
   req: Request<{ userId: string }>,
   res: Response,
