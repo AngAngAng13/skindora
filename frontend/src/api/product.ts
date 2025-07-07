@@ -10,6 +10,7 @@ export interface FetchProductProps {
 export interface FetchProductByIDProps {
   id: string;
 }
+//get-all-product
 export const fetchProduct = async (params: FetchProductProps) => {
   return await httpClient
     .get<API.IResponseSearch<ProductFE>>("/admin/manage-products/get-all", {
@@ -18,9 +19,18 @@ export const fetchProduct = async (params: FetchProductProps) => {
     })
     .then((response) => response.data);
 };
-
+//get-product-by-id
 export const fetchProductByID = async (params: FetchProductByIDProps) => {
   return await httpClient
     .get<API.IResponse<ProductFE>>(`/admin/manage-products/${params.id}`)
+    .then((response) => response.data);
+};
+//get-product-by-staff
+export const fetchProductByStaff = async (params: FetchProductProps) => {
+  return await httpClient
+    .get<API.IResponseSearch<ProductFE>>("/staffs/manage-products/get-all", {
+      limit: params.limit,
+      page: params.page,
+    })
     .then((response) => response.data);
 };

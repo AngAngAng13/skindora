@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 
 import type { FetchProductProps } from "@/api/product";
 import { fetchProduct } from "@/api/product";
+import { fetchProductByStaff } from "@/api/product";
 import type { ProductFE } from "@/types/product";
 
 export const useFetchProduct = () => {
@@ -39,7 +40,27 @@ export const useFetchProduct = () => {
       setLoading(false);
     }
   }, [params.limit, params.page]);
-
+  const fetchListProductByStaff = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetchProductByStaff({
+        limit: params.limit,
+        page: params.page,
+      });
+      console.log(response);
+      setData(response.data);
+      setParams((prev) => ({
+        ...prev,
+        totalPages: response.pagination.totalPages,
+        totalRecords: response.pagination.totalRecords,
+      }));
+    } catch (error) {
+      console.error("Failed to fetch paginated users:", error);
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [params.limit, params.page]);
   return {
     loading,
     fetchListProduct,
@@ -48,5 +69,6 @@ export const useFetchProduct = () => {
     setParams,
     changeLimit,
     changePage,
+    fetchListProductByStaff,
   };
 };
