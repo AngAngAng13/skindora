@@ -39,6 +39,13 @@ export const productService = {
     }
     return result.value.data;
   },
+    getWishlistProducts: async (): Promise<Product[]> => {
+    const result = await apiClient.get<{ status: number; data: Product[] }>("/users/wishlist-products");
+    if (result.isErr()) {
+      throw result.error;
+    }
+    return result.value.data.data;
+  },
   getWishlist: async (): Promise<string[]> => {
     const result = await apiClient.get<{ status: number; data: string[] }>("/users/getWishList");
     if (result.isErr()) {

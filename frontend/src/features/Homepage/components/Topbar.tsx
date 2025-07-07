@@ -1,4 +1,4 @@
-import {Heart, Menu, Search, ShoppingCart, User as UserIcon, X } from "lucide-react";
+import { Heart, Menu, Search, ShoppingCart, User as UserIcon, X } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth.context";
 import { useCartQuery } from "@/hooks/queries/useCartQuery";
+import { useWishlistQuery } from "@/hooks/queries/useWishlistQuery";
+
 
 interface AppHeaderProps {
   branding?: string;
@@ -59,17 +61,32 @@ function SearchBar() {
 
 function HeaderActions() {
   const { user, actions, isAuthenticated } = useAuth();
-  const { data: cartAPIResponse } = useCartQuery(isAuthenticated);
-  const cartCount = cartAPIResponse?.result.Products.length || 0;
   const navigate = useNavigate();
+
+  const { data: cartAPIResponse } = useCartQuery(isAuthenticated);
+  const { data: wishlistData } = useWishlistQuery(isAuthenticated);
+
+  const cartCount = cartAPIResponse?.result.Products.length || 0;
+  const wishlistCount = wishlistData?.length || 0;
 
   return (
     <div className="flex items-center space-x-2 md:space-x-4">
       {isAuthenticated && (
         <>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative hidden md:inline-flex"
+            onClick={() => navigate("/profile/wishlist")}
+          >
             <Heart className="h-5 w-5" />
+            {wishlistCount > 0 && (
+              <span className="bg-primary absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-xs text-white">
+                {wishlistCount}
+              </span>
+            )}
           </Button>
+
           <Button variant="ghost" size="icon" className="relative" onClick={() => navigate("/cart")}>
             <ShoppingCart className="h-5 w-5" />
             {cartCount > 0 && (
@@ -83,10 +100,6 @@ function HeaderActions() {
 
       {user ? (
         <div className="flex items-center gap-2">
-          {/* <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-            <Bell className="h-5 w-5" />
-            <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
-          </Button> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="relative h-9 w-9 rounded-full">
@@ -99,6 +112,9 @@ function HeaderActions() {
               <DropdownMenuGroup>
                 <Link to="/profile">
                   <DropdownMenuItem>Profile</DropdownMenuItem>
+                </Link>
+                <Link to="/profile/wishlist">
+                  <DropdownMenuItem>Wishlist</DropdownMenuItem>
                 </Link>
                 <DropdownMenuItem>Settings</DropdownMenuItem>
               </DropdownMenuGroup>

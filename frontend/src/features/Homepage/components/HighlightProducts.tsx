@@ -1,46 +1,28 @@
 import Autoplay from "embla-carousel-autoplay";
-import { ChevronRight, LoaderCircle, ShoppingCart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ChevronRight, LoaderCircle } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { ProductCard } from "@/components/ui/ProductCard";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { useAddToCartMutation } from "@/hooks/mutations/useAddToCartMutation";
 import { useAllProductsQuery } from "@/hooks/queries/useAllProductsQuery";
-import type { ProductSummary } from "@/types";
-
-function HighlightProductCard({ product }: { product: ProductSummary }) {
-  return (
-    <Card className="hover:shadow-primary/25 hover:border-primary/40 overflow-hidden transition-shadow duration-400 hover:shadow-lg">
-      <CardHeader className="p-2">
-        <div className="relative">
-          <img
-            src={product.image_on_list}
-            alt={product.name_on_list}
-            className="h-56 w-full object-contain transition-transform duration-400 hover:scale-125"
-          />
-        </div>
-      </CardHeader>
-      <CardContent>
-        <h3 className="line-clamp-2 text-sm font-medium">{product.name_on_list}</h3>
-      </CardContent>
-      <CardFooter className="flex items-center justify-between px-6 py-4">
-        <p className="text-primary text-lg font-bold">{parseInt(product.price_on_list).toLocaleString("vi-VN")}đ</p>
-        <Button size="sm">
-          <ShoppingCart className="mr-2 h-4 w-4" />
-          Thêm vào giỏ
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-}
-
 
 function HighlightProductsCarousel() {
-  const { data: paginatedData, isLoading, isError, error } = useAllProductsQuery(1, 10,{});
+  const { data: paginatedData, isLoading, isError, error } = useAllProductsQuery(1, 10, {});
+  const { mutate: addToCart, isPending: isAddingToCart } = useAddToCartMutation();
+  const navigate = useNavigate();
+
+  const handleAddToCart = (productId: string) => {
+    addToCart({ ProductID: productId, Quantity: 1 });
+  };
+
+  const handleCardClick = (productId: string) => {
+    navigate(`/product/${productId}`);
+  };
 
   if (isLoading) {
     return (
-      <div className="flex justify-center py-12"> 
+      <div className="flex justify-center py-12">
         <LoaderCircle className="text-primary h-10 w-10 animate-spin" />
       </div>
     );
@@ -72,7 +54,13 @@ function HighlightProductsCarousel() {
       <CarouselContent className="py-4">
         {products.map((product) => (
           <CarouselItem key={product._id} className="md:basis-1/2 lg:basis-1/4">
-            <HighlightProductCard product={product} />
+            <ProductCard
+              product={product}
+              variant="carousel" 
+              onAddToCart={handleAddToCart}
+              onCardClick={handleCardClick}
+              isAddingToCart={isAddingToCart}
+            />
           </CarouselItem>
         ))}
       </CarouselContent>
@@ -88,7 +76,6 @@ export default function HighlightProducts(): React.JSX.Element {
       <div className="container mx-auto px-4">
         <div className="mb-12 flex items-center justify-between">
           <h2 className="prose-h2 text-2xl font-bold">Sản phẩm nổi bật</h2>
-        
           <Link to="/products" className="text-primary flex items-center hover:underline">
             Xem tất cả
             <ChevronRight className="ml-1 inline h-4 w-4" />
