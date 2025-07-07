@@ -4,6 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import { updateStatusOrder } from "@/api/order";
 import Typography from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,17 +17,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUpdateStatus } from "@/hooks/Orders/useUpdateStatus";
 import type { Order } from "@/types/order";
 
 export const ActionsCell = ({ row }: { row: { original: Order } }) => {
   const navigate = useNavigate();
   const { _id } = row.original;
-  console.log(_id);
-  // const { updateStatusVoucher, loading } = useToggleStatusVoucher(String(_id));
-  // const handleUpdateStatus = () => {
-  //   updateStatusVoucher();
-  //   window.location.reload();
-  // };
+  const { updateStatus } = useUpdateStatus(String(_id));
+  const handleUpdateStatus = () => {
+    updateStatus();
+    window.location.reload();
+  };
   return (
     <div className="text-right">
       <DropdownMenu>
@@ -41,7 +42,8 @@ export const ActionsCell = ({ row }: { row: { original: Order } }) => {
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(_id)}>Copy mã voucher</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/order-detail/${_id}`)}>Xem chi tiết</DropdownMenuItem>
-          <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("")}>Chỉnh sửa</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleUpdateStatus()}>Cập nhật</DropdownMenuItem>
           {/* {isActive ? (
             <DropdownMenuItem
               disabled={loading}
