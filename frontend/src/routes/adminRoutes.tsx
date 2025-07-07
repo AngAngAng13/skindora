@@ -14,6 +14,7 @@ import ManageVoucher from "@/features/Admin/ManageVoucher";
 import OrderDetailPage from "@/features/Admin/OrderDetailPage";
 import ProductDetail from "@/features/Admin/ProductDetail";
 import ProfileAdmin from "@/features/Admin/ProfileAdmin";
+import UpdateVoucher from "@/features/Admin/UpdateVoucher";
 import VoucherDetail from "@/features/Admin/VoucherDetail";
 import AddProductPage from "@/features/Admin/components/AddProduct";
 import AdminLayout from "@/layouts/adminLayout";
@@ -68,6 +69,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "createVoucher",
         element: <AddVoucherPage />,
+      },
+      {
+        path: "update-voucher/:voucherId",
+        element: <UpdateVoucher />,
       },
       {
         path: "orders",

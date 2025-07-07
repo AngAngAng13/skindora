@@ -138,9 +138,6 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Sản phẩm mới nhất</span>
-                <Button variant="outline" size="sm">
-                  Xem tất cả
-                </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>

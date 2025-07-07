@@ -11,6 +11,9 @@ export interface ToggleStatusProps {
 export interface FetchVoucherByID {
   voucherId: string;
 }
+export interface UpdateVoucherProps {
+  voucherId: string;
+}
 export const fetchListVoucher = async (params: FetchVoucherListProps) => {
   return await httpClient
     .get<API.IResponseSearch<Voucher>>("/admin/manage-vouchers/get-all", {
@@ -34,4 +37,8 @@ export const fetchVoucherByID = async (params: FetchVoucherByID) => {
   return await httpClient
     .get<API.IResponseAPI<Voucher>>(`/admin/manage-voucher/${params.voucherId}`)
     .then((response) => response.data);
+};
+
+export const updateVoucher = async (params: UpdateVoucherProps, payload: Voucher) => {
+  return httpClient.put(`/admin/manage-vouchers/${params.voucherId}`, payload).then((response) => response.data);
 };

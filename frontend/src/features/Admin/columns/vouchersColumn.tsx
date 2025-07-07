@@ -50,7 +50,7 @@ export const ActionsCell = ({ row }: { row: { original: Voucher } }) => {
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(code)}>Copy mã voucher</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/voucher-detail/${_id}`)}>Xem chi tiết</DropdownMenuItem>
-          <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/update-voucher/${_id}`)}>Chỉnh sửa</DropdownMenuItem>
           {isActive ? (
             <DropdownMenuItem
               disabled={loading}
