@@ -99,17 +99,17 @@ export const updateProductStateController = async (
   next: NextFunction
 ) => {
   try {
-    const { _id } = req.params;
-    const { state } = req.body;
-    const {user_id} = req.decoded_authorization as TokenPayLoad;
+    const { _id } = req.params
+    const { state } = req.body
+    const { user_id } = req.decoded_authorization as TokenPayLoad
 
-    const result = await productService.updateProductState(_id, state, user_id);
+    const result = await productService.updateProductState(_id, state, user_id)
 
     res.json({
       message: ADMIN_MESSAGES.UPDATE_PRODUCT_STATE_SUCCESS,
       data: result
-    });
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}

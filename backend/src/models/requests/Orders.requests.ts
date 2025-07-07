@@ -1,18 +1,16 @@
 import { PaymentStatus } from './../../constants/enums';
 import { ObjectId } from 'mongodb'
-import { CancelRequestStatus, OrderStatus, OrderType, PaymentMethod } from '~/constants/enums'
+import { CancelRequestStatus, OrderType, PaymentMethod } from '~/constants/enums'
+import OrderDetail from '../schemas/Orders/OrderDetail.schema';
+import { VoucherSnapshot } from '../schemas/Orders/Order.schema';
 
 export interface OrderReqBody {
-  UserID: string
-  ProductID: Array<string>
   ShipAddress: string
   Description?: string
-  RequireDate: string
-  ShippedDate: string
-  Discount?: string
-  PaymentMethod: PaymentMethod
-  PaymentStatus: PaymentStatus
-  Status: OrderStatus
+  RequireDate?: string
+  PaymentMethod?: PaymentMethod
+  PaymentStatus?: PaymentStatus,
+  voucherCode?: string,
   type?: OrderType
 }
 
@@ -23,19 +21,6 @@ export interface OrderParams {
 export interface BuyNowReqBody {
   productId: string
   quantity: number
-}
-
-export interface ProductInOrder {
-  ProductID: string
-  Quantity: number
-  PricePerUnit: number
-  TotalPrice: number
-}
-export interface TempOrder {
-  UserID: ObjectId | string
-  Products: Array<ProductInOrder>
-  TotalPrice: number
-  CreatedAt: Date
 }
 
 export interface PrepareOrderPayload {
@@ -55,3 +40,47 @@ export interface RejectCancelRequest {
   staffId: ObjectId
   staffNote?: string
 }
+
+export interface RevenueFilterOptions {
+  specificDate?: string
+  fromDate?: string
+  toDate?: string
+  filterBrand?: ObjectId
+  filterDacTinh?: ObjectId
+  filterHskIngredients?: ObjectId
+  filterHskProductType?: ObjectId
+  filterHskSize?: ObjectId
+  filterHskSkinType?: ObjectId
+  filterHskUses?: ObjectId
+  filterOrigin?: ObjectId
+}
+
+export interface ProductInOrder {
+  ProductID: string
+  Quantity: number
+  PricePerUnit: number
+  TotalPrice: number
+}
+export interface TempOrder {
+  UserID: ObjectId | string
+  Products: Array<ProductInOrder>
+  TotalPrice: number
+  CreatedAt: Date
+}
+
+export interface PendingOrder {
+  UserID: ObjectId
+  Details: Array<OrderDetail>
+  ShipAddress: string,
+  Description?: string,
+  RequireDate?: string,
+  DiscountValue?: string,
+  VoucherSnapshot?: VoucherSnapshot,
+  PaymentMethod?: PaymentMethod,
+  PaymentStatus?: PaymentStatus,
+  TotalPrice: string
+}
+
+
+
+

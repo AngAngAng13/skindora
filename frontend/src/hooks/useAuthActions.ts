@@ -2,14 +2,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
-import type { LoginFormData, RegisterFormData } from "@/schemas/authSchemas";
+import type { LoginFormData, RegisterFormData, ResetPasswordFormData } from "@/schemas/authSchemas";
 import { logger } from "@/utils";
 import { clearTokens, setTokens } from "@/utils/tokenManager";
 
+import { useForgotPasswordMutation } from "./mutations/useForgotPasswordMutation";
 import { useLoginMutation } from "./mutations/useLoginMutation";
 import { useLogoutMutation } from "./mutations/useLogoutMutation";
 import { useRegisterMutation } from "./mutations/useRegisterMutation";
+import { useResetPasswordMutation } from "./mutations/useResetPasswordMutation";
 import { useVerifyEmailMutation } from "./mutations/useVerifyEmailMutation";
 
 export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<boolean>>) => {
@@ -19,7 +20,8 @@ export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<
   const loginMutation = useLoginMutation();
   const registerMutation = useRegisterMutation();
   const logoutMutation = useLogoutMutation();
-
+  const forgotPasswordMutation = useForgotPasswordMutation();
+  const resetPasswordMutation = useResetPasswordMutation();
   const login = useCallback(
     (credentials: LoginFormData) => {
       loginMutation.mutate(credentials, {
@@ -103,6 +105,49 @@ export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<
 
     logoutMutation.mutate();
   }, [logoutMutation, queryClient, navigate, setHasToken]);
+  const forgotPassword = useCallback(
+    (data: { email: string }) => {
+      forgotPasswordMutation.mutate(data, {
+        onSuccess: (result) => {
+          if (result.isOk()) {
+            toast.success("Reset Link Sent", {
+              description: "Please check your email for instructions to reset your password.",
+            });
+          } else {
+            toast.error("Request Failed", { description: result.error.message });
+          }
+        },
+        onError: (error) => {
+          toast.error("Request Failed", { description: error.message });
+        },
+      });
+    },
+    [forgotPasswordMutation]
+  );
+
+  const resetPassword = useCallback(
+    (token: string, data: ResetPasswordFormData) => {
+      resetPasswordMutation.mutate(
+        { token, data },
+        {
+          onSuccess: (result) => {
+            if (result.isOk()) {
+              toast.success("Password Reset Successfully", {
+                description: "You can now log in with your new password.",
+              });
+              navigate("/auth/login");
+            } else {
+              toast.error("Reset Failed", { description: result.error.message });
+            }
+          },
+          onError: (error) => {
+            toast.error("Reset Failed", { description: error.message });
+          },
+        }
+      );
+    },
+    [resetPasswordMutation, navigate]
+  );
   return {
     login,
     isLoggingIn: loginMutation.isPending,
@@ -112,5 +157,9 @@ export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<
     isLoggingOut: logoutMutation.isPending,
     verifyEmail,
     isVerifyingEmail: verifyEmailMutation.isPending,
+    forgotPassword,
+    isRequestingReset: forgotPasswordMutation.isPending,
+    resetPassword,
+    isResettingPassword: resetPasswordMutation.isPending,
   };
 };

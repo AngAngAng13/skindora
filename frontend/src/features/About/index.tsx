@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { easeOut, motion } from "framer-motion";
 import { Award, CheckCircle, Heart, Users } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,14 +12,14 @@ const containerVariants = {
 };
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, easeOut} },
 };
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.9 },
   visible: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.5, ease: easeOut },
   },
   hover: {
     scale: 1.05,
