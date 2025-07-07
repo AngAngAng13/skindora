@@ -2,6 +2,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ const formatDate = (dateString: string) => {
 };
 export const ActionsCell = ({ row }: { row: { original: Voucher } }) => {
   const { _id, isActive, code } = row.original;
+  const navigate = useNavigate();
   console.log(_id);
   const { updateStatusVoucher, loading } = useToggleStatusVoucher(String(_id));
   const handleUpdateStatus = () => {
@@ -47,7 +49,7 @@ export const ActionsCell = ({ row }: { row: { original: Voucher } }) => {
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(code)}>Copy mã voucher</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/voucher-detail/${_id}`)}>Xem chi tiết</DropdownMenuItem>
           <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
           {isActive ? (
             <DropdownMenuItem
