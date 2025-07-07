@@ -7,8 +7,9 @@ import { useFilterOptionsQuery } from "@/hooks/queries/useFilterOptionsQuery";
 
 interface AccordionFilterProps {
   selectedFilters: Record<string, string[]>;
-  onFilterChange: (filterType: string, filterName: string) => void;
+  onFilterChange: (filterType: string, filterId: string) => void;
   onClearFilters: () => void;
+  filterIdToNameMap: Map<string, string>; // New prop
 }
 
 const filterTitles: Record<string, string> = {
@@ -22,11 +23,13 @@ const filterTitles: Record<string, string> = {
   filter_hsk_product_type: "Loại sản phẩm",
 };
 
-export function AccordionFilter({ selectedFilters, onFilterChange, onClearFilters }: AccordionFilterProps) {
+export function AccordionFilter({
+  selectedFilters,
+  onFilterChange,
+  onClearFilters,
+  filterIdToNameMap,
+}: AccordionFilterProps) {
   const { data: filterData, isLoading, isError, error } = useFilterOptionsQuery();
-
-  
- 
 
   const getTotalSelectedCount = () => {
     return Object.values(selectedFilters).reduce((total, filters) => total + filters.length, 0);
@@ -67,14 +70,11 @@ export function AccordionFilter({ selectedFilters, onFilterChange, onClearFilter
         <div className="mb-4">
           <h4 className="mb-2 text-sm font-medium">Đã chọn ({getTotalSelectedCount()})</h4>
           <div className="flex flex-wrap gap-2">
-            {Object.entries(selectedFilters).map(([filterType, filters]) =>
-              filters.map((filterName) => (
-                <Badge key={`${filterType}-${filterName}`} variant="secondary" className="text-xs">
-                  {filterName}
-                  <X
-                    className="ml-1 h-3 w-3 cursor-pointer"
-                    onClick={() => onFilterChange(filterType, filterName)} // Just call the handler
-                  />
+            {Object.entries(selectedFilters).map(([filterType, filterIds]) =>
+              filterIds.map((id) => (
+                <Badge key={`${filterType}-${id}`} variant="secondary" className="text-xs">
+                  {filterIdToNameMap.get(id) || id} {/* Display name, fallback to ID */}
+                  <X className="ml-1 h-3 w-3 cursor-pointer" onClick={() => onFilterChange(filterType, id)} />
                 </Badge>
               ))
             )}
@@ -102,16 +102,14 @@ export function AccordionFilter({ selectedFilters, onFilterChange, onClearFilter
                   <AccordionContent>
                     <div className="max-h-60 space-y-2 overflow-y-auto">
                       {options.map((option) => {
-                      
-                        const isSelected = selectedFilters[filterType]?.includes(option.name) || false;
+                        const isSelected = selectedFilters[filterType]?.includes(option.filter_ID) || false;
                         return (
                           <Button
                             key={option.filter_ID}
                             variant={isSelected ? "default" : "ghost"}
                             size="sm"
                             className="h-auto w-full justify-start p-2 text-left text-sm"
-                          
-                            onClick={() => onFilterChange(filterType, option.name)}
+                            onClick={() => onFilterChange(filterType, option.filter_ID)}
                           >
                             {option.name}
                           </Button>
@@ -126,3 +124,4 @@ export function AccordionFilter({ selectedFilters, onFilterChange, onClearFilter
     </div>
   );
 }
+  

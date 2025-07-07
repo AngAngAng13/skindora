@@ -1,4 +1,7 @@
 import { apiClient } from "@/lib/apiClient";
+import type { ApiError } from "@/utils";
+import type { ApiResponse } from "@/utils/axios/types";
+import type { Result } from "neverthrow";
 
 interface AddToCartPayload {
   ProductID: string;
@@ -37,9 +40,9 @@ export interface AppliedVoucherResponse {
   };
 }
 export const cartService = {
-  addToCart: (payload: AddToCartPayload) => {
-    return apiClient.post<unknown, AddToCartPayload>("/carts", payload);
-  },
+ addToCart: (payload: AddToCartPayload): Promise<Result<ApiResponse<CartAPIResponse>, ApiError>> => {
+    return apiClient.post<CartAPIResponse, AddToCartPayload>("/carts", payload);
+  }, 
   
   getCart: () => {
     return apiClient.get<CartAPIResponse>("/carts");

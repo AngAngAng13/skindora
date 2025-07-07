@@ -3,7 +3,7 @@ import type { Result } from "neverthrow";
 import { apiClient } from "@/lib/apiClient";
 import type { ApiError } from "@/utils";
 import type { ApiResponse } from "@/utils/axios/types";
-
+export type OrderStatus = "PENDING" | "CONFIRMED" | "PROCESSING" | "SHIPPING" | "DELIVERED" | "CANCELLED" | "RETURNED" | "FAILED";
 export interface CheckoutPayload {
   ShipAddress: string;
   Description?: string;
@@ -31,6 +31,7 @@ export interface MyOrderDetail {
 export interface MyOrder {
   orderId: string;
   orderDetail: MyOrderDetail[];
+  orderStatus: OrderStatus; 
 }
 export interface OrderByIdResponse {
   message: string;
@@ -51,6 +52,7 @@ export interface OrderByIdResponse {
 export interface MyOrdersApiResponse {
   message: string;
   result: MyOrder[];
+  
 }
 export interface ProductInOrder {
   ProductID: string;

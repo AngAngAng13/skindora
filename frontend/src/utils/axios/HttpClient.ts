@@ -112,7 +112,7 @@ export class HttpClient implements HttpClientService {
 
         if (originalRequest && originalRequest._retry !== undefined && originalRequest._retry !== -1) {
           const maxRetries = originalRequest._maxRetries || this.config.defaultRetry?.maxRetries || 0;
-          if (originalRequest._retry < maxRetries && this.shouldRetry(error)) {
+          if (originalRequest._retry < maxRetries ) {
             originalRequest._retry++;
             const delayMultiplier = originalRequest._delayMs || this.config.defaultRetry?.delayMs || 1000;
             const delay = delayMultiplier * Math.pow(2, originalRequest._retry - 1);
@@ -128,9 +128,9 @@ export class HttpClient implements HttpClientService {
     );
   }
 
-  private shouldRetry(error: AxiosErrorType): boolean {
-    return !error.response || (error.response.status >= 500 && error.response.status <= 599);
-  }
+  // private shouldRetry(error: AxiosErrorType): boolean {
+  //   return !error.response || (error.response.status >= 500 && error.response.status <= 599);
+  // }
 
   private sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
