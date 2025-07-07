@@ -9,7 +9,29 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/auth.context";
 import { useMyOrdersQuery } from "@/hooks/queries/useMyOrdersQuery";
+import type { OrderStatus } from "@/services/orders.service";
 
+const getStatusBadgeVariant = (status: OrderStatus): React.ComponentProps<typeof Badge>["variant"] => {
+  switch (status) {
+    case "DELIVERED":
+      return "complete";
+    case "CANCELLED":
+    case "FAILED":
+      return "destructive";
+    case "SHIPPING":
+      return "default";
+    case "PROCESSING":
+      return "waiting";
+    case "PENDING":
+      return "pending";
+    case "CONFIRMED":
+      return "secondary";
+    case "RETURNED":
+      return "outline";
+    default:
+      return "secondary";
+  }
+};
 export const OrderHistoryTab: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -75,7 +97,9 @@ export const OrderHistoryTab: React.FC = () => {
                 </CardDescription>
               </div>
 
-              <Badge variant="secondary">Processing</Badge>
+              <Badge variant={getStatusBadgeVariant(order.orderStatus)} className="capitalize">
+                {order.orderStatus.toLowerCase().replace("_", " ")}
+              </Badge>
             </CardHeader>
             <CardContent className="p-0">
               <div className="space-y-4 p-4">
