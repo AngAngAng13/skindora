@@ -99,44 +99,44 @@ export default function AddProductPage() {
     }
   }
 
-  const ImageUrlInput = ({ control, name, label, placeholder }: any) => (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-              <Input {...field} placeholder={placeholder} style={{ flex: 1 }} />
-              {field.value && typeof field.value === "string" && (
-                <img
-                  src={field.value}
-                  alt="Xem trước"
-                  style={{
-                    width: "80px", // Giảm kích thước một chút cho gọn
-                    height: "80px",
-                    objectFit: "cover",
-                    borderRadius: "8px",
-                    border: "1px solid #e2e8f0",
-                  }}
-                  // Ẩn ảnh nếu URL không hợp lệ
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                  // Hiện lại nếu URL được sửa đúng
-                  onLoad={(e) => {
-                    e.currentTarget.style.display = "block";
-                  }}
-                />
-              )}
-            </div>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
+  // const ImageUrlInput = ({ control, name, label, placeholder }: any) => (
+  //   <FormField
+  //     control={control}
+  //     name={name}
+  //     render={({ field }) => (
+  //       <FormItem>
+  //         <FormLabel>{label}</FormLabel>
+  //         <FormControl>
+  //           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+  //             <Input {...field} placeholder={placeholder} style={{ flex: 1 }} />
+  //             {field.value && typeof field.value === "string" && (
+  //               <img
+  //                 src={field.value}
+  //                 alt="Xem trước"
+  //                 style={{
+  //                   width: "80px", // Giảm kích thước một chút cho gọn
+  //                   height: "80px",
+  //                   objectFit: "cover",
+  //                   borderRadius: "8px",
+  //                   border: "1px solid #e2e8f0",
+  //                 }}
+  //                 // Ẩn ảnh nếu URL không hợp lệ
+  //                 onError={(e) => {
+  //                   e.currentTarget.style.display = "none";
+  //                 }}
+  //                 // Hiện lại nếu URL được sửa đúng
+  //                 onLoad={(e) => {
+  //                   e.currentTarget.style.display = "block";
+  //                 }}
+  //               />
+  //             )}
+  //           </div>
+  //         </FormControl>
+  //         <FormMessage />
+  //       </FormItem>
+  //     )}
+  //   />
+  // );
   const EditorWithPreview = ({ control, name, label }: any) => {
     return (
       <FormField
