@@ -119,33 +119,30 @@ export default function UpdateProductPage() {
   const [skinType, setSkinType] = useState<filter_hsk_skin_type_props[]>([]);
   const [origin, setOrigin] = useState<filter_origin_props[]>([]);
 
-  const { data: filter, fetchFilter } = useFetchFilter(); // Data for filters
-  const { data: brands, fetchListBrand } = useFetchBrand(); // Data for brands
+  const { data: filter, fetchFilter } = useFetchFilter();
+  const { data: brands, fetchListBrand } = useFetchBrand();
 
   const navigate = useNavigate();
 
-  // --- Cải thiện Default Values để tránh lỗi Uncontrolled to Controlled ---
-  // Sử dụng một hàm để tạo default values dựa trên product data (nếu có)
   const getInitialFormValues = useCallback((): ProductFormValues => {
     return {
       name_on_list: product?.name_on_list || "",
       engName_on_list: product?.engName_on_list || "",
-      price_on_list: String(product?.price_on_list ?? ""), // Đảm bảo luôn là string
-      quantity: Number(product?.quantity ?? 0), // Đảm bảo luôn là số
+      price_on_list: String(product?.price_on_list ?? ""),
+      quantity: Number(product?.quantity ?? 0),
       image_on_list: product?.image_on_list || "",
       hover_image_on_list: product?.hover_image_on_list || "",
       product_detail_url: product?.product_detail_url || "",
       productName_detail: product?.productName_detail || "",
       engName_detail: product?.engName_detail || "",
-      // Đảm bảo các trường TiptapEditor luôn có cấu trúc { rawHtml: "", plainText: "" }
       description_detail: product?.description_detail || { rawHtml: "", plainText: "" },
       ingredients_detail: product?.ingredients_detail || { rawHtml: "", plainText: "" },
       guide_detail: product?.guide_detail || { rawHtml: "", plainText: "" },
       specification_detail: product?.specification_detail || { rawHtml: "", plainText: "" },
-      // Đảm bảo mảng luôn là mảng rỗng nếu không có dữ liệu
+
       main_images_detail: (product?.main_images_detail || []).map((url: string) => ({ value: url })),
       sub_images_detail: (product?.sub_images_detail || []).map((url: string) => ({ value: url })),
-      // Đảm bảo các filter ID luôn là chuỗi rỗng nếu không có giá trị
+
       filter_brand: product?.filter_brand || "",
       filter_hsk_skin_type: product?.filter_hsk_skin_type || "",
       filter_hsk_uses: product?.filter_hsk_uses || "",
@@ -155,27 +152,23 @@ export default function UpdateProductPage() {
       filter_dac_tinh: product?.filter_dac_tinh || "",
       filter_size: product?.filter_size || "",
     };
-  }, [product]); // Dependency on 'product' ensures values update when product data loads
+  }, [product]);
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
-    // Sử dụng getInitialFormValues() để thiết lập defaultValues
-    // Nếu `product` chưa có, nó sẽ dùng các giá trị mặc định rỗng/0.
-    // Nếu `product` đã có, nó sẽ dùng dữ liệu từ `product`.
+
     defaultValues: getInitialFormValues(),
-    mode: "onTouched", // Hoặc "onChange", tùy vào bạn muốn validate lúc nào
+    mode: "onTouched",
   });
 
-  // Effect để fetch dữ liệu sản phẩm và filter
   useEffect(() => {
     fetchListBrand();
     fetchFilter();
     if (id) {
       FetchProductByID();
     }
-  }, [id, fetchListBrand, fetchFilter, FetchProductByID]); // Thêm FetchProductByID vào dependency
+  }, [id, fetchListBrand, fetchFilter, FetchProductByID]);
 
-  // Effect để cập nhật state của các filter data sau khi fetch
   useEffect(() => {
     if (filter) {
       if (filter.filter_hsk_uses) setUses(filter.filter_hsk_uses);
