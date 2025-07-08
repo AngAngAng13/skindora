@@ -25,7 +25,7 @@ export default function AddProductPage() {
   const { fetchListBrand, data } = useFetchBrand();
   useEffect(() => {
     fetchListBrand();
-  }, [data]);
+  }, [fetchListBrand]);
   const navigate = useNavigate();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -99,44 +99,44 @@ export default function AddProductPage() {
     }
   }
 
-  const ImageUrlInput = ({ control, name, label, placeholder }: any) => (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-              <Input {...field} placeholder={placeholder} style={{ flex: 1 }} />
-              {field.value && typeof field.value === "string" && (
-                <img
-                  src={field.value}
-                  alt="Xem trước"
-                  style={{
-                    width: "80px", // Giảm kích thước một chút cho gọn
-                    height: "80px",
-                    objectFit: "cover",
-                    borderRadius: "8px",
-                    border: "1px solid #e2e8f0",
-                  }}
-                  // Ẩn ảnh nếu URL không hợp lệ
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                  // Hiện lại nếu URL được sửa đúng
-                  onLoad={(e) => {
-                    e.currentTarget.style.display = "block";
-                  }}
-                />
-              )}
-            </div>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
+  // const ImageUrlInput = ({ control, name, label, placeholder }: any) => (
+  //   <FormField
+  //     control={control}
+  //     name={name}
+  //     render={({ field }) => (
+  //       <FormItem>
+  //         <FormLabel>{label}</FormLabel>
+  //         <FormControl>
+  //           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+  //             <Input {...field} placeholder={placeholder} style={{ flex: 1 }} />
+  //             {field.value && typeof field.value === "string" && (
+  //               <img
+  //                 src={field.value}
+  //                 alt="Xem trước"
+  //                 style={{
+  //                   width: "80px", // Giảm kích thước một chút cho gọn
+  //                   height: "80px",
+  //                   objectFit: "cover",
+  //                   borderRadius: "8px",
+  //                   border: "1px solid #e2e8f0",
+  //                 }}
+  //                 // Ẩn ảnh nếu URL không hợp lệ
+  //                 onError={(e) => {
+  //                   e.currentTarget.style.display = "none";
+  //                 }}
+  //                 // Hiện lại nếu URL được sửa đúng
+  //                 onLoad={(e) => {
+  //                   e.currentTarget.style.display = "block";
+  //                 }}
+  //               />
+  //             )}
+  //           </div>
+  //         </FormControl>
+  //         <FormMessage />
+  //       </FormItem>
+  //     )}
+  //   />
+  // );
   const EditorWithPreview = ({ control, name, label }: any) => {
     return (
       <FormField
@@ -146,17 +146,18 @@ export default function AddProductPage() {
           <FormItem>
             <FormLabel>{label}</FormLabel>
             <div className="grid grid-cols-1 gap-4 rounded-lg border p-4 md:grid-cols-2">
-              {/* Cột 1: Trình soạn thảo (Không thay đổi) */}
-              <FormControl>
-                <TiptapEditor value={field.value} onChange={field.onChange} />
-              </FormControl>
+              {/* Cột 1: Trình soạn thảo */}
+              {/* ✅ SỬA DÒNG NÀY */}
+              <TiptapEditor
+                // Chỉ truyền chuỗi HTML, không truyền cả object
+                value={field.value?.rawHtml || ""}
+                onChange={field.onChange}
+              />
 
-              {/* Cột 2: Khung xem trước (CẬP NHẬT Ở ĐÂY) */}
+              {/* Cột 2: Khung xem trước (Giữ nguyên) */}
               <div className="prose bg-muted max-w-none rounded-md border p-3">
                 <h4 className="text-muted-foreground mb-2 text-sm font-semibold italic">Xem trước trực tiếp</h4>
-                {/* Sửa ở dòng kiểm tra và dòng dangerouslySetInnerHTML */}
                 {field.value && field.value.rawHtml ? (
-                  // Lấy chuỗi HTML từ thuộc tính `rawHtml`
                   <div dangerouslySetInnerHTML={{ __html: field.value.rawHtml }} />
                 ) : (
                   <p className="text-muted-foreground text-sm">Nội dung xem trước sẽ hiện ở đây...</p>
@@ -286,17 +287,65 @@ export default function AddProductPage() {
                 <div className="md:col-span-2">
                   <h3 className="mb-4 text-lg font-medium">Hình ảnh</h3>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <ImageUrlInput
+                    {/* <ImageUrlInput
                       control={form.control}
                       name="image_on_list"
                       label="URL Ảnh chính (danh sách)"
                       placeholder="Dán URL ảnh chính..."
+                    /> */}
+                    <FormField
+                      control={form.control}
+                      name="image_on_list"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>URL Ảnh chính (danh sách)</FormLabel>
+                          <FormControl>
+                            {/* The Input component remains the same */}
+                            <Input type="url" {...field} />
+                          </FormControl>
+                          <FormMessage />
+
+                          {/* Conditionally render the image preview below the input and message */}
+                          {field.value && typeof field.value === "string" && (
+                            <img
+                              src={field.value}
+                              alt="Image Preview"
+                              className="mt-4 rounded-md border"
+                              style={{ maxWidth: "200px", maxHeight: "200px" }} // Optional styling
+                            />
+                          )}
+                        </FormItem>
+                      )}
                     />
-                    <ImageUrlInput
+                    {/* <ImageUrlInput
                       control={form.control}
                       name="hover_image_on_list"
                       label="URL Ảnh khi hover (danh sách)"
                       placeholder="Dán URL ảnh khi hover..."
+                    /> */}
+                    <FormField
+                      control={form.control}
+                      name="hover_image_on_list"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>URL Ảnh khi hover (danh sách)</FormLabel>
+                          <FormControl>
+                            {/* The Input component remains the same */}
+                            <Input type="url" {...field} />
+                          </FormControl>
+                          <FormMessage />
+
+                          {/* Conditionally render the image preview below the input and message */}
+                          {field.value && typeof field.value === "string" && (
+                            <img
+                              src={field.value}
+                              alt="Image Preview"
+                              className="mt-4 rounded-md border"
+                              style={{ maxWidth: "200px", maxHeight: "200px" }} // Optional styling
+                            />
+                          )}
+                        </FormItem>
+                      )}
                     />
                   </div>
                 </div>

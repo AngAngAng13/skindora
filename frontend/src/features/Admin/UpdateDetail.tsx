@@ -133,7 +133,6 @@ export default function UpdateDetailProduct() {
       const transformedData = {
         ...dataID,
         price_on_list: String(dataID.price_on_list ?? ""),
-        // quantity: Number(dataID.quantity ?? 0),
         main_images_detail: (dataID.main_images_detail || []).map((url: string) => ({ value: url })),
         sub_images_detail: (dataID.sub_images_detail || []).map((url: string) => ({ value: url })),
       };
