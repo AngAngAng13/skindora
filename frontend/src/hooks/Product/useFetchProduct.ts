@@ -31,6 +31,27 @@ export const useFetchProduct = () => {
   const changeBrand = React.useCallback((filter_brand: string) => {
     setParams((prev) => ({ ...prev, filter_brand }));
   }, []);
+  const changeDactinh = React.useCallback((filter_dactinh: string) => {
+    setParams((prev) => ({ ...prev, filter_dactinh }));
+  }, []);
+  const changeIngredient = React.useCallback((filter_hsk_ingredient: string) => {
+    setParams((prev) => ({ ...prev, filter_hsk_ingredient }));
+  }, []);
+  const changeProductType = React.useCallback((filter_hsk_product_type: string) => {
+    setParams((prev) => ({ ...prev, filter_hsk_product_type }));
+  }, []);
+  const changeSize = React.useCallback((filter_hsk_size: string) => {
+    setParams((prev) => ({ ...prev, filter_hsk_size }));
+  }, []);
+  const changeSkinType = React.useCallback((filter_hsk_skin_type: string) => {
+    setParams((prev) => ({ ...prev, filter_hsk_skin_type }));
+  }, []);
+  const changeUses = React.useCallback((filter_hsk_uses: string) => {
+    setParams((prev) => ({ ...prev, filter_hsk_uses }));
+  }, []);
+  const changeOrigin = React.useCallback((filter_origin: string) => {
+    setParams((prev) => ({ ...prev, filter_origin }));
+  }, []);
   const fetchListProduct = useCallback(async () => {
     setLoading(true);
     console.log(params);
@@ -104,5 +125,12 @@ export const useFetchProduct = () => {
     changePage,
     fetchListProductByStaff,
     changeBrand,
+    changeDactinh,
+    changeIngredient,
+    changeOrigin,
+    changeProductType,
+    changeSize,
+    changeUses,
+    changeSkinType,
   };
 };

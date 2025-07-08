@@ -13,6 +13,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFetchBrand } from "@/hooks/Brand/useFetchBrand";
+import {
+  type filter_dac_tinh_type_props,
+  type filter_hsk_ingredient_props,
+  type filter_hsk_product_type_props,
+  type filter_hsk_size_props,
+  type filter_hsk_skin_type_props,
+  type filter_hsk_uses_props,
+  type filter_origin_props,
+  useFetchFilter,
+} from "@/hooks/Filter/useFetchFilter";
 import httpClient from "@/lib/axios";
 import type { ProductFormValues } from "@/lib/productSchema";
 import { productSchema } from "@/lib/productSchema";
@@ -21,11 +31,49 @@ import TiptapEditor from "./TiptapEditor";
 
 export default function AddProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [uses, setUses] = useState<filter_hsk_uses_props[]>([]);
+  const [productType, setProductType] = useState<filter_hsk_product_type_props[]>([]);
+  const [dactinh, setDactinh] = useState<filter_dac_tinh_type_props[]>([]);
+  const [size, setSize] = useState<filter_hsk_size_props[]>([]);
+  const [ingredient, setIngredient] = useState<filter_hsk_ingredient_props[]>([]);
+  const [skinType, setSkinType] = useState<filter_hsk_skin_type_props[]>([]);
+  const [origin, setOrigin] = useState<filter_origin_props[]>([]);
+  const { data: filter, fetchFilter } = useFetchFilter();
   const { fetchListBrand, data } = useFetchBrand();
   useEffect(() => {
     fetchListBrand();
-  }, [fetchListBrand]);
+    fetchFilter();
+  }, [fetchListBrand, fetchFilter]);
+  useEffect(() => {
+    console.log(filter);
+    if (filter?.filter_hsk_uses) {
+      setUses(filter.filter_hsk_uses);
+    }
+    if (filter?.filter_hsk_product_type) {
+      setProductType(filter.filter_hsk_product_type);
+    }
+    if (filter?.filter_dac_tinh) {
+      setDactinh(filter.filter_dac_tinh);
+    }
+    if (filter?.filter_hsk_size) {
+      setSize(filter.filter_hsk_size);
+    }
+    if (filter?.filter_hsk_ingredient) {
+      setIngredient(filter.filter_hsk_ingredient);
+    }
+    if (filter?.filter_hsk_skin_type) {
+      setSkinType(filter.filter_hsk_skin_type);
+    }
+    if (filter?.filter_origin) {
+      setOrigin(filter.filter_origin);
+    }
+    console.log("Skin", uses);
+    console.log("Skin", dactinh);
+    console.log("Skin", size);
+    console.log("Skin", uses);
+    console.log("Skin", ingredient);
+    console.log("Skin", skinType);
+  }, [filter, uses, productType]);
   const navigate = useNavigate();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -50,6 +98,9 @@ export default function AddProductPage() {
       filter_hsk_uses: "",
       filter_hsk_product_type: "",
       filter_origin: "",
+      filter_hsk_ingredient: "",
+      filter_dac_tinh: "",
+      filter_size: "",
     },
   });
 
@@ -460,25 +511,56 @@ export default function AddProductPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Thông tin phân loại (Filter IDs)</CardTitle>
+                <CardTitle>Filter Information (Filter IDs)</CardTitle>
               </CardHeader>
               <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {/* Brand Filter */}
                 <FormField
                   control={form.control}
                   name="filter_brand"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Brand</FormLabel>
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-lg font-semibold text-blue-700">Brand</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
                             <SelectValue placeholder="Select a brand" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
                           {data.map((brand) => (
-                            <SelectItem key={brand._id} value={brand._id}>
+                            <SelectItem
+                              key={brand._id}
+                              value={brand._id}
+                              className="cursor-pointer rounded-md px-3 py-2 transition hover:bg-blue-100"
+                            >
                               {brand.option_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage className="text-sm text-red-500" />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Skin Type Filter */}
+                <FormField
+                  control={form.control}
+                  name="filter_hsk_skin_type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-semibold text-blue-700">Skin Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
+                            <SelectValue placeholder="Select a skin type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
+                          {skinType.map((skin) => (
+                            <SelectItem key={skin.filter_ID} value={skin.filter_ID}>
+                              {skin.name}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -487,54 +569,183 @@ export default function AddProductPage() {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="filter_hsk_skin_type"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Skin Type ID</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="string" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
+                {/* Uses Filter */}
                 <FormField
                   control={form.control}
                   name="filter_hsk_uses"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Uses ID</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="string" />
-                      </FormControl>
+                      <FormLabel className="text-lg font-semibold text-blue-700">Uses</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
+                            <SelectValue placeholder="Select a uses" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
+                          {uses.map(
+                            (
+                              useItem // Renamed 'uses' to 'useItem' for clarity
+                            ) => (
+                              <SelectItem key={useItem.filter_ID} value={useItem.filter_ID}>
+                                {useItem.name}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
+                {/* Product Type Filter */}
                 <FormField
                   control={form.control}
                   name="filter_hsk_product_type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Product Type ID</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="string" />
-                      </FormControl>
+                      <FormLabel className="text-lg font-semibold text-blue-700">Product Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
+                            <SelectValue placeholder="Select a product type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
+                          {productType.map(
+                            (
+                              productTypeItem // Renamed 'productType' to 'productTypeItem'
+                            ) => (
+                              <SelectItem key={productTypeItem.filter_ID} value={productTypeItem.filter_ID}>
+                                {productTypeItem.name}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
+                {/* Origin Filter */}
                 <FormField
                   control={form.control}
                   name="filter_origin"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Xuất xứ</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
+                      <FormLabel className="text-lg font-semibold text-blue-700">Origin</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
+                            <SelectValue placeholder="Select origin" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
+                          {origin.map(
+                            (
+                              originItem // Renamed 'temp' to 'originItem'
+                            ) => (
+                              <SelectItem key={originItem.filter_ID} value={originItem.filter_ID}>
+                                {originItem.name}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Size Filter */}
+                <FormField
+                  control={form.control}
+                  name="filter_size"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-semibold text-blue-700">Size</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
+                            <SelectValue placeholder="Select size" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
+                          {size.map(
+                            (
+                              sizeItem // Renamed 'temp' to 'sizeItem'
+                            ) => (
+                              <SelectItem key={sizeItem.filter_ID} value={sizeItem.filter_ID}>
+                                {sizeItem.name}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Đặc tính Filter (Characteristic) */}
+                <FormField
+                  control={form.control}
+                  name="filter_dac_tinh"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-semibold text-blue-700">Characteristic</FormLabel>{" "}
+                      {/* Changed "Đặc tính" to "Characteristic" for broader understanding */}
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
+                            <SelectValue placeholder="Select characteristic" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
+                          {dactinh.map(
+                            (
+                              dactinhItem // Renamed 'temp' to 'dactinhItem'
+                            ) => (
+                              <SelectItem key={dactinhItem.filter_ID} value={dactinhItem.filter_ID}>
+                                {dactinhItem.name}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Ingredient Filter */}
+                <FormField
+                  control={form.control}
+                  name="filter_hsk_ingredient"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg font-semibold text-blue-700">Ingredient</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
+                            <SelectValue placeholder="Select ingredient" /> {/* Changed placeholder for clarity */}
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
+                          {ingredient.map(
+                            (
+                              ingredientItem // Renamed 'temp' to 'ingredientItem'
+                            ) => (
+                              <SelectItem key={ingredientItem.filter_ID} value={ingredientItem.filter_ID}>
+                                {ingredientItem.name}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}

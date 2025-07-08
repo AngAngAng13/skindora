@@ -30,5 +30,8 @@ export const productSchema = z.object({
   filter_hsk_uses: z.string().min(1, "ID Công dụng không được để trống."),
   filter_hsk_product_type: z.string().min(1, "ID Loại sản phẩm không được để trống."),
   filter_origin: z.string().min(1, "Xuất xứ không được để trống."),
+  filter_hsk_ingredient: z.string().min(1, "Thành phần không được đẻ trống"),
+  filter_dac_tinh: z.string().min(1, "Đặc tính không được để trống"),
+  filter_size: z.string().min(1, "Size không được trống"),
 });
 export type ProductFormValues = z.infer<typeof productSchema>;
