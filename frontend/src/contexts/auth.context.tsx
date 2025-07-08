@@ -3,7 +3,6 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
 import { useUserProfileQuery } from "@/hooks/queries/useUserProfileQuery";
 import { useAuthActions } from "@/hooks/useAuthActions";
 import type { User } from "@/types";
@@ -54,13 +53,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const handleStorageChange = () => {
       setHasToken(!!getAccessToken());
     };
+    const handleTokenRefreshed = () => {
+      logger.info("Auth context caught token refresh event. Updating state.");
+      setHasToken(true);
+    };
     window.addEventListener("storage", handleStorageChange);
     const handleAuthFailure = () => setHasToken(false);
     window.addEventListener("auth:session_expired", handleAuthFailure);
+    window.addEventListener("auth:token_refreshed", handleTokenRefreshed);
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("auth:session_expired", handleAuthFailure);
+      window.removeEventListener("auth:token_refreshed", handleTokenRefreshed);
     };
   }, []);
 

@@ -1,10 +1,14 @@
 import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
-const CheckoutPage = lazy(() => import("@/features/Checkout"));
+
 import PublicLayout from "@/layouts/publicLayout";
+
+const CheckoutPage = lazy(() => import("@/features/Checkout"));
+
 const CartPage = lazy(() => import("@/features/Cart"));
 const ProfilePage = lazy(() => import("@/features/Profile"));
 const TrackOrderPage = lazy(() => import("@/features/OrderTracking"));
+const WishListPage = lazy(() => import("@/features/WishList"));
 const protectedRoutes: RouteObject[] = [
   {
     path: "/",
@@ -12,7 +16,10 @@ const protectedRoutes: RouteObject[] = [
     children: [
       {
         path: "profile",
-        element: <ProfilePage />,
+        children: [
+          { index: true, element: <ProfilePage /> },
+          { path: "wishlist", element: <WishListPage /> },
+        ],
       },
       {
         path: "cart",
@@ -26,7 +33,6 @@ const protectedRoutes: RouteObject[] = [
         path: "orders/tracking/:orderId",
         element: <TrackOrderPage />,
       },
-      
     ],
   },
 ];

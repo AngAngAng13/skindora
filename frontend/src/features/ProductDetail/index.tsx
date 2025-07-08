@@ -1,10 +1,9 @@
-import { ArrowLeft, Check, Heart, LoaderCircle, Package, ShoppingCart, Star, Truck } from "lucide-react";
+import { ArrowLeft, Check, Heart, LoaderCircle, Package, ShoppingCart, Star, Truck, XCircle } from "lucide-react";
 import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useRemoveFromWishlistMutation } from "@/hooks/mutations/useRemoveFromWishlistMutation";
-import { useWishlistQuery } from "@/hooks/queries/useWishlistQuery";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,9 +12,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/auth.context";
 import { useAddToCartMutation } from "@/hooks/mutations/useAddToCartMutation";
 import { useAddToWishlistMutation } from "@/hooks/mutations/useAddToWishlistMutation";
+import { useRemoveFromWishlistMutation } from "@/hooks/mutations/useRemoveFromWishlistMutation";
 import { useFilterOptionsQuery } from "@/hooks/queries/useFilterOptionsQuery";
 import { useProductByIdQuery } from "@/hooks/queries/useProductByIdQuery";
-import type { Product } from "@/types";
+import { useWishlistQuery } from "@/hooks/queries/useWishlistQuery";
+import type { Product } from "@/types/Product";
 
 import { ProductImageGallery } from "./components/ProductImageGallery";
 
@@ -23,7 +24,6 @@ interface ProductBadgesProps {
   product: Product;
   filterIdToNameMap: Map<string, string>;
 }
-
 function ProductBadges({ product, filterIdToNameMap }: ProductBadgesProps) {
   const productBadges = useMemo(() => {
     if (!product || filterIdToNameMap.size === 0) return [];
@@ -49,12 +49,18 @@ function ProductBadges({ product, filterIdToNameMap }: ProductBadgesProps) {
 
 interface ProductHeaderProps {
   product: Product;
-   onToggleWishlist: () => void;
+  onToggleWishlist: () => void;
   isAddingToWishlist: boolean;
   isRemovingFromWishlist: boolean;
   isInWishlist: boolean;
 }
-function ProductHeader({ product, isAddingToWishlist,isInWishlist,isRemovingFromWishlist,onToggleWishlist }: ProductHeaderProps) {
+function ProductHeader({
+  product,
+  isAddingToWishlist,
+  isInWishlist,
+  isRemovingFromWishlist,
+  onToggleWishlist,
+}: ProductHeaderProps) {
   const isWishlistLoading = isAddingToWishlist || isRemovingFromWishlist;
   return (
     <div>
@@ -116,6 +122,7 @@ function ProductStockAndActions({ product, filterIdToNameMap }: ProductStockAndA
   const navigate = useNavigate();
   const location = useLocation();
   const { mutate: addToCart, isPending: isAddingToCart } = useAddToCartMutation();
+
   const handleAddToCart = () => {
     if (!isAuthenticated) {
       toast.info("Please log in to continue", {
@@ -130,16 +137,28 @@ function ProductStockAndActions({ product, filterIdToNameMap }: ProductStockAndA
       Quantity: 1,
     });
   };
+
+  const isOutOfStock = (product.quantity || 0) <= 0;
+
   return (
     <div className="space-y-4">
       <p className="text-gray-700">{product.engName_detail}</p>
       <ProductBadges product={product} filterIdToNameMap={filterIdToNameMap} />
-      <div className="flex items-center text-green-600">
-        <Check className="mr-1 h-5 w-5" />
-        <span>In Stock ({product.quantity || 0} available)</span>
-      </div>
+
+      {isOutOfStock ? (
+        <div className="flex items-center font-medium text-red-600">
+          <XCircle className="mr-1 h-5 w-5" />
+          <span>Out of Stock</span>
+        </div>
+      ) : (
+        <div className="flex items-center text-green-600">
+          <Check className="mr-1 h-5 w-5" />
+          <span>In Stock ({product.quantity} available)</span>
+        </div>
+      )}
+
       <div className="flex items-center space-x-4">
-        <Button className="flex-1" onClick={handleAddToCart} disabled={isAddingToCart}>
+        <Button className="flex-1" onClick={handleAddToCart} disabled={isAddingToCart || isOutOfStock}>
           {isAddingToCart ? (
             <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
           ) : (
@@ -147,7 +166,7 @@ function ProductStockAndActions({ product, filterIdToNameMap }: ProductStockAndA
           )}
           {isAddingToCart ? "Adding..." : "Add to Cart"}
         </Button>
-        <Button variant="outline" className="flex-1">
+        <Button variant="outline" className="flex-1" disabled={isOutOfStock}>
           Buy Now
         </Button>
       </div>
@@ -210,11 +229,10 @@ const ProductDetailPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated } = useAuth();
-  
+
   const { data: product, isLoading, isError, error } = useProductByIdQuery(id);
   const { data: filterOptions } = useFilterOptionsQuery();
-  
-  // Wishlist hooks
+
   const { data: wishlist, isLoading: isWishlistLoading } = useWishlistQuery(isAuthenticated);
   const { mutate: addToWishlist, isPending: isAddingToWishlist } = useAddToWishlistMutation();
   const { mutate: removeFromWishlist, isPending: isRemovingFromWishlist } = useRemoveFromWishlistMutation();
@@ -278,8 +296,8 @@ const ProductDetailPage = () => {
       <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
         <ProductImageGallery images={product.main_images_detail} name={product.productName_detail} autoSlide={false} />
         <div className="space-y-6">
-          <ProductHeader 
-            product={product} 
+          <ProductHeader
+            product={product}
             onToggleWishlist={handleToggleWishlist}
             isAddingToWishlist={isAddingToWishlist}
             isRemovingFromWishlist={isRemovingFromWishlist}

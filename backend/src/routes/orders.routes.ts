@@ -6,6 +6,7 @@ import {
   buyNowController,
   cancelOrderController,
   checkOutController,
+  getAllCancelledOrdersController,
   getAllOrdersByAuthUserController,
   getAllOrdersByUserIdController,
   getAllOrdersController,
@@ -22,6 +23,7 @@ import {
   cancelledOrderRequestedValidator,
   cancelOrderValidator,
   checkOutValidator,
+  getAllCancelledOrdersValidator,
   getAllOrdersValidator,
   getNextOrderStatusValidator,
   getOrderByIdValidator,
@@ -37,6 +39,10 @@ const ordersRouter = Router()
 ordersRouter
   .route('/')
   .get(accessTokenValidator, isAdminOrStaffValidator, getAllOrdersValidator, wrapAsync(getAllOrdersController))
+
+ordersRouter
+  .route('/cancel')
+  .get(accessTokenValidator, isAdminOrStaffValidator, getAllCancelledOrdersValidator, wrapAsync(getAllCancelledOrdersController))
 
 ordersRouter
   .route('/users/:userId')
@@ -60,10 +66,10 @@ ordersRouter
   .post(accessTokenValidator, requestCancelOrderValidator, wrapAsync(requestCancelOrderController))
 ordersRouter
   .route('/:orderId/cancel-request/approve')
-  .patch(accessTokenValidator, cancelledOrderRequestedValidator, wrapAsync(approveCancelRequestController))
+  .patch(accessTokenValidator, isAdminOrStaffValidator, cancelledOrderRequestedValidator, wrapAsync(approveCancelRequestController))
 ordersRouter
   .route('/:orderId/cancel-request/reject')
-  .patch(accessTokenValidator, cancelledOrderRequestedValidator, wrapAsync(rejectCancelRequestController))
+  .patch(accessTokenValidator, isAdminOrStaffValidator, cancelledOrderRequestedValidator, wrapAsync(rejectCancelRequestController))
 
 ordersRouter
   .route('/:orderId/cancel')
