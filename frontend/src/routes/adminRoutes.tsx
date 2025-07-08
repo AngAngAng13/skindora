@@ -15,8 +15,8 @@ import ManageVoucher from "@/features/Admin/ManageVoucher";
 import OrderDetailPage from "@/features/Admin/OrderDetailPage";
 import ProductDetail from "@/features/Admin/ProductDetail";
 import ProfileAdmin from "@/features/Admin/ProfileAdmin";
-import UpdateBrand from "@/features/Admin/UpdateBrand";
 import UpdateDetailProduct from "@/features/Admin/UpdateDetail";
+import UpdateProductPage from "@/features/Admin/UpdateDetail";
 import UpdateVoucher from "@/features/Admin/UpdateVoucher";
 import VoucherDetail from "@/features/Admin/VoucherDetail";
 import AddProductPage from "@/features/Admin/components/AddProduct";
@@ -46,7 +46,7 @@ const adminRoutes: RouteObject[] = [
       },
       {
         path: ":id/update-brand",
-        element: <UpdateBrand />,
+        element: <UpdateProductPage />,
       },
       {
         path: "typeskin",

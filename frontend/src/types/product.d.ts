@@ -1,5 +1,6 @@
 export interface ProductFE {
   _id: string;
+  quantity: string | number;
   name_on_list: string;
   engName_on_list: string;
   price_on_list: string;
@@ -32,4 +33,6 @@ export interface ProductFE {
   filter_hsk_uses: string;
   filter_hsk_product_type: string;
   filter_origin: string;
+  filter_dac_tinh: string;
+  filter_size: string;
 }
