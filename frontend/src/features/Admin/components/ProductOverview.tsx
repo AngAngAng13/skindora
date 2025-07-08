@@ -46,14 +46,9 @@ export interface Product {
   filter_origin: string;
 }
 
-interface ProductOverviewProps {
-  onSelectProduct: (product: Product) => void;
-  onEditProduct: () => void;
-}
-
-export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverviewProps) {
+export function ProductOverview() {
   const navigate = useNavigate();
-  const { fetchListProduct, data, params, changePage, loading, setParams, changeBrand } = useFetchProduct();
+  const { fetchListProduct, data, params, changePage, loading, changeBrand } = useFetchProduct();
   const { data: brand, fetchListBrand } = useFetchBrand();
   const [selectedBrand, setSelectedBrand] = useState<string>("");
   const formatPrice = (price: string) => {

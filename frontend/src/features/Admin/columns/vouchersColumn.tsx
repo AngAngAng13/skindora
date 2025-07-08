@@ -178,10 +178,10 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
     header: "Trạng thái",
     cell: ({ row }) => {
       const isActive = row.getValue("isActive");
-      const { startDate, endDate } = row.original;
-      const now = new Date();
-      const isExpired = new Date(endDate) < now;
-      const isNotStarted = new Date(startDate) > now;
+      // const { startDate, endDate } = row.original;
+      // const now = new Date();
+      // const isExpired = new Date(endDate) < now;
+      // const isNotStarted = new Date(startDate) > now;
 
       if (isActive) {
         return <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>;

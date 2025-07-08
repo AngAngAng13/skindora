@@ -1,5 +1,5 @@
 import { Loader2, Plus } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Typography from "@/components/Typography";
@@ -15,7 +15,7 @@ import { DataTable } from "./components/TableCustom";
 const ManageBrand: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
-  const { loading, data, changePage, fetchListBrand, params, setParams } = useFetchBrand();
+  const { loading, data, fetchListBrand, params, setParams } = useFetchBrand();
   useEffect(() => {
     fetchListBrand();
   }, [params.page]);

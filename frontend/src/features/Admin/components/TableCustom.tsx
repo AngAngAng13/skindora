@@ -17,9 +17,18 @@ import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-interface FilterOptionsProps {
+export interface FilterOptionsProps {
   value: string;
-  label: "SHIPPING" | "FAILED" | "CANCELLED" | "RETURNED" | "DELIVERED" | "PROCESSING";
+  label:
+    | "SHIPPING"
+    | "FAILED"
+    | "CANCELLED"
+    | "RETURNED"
+    | "DELIVERED"
+    | "PROCESSING"
+    | "CONFIRMED"
+    | "PENDING"
+    | "ALL";
 }
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -97,7 +106,7 @@ export function DataTable<TData, TValue>({
           {filterOptions?.map((option) => {
             const handleClick = async () => {
               if (callBackFunction) {
-                callBackFunction(option.label);
+                callBackFunction(option.label as any);
               }
             };
             return (

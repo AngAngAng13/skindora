@@ -10,7 +10,7 @@ import {
   Tag,
   Trash2,
 } from "lucide-react";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 // Import các component của shadcn/ui
@@ -20,30 +20,17 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from "@/components/ui/progress";
 // Giả định hook của bạn được import từ đây
 import { useFetchVoucherByID } from "@/hooks/Voucher/useFetchVoucherById";
-
-// Interface Voucher vẫn giữ nguyên
-export interface Voucher {
-  _id: string;
-  code: string;
-  description: string;
-  discountValue: string;
-  discountType: "percentage" | "fixed";
-  maxDiscountAmount: string;
-  minOrderValue: string;
-  startDate: string;
-  endDate: string;
-  usageLimit: number;
-  usedCount: number;
-  userUsageLimit: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+import { useToggleStatusVoucher } from "@/hooks/Voucher/useToggleStatusVoucher";
 
 const VoucherDetail = () => {
   const { _id } = useParams<{ _id: string }>();
   const { fetchAllVoucherByID, voucher, loading } = useFetchVoucherByID(String(_id));
   const navigate = useNavigate();
+  const { updateStatusVoucher } = useToggleStatusVoucher(String(_id));
+  const handleUpdateStatus = () => {
+    updateStatusVoucher();
+    window.location.reload();
+  };
   useEffect(() => {
     fetchAllVoucherByID();
   }, [fetchAllVoucherByID]);
@@ -205,13 +192,27 @@ const VoucherDetail = () => {
             </div>
           </CardContent>
           <CardFooter className="flex justify-end gap-2">
-            {/* TODO: Add onClick handlers for these buttons */}
-            <Button variant="outline">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                navigate(`/admin/update-voucher/${voucher._id}`);
+              }}
+            >
               <Edit className="mr-2 h-4 w-4" /> Chỉnh sửa
             </Button>
-            <Button variant="destructive">
-              <Trash2 className="mr-2 h-4 w-4" /> Xóa
-            </Button>
+            {voucher.isActive ? (
+              <Button className="font-bold text-red-600 focus:text-red-600" onClick={() => handleUpdateStatus()}>
+                <Edit className="mr-2 h-4 w-4" /> Inactive
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                className="font-bold text-green-600 focus:text-green-600"
+                onClick={() => handleUpdateStatus()}
+              >
+                Active
+              </Button>
+            )}
           </CardFooter>
         </Card>
       </div>

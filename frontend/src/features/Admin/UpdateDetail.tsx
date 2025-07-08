@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Link2, Loader2 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -22,7 +22,7 @@ import { productSchema } from "@/lib/productSchema";
 import TiptapEditor from "./components/TiptapEditor";
 
 // Giữ nguyên các component con
-const ImageUrlInput = ({ control, name, label, placeholder }) => (
+const ImageUrlInput = ({ control, name, label, placeholder }: any) => (
   <FormField
     control={control}
     name={name}
@@ -59,7 +59,7 @@ const ImageUrlInput = ({ control, name, label, placeholder }) => (
   />
 );
 
-const EditorWithPreview = ({ control, name, label }) => {
+const EditorWithPreview = ({ control, name, label }: any) => {
   return (
     <FormField
       control={control}
@@ -135,7 +135,7 @@ export default function UpdateDetailProduct() {
       const transformedData = {
         ...dataID,
         price_on_list: String(dataID.price_on_list ?? ""),
-        quantity: Number(dataID.quantity ?? 0),
+        // quantity: Number(dataID.quantity ?? 0),
         main_images_detail: (dataID.main_images_detail || []).map((url: string) => ({ value: url })),
         sub_images_detail: (dataID.sub_images_detail || []).map((url: string) => ({ value: url })),
       };

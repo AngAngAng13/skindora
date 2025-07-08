@@ -9,11 +9,8 @@ import { useHeader } from "@/contexts/header.context";
 // import type { ProductFE } from "@/types/product";
 // import type { Product } from "@/types";
 import { ProductOverview } from "./ProductOverviewStaff";
-import type { Product } from "./components/ProductOverview";
 
 const ManageProduct: React.FC = () => {
-  const [, setSelectedProduct] = React.useState<Product | null>(null);
-  const [, setActiveView] = React.useState("overview");
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
 
@@ -42,7 +39,7 @@ const ManageProduct: React.FC = () => {
           </div>
 
           <div>
-            <ProductOverview onSelectProduct={setSelectedProduct} onEditProduct={() => setActiveView("editor")} />
+            <ProductOverview />
           </div>
         </div>
       </div>

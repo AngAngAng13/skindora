@@ -16,20 +16,18 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFetchVoucherByID } from "@/hooks/Voucher/useFetchVoucherById";
-import { useUpdateVoucher } from "@/hooks/Voucher/useUpdateVoucher";
-import httpClient from "@/lib/axios";
+import { type VoucherUpdate, useUpdateVoucher } from "@/hooks/Voucher/useUpdateVoucher";
 import { voucherSchema } from "@/lib/voucherSchema";
 import type { VoucherFormValue } from "@/lib/voucherSchema";
-
-import type { Voucher } from "./VoucherDetail";
 
 const AddVoucherPage: React.FC = () => {
   const { voucherId } = useParams();
   const { fetchAllVoucherByID, loading, voucher } = useFetchVoucherByID(String(voucherId));
-  const { updateVoucherByID, voucherUpdate, status } = useUpdateVoucher(String(voucherId));
+  const { updateVoucherByID, status } = useUpdateVoucher(String(voucherId));
   useEffect(() => {
     fetchAllVoucherByID();
   }, []);
+  useEffect(() => {}, [status]);
   useEffect(() => {
     console.log(voucher);
   }, [voucher]);
@@ -72,20 +70,33 @@ const AddVoucherPage: React.FC = () => {
       });
     }
   }, [voucher, form.reset]);
+  useEffect(() => {
+    // Only proceed if loading has finished (or if status is set)
+    // and if status is specifically a success code (e.g., 200, 201, 204)
+    if (!loading && status !== undefined) {
+      // Check that the operation is complete
+      if (status >= 200 && status < 300) {
+        // Check for success status codes (2xx range)
+        toast.success("Thành công", {
+          description: "Voucher đã được cập nhật thành công!", // Changed description for update
+        });
+        form.reset(); // Reset the form on success
+      } else {
+        // Handle error cases
+        toast.error("Thất bại", {
+          description: `Có lỗi xảy ra khi cập nhật voucher. Mã lỗi: ${status}`,
+        });
+      }
+    }
+  }, [status, loading, form]);
   const onSubmit = async (values: VoucherFormValue) => {
     setIsSubmitting(true);
-    const payload: Voucher = {
+    const payload: VoucherUpdate = {
       ...values,
     };
     console.log("FINAL PAYLOAD TO SERVER:", payload);
     try {
-      const response = await updateVoucherByID(payload);
-      if (status) {
-        toast.success("Thành công", {
-          description: "Voucher đã được thêm vào hệ thống",
-        });
-        form.reset();
-      }
+      await updateVoucherByID(payload);
     } catch (error: unknown) {
       let errorMessage = "Có lỗi không xác định xảy ra.";
       if (error instanceof Error) {

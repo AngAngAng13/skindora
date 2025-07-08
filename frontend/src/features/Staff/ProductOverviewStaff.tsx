@@ -44,12 +44,7 @@ export interface Product {
   filter_origin: string;
 }
 
-interface ProductOverviewProps {
-  onSelectProduct: (product: Product) => void;
-  onEditProduct: () => void;
-}
-
-export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverviewProps) {
+export function ProductOverview() {
   const navigate = useNavigate();
   const { fetchListProductByStaff, data, params, changePage, loading } = useFetchProduct();
 
@@ -70,11 +65,6 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
   useEffect(() => {
     console.log(data);
   }, [data]);
-
-  const handleEdit = (product: Product) => {
-    onSelectProduct(product);
-    onEditProduct();
-  };
 
   return (
     <div>
@@ -174,7 +164,7 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="outline" size="icon" onClick={() => handleEdit(product)}>
+                        <Button variant="outline" size="icon">
                           <Edit className="h-4 w-4" />
                         </Button>
                       </div>

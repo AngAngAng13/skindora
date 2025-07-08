@@ -1,5 +1,5 @@
 // Import icons từ lucide-react cho trực quan
-import { Calendar, ChevronLeft, FileText, MoreVertical, Truck, User } from "lucide-react";
+import { ChevronLeft, FileText, Truck, User } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -17,7 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useFetchOrderByID } from "@/hooks/Orders/useFetchOrderByID";
 
 // Định nghĩa kiểu cho trạng thái để Badge có màu sắc khác nhau
-type OrderStatus = "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
+// type OrderStatus = "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
 
 const OrderDetailPage = () => {
   const { orderId } = useParams<{ orderId: string }>();
@@ -28,22 +28,22 @@ const OrderDetailPage = () => {
     FetchProductByID();
   }, []);
 
-  const getStatusVariant = (status: OrderStatus) => {
-    switch (status) {
-      case "Pending":
-        return "default";
-      case "Processing":
-        return "secondary";
-      case "Shipped":
-        return "outline";
-      case "Delivered":
-        return "success";
-      case "Cancelled":
-        return "destructive";
-      default:
-        return "default";
-    }
-  };
+  // const getStatusVariant = (status: OrderStatus) => {
+  //   switch (status) {
+  //     case "Pending":
+  //       return "default";
+  //     case "Processing":
+  //       return "secondary";
+  //     case "Shipped":
+  //       return "outline";
+  //     case "Delivered":
+  //       return "success";
+  //     case "Cancelled":
+  //       return "destructive";
+  //     default:
+  //       return "default";
+  //   }
+  // };
 
   if (loading || !order) {
     return (
@@ -93,9 +93,7 @@ const OrderDetailPage = () => {
               <h1 className="flex-1 shrink-0 text-xl font-semibold tracking-tight whitespace-nowrap sm:grow-0">
                 Chi tiết đơn hàng
               </h1>
-              <Badge variant={getStatusVariant(order.Status as OrderStatus)} className="ml-auto sm:ml-0">
-                {order.Status}
-              </Badge>
+              <Badge className="ml-auto sm:ml-0">{order.Status}</Badge>
               <div className="hidden items-center gap-2 md:ml-auto md:flex">
                 <Button variant="outline" size="sm">
                   Hủy

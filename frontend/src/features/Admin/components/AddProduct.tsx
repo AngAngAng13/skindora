@@ -24,7 +24,7 @@ import TiptapEditor from "./TiptapEditor";
 export default function AddProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { fetchListBrand, data, loading } = useFetchBrand();
+  const { fetchListBrand, data } = useFetchBrand();
   useEffect(() => {
     fetchListBrand();
   }, [data]);
@@ -101,7 +101,7 @@ export default function AddProductPage() {
     }
   }
 
-  const ImageUrlInput = ({ control, name, label, placeholder }) => (
+  const ImageUrlInput = ({ control, name, label, placeholder }: any) => (
     <FormField
       control={control}
       name={name}
@@ -139,7 +139,7 @@ export default function AddProductPage() {
       )}
     />
   );
-  const EditorWithPreview = ({ control, name, label }) => {
+  const EditorWithPreview = ({ control, name, label }: any) => {
     return (
       <FormField
         control={control}

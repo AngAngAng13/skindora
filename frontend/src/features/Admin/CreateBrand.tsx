@@ -1,6 +1,6 @@
 import React from "react";
 
-const CreateBrand = () => {
+const CreateBrand: React.FC = () => {
   return <div></div>;
 };
 

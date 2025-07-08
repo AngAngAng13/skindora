@@ -1,3 +1,4 @@
+import type { VoucherUpdate } from "@/hooks/Voucher/useUpdateVoucher";
 import httpClient from "@/lib/axios";
 import type { Voucher } from "@/types/voucher";
 
@@ -39,6 +40,8 @@ export const fetchVoucherByID = async (params: FetchVoucherByID) => {
     .then((response) => response.data);
 };
 
-export const updateVoucher = async (params: UpdateVoucherProps, payload: Voucher) => {
-  return httpClient.put(`/admin/manage-vouchers/${params.voucherId}`, payload).then((response) => response.data);
+export const updateVoucher = async (params: UpdateVoucherProps, payload: Voucher | VoucherUpdate) => {
+  return httpClient
+    .put<API.IResponseAPI<Voucher>>(`/admin/manage-vouchers/${params.voucherId}`, payload)
+    .then((response) => response.data);
 };

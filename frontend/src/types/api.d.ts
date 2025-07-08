@@ -37,7 +37,7 @@ declare namespace API {
   export interface IResponseAPI<T = any> {
     result: T;
     data: T;
-    statusCode: number;
+    status: number;
     success: boolean;
     errors: [
       {
