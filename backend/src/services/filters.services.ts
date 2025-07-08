@@ -1,5 +1,3 @@
-
-
 import { FilterOptionType } from '~/models/types/Ai.types'
 import databaseService from '~/services/database.services'
 import logger from '~/utils/logger'
@@ -11,11 +9,11 @@ const FILTER_PARAMS_MAP: { [key: string]: string } = {
   filter_hsk_product_type: 'filter_hsk_product_type',
   filter_dac_tinh: 'filter_dac_tinh',
   filter_hsk_ingredient: 'filter_hsk_ingredient',
-  filter_hsk_size: 'filter_hsk_size'
+  filter_hsk_size: 'filter_hsk_size',
+  filter_origin: 'filter_origin'
 }
 
 class FilterService {
- 
   private async _loadOptionsForCategory(collectionName: string): Promise<FilterOptionType[]> {
     try {
       const collection = databaseService.collection(collectionName)
@@ -43,11 +41,10 @@ class FilterService {
       return options
     } catch (error) {
       logger.error({ error, collectionName }, `Error loading options for "${collectionName}":`)
-      return [] 
+      return []
     }
   }
 
-  
   public async getAllFilterOptions(): Promise<Record<string, FilterOptionType[]>> {
     const allOptions: Record<string, FilterOptionType[]> = {}
     const promises = []
