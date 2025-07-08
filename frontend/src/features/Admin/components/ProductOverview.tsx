@@ -1,15 +1,16 @@
-import { Edit, Eye, Package, Star } from "lucide-react";
-import { useEffect } from "react";
+import { Edit, Eye, Loader2, Package, Star } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader } from "@/components/ui/loader";
-import { useFetchProduct } from "@/hooks/useFetchProduct";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useFetchBrand } from "@/hooks/Brand/useFetchBrand";
+import { useFetchProduct } from "@/hooks/Product/useFetchProduct";
 
 import { PaginationDemo } from "./Pagination";
 
-// Định nghĩa interface cho Product
 export interface Product {
   _id: string;
   name_on_list: string;
@@ -36,8 +37,8 @@ export interface Product {
     rawHtml: string;
     plainText: string;
   };
-  main_images_detail: string[]; // Giả sử đây là mảng các chuỗi URL
-  sub_images_detail: string[]; // Giả sử đây là mảng các chuỗi URL
+  main_images_detail: string[];
+  sub_images_detail: string[];
   filter_hsk_ingredient: string;
   filter_hsk_skin_type: string;
   filter_hsk_uses: string;
@@ -45,17 +46,12 @@ export interface Product {
   filter_origin: string;
 }
 
-interface ProductOverviewProps {
-  onSelectProduct: (product: Product) => void; // Sử dụng Product interface
-  onEditProduct: () => void;
-}
-
-export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverviewProps) {
-  // Giả sử useFetchProduct trả về data có kiểu Product[]
-  const { fetchListProduct, data, params, changePage, loading } = useFetchProduct();
-
+export function ProductOverview() {
+  const navigate = useNavigate();
+  const { fetchListProduct, data, params, changePage, loading, changeBrand } = useFetchProduct();
+  const { data: brand, fetchListBrand } = useFetchBrand();
+  const [selectedBrand, setSelectedBrand] = useState<string>("");
   const formatPrice = (price: string) => {
-    // Thêm kiểm tra nếu price không hợp lệ
     const priceValue = parseInt(price, 10);
     if (isNaN(priceValue)) {
       return "N/A";
@@ -65,26 +61,34 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
       currency: "VND",
     }).format(priceValue);
   };
-
+  useEffect(() => {
+    fetchListBrand();
+  }, []);
   useEffect(() => {
     fetchListProduct();
-  }, [params.page]); // Giả sử fetchListProduct đã được tối ưu với useCallback
-
+  }, [
+    params.limit,
+    params.page,
+    params.filter_brand,
+    params.filter_dactinh,
+    params.filter_hsk_ingredient,
+    params.filter_hsk_product_type,
+    params.filter_hsk_size,
+    params.filter_hsk_skin_type,
+    params.filter_hsk_uses,
+    params.filter_origin,
+  ]);
   useEffect(() => {
-    // Dành cho việc debug, có thể giữ lại hoặc xóa đi
-    console.log(data);
-  }, [data]);
-
-  const handleEdit = (product: Product) => {
-    onSelectProduct(product);
-    onEditProduct();
-  };
-
+    changeBrand(selectedBrand);
+  }, [selectedBrand]);
   return (
     <div>
       {loading ? (
-        <div className="text-primary flex h-[300px] w-full items-center justify-center">
-          <Loader size="lg" />
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <div className="text-muted-foreground flex items-center gap-2">
+            <Loader2 className="text-primary h-8 w-8 animate-spin" />
+            <span className="text-lg">Đang tải dữ liệu...</span>
+          </div>
         </div>
       ) : (
         <div className="space-y-6">
@@ -94,7 +98,6 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-blue-100">Tổng sản phẩm</p>
-                    {/* TODO: Cập nhật các giá trị này từ API nếu có */}
                     <p className="text-3xl font-bold">{params.totalRecords}</p>
                   </div>
                   <Package className="h-8 w-8 text-blue-200" />
@@ -135,24 +138,33 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
               </CardContent>
             </Card>
           </div>
+          <div>
+            <Select onValueChange={(value) => setSelectedBrand(value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a brand" />
+              </SelectTrigger>
 
-          {/* Phần danh sách sản phẩm mới nhất */}
+              <SelectContent>
+                {brand.map((brand) => (
+                  <SelectItem key={brand._id} value={brand._id}>
+                    {brand.option_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Sản phẩm mới nhất</span>
-                <Button variant="outline" size="sm">
-                  Xem tất cả
-                </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {/* Lặp qua dữ liệu sản phẩm từ API */}
                 {data && data.length > 0 ? (
                   data.map((product: Product) => (
                     <div
-                      key={product._id} // Sử dụng _id làm key cho mỗi item
+                      key={product._id}
                       className="flex items-center space-x-4 rounded-lg border p-4 transition-shadow hover:shadow-md"
                     >
                       <img
@@ -171,10 +183,21 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
                         </div>
                       </div>
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="icon">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => {
+                            console.log("Navigating to:", `/admin/${product._id}/detail`);
+                            navigate(`/admin/${product._id}/detail`);
+                          }}
+                        >
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="outline" size="icon" onClick={() => handleEdit(product)}>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => navigate(`/admin/${product._id}/update-product`)}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
                       </div>
@@ -189,7 +212,9 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
           </Card>
           <div className="mt-4">
             <PaginationDemo
+              // eslint-disable-next-line no-constant-binary-expression
               totalPages={Number(params.totalPages) ?? 1}
+              // eslint-disable-next-line no-constant-binary-expression
               currentPage={Number(params.page) ?? 1}
               onPageChange={changePage}
             />

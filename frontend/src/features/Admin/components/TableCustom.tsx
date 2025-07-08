@@ -1,5 +1,3 @@
-"use client";
-
 import {
   flexRender,
   getCoreRowModel,
@@ -17,9 +15,18 @@ import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-interface FilterOptionsProps {
+export interface FilterOptionsProps {
   value: string;
-  label: "SHIPPING" | "FAILED" | "CANCELLED" | "RETURNED" | "DELIVERED" | "PROCESSING";
+  label:
+    | "SHIPPING"
+    | "FAILED"
+    | "CANCELLED"
+    | "RETURNED"
+    | "DELIVERED"
+    | "PROCESSING"
+    | "CONFIRMED"
+    | "PENDING"
+    | "ALL";
 }
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -29,9 +36,11 @@ interface DataTableProps<TData, TValue> {
   filterPlaceholder: string;
   isHaveFilter?: boolean;
   callBackFunction?: (status?: "SHIPPING" | "FAILED" | "CANCELLED" | "RETURNED" | "DELIVERED" | "PROCESSING") => void;
+  status?: string;
 }
 
 export function DataTable<TData, TValue>({
+  status,
   columns,
   data,
   filterColumnId,
@@ -44,7 +53,6 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [activeFilter, setActiveFilter] = React.useState("all");
   const table = useReactTable({
     data,
     columns,
@@ -66,7 +74,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      <div className="bg-card text-card-foreground flex items-center gap-2 rounded-lg border p-4">
+      <div className="bg-card text-card-foreground flex items-center gap-2 p-4">
         <div className="flex-grow">
           <div className="relative flex items-center">
             <Search className="text-muted-foreground absolute left-3 h-4 w-4" />
@@ -74,14 +82,14 @@ export function DataTable<TData, TValue>({
               placeholder={filterPlaceholder}
               value={(table.getColumn(filterColumnId)?.getFilterValue() as string) ?? ""}
               onChange={(event) => table.getColumn(filterColumnId)?.setFilterValue(event.target.value)}
-              className="p-6 pl-10"
+              className="rounded-lg border border-gray-300 p-6 pl-10 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
         </div>
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto p-6">
+              <Button variant="secondary" className="ml-auto p-6">
                 <span className="text-sm">
                   <Funnel className="" />
                 </span>
@@ -95,14 +103,13 @@ export function DataTable<TData, TValue>({
         <div className="mt-2 flex gap-2">
           {filterOptions?.map((option) => {
             const handleClick = async () => {
-              setActiveFilter(option.value);
               if (callBackFunction) {
-                callBackFunction(option.label);
+                callBackFunction(option.label as any);
               }
             };
             return (
               <div key={option.value}>
-                <Button variant={activeFilter === option.value ? "default" : "secondary"} onClick={handleClick}>
+                <Button variant={status === option.label ? "default" : "secondary"} onClick={handleClick}>
                   {option.label}
                 </Button>
               </div>

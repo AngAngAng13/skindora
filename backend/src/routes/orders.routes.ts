@@ -28,7 +28,7 @@ import {
   getNextOrderStatusValidator,
   getOrderByIdValidator,
   prepareOrderValidator,
-  requestCancelOrderValidator,
+  requestCancelOrderValidator
 } from '~/middlewares/orders.middlewares'
 import { isStaffValidator } from '~/middlewares/staff.middlewares'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
@@ -54,7 +54,12 @@ ordersRouter.route('/me').get(accessTokenValidator, wrapAsync(getAllOrdersByAuth
 
 ordersRouter
   .route('/:orderId/next-status')
-  .patch(accessTokenValidator, isStaffValidator, getNextOrderStatusValidator, wrapAsync(moveToNextStatusController))
+  .patch(
+    accessTokenValidator,
+    isAdminOrStaffValidator,
+    getNextOrderStatusValidator,
+    wrapAsync(moveToNextStatusController)
+  )
 
 ordersRouter
   .route('/:orderId/cancel-request')
@@ -66,7 +71,9 @@ ordersRouter
   .route('/:orderId/cancel-request/reject')
   .patch(accessTokenValidator, isAdminOrStaffValidator, cancelledOrderRequestedValidator, wrapAsync(rejectCancelRequestController))
 
-ordersRouter.route('/:orderId/cancel').patch(accessTokenValidator, isAdminOrStaffValidator, cancelOrderValidator, wrapAsync(cancelOrderController))
+ordersRouter
+  .route('/:orderId/cancel')
+  .patch(accessTokenValidator, isAdminOrStaffValidator, cancelOrderValidator, wrapAsync(cancelOrderController))
 
 ordersRouter.route('/:orderId').get(accessTokenValidator, getOrderByIdValidator, wrapAsync(getOrderByIdController))
 

@@ -1,28 +1,27 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 
-import type { FetchProductProps } from "@/api/product";
-import { fetchProduct } from "@/api/product";
-import type { ProductFE } from "@/types/product";
+import { fetchAllBrand } from "@/api/brand";
+import type { Brand } from "@/types/brand";
 
-export const useFetchProduct = () => {
-  const [loading, setLoading] = React.useState(false);
-  const [params, setParams] = React.useState<FetchProductProps>({
+export const useFetchBrand = () => {
+  const [loading, setLoading] = useState<boolean>();
+  const [data, setData] = useState<Brand[]>([]);
+  const [params, setParams] = React.useState({
     limit: 10,
     page: 1,
     totalPages: 1,
     totalRecords: 1,
   });
-  const [data, setData] = React.useState<ProductFE[]>([]);
   const changePage = React.useCallback((page: number) => {
     setParams((prev) => ({ ...prev, page }));
   }, []);
   const changeLimit = React.useCallback((limit: number) => {
     setParams((prev) => ({ ...prev, limit }));
   }, []);
-  const fetchListProduct = useCallback(async () => {
+  const fetchListBrand = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchProduct({
+      const response = await fetchAllBrand({
         limit: params.limit,
         page: params.page,
       });
@@ -39,14 +38,13 @@ export const useFetchProduct = () => {
       setLoading(false);
     }
   }, [params.limit, params.page]);
-
   return {
     loading,
-    fetchListProduct,
-    data,
-    params,
-    setParams,
-    changeLimit,
     changePage,
+    params,
+    changeLimit,
+    data,
+    setParams,
+    fetchListBrand,
   };
 };

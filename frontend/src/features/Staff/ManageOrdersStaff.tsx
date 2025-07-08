@@ -1,11 +1,12 @@
+import { Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 
-import { Loader } from "@/components/ui/loader";
 import { useHeader } from "@/contexts/header.context";
-import { useFetchOrder } from "@/hooks/useFetchOrders";
+import { useFetchOrder } from "@/hooks/Orders/useFetchOrders";
 
 import { orderColumn } from "../Admin/columns/ordersColumns";
 import { PaginationDemo } from "../Admin/components/Pagination";
+import type { FilterOptionsProps } from "../Admin/components/TableCustom";
 import { DataTable } from "../Admin/components/TableCustom";
 
 const ManageOrdersStaff: React.FC = () => {
@@ -19,35 +20,42 @@ const ManageOrdersStaff: React.FC = () => {
     console.log(data);
     console.log(params.page);
     console.log(params.limit);
+    console.log(params.status);
   }, [params.page, params.status]);
   const handlePageChange = (page: number) => {
     changePage(page);
   };
 
-  const filterOptions = [
+  const filterOptions: FilterOptionsProps[] = [
+    { value: "", label: "ALL" as const },
     { value: "failed", label: "FAILED" as const },
     { value: "shipping", label: "SHIPPING" as const },
     { value: "delivered", label: "DELIVERED" as const },
     { value: "cancelled", label: "CANCELLED" as const },
     { value: "returned", label: "RETURNED" as const },
-    { value: "processing", label: "PROCESSING" as const },
+    { value: "confirmed", label: "CONFIRMED" as const },
+    { value: "pending", label: "PENDING" as const },
   ];
 
   return (
     <div>
       {loading ? (
-        <div className="text-primary flex h-[300px] w-full items-center justify-center">
-          <Loader size="lg" />
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <div className="text-muted-foreground flex items-center gap-2">
+            <Loader2 className="text-primary h-8 w-8 animate-spin" />
+            <span className="text-lg">Đang tải dữ liệu...</span>
+          </div>
         </div>
       ) : (
         <div>
-          <div className="flex min-h-screen bg-white">
+          <div className="">
             <div className="flex-1">
-              <div className="mx-auto bg-white px-8 py-15 pt-4">
+              <div className="mx-auto rounded-sm bg-white px-8 py-15 pt-3 shadow-md">
                 <div>
                   <DataTable
                     columns={orderColumn}
                     data={data}
+                    status={params.status}
                     filterColumnId="_id"
                     filterPlaceholder="Tìm khách hàng"
                     isHaveFilter={true}
@@ -57,7 +65,9 @@ const ManageOrdersStaff: React.FC = () => {
                 </div>
                 <div className="mt-4">
                   <PaginationDemo
+                    // eslint-disable-next-line no-constant-binary-expression
                     totalPages={Number(params.totalPages) ?? 1}
+                    // eslint-disable-next-line no-constant-binary-expression
                     currentPage={Number(params.page) ?? 1}
                     onPageChange={handlePageChange}
                   />

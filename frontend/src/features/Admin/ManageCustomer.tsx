@@ -1,13 +1,12 @@
-import { TrendingDown, TrendingUp } from "lucide-react";
+import { Loader2, TrendingDown, TrendingUp } from "lucide-react";
 import React, { useEffect, useMemo } from "react";
 
 import { Card } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
-import { useFetchUser } from "@/hooks/useFetchUser";
+import { useFetchUser } from "@/hooks/User/useFetchUser";
 
 import { userColumn } from "./columns/usersColums";
 import { CardDemo } from "./components/Card";
-import { Loader } from "./components/Loader";
 import { PaginationDemo } from "./components/Pagination";
 import { ChartRadialText } from "./components/RadialChart";
 // Component đã được cập nhật
@@ -16,24 +15,21 @@ import { UserChart } from "./components/UserChart";
 
 const ManageCustomer: React.FC = () => {
   const { setHeaderName } = useHeader();
-  // Giả sử `useFetchUser` có kiểu dữ liệu cho `data` là User[]
+
   const { fetchUser, data, params, setParams, allUser, fetchAllUser, loading } = useFetchUser();
 
   useEffect(() => {
     setHeaderName("Quản Lý Khách Hàng");
-  }, [setHeaderName]); // Chỉ gọi lại khi setHeaderName thay đổi
+  }, [setHeaderName]);
 
-  // useEffect này sẽ gọi API khi trang thay đổi
   useEffect(() => {
     fetchUser();
     fetchAllUser();
     console.log(data);
     console.log(params.page);
-  }, [params.page]); // Phụ thuộc vào params.page, sẽ fetch lại dữ liệu khi trang thay đổi
+  }, [params.page]);
 
-  // Hàm xử lý khi người dùng click vào một trang mới
   const handlePageChange = (page: number) => {
-    // Cập nhật lại state `params` để trigger useEffect ở trên
     setParams((prevParams) => ({
       ...prevParams,
       page: page,
@@ -45,7 +41,7 @@ const ManageCustomer: React.FC = () => {
       return [];
     }
     const monthlyCounts = allUser.reduce((acc: { [key: string]: number }, user) => {
-      const date = new Date(user.created_at); // Sửa 'created_at' thành 'createdAt' cho khớp với interface User
+      const date = new Date(user.created_at);
       const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}`;
       if (!acc[monthKey]) {
         acc[monthKey] = 0;
@@ -55,7 +51,7 @@ const ManageCustomer: React.FC = () => {
     }, {});
 
     const chartData = Object.entries(monthlyCounts)
-      // Sắp xếp theo key "YYYY-MM" trước khi chuyển đổi định dạng tên
+
       .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
       .map(([monthKey, count]) => {
         const [year, month] = monthKey.split("-");
@@ -70,38 +66,38 @@ const ManageCustomer: React.FC = () => {
   }, [allUser]);
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="">
       {loading || !data || !allUser || monthlyUserData.length === 0 ? (
-        <div className="flex h-[300px] w-full items-center justify-center">
-          <Loader size="lg" />
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <div className="text-muted-foreground flex items-center gap-2">
+            <Loader2 className="text-primary h-8 w-8 animate-spin" />
+            <span className="text-lg">Đang tải dữ liệu...</span>
+          </div>
         </div>
       ) : (
         <>
           <div className="flex-1">
             <div className="mx-auto bg-white px-8 py-15 pt-4">
-              {/* <div>
-                <Typography className="text-2xl font-bold">Danh sách khách hàng</Typography>
-              </div> */}
               <div className="mt-2 mb-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <CardDemo
                   title="Tổng số người dùng"
-                  amount={`${params.totalRecords ?? 0}`} // Sử dụng `totalRecords` từ params
+                  amount={`${params.totalRecords ?? 0}`}
                   change="+20.1% so với tháng trước"
                 />
-                {/* <ChartRadialText /> */}
+
                 <CardDemo
                   title="Số lượng khách hàng mới"
-                  amount={`${params.totalRecords ?? 0}`} // Sử dụng `totalRecords` từ params
+                  amount={`${params.totalRecords ?? 0}`}
                   change="+20.1% so với tháng trước"
                 />
                 <CardDemo
                   title="Khách hàng có hoạt động tích cực nhất"
-                  amount={`${params.totalRecords ?? 0}`} // Sử dụng `totalRecords` từ params
+                  amount={`${params.totalRecords ?? 0}`}
                   change="+20.1% so với tháng trước"
                 />
                 <CardDemo
                   title="Số khách hàng đang hoạt động"
-                  amount={`${params.totalRecords ?? 0}`} // Sử dụng `totalRecords` từ params
+                  amount={`${params.totalRecords ?? 0}`}
                   change="+20.1% so với tháng trước"
                 />
                 {/* Các CardDemo khác */}
@@ -160,30 +156,6 @@ const ManageCustomer: React.FC = () => {
                   </Card>
                 </div>
               </div>
-
-              {/* <div className="mt-8">
-            {loading ? (
-              <div className="flex h-[300px] w-full items-center justify-center">
-                <Loader size="lg" />
-              </div>
-            ) : (
-              <>
-                <DataTable
-                  columns={userColumn}
-                  data={data}
-                  filterColumnId="username"
-                  filterPlaceholder="Tìm khách hàng"
-                />
-                <div className="mt-4">
-                  <PaginationDemo
-                    totalPages={params.totalPages ?? 1}
-                    currentPage={params.page ?? 1}
-                    onPageChange={handlePageChange}
-                  />
-                </div>
-              </>
-            )}
-          </div> */}
             </div>
           </div>
         </>

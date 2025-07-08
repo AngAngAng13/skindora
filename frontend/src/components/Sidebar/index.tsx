@@ -1,4 +1,19 @@
-import { ChartNoAxesColumnIncreasing, Home, Package, ShoppingCart, User2, UsersRound } from "lucide-react";
+import {
+  BarChart4,
+  Globe2,
+  Home,
+  // Lựa chọn thay thế: Award, Crown
+  Leaf,
+  // Lựa chọn thay thế: Face, Droplets
+  ListChecks,
+  Package,
+  // Lựa chọn thay thế: LineChart, PieChart
+  Shield,
+  ShoppingCart,
+  TicketPercent, // Lựa chọn thay thế: Ticket, Gift, Tag
+  User2,
+  UsersRound,
+} from "lucide-react";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -19,9 +34,32 @@ const items = [
   { title: "Tổng quan", url: "/admin", icon: Home },
   { title: "Hồ sơ", url: "/admin/profile", icon: User2 },
   { title: "Khách hàng", url: "/admin/customers", icon: UsersRound },
-  { title: "Sản phẩm", url: "/admin/products", icon: Package },
-  { title: "Đơn hàng", url: "/admin/orders", icon: ShoppingCart },
-  { title: "Thống kê", url: "/admin/statics", icon: ChartNoAxesColumnIncreasing },
+  { title: "Quản lý sản phẩm", url: "/admin/products", icon: Package },
+  { title: "Quản lý đơn hàng", url: "/admin/orders", icon: ShoppingCart },
+  { title: "Quản lý công dụng", url: "/admin/use", icon: ListChecks },
+  { title: "Quản lý xuất xứ", url: "/admin/origin", icon: Globe2 },
+
+  // Các icon được đề xuất thay đổi hoặc có thêm lựa chọn
+  {
+    title: "Thống kê",
+    url: "/admin/statics",
+    icon: BarChart4, // BarChart4, LineChart, PieChart trực quan hơn cho thống kê.
+  },
+  {
+    title: "Quản lý thương hiệu",
+    url: "/admin/brand",
+    icon: Shield, // Shield (khiên) rất tốt, thể hiện sự bảo chứng. Award (phần thưởng) hoặc Crown (vương miện) cũng là lựa chọn hay để thể hiện thương hiệu hàng đầu.
+  },
+  {
+    title: "Quản lý loại da",
+    url: "/admin/typeskin",
+    icon: Leaf, // Leaf (chiếc lá) gợi ý về sự tự nhiên, chăm sóc. Face (khuôn mặt) hoặc Droplets (giọt nước - cho dưỡng ẩm) cũng là những lựa chọn phù hợp.
+  },
+  {
+    title: "Quản lý voucher",
+    url: "/admin/voucher",
+    icon: TicketPercent, // TicketPercent, Ticket (vé), Gift (quà tặng), hoặc Tag (nhãn) đều phù hợp hơn Globe2 (quả địa cầu) rất nhiều.
+  },
 ];
 
 const AppSidebar: React.FC = () => {

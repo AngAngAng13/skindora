@@ -16,7 +16,7 @@ import { useRemoveFromWishlistMutation } from "@/hooks/mutations/useRemoveFromWi
 import { useFilterOptionsQuery } from "@/hooks/queries/useFilterOptionsQuery";
 import { useProductByIdQuery } from "@/hooks/queries/useProductByIdQuery";
 import { useWishlistQuery } from "@/hooks/queries/useWishlistQuery";
-import type { Product } from "@/types/Product";
+import type { Product } from "@/types";
 
 import { ProductImageGallery } from "./components/ProductImageGallery";
 

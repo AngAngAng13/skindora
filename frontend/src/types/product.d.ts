@@ -24,8 +24,9 @@ export interface ProductFE {
     rawHtml: string;
     plainText: string;
   };
-  main_images_detail: [];
-  sub_images_detail: [];
+  main_images_detail: string[];
+  sub_images_detail: string[];
+  filter_brand: string;
   filter_hsk_ingredient: string;
   filter_hsk_skin_type: string;
   filter_hsk_uses: string;

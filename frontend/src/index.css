@@ -198,35 +198,39 @@
 
 .react-resizable-handle {
   position: absolute;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
   background-origin: content-box;
   box-sizing: border-box;
-  background-position: bottom right; 
-  padding: 0; 
+  background-position: bottom right;
+  padding: 0;
 }
 
 .react-resizable-handle-s {
-  height: 23px; 
-  width: 100%; 
-  cursor: ns-resize; 
-  bottom: -5px; 
+  height: 23px;
+  width: 100%;
+  cursor: ns-resize;
+  bottom: -5px;
   left: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* background-color: rgba(0, 0, 0, 0.05); */ 
+  /* background-color: rgba(0, 0, 0, 0.05); */
 }
 
 .react-resizable-handle-s::after {
   content: "";
   display: block;
-  width: 50px; 
-  height: 4px; 
-  background-color: #cbd5e1; 
+  width: 50px;
+  height: 4px;
+  background-color: #cbd5e1;
   border-radius: 2px;
   transition: background-color 0.2s ease-in-out;
 }
 
 .react-resizable-handle-s:hover::after {
-  background-color: #94a3b8; 
+  background-color: #94a3b8;
+}
+.prose p[style*="text-align: center"] {
+  display: flex;
+  justify-content: center;
 }
