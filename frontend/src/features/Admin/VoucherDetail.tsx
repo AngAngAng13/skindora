@@ -8,7 +8,6 @@ import {
   Loader2,
   // Import Loader2
   Tag,
-  Trash2,
 } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
