@@ -486,7 +486,10 @@ export function ProductOverview() {
                         <img
                           src={product.image_on_list}
                           alt={product.name_on_list}
-                          className="h-16 w-16 flex-shrink-0 rounded-lg object-cover"
+                          onClick={() => {
+                            navigate(`/admin/${product._id}/detail`);
+                          }}
+                          className="h-16 w-16 flex-shrink-0 cursor-pointer rounded-lg object-cover"
                         />
                         <div className="flex-1">
                           <h3 className="line-clamp-2 font-medium text-gray-900">{product.name_on_list}</h3>
@@ -503,7 +506,6 @@ export function ProductOverview() {
                             variant="outline"
                             size="icon"
                             onClick={() => {
-                              console.log("Navigating to:", `/admin/${product._id}/detail`);
                               navigate(`/admin/${product._id}/detail`);
                             }}
                           >
