@@ -1,10 +1,12 @@
 import { Edit, Eye, Loader2, Package, Star } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useFetchBrand } from "@/hooks/Brand/useFetchBrand";
 import { useFetchProduct } from "@/hooks/Product/useFetchProduct";
 
 import { PaginationDemo } from "./Pagination";
@@ -51,8 +53,9 @@ interface ProductOverviewProps {
 
 export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverviewProps) {
   const navigate = useNavigate();
-  const { fetchListProduct, data, params, changePage, loading } = useFetchProduct();
-
+  const { fetchListProduct, data, params, changePage, loading, setParams, changeBrand } = useFetchProduct();
+  const { data: brand, fetchListBrand } = useFetchBrand();
+  const [selectedBrand, setSelectedBrand] = useState<string>("");
   const formatPrice = (price: string) => {
     const priceValue = parseInt(price, 10);
     if (isNaN(priceValue)) {
@@ -63,14 +66,26 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
       currency: "VND",
     }).format(priceValue);
   };
-
+  useEffect(() => {
+    fetchListBrand();
+  }, []);
   useEffect(() => {
     fetchListProduct();
-  }, [params.page, fetchListProduct]);
+  }, [
+    params.limit,
+    params.page,
+    params.filter_brand,
+    params.filter_dactinh,
+    params.filter_hsk_ingredient,
+    params.filter_hsk_product_type,
+    params.filter_hsk_size,
+    params.filter_hsk_skin_type,
+    params.filter_hsk_uses,
+    params.filter_origin,
+  ]);
   useEffect(() => {
-    console.log(data);
-  }, [data]);
-
+    changeBrand(selectedBrand);
+  }, [selectedBrand]);
   return (
     <div>
       {loading ? (
@@ -128,7 +143,21 @@ export function ProductOverview({ onSelectProduct, onEditProduct }: ProductOverv
               </CardContent>
             </Card>
           </div>
+          <div>
+            <Select onValueChange={(value) => setSelectedBrand(value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a brand" />
+              </SelectTrigger>
 
+              <SelectContent>
+                {brand.map((brand) => (
+                  <SelectItem key={brand._id} value={brand._id}>
+                    {brand.option_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">

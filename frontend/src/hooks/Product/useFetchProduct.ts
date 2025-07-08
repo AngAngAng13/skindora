@@ -12,6 +12,14 @@ export const useFetchProduct = () => {
     page: 1,
     totalPages: 1,
     totalRecords: 1,
+    filter_brand: "",
+    filter_dactinh: "",
+    filter_hsk_ingredient: "",
+    filter_hsk_product_type: "",
+    filter_hsk_size: "",
+    filter_hsk_skin_type: "",
+    filter_hsk_uses: "",
+    filter_origin: "",
   });
   const [data, setData] = React.useState<ProductFE[]>([]);
   const changePage = React.useCallback((page: number) => {
@@ -20,13 +28,26 @@ export const useFetchProduct = () => {
   const changeLimit = React.useCallback((limit: number) => {
     setParams((prev) => ({ ...prev, limit }));
   }, []);
+  const changeBrand = React.useCallback((filter_brand: string) => {
+    setParams((prev) => ({ ...prev, filter_brand }));
+  }, []);
   const fetchListProduct = useCallback(async () => {
     setLoading(true);
+    console.log(params);
     try {
       const response = await fetchProduct({
         limit: params.limit,
         page: params.page,
+        filter_brand: params.filter_brand,
+        filter_dactinh: params.filter_dactinh,
+        filter_hsk_ingredient: params.filter_hsk_ingredient,
+        filter_hsk_product_type: params.filter_hsk_product_type,
+        filter_hsk_size: params.filter_hsk_size,
+        filter_hsk_skin_type: params.filter_hsk_skin_type,
+        filter_hsk_uses: params.filter_hsk_uses,
+        filter_origin: params.filter_origin,
       });
+      console.log(response.data);
       setData(response.data);
       setParams((prev) => ({
         ...prev,
@@ -39,7 +60,19 @@ export const useFetchProduct = () => {
     } finally {
       setLoading(false);
     }
-  }, [params.limit, params.page]);
+  }, [
+    params.limit,
+    params.page,
+    params.filter_brand,
+    params.filter_dactinh,
+    params.filter_hsk_ingredient,
+    params.filter_hsk_product_type,
+    params.filter_hsk_size,
+    params.filter_hsk_uses,
+    params.filter_origin,
+    params.filter_hsk_skin_type,
+  ]);
+
   const fetchListProductByStaff = useCallback(async () => {
     setLoading(true);
     try {
@@ -70,5 +103,6 @@ export const useFetchProduct = () => {
     changeLimit,
     changePage,
     fetchListProductByStaff,
+    changeBrand,
   };
 };
