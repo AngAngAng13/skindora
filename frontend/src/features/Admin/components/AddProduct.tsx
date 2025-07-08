@@ -99,7 +99,7 @@ export default function AddProductPage() {
     }
   }
 
-  const ImageUrlInput = ({ control, name, label, placeholder }) => (
+  const ImageUrlInput = ({ control, name, label, placeholder }: any) => (
     <FormField
       control={control}
       name={name}
