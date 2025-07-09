@@ -59,3 +59,22 @@ export interface updateFilterHskIngredientReqBody {
 export interface disableFilterHskIngredientReqBody {
   state: GenericFilterState
 }
+
+export interface createNewFilterHskProductTypeReqBody {
+  option_name: string
+  description?: string
+  category_name: string
+  category_param: string
+  state?: GenericFilterState
+}
+
+export interface updateFilterHskProductTypeReqBody {
+  option_name?: string
+  description?: string
+  category_name?: string
+  category_param?: string
+}
+
+export interface disableFilterHskProductTypeReqBody {
+  state: GenericFilterState
+}

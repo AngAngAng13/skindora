@@ -260,6 +260,22 @@ export const ADMIN_MESSAGES = {
   FILTER_INGREDIENT_NOT_FOUND: 'Filter ingredient not found',
   UPDATE_FILTER_INGREDIENT_SUCCESS: 'Update filter ingredient successfully',
   UPDATE_FILTER_INGREDIENT_STATE_SUCCESS: 'Filter ingredient update state successfully',
+  //product type
+  UPDATE_FILTER_PRODUCT_TYPE_FAILED: 'Update filter product type failed',
+  FILTER_PRODUCT_TYPE_OPTION_NAME_IS_REQUIRED: 'Filter product type option name is required',
+  FILTER_PRODUCT_TYPE_OPTION_NAME_MUST_BE_STRING: 'Filter product type option name must be a string',
+  FILTER_PRODUCT_TYPE_CATEGORY_NAME_IS_REQUIRED: 'Filter product type category name is required',
+  FILTER_PRODUCT_TYPE_CATEGORY_NAME_MUST_BE_STRING: 'Filter product type category name must be a string',
+  FILTER_PRODUCT_TYPE_CATEGORY_PARAM_IS_REQUIRED: 'Filter product type category param is required',
+  FILTER_PRODUCT_TYPE_CATEGORY_PARAM_MUST_BE_STRING: 'Filter product type category param must be a string',
+  FILTER_PRODUCT_TYPE_STATE_MUST_BE_A_STRING: 'Filter product type state must be a string',
+  FILTER_PRODUCT_TYPE_DESCRIPTION_MUST_BE_STRING: 'Filter product type description must be a string',
+  FILTER_PRODUCT_TYPE_ID_IS_INVALID: 'Filter product type ID is invalid',
+  CREATE_NEW_FILTER_PRODUCT_TYPE_SUCCESS: 'Create new filter product type successfully',
+  FILTER_PRODUCT_TYPE_NOT_FOUND: 'Filter product type not found',
+  UPDATE_FILTER_PRODUCT_TYPE_SUCCESS: 'Update filter product type successfully',
+  UPDATE_FILTER_PRODUCT_TYPE_STATE_SUCCESS: 'Filter product type update state successfully',
+  
 
 } as const
 

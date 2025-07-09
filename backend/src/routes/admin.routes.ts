@@ -43,7 +43,7 @@ import {
   searchFilterBrandsController,
   updateFilterBrandController
 } from '~/controllers/filterBrand.controllers'
-import { disableFilterBrandReqBody, disableFilterDacTinhReqBody, disableFilterHskIngredientReqBody, updateFilterBrandReqBody, updateFilterDacTinhReqBody, updateFilterHskIngredientReqBody } from '~/models/requests/Admin.requests'
+import { disableFilterBrandReqBody, disableFilterDacTinhReqBody, disableFilterHskIngredientReqBody, disableFilterHskProductTypeReqBody, updateFilterBrandReqBody, updateFilterDacTinhReqBody, updateFilterHskIngredientReqBody, updateFilterHskProductTypeReqBody } from '~/models/requests/Admin.requests'
 import {
   disableFilterBrandValidator,
   getFilterBrandByIdValidator,
@@ -53,6 +53,8 @@ import { createNewFilterDacTinhValidator, disableFilterDacTinhValidator, getFilt
 import { createNewFilterDacTinhController, disableFilterDacTinhController, getAllFilterDacTinhsController, getFilterDacTinhByIdController, searchFilterDacTinhsController, updateFilterDacTinhController } from '~/controllers/filterDacTinh.controllers'
 import { createNewFilterHskIngredientController, disableFilterHskIngredientController, getAllFilterHskIngredientsController, getFilterHskIngredientByIdController, searchFilterHskIngredientsController, updateFilterHskIngredientController } from '~/controllers/filterHskIngredient.controllers'
 import { createNewFilterHskIngredientValidator, disableFilterHskIngredientValidator, getFilterHskIngredientByIdValidator, updateFilterHskIngredientValidator } from '~/middlewares/filterHskIngredient.middlewares'
+import { createNewFilterHskProductTypeController, disableFilterHskProductTypeController, getAllFilterHskProductTypesController, getFilterHskProductTypeByIdController, searchFilterHskProductTypesController, updateFilterHskProductTypeController } from '~/controllers/filterHskProductType.controllers'
+import { createNewFilterHskProductTypeValidator, disableFilterHskProductTypeValidator, getFilterHskProductTypeByIdValidator, updateFilterHskProductTypeValidator } from '~/middlewares/filterHskProductType.middlewares'
 
 const adminRouter = Router()
 //user management
@@ -347,5 +349,55 @@ adminRouter.put(
   filterMiddleware<disableFilterHskIngredientReqBody>(['state']),
   disableFilterHskIngredientValidator,
   wrapAsync(disableFilterHskIngredientController)
+)
+
+//HSK Product Type filter
+adminRouter.get(
+  '/manage-filters/get-all-filter-hsk-product-types',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getAllFilterHskProductTypesController)
+)
+
+adminRouter.post(
+  '/manage-filters/create-new-filter-hsk-product-type',
+  accessTokenValidator,
+  isAdminValidator,
+  createNewFilterHskProductTypeValidator,
+  wrapAsync(createNewFilterHskProductTypeController)
+)
+
+adminRouter.get(
+  '/manage-filters/search-filter-hsk-product-type',
+  accessTokenValidator,
+  isAdminValidator,
+  searchFilterOptionNameValidator,
+  wrapAsync(searchFilterHskProductTypesController)
+)
+
+adminRouter.get(
+  '/manage-filters/get-filter-hsk-product-type-detail/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  getFilterHskProductTypeByIdValidator,
+  wrapAsync(getFilterHskProductTypeByIdController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-product-type/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<updateFilterHskProductTypeReqBody>(['option_name', 'description', 'category_name', 'category_param']),
+  updateFilterHskProductTypeValidator,
+  wrapAsync(updateFilterHskProductTypeController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-product-type-state/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<disableFilterHskProductTypeReqBody>(['state']),
+  disableFilterHskProductTypeValidator,
+  wrapAsync(disableFilterHskProductTypeController)
 )
 export default adminRouter
