@@ -4117,6 +4117,297 @@
           }
         }
       }
+    },
+    "/admin/manage-filters/create-new-filter-hsk-product-type": {
+      "post": {
+        "tags": [
+          "Admin - Filter Product Type"
+        ],
+        "summary": "(Admin) Create a New HSK Product Type Filter",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFilterHskProductTypeReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter loại sản phẩm được tạo thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-all-filter-hsk-product-types": {
+      "get": {
+        "tags": [
+          "Admin - Filter Product Type"
+        ],
+        "summary": "(Admin) Get All HSK Product Type Filters",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về danh sách các filter loại sản phẩm.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFilterHskProductTypeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-filter-hsk-product-type-detail/{_id}": {
+      "get": {
+        "tags": [
+          "Admin - Filter Product Type"
+        ],
+        "summary": "(Admin) Get HSK Product Type Filter by ID",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chi tiết filter loại sản phẩm.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterHskProductType"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/update-filter-hsk-product-type/{_id}": {
+      "put": {
+        "tags": [
+          "Admin - Filter Product Type"
+        ],
+        "summary": "(Admin) Update an HSK Product Type Filter",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFilterHskProductTypeReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter loại sản phẩm được cập nhật thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterHskProductType"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/update-filter-hsk-product-type-state/{_id}": {
+      "put": {
+        "tags": [
+          "Admin - Filter Product Type"
+        ],
+        "summary": "(Admin) Update HSK Product Type Filter State",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisableFilterHskProductTypeReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Trạng thái filter loại sản phẩm được cập nhật thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterHskProductType"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/search-filter-hsk-product-type": {
+      "get": {
+        "tags": [
+          "Admin - Filter Product Type"
+        ],
+        "summary": "(Admin) Search HSK Product Type Filters by Name",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "description": "Từ khóa tìm kiếm trong tên loại sản phẩm.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về danh sách các filter loại sản phẩm phù hợp.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFilterHskProductTypeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -6080,6 +6371,130 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FilterHskIngredient"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginatedUserResponse/properties/pagination"
+          }
+        }
+      },
+      "FilterHskProductType": {
+        "type": "object",
+        "description": "Đại diện cho một đối tượng filter Loại Sản Phẩm HSK.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "option_name": {
+            "type": "string",
+            "example": "Serum"
+          },
+          "description": {
+            "type": "string",
+            "example": "Tinh chất đặc trị các vấn đề về da"
+          },
+          "category_name": {
+            "type": "string",
+            "example": "Loại Sản Phẩm HSK"
+          },
+          "category_param": {
+            "type": "string",
+            "example": "serum"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateFilterHskProductTypeReqBody": {
+        "type": "object",
+        "required": [
+          "option_name",
+          "category_name",
+          "category_param"
+        ],
+        "properties": {
+          "option_name": {
+            "type": "string",
+            "example": "Kem Chống Nắng"
+          },
+          "description": {
+            "type": "string",
+            "example": "Sản phẩm bảo vệ da khỏi tia UV"
+          },
+          "category_name": {
+            "type": "string",
+            "example": "Loại Sản Phẩm HSK"
+          },
+          "category_param": {
+            "type": "string",
+            "example": "kem-chong-nang"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        }
+      },
+      "UpdateFilterHskProductTypeReqBody": {
+        "type": "object",
+        "description": "Chỉ bao gồm các trường cần cập nhật cho loại sản phẩm.",
+        "properties": {
+          "option_name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category_name": {
+            "type": "string"
+          },
+          "category_param": {
+            "type": "string"
+          }
+        }
+      },
+      "DisableFilterHskProductTypeReqBody": {
+        "type": "object",
+        "required": [
+          "state"
+        ],
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "Trạng thái mới cho filter loại sản phẩm.",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ],
+            "example": "INACTIVE"
+          }
+        }
+      },
+      "PaginatedFilterHskProductTypeResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterHskProductType"
             }
           },
           "pagination": {
