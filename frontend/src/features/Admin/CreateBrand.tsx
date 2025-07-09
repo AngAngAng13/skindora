@@ -12,7 +12,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// Import Select components
 import httpClient from "@/lib/axios";
 import { type CreateBrandFormValue, createBrandSchema } from "@/lib/brandSchema";
 
@@ -26,7 +25,7 @@ const CreateBrand: React.FC = () => {
       option_name: "",
       category_name: "",
       category_param: "",
-      state: "ACTIVE", // Mặc định 'ACTIVE'
+      state: "ACTIVE",
     },
   });
 
@@ -34,7 +33,6 @@ const CreateBrand: React.FC = () => {
     setIsSubmitting(true);
     const payload = {
       ...values,
-      // state: "ACTIVE", // Không cần gán cứng ở đây nếu đã có trong form và schema
     };
     console.log("FINAL BRAND PAYLOAD TO SERVER:", payload);
 

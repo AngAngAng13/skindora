@@ -13,15 +13,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-// Import Skeleton for loading state
 import { useFetchBrandByID } from "@/hooks/Brand/useFetchBrandByID";
 import httpClient from "@/lib/axios";
 import { type CreateBrandFormValue, createBrandSchema } from "@/lib/brandSchema";
 
-// Assuming CreateBrandFormValue is compatible with update
-
 const UpdateBrand: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // Get ID from URL
+  const { id } = useParams<{ id: string }>();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -34,11 +31,10 @@ const UpdateBrand: React.FC = () => {
       option_name: "",
       category_name: "",
       category_param: "",
-      state: "ACTIVE", // Default value for the select if no data is loaded yet
+      state: "ACTIVE",
     },
   });
 
-  // Effect to fetch brand data when component mounts or ID changes
   useEffect(() => {
     if (id) {
       fetchBrandByID();
@@ -46,7 +42,6 @@ const UpdateBrand: React.FC = () => {
     console.log(fetchedBrandData);
   }, [id, fetchBrandByID]);
 
-  // Effect to populate form fields once brand data is fetched
   useEffect(() => {
     if (fetchedBrandData) {
       const brandToEdit = fetchedBrandData;
@@ -54,21 +49,19 @@ const UpdateBrand: React.FC = () => {
         option_name: brandToEdit.option_name,
         category_name: brandToEdit.category_name,
         category_param: brandToEdit.category_param,
-        state: brandToEdit.state as "ACTIVE" | "INACTIVE", // Cast to ensure type compatibility with Zod enum
+        state: brandToEdit.state as "ACTIVE" | "INACTIVE",
       });
     }
-  }, [fetchedBrandData, form]); // Dependency on fetchedBrandData and form instance
+  }, [fetchedBrandData, form]);
 
   const onSubmit = async (values: CreateBrandFormValue) => {
     setIsSubmitting(true);
     const payload = {
       ...values,
-      // The 'state' field is already part of 'values' from the form
     };
     console.log("FINAL BRAND UPDATE PAYLOAD TO SERVER:", payload);
 
     try {
-      // *** IMPORTANT: Verify this PUT endpoint with your backend API ***
       const response = await httpClient.put(`/admin/manage-filters/update-filter-brand/${id}`, payload);
       console.log(response);
       if (response.status === 200) {
@@ -107,7 +100,6 @@ const UpdateBrand: React.FC = () => {
     }
   };
 
-  // Render loading state
   if (loading) {
     return (
       <div className="container mx-auto py-8">
@@ -129,7 +121,6 @@ const UpdateBrand: React.FC = () => {
     );
   }
 
-  // Handle brand not found
   if (!fetchedBrandData) {
     return (
       <div className="container mx-auto py-8 text-center">
@@ -142,7 +133,6 @@ const UpdateBrand: React.FC = () => {
     );
   }
 
-  // Render the form once data is loaded and available
   return (
     <div>
       <div className="mt-3 ml-10">
@@ -234,7 +224,7 @@ const UpdateBrand: React.FC = () => {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="ACTIVE">ACTIVE</SelectItem>
+                              <SelectItem value="ACTIVE">ACTIVE </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
