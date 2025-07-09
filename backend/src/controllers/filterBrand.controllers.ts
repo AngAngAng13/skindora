@@ -5,7 +5,8 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { disableFilterBrandReqBody, updateFilterBrandReqBody } from '~/models/requests/Admin.requests'
 import filterBrandService from '~/services/filterBrand.services'
 import { ADMIN_MESSAGES } from '~/constants/messages'
-import { ObjectId } from 'mongodb'
+import { Filter, ObjectId } from 'mongodb'
+import FilterBrand from '~/models/schemas/FilterBrand.schema'
 
 export const getAllFilterBrandsController = async (req: Request, res: Response, next: NextFunction) => {
   await sendPaginatedResponse(res, next, databaseService.filterBrand, req.query)
@@ -77,4 +78,18 @@ export const getFilterBrandByIdController = async (req: Request<{ _id: string }>
     res.status(404).json({ message: ADMIN_MESSAGES.FILTER_BRAND_NOT_FOUND })
   }
   res.json({ data: filterBrand })
+}
+
+export const searchFilterBrandsController = async (req: Request, res: Response, next: NextFunction) => {
+  const { keyword } = req.query
+  const filter: Filter<FilterBrand> = {}
+
+  if (keyword) {
+    filter.option_name = {
+      $regex: keyword as string,
+      $options: 'i'
+    }
+  }
+
+  await sendPaginatedResponse(res, next, databaseService.filterBrand, req.query, filter)
 }

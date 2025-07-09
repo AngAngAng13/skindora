@@ -244,6 +244,8 @@ export const ADMIN_MESSAGES = {
   FILTER_DAC_TINH_NOT_FOUND: 'Filter dac tinh not found',
   UPDATE_FILTER_DAC_TINH_SUCCESS: 'Update filter dac tinh successfully',
   UPDATE_FILTER_DAC_TINH_STATE_SUCCESS: 'Filter dac tinh update state successfully',
+  //option_name search
+  OPTION_NAME_SEARCH_MUST_BE_STRING: 'Option name search must be a string',
 
 } as const
 

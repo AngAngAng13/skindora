@@ -30,7 +30,7 @@ import {
   getAllVoucherForAdminController,
   getVoucherDetailController
 } from '~/controllers/voucher.controllers'
-import { filterMiddleware, paginationValidator, parseDateFieldsMiddleware } from '~/middlewares/common.middlewares'
+import { filterMiddleware, paginationValidator, parseDateFieldsMiddleware, searchFilterOptionNameValidator } from '~/middlewares/common.middlewares'
 import { createVoucherValidator, updateVoucherValidator, voucherIdValidator } from '~/middlewares/voucher.middlewares'
 import { CreateNewVoucherReqBody, UpdateVoucherReqBody } from '~/models/requests/Vouchers.request'
 import { getOrderRevenueController } from '~/controllers/orders.controllers'
@@ -40,6 +40,7 @@ import {
   disableFilterBrandController,
   getAllFilterBrandsController,
   getFilterBrandByIdController,
+  searchFilterBrandsController,
   updateFilterBrandController
 } from '~/controllers/filterBrand.controllers'
 import { disableFilterBrandReqBody, disableFilterDacTinhReqBody, updateFilterBrandReqBody, updateFilterDacTinhReqBody } from '~/models/requests/Admin.requests'
@@ -49,7 +50,7 @@ import {
   updateFilterBrandValidator
 } from '~/middlewares/filterBrand.middlewares'
 import { createNewFilterDacTinhValidator, disableFilterDacTinhValidator, getFilterDacTinhByIdValidator, updateFilterDacTinhValidator } from '~/middlewares/filterDacTinh.middlewares'
-import { createNewFilterDacTinhController, disableFilterDacTinhController, getAllFilterDacTinhsController, getFilterDacTinhByIdController, updateFilterDacTinhController } from '~/controllers/filterDacTinh.controllers'
+import { createNewFilterDacTinhController, disableFilterDacTinhController, getAllFilterDacTinhsController, getFilterDacTinhByIdController, searchFilterDacTinhsController, updateFilterDacTinhController } from '~/controllers/filterDacTinh.controllers'
 
 const adminRouter = Router()
 //user management
@@ -233,6 +234,14 @@ adminRouter.get(
   wrapAsync(getFilterBrandByIdController)
 )
 
+adminRouter.get(
+  '/manage-filters/search-filter-brand',
+  accessTokenValidator,
+  isAdminValidator,
+  searchFilterOptionNameValidator,
+  wrapAsync(searchFilterBrandsController)
+)
+
 //FILTER DAC TINH
 //Tạo mới một đặc tính
 adminRouter.post(
@@ -279,4 +288,13 @@ adminRouter.get(
   getFilterDacTinhByIdValidator,
   wrapAsync(getFilterDacTinhByIdController)
 )
+
+adminRouter.get(
+  '/manage-filters/search-filter-dac-tinh',
+  accessTokenValidator,
+  isAdminValidator,
+  searchFilterOptionNameValidator,
+  wrapAsync(searchFilterDacTinhsController)
+)
+
 export default adminRouter

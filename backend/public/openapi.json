@@ -3474,6 +3474,55 @@
         }
       }
     },
+    "/admin/manage-filters/search-filter-brand": {
+      "get": {
+        "tags": [
+          "Admin - Filter Brand"
+        ],
+        "summary": "(Admin) Search Filter Brands by Name",
+        "description": "Tìm kiếm và trả về danh sách các filter thương hiệu theo `option_name`.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "description": "Từ khóa để tìm kiếm trong tên thương hiệu (không phân biệt chữ hoa/thường).",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về danh sách các filter thương hiệu phù hợp.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFilterBrandResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
     "/admin/manage-filters/create-new-filter-dac-tinh": {
       "post": {
         "tags": [
@@ -3722,6 +3771,55 @@
           },
           "422": {
             "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/search-filter-dac-tinh": {
+      "get": {
+        "tags": [
+          "Admin - Filter Dac Tinh"
+        ],
+        "summary": "(Admin) Search Filter Dac Tinhs by Name",
+        "description": "Tìm kiếm và trả về danh sách các filter đặc tính theo `option_name`.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "description": "Từ khóa để tìm kiếm trong tên đặc tính (không phân biệt chữ hoa/thường).",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về danh sách các filter đặc tính phù hợp.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFilterDacTinhResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
           }
         }
       }
