@@ -27,6 +27,11 @@ export interface OrderByIdResponse {
     };
   };
 }
+export interface BuyNowPayload {
+  productId: string;
+  quantity: number;
+}
+
 export type OrderStatus =
   | "PENDING"
   | "CONFIRMED"
@@ -117,6 +122,9 @@ export interface CreatedOrderResponse {
 }
 
 export const ordersService = {
+  buyNow: (payload: BuyNowPayload): Promise<Result<ApiResponse<PreparedOrderResponse>, ApiError>> => {
+    return apiClient.post<PreparedOrderResponse, BuyNowPayload>("/orders/buy-now", payload);
+  },
   getPreparedOrder: (): Promise<Result<ApiResponse<PreparedOrderResponse>, ApiError>> => {
     return apiClient.get<PreparedOrderResponse>("/orders/current");
   },

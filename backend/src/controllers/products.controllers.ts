@@ -133,7 +133,12 @@ export const removeReviewController = async (req: Request, res: Response) => {
 }
 
 export const getReviewController = async (req: Request, res: Response, next: NextFunction) => {
-  const filter: Filter<Review> = {}
+  const {productId} = req.params
+  logger.info(productId)
+  const filter: Filter<Review> = {
+    productID : new ObjectId(productId),
+
+  }
   if (req.query.rating) {
     const rating = parseInt(req.query.rating as string, 10)
     if (!isNaN(rating)) {
@@ -141,7 +146,7 @@ export const getReviewController = async (req: Request, res: Response, next: Nex
     }
   }
 
-  filter.isDeleted = true
+  filter.isDeleted = false
   await sendPaginatedResponse(res, next, databaseService.reviews, req.query, filter)
 }
 
