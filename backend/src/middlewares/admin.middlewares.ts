@@ -1019,15 +1019,15 @@ export const updateUserStateValidator = validate(
         },
         custom: {
           options: async (value, { req }) => {
-            const {user_id} = req.decoded_authorization as TokenPayLoad;
+            const { user_id } = req.decoded_authorization as TokenPayLoad
             if (value === user_id) {
-              throw new Error(ADMIN_MESSAGES.CANNOT_UPDATE_OWN_STATUS);
+              throw new Error(ADMIN_MESSAGES.CANNOT_UPDATE_OWN_STATUS)
             }
-            const user = await databaseService.users.findOne({ _id: new ObjectId(value) });
+            const user = await databaseService.users.findOne({ _id: new ObjectId(value) })
             if (user === null) {
-              throw new Error(USERS_MESSAGES.USER_NOT_FOUND);
+              throw new Error(USERS_MESSAGES.USER_NOT_FOUND)
             }
-            return true;
+            return true
           }
         }
       },
@@ -1047,7 +1047,7 @@ export const updateUserStateValidator = validate(
     },
     ['params', 'body']
   )
-);
+)
 
 export const updateProductStateValidator = validate(
   checkSchema(
@@ -1059,11 +1059,11 @@ export const updateProductStateValidator = validate(
         },
         custom: {
           options: async (value) => {
-            const product = await databaseService.products.findOne({ _id: new ObjectId(value) });
+            const product = await databaseService.products.findOne({ _id: new ObjectId(value) })
             if (product === null) {
-              throw new Error(ADMIN_MESSAGES.PRODUCT_NOT_FOUND);
+              throw new Error(ADMIN_MESSAGES.PRODUCT_NOT_FOUND)
             }
-            return true;
+            return true
           }
         }
       },
@@ -1083,4 +1083,4 @@ export const updateProductStateValidator = validate(
     },
     ['params', 'body']
   )
-);
+)

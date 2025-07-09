@@ -47,7 +47,8 @@ export const disableFilterBrandValidator = validate(
       in: ['body'],
       isIn: {
         options: [Object.values(FilterBrandState)],
-        errorMessage: ADMIN_MESSAGES.STATE_MUST_BE_ONE_OF_THE_FILTER_BRAND_STATE
+        // errorMessage: ADMIN_MESSAGES.STATE_MUST_BE_ONE_OF_THE_FILTER_BRAND_STATE
+        errorMessage: `Trạng thái phải là một trong các giá trị: ${Object.values(FilterBrandState).join(', ')}`
       }
     }
   })

@@ -42,12 +42,14 @@ import {
   getFilterBrandByIdController,
   updateFilterBrandController
 } from '~/controllers/filterBrand.controllers'
-import { disableFilterBrandReqBody, updateFilterBrandReqBody } from '~/models/requests/Admin.requests'
+import { disableFilterBrandReqBody, disableFilterDacTinhReqBody, updateFilterBrandReqBody, updateFilterDacTinhReqBody } from '~/models/requests/Admin.requests'
 import {
   disableFilterBrandValidator,
   getFilterBrandByIdValidator,
   updateFilterBrandValidator
 } from '~/middlewares/filterBrand.middlewares'
+import { createNewFilterDacTinhValidator, disableFilterDacTinhValidator, getFilterDacTinhByIdValidator, updateFilterDacTinhValidator } from '~/middlewares/filterDacTinh.middlewares'
+import { createNewFilterDacTinhController, disableFilterDacTinhController, getAllFilterDacTinhsController, getFilterDacTinhByIdController, updateFilterDacTinhController } from '~/controllers/filterDacTinh.controllers'
 
 const adminRouter = Router()
 //user management
@@ -229,5 +231,52 @@ adminRouter.get(
   isAdminValidator,
   getFilterBrandByIdValidator,
   wrapAsync(getFilterBrandByIdController)
+)
+
+//FILTER DAC TINH
+//Tạo mới một đặc tính
+adminRouter.post(
+  '/manage-filters/create-new-filter-dac-tinh',
+  accessTokenValidator,
+  isAdminValidator,
+  createNewFilterDacTinhValidator,
+  wrapAsync(createNewFilterDacTinhController)
+)
+
+// Lấy danh sách tất cả đặc tính
+adminRouter.get(
+  '/manage-filters/get-all-filter-dac-tinh',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getAllFilterDacTinhsController)
+)
+
+//Cập nhật thông tin một "đặc tính"
+adminRouter.put(
+  '/manage-filters/update-filter-dac-tinh/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<updateFilterDacTinhReqBody>(['option_name', 'category_name', 'category_param']),
+  updateFilterDacTinhValidator,
+  wrapAsync(updateFilterDacTinhController)
+)
+
+//Cập nhật trạng thái (active/inactive) của một "đặc tính"
+adminRouter.put(
+  '/manage-filters/update-filter-dac-tinh-state/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<disableFilterDacTinhReqBody>(['state']),
+  disableFilterDacTinhValidator,
+  wrapAsync(disableFilterDacTinhController)
+)
+
+//Lấy chi tiết một "đặc tính" bằng ID
+adminRouter.get(
+  '/manage-filters/get-filter-dac-tinh-detail/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  getFilterDacTinhByIdValidator,
+  wrapAsync(getFilterDacTinhByIdController)
 )
 export default adminRouter
