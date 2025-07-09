@@ -75,7 +75,15 @@ export const authService = {
       skipAuth: true,
     });
   },
-
+  changePassword: (oldPassword: string, newPassword: string) => {
+    return apiClient.put<{ message: string }, { old_password: string; password: string }>(
+      "/users/change-password",
+      {
+        old_password: oldPassword,
+        password: newPassword,
+      }
+    );
+  },
   resetPassword: (token: string, data: Omit<ResetPasswordFormData, "confirmPassword">) => {
     return apiClient.post<{ message: string }, { forgot_password_token: string; password: string }>(
       "/users/reset-password",
