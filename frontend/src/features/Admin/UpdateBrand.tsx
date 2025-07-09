@@ -72,12 +72,11 @@ const UpdateBrand: React.FC = () => {
       const response = await httpClient.put(`/admin/manage-filters/update-filter-brand/${id}`, payload);
       console.log(response);
       if (response.status === 200) {
-        // Typically 200 OK for successful updates
         toast.success("Thành công!", {
           description: "Thông tin thương hiệu đã được cập nhật.",
         });
-        // No need to reset form if staying on the page, but can navigate back
-        // navigate("/admin/brand"); // Navigate back to brand list after update
+
+        navigate("/admin/brand");
       }
     } catch (error: unknown) {
       let errorMessage = "Có lỗi không xác định xảy ra.";
@@ -131,12 +130,12 @@ const UpdateBrand: React.FC = () => {
   }
 
   // Handle brand not found
-  if (!fetchedBrandData || fetchedBrandData.length === 0) {
+  if (!fetchedBrandData) {
     return (
       <div className="container mx-auto py-8 text-center">
         <h2 className="text-2xl font-bold">Thương hiệu không tìm thấy</h2>
         <p className="mt-2 text-gray-500">Thương hiệu với ID "{id}" không tồn tại hoặc không thể tải.</p>
-        <Button onClick={() => navigate("/admin/brands")} className="mt-4">
+        <Button onClick={() => navigate("/admin/brand")} className="mt-4">
           <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại danh sách thương hiệu
         </Button>
       </div>
@@ -228,7 +227,7 @@ const UpdateBrand: React.FC = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Trạng thái</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value} disabled>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Chọn trạng thái" />
@@ -236,7 +235,6 @@ const UpdateBrand: React.FC = () => {
                             </FormControl>
                             <SelectContent>
                               <SelectItem value="ACTIVE">ACTIVE</SelectItem>
-                              <SelectItem value="INACTIVE">INACTIVE</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
