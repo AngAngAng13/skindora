@@ -223,8 +223,28 @@ export const ADMIN_MESSAGES = {
   UPDATE_FILTER_BRAND_FAILED: 'Update filter brand failed',
   STATE_MUST_BE_ONE_OF_THE_FILTER_BRAND_STATE:
     'State must be one of the filter brand state: INACTIVE, ACTIVE, COLLABORATION, PARTNERSHIP, EXCLUSIVE, LIMITED_EDITION, SUSPENDED, DISCONTINUED',
-  FILTER_BRAND_DISABLE_SUCCESS: 'Filter brand disabled successfully',
-  VOUCHER_ID_INVALID: 'Please provide a valid voucher ID'
+  UPDATE_FILTER_BRAND_STATE_SUCCESS: 'Filter brand update state successfully',
+  VOUCHER_ID_INVALID: 'Please provide a valid voucher ID',
+  CREATE_NEW_FILTER_BRAND_SUCCESS: 'Create new filter brand successfully',
+  // Filter Dac Tinh
+  UPDATE_FILTER_DAC_TINH_FAILED: 'Update filter dac tinh failed',
+  FILTER_DAC_TINH_OPTION_NAME_IS_REQUIRED: 'Filter dac tinh option name is required',
+  FILTER_DAC_TINH_MUST_BE_STRING: 'Filter dac tinh must be a string',
+  FILTER_DAC_TINH_CATEGORY_NAME_IS_REQUIRED: 'Filter dac tinh category name is required',
+  FILTER_DAC_TINH_CATEGORY_NAME_MUST_BE_STRING: 'Filter dac tinh category name must be a string',
+  FILTER_DAC_TINH_CATEGORY_PARAM_MUST_BE_STRING: 'Filter dac tinh category param must be a string',
+  FILTER_DAC_TINH_STATE_MUST_BE_A_STRING: 'Filter dac tinh state must be a string',
+  FILTER_DAC_TINH_OPTION_NAME_MUST_BE_STRING: 'Filter dac tinh option name must be a string',
+  FILTER_DAC_TINH_CATEGORY_PARAM_IS_REQUIRED: 'Filter dac tinh category param is required',
+  FILTER_DAC_TINH_OPTION_NAME_MUST_BE_A_STRING: 'Filter dac tinh option name must be a string',
+  FILTER_DAC_TINH_CATEGORY_NAME_MUST_BE_A_STRING: 'Filter dac tinh category name must be a string',
+  FILTER_DAC_TINH_CATEGORY_PARAM_MUST_BE_A_STRING: 'Filter dac tinh category param must be a string',
+  FILTER_DAC_TINH_ID_IS_INVALID: 'Filter dac tinh ID is invalid',
+  CREATE_NEW_FILTER_DAC_TINH_SUCCESS: 'Create new filter dac tinh successfully',
+  FILTER_DAC_TINH_NOT_FOUND: 'Filter dac tinh not found',
+  UPDATE_FILTER_DAC_TINH_SUCCESS: 'Update filter dac tinh successfully',
+  UPDATE_FILTER_DAC_TINH_STATE_SUCCESS: 'Filter dac tinh update state successfully',
+
 } as const
 
 export const CART_MESSAGES = {

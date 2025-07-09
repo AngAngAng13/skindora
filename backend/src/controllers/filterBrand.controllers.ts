@@ -61,7 +61,7 @@ export const disableFilterBrandController = async (
   )
 
   res.json({
-    message: ADMIN_MESSAGES.FILTER_BRAND_DISABLE_SUCCESS,
+    message: ADMIN_MESSAGES.UPDATE_FILTER_BRAND_STATE_SUCCESS,
     data: result
   })
 }

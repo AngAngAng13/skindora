@@ -1,4 +1,4 @@
-import { FilterBrandState, Role, UserVerifyStatus } from '~/constants/enums'
+import { FilterBrandState, GenericFilterState, Role, UserVerifyStatus } from '~/constants/enums'
 export interface createNewFilterBrandReqBody {
   option_name: string
   category_name: string
@@ -24,4 +24,21 @@ export interface updateFilterBrandReqBody {
 
 export interface disableFilterBrandReqBody {
   state: FilterBrandState
+}
+
+export interface createNewFilterDacTinhReqBody {
+  option_name: string
+  category_name: string
+  category_param: string
+  state?: GenericFilterState
+}
+
+export interface updateFilterDacTinhReqBody {
+  option_name?: string
+  category_name?: string
+  category_param?: string
+}
+
+export interface disableFilterDacTinhReqBody {
+  state: GenericFilterState
 }

@@ -57,8 +57,36 @@
       "description": "Operations for managing the system."
     },
     {
-      "name": "Admin - Filter Management",
-      "description": "Operations for managing product filters, such as brands."
+      "name": "Admin - Filter Brand",
+      "description": "Quản lý bộ lọc Thương hiệu (filter_brand)"
+    },
+    {
+      "name": "Admin - Filter Dac Tinh",
+      "description": "Quản lý bộ lọc Đặc tính (filter_dac_tinh)"
+    },
+    {
+      "name": "Admin - Filter Ingredient",
+      "description": "Quản lý bộ lọc Thành phần (filter_hsk_ingredient)"
+    },
+    {
+      "name": "Admin - Filter Product Type",
+      "description": "Quản lý bộ lọc Loại sản phẩm (filter_hsk_product_type)"
+    },
+    {
+      "name": "Admin - Filter Size",
+      "description": "Quản lý bộ lọc Kích thước (filter_hsk_size)"
+    },
+    {
+      "name": "Admin - Filter Skin Type",
+      "description": "Quản lý bộ lọc Loại da (filter_hsk_skin_type)"
+    },
+    {
+      "name": "Admin - Filter Uses",
+      "description": "Quản lý bộ lọc Công dụng (filter_hsk_uses)"
+    },
+    {
+      "name": "Admin - Filter Origin",
+      "description": "Quản lý bộ lọc Nguồn gốc (filter_origin)"
     }
   ],
   "paths": {
@@ -3015,7 +3043,7 @@
     "/admin/manage-filters/create-new-filter-brand": {
       "post": {
         "tags": [
-          "Admin - Filter Management"
+          "Admin - Filter Brand"
         ],
         "summary": "(Admin) Create a New Filter Brand",
         "security": [
@@ -3242,7 +3270,7 @@
     "/admin/manage-filters/get-all-filter-brands": {
       "get": {
         "tags": [
-          "Admin - Filter Management"
+          "Admin - Filter Brand"
         ],
         "summary": "(Admin) Get All Filter Brands",
         "description": "Retrieves a paginated list of all filterable brands.",
@@ -3282,7 +3310,7 @@
     "/admin/manage-filters/get-filter-brand-detail/{_id}": {
       "get": {
         "tags": [
-          "Admin - Filter Management"
+          "Admin - Filter Brand"
         ],
         "summary": "(Admin) Get Filter Brand by ID",
         "description": "Retrieves the details of a specific filter brand by its ID.",
@@ -3329,7 +3357,7 @@
     "/admin/manage-filters/update-filter-brand/{_id}": {
       "put": {
         "tags": [
-          "Admin - Filter Management"
+          "Admin - Filter Brand"
         ],
         "summary": "(Admin) Update a Filter Brand",
         "description": "Updates the details of an existing filter brand.",
@@ -3389,7 +3417,7 @@
     "/admin/manage-filters/update-filter-brand-state/{_id}": {
       "put": {
         "tags": [
-          "Admin - Filter Management"
+          "Admin - Filter Brand"
         ],
         "summary": "(Admin) Update Filter Brand State",
         "description": "Updates the state of a filter brand (e.g., from ACTIVE to INACTIVE).",
@@ -3427,6 +3455,258 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FilterBrand"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/create-new-filter-dac-tinh": {
+      "post": {
+        "tags": [
+          "Admin - Filter Dac Tinh"
+        ],
+        "summary": "(Admin) Create a New Filter Dac Tinh",
+        "description": "Tạo một filter đặc tính mới (ví dụ:Chống lão hóa, làm trắng da).",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFilterDacTinhReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter đặc tính được tạo thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-all-filter-dac-tinhs": {
+      "get": {
+        "tags": [
+          "Admin - Filter Dac Tinh"
+        ],
+        "summary": "(Admin) Get All Filter Dac Tinhs",
+        "description": "Lấy danh sách tất cả các filter đặc tính có phân trang.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về danh sách các filter đặc tính.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFilterDacTinhResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-filter-dac-tinh-detail/{_id}": {
+      "get": {
+        "tags": [
+          "Admin - Filter Dac Tinh"
+        ],
+        "summary": "(Admin) Get Filter Dac Tinh by ID",
+        "description": "Lấy thông tin chi tiết của một filter đặc tính bằng ID.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "description": "ID của filter đặc tính cần lấy thông tin.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thông tin chi tiết filter đặc tính.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterDacTinh"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/update-filter-dac-tinh/{_id}": {
+      "put": {
+        "tags": [
+          "Admin - Filter Dac Tinh"
+        ],
+        "summary": "(Admin) Update a Filter Dac Tinh",
+        "description": "Cập nhật thông tin của một filter đặc tính đã tồn tại.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "description": "ID của filter đặc tính cần cập nhật.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFilterDacTinhReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter đặc tính được cập nhật thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterDacTinh"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/update-filter-dac-tinh-state/{_id}": {
+      "put": {
+        "tags": [
+          "Admin - Filter Dac Tinh"
+        ],
+        "summary": "(Admin) Update Filter Dac Tinh State",
+        "description": "Cập nhật trạng thái (ACTIVE/INACTIVE) của một filter đặc tính.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "description": "ID của filter đặc tính cần cập nhật trạng thái.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisableFilterDacTinhReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Trạng thái filter đặc tính được cập nhật thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterDacTinh"
                 }
               }
             }
@@ -5177,6 +5457,127 @@
               "DISCONTINUED"
             ],
             "example": "INACTIVE"
+          }
+        }
+      },
+      "FilterDacTinh": {
+        "type": "object",
+        "description": "Đại diện cho một đối tượng filter Đặc tính",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "format": "mongoId",
+            "description": "ID duy nhất của filter đặc tính."
+          },
+          "option_name": {
+            "type": "string",
+            "description": "Tên hiển thị của đặc tính.",
+            "example": "Chống Lão Hóa"
+          },
+          "category_name": {
+            "type": "string",
+            "description": "Danh mục mà filter này thuộc về.",
+            "example": "Đặc Tính"
+          },
+          "category_param": {
+            "type": "string",
+            "description": "Tên URL-friendly của đặc tính.",
+            "example": "chong-lao-hoa"
+          },
+          "state": {
+            "type": "string",
+            "description": "Trạng thái hiện tại của đặc tính.",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateFilterDacTinhReqBody": {
+        "type": "object",
+        "required": [
+          "option_name",
+          "category_name",
+          "category_param"
+        ],
+        "properties": {
+          "option_name": {
+            "type": "string",
+            "example": "Làm Sáng Da"
+          },
+          "category_name": {
+            "type": "string",
+            "example": "Đặc Tính"
+          },
+          "category_param": {
+            "type": "string",
+            "example": "lam-sang-da"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        }
+      },
+      "UpdateFilterDacTinhReqBody": {
+        "type": "object",
+        "description": "Chỉ bao gồm các trường cần cập nhật.",
+        "properties": {
+          "option_name": {
+            "type": "string",
+            "example": "Làm Sáng Da & Mờ Thâm"
+          },
+          "category_name": {
+            "type": "string",
+            "example": "Đặc Tính Sản Phẩm"
+          },
+          "category_param": {
+            "type": "string",
+            "example": "lam-sang-da-mo-tham"
+          }
+        }
+      },
+      "DisableFilterDacTinhReqBody": {
+        "type": "object",
+        "required": [
+          "state"
+        ],
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "Trạng thái mới cho filter đặc tính.",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ],
+            "example": "INACTIVE"
+          }
+        }
+      },
+      "PaginatedFilterDacTinhResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterDacTinh"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginatedUserResponse/properties/pagination"
           }
         }
       },
