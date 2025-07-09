@@ -97,7 +97,7 @@ const StoreFront = () => {
             />
           </aside>
           <div className="flex-1">
-            <ProductBanner />
+            {/* <ProductBanner /> */}
             {isLoading ? (
               <div className="flex h-96 items-center justify-center">
                 <LoaderCircle className="text-primary h-12 w-12 animate-spin" />
