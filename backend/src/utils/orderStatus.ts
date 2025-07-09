@@ -24,16 +24,7 @@ const roleTransitions: Record<Role, TransitionMap> = {
     [OrderStatus.RETURNED]: [],
     [OrderStatus.CANCELLED]: []
   },
-  1: {
-    [OrderStatus.PENDING]: [OrderStatus.CONFIRMED, OrderStatus.CANCELLED],
-    [OrderStatus.CONFIRMED]: [OrderStatus.PROCESSING, OrderStatus.CANCELLED],
-    [OrderStatus.PROCESSING]: [OrderStatus.SHIPPING, OrderStatus.CANCELLED],
-    [OrderStatus.SHIPPING]: [],
-    [OrderStatus.DELIVERED]: [],
-    [OrderStatus.CANCELLED]: [],
-    [OrderStatus.RETURNED]: [],
-    [OrderStatus.FAILED]: []
-  },
+  1: baseTransitions,
   2: baseTransitions
 }
 

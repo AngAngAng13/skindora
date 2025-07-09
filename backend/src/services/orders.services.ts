@@ -311,9 +311,28 @@ class OrdersService {
   async getOrderById(order: Order) {
     const orderDetails = await this.getOrderDetailByOrderId(order._id!.toString())
     const enrichedDetails = await this.enrichOrderDetailsWithProducts(orderDetails)
+    const user = await databaseService.users.findOne(
+      { _id: order.UserID }, 
+      { 
+        projection: {
+          _id: 1,
+          first_name: 1,
+          last_name: 1,
+          email: 1,
+          location: 1,
+          username: 1,
+          phone_number: 1,
+          avatar: 1
+        } 
+      })
+      const {_id, UserID, ...restOrder} = order
 
     return {
-      ...order,
+      order: {
+        _id,
+        User: user,
+        ...restOrder
+      },
       orderDetail: enrichedDetails.map(({ ProductID, OrderID, ...rest }) => ({
         ...rest
       }))

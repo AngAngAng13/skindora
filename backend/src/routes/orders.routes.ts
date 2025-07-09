@@ -54,7 +54,7 @@ ordersRouter.route('/me').get(accessTokenValidator, wrapAsync(getAllOrdersByAuth
 
 ordersRouter
   .route('/:orderId/next-status')
-  .patch(accessTokenValidator, isStaffValidator, getNextOrderStatusValidator, wrapAsync(moveToNextStatusController))
+  .patch(accessTokenValidator, isAdminOrStaffValidator, getNextOrderStatusValidator, wrapAsync(moveToNextStatusController))
 
 ordersRouter
   .route('/:orderId/cancel-request')
