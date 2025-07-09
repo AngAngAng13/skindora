@@ -318,7 +318,8 @@ export const ORDER_MESSAGES = {
   INVALID_FILTER_ID: 'FilterId must be a valid ObjectId',
   UNABLE_TO_CANCEL: 'This order cannot be cancelled',
   ORDER_CANCELLED: 'Order has been cancelled',
-  INVALID_CANCELLED_STATUS: 'Invalid Cancelled status'
+  INVALID_CANCELLED_STATUS: 'Invalid Cancelled status',
+  CANCEL_REQUESTING: 'This order is requesting for cancellation, cannot update to next status'
 } as const
 
 export const VOUCHER_MESSAGES = {

@@ -320,6 +320,13 @@ export const getNextOrderStatusValidator = validate(
             })
           }
 
+          if(order.CancelRequest && order.CancelRequest.status === CancelRequestStatus.REQUESTED){
+            throw new ErrorWithStatus({
+              message: ORDER_MESSAGES.CANCEL_REQUESTING,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+
           if (order.Status === OrderStatus.RETURNED || order.Status === OrderStatus.CANCELLED) {
             throw new ErrorWithStatus({
               message: ORDER_MESSAGES.CANNOT_UPDATE_STATUS.replace('%s', order.Status),
