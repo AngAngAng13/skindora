@@ -36,23 +36,15 @@ export const ActionsCell = ({ row }: { row: { original: CancelRequest } }) => {
   const { _id, UserID, CancelRequest: requestDetails } = row.original;
   const navigate = useNavigate();
 
-  // --- PHẦN GIẢ ĐỊNH ---
-  // Giả sử bạn có một hook để xử lý việc gọi API cập nhật trạng thái
-  // const { updateStatus, loading } = useUpdateCancelRequestStatus();
-  const loading = false; // Xóa dòng này khi có hook thật
+  const loading = false;
 
   const handleApprove = () => {
     console.log("Approving request:", _id);
-    // updateStatus({ requestId: _id, status: "APPROVED" });
-    // window.location.reload(); // Hoặc cập nhật state để re-render
   };
 
   const handleReject = () => {
     console.log("Rejecting request:", _id);
-    // updateStatus({ requestId: _id, status: "REJECTED" });
-    // window.location.reload(); // Hoặc cập nhật state để re-render
   };
-  // --- KẾT THÚC PHẦN GIẢ ĐỊNH ---
 
   return (
     <div className="text-right">
@@ -67,7 +59,7 @@ export const ActionsCell = ({ row }: { row: { original: CancelRequest } }) => {
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(UserID)}>Copy Mã người dùng</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate(`/admin/cancel-request/${_id}`)}>Xem chi tiết</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/order-detail/${_id}`)}>Xem chi tiết</DropdownMenuItem>
           {requestDetails.status === "PENDING" && (
             <>
               <DropdownMenuItem
@@ -116,43 +108,66 @@ export const cancelRequestColumns: ColumnDef<CancelRequest>[] = [
     accessorKey: "_id",
     header: "Mã Yêu Cầu",
     cell: ({ row }) => {
-      return <div className="font-medium">{row.getValue("_id")}</div>;
+      return (
+        <div>
+          <span className="font-medium text-blue-600 hover:text-blue-800">{row.getValue("_id")}</span>
+        </div>
+      );
     },
   },
   {
     accessorKey: "UserID",
-    header: ({ column }) => (
-      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Mã Người Dùng <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
+    // header: ({ column }) => (
+    //   <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+    //     Mã Người Dùng <ArrowUpDown className="ml-2 h-4 w-4" />
+    //   </Button>
+    // ),
+    header: "Mã Người Dùng ",
     cell: ({ row }) => {
-      return <div className="pl-4">{row.getValue("UserID")}</div>;
+      return (
+        <div>
+          <span className="font-medium text-indigo-600 hover:text-indigo-800">{row.getValue("UserID")}</span>
+        </div>
+      );
     },
   },
   {
     accessorKey: "TotalPrice",
     header: ({ column }) => (
-      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="w-full max-w-[120px] truncate px-2 text-sm"
+      >
         Tổng Tiền <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("TotalPrice"));
-      return <div className="pr-4 text-right font-medium">{formatCurrency(amount)}</div>;
+      return (
+        // <div className="pl-3 whitespace-nowrap">
+        //   <span className="font-medium text-green-600"> {formatCurrency(amount)}</span>
+        // </div>
+        <div className="pl-3">
+          <span className="font-medium text-green-600">{formatCurrency(amount)}</span>
+        </div>
+      );
     },
+    size: 120,
   },
   {
-    // Truy cập vào thuộc tính lồng nhau
     accessorFn: (row) => row.CancelRequest.requestedAt,
     id: "requestedAt",
     header: "Ngày Yêu Cầu",
     cell: ({ row }) => {
-      return <div>{formatDate(row.original.CancelRequest.requestedAt)}</div>;
+      return (
+        <div className="pl-3">
+          <span>{formatDate(row.original.CancelRequest.requestedAt)}</span>
+        </div>
+      );
     },
   },
   {
-    // Truy cập vào thuộc tính lồng nhau
     accessorFn: (row) => row.CancelRequest.status,
     id: "requestStatus",
     header: "Trạng thái Yêu cầu",
