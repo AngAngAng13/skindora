@@ -275,8 +275,20 @@ export const ADMIN_MESSAGES = {
   FILTER_PRODUCT_TYPE_NOT_FOUND: 'Filter product type not found',
   UPDATE_FILTER_PRODUCT_TYPE_SUCCESS: 'Update filter product type successfully',
   UPDATE_FILTER_PRODUCT_TYPE_STATE_SUCCESS: 'Filter product type update state successfully',
-  
-
+  //HSK Size
+  UPDATE_FILTER_SIZE_FAILED: 'Update filter size failed',
+  FILTER_SIZE_ID_IS_INVALID: 'Filter size ID is invalid',
+  FILTER_SIZE_NOT_FOUND: 'Filter size not found',
+  FILTER_SIZE_OPTION_NAME_IS_REQUIRED: 'Filter size option name is required',
+  FILTER_SIZE_OPTION_NAME_MUST_BE_STRING: 'Filter size option name must be a string',
+  FILTER_SIZE_CATEGORY_NAME_IS_REQUIRED: 'Filter size category name is required',
+  FILTER_SIZE_CATEGORY_NAME_MUST_BE_STRING: 'Filter size category name must be a string',
+  FILTER_SIZE_CATEGORY_PARAM_IS_REQUIRED: 'Filter size category param is required',
+  FILTER_SIZE_CATEGORY_PARAM_MUST_BE_STRING: 'Filter size category param must be a string',
+  FILTER_SIZE_STATE_MUST_BE_A_STRING: 'Filter size state must be a string',
+  CREATE_NEW_FILTER_SIZE_SUCCESS: 'Create new filter size successfully',
+  UPDATE_FILTER_SIZE_SUCCESS: 'Update filter size successfully',
+  UPDATE_FILTER_SIZE_STATE_SUCCESS: 'Filter size update state successfully'
 } as const
 
 export const CART_MESSAGES = {

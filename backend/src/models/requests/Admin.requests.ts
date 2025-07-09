@@ -78,3 +78,20 @@ export interface updateFilterHskProductTypeReqBody {
 export interface disableFilterHskProductTypeReqBody {
   state: GenericFilterState
 }
+
+export interface createNewFilterHskSizeReqBody {
+  option_name: string
+  category_name: string
+  category_param: string
+  state?: GenericFilterState
+}
+
+export interface updateFilterHskSizeReqBody {
+  option_name?: string
+  category_name?: string
+  category_param?: string
+}
+
+export interface disableFilterHskSizeReqBody {
+  state: GenericFilterState
+}
