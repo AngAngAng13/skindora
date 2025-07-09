@@ -2237,3 +2237,176 @@
         $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '403':
         $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-filters/create-new-filter-hsk-ingredient:
+  post:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Create a New HSK Ingredient Filter
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateFilterHskIngredientReqBody.yaml'
+    responses:
+      '200':
+        description: Filter thành phần được tạo thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-filters/get-all-filter-hsk-ingredients:
+  get:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Get All HSK Ingredient Filters
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: Trả về danh sách các filter thành phần.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskIngredientResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-filters/get-filter-hsk-ingredient-detail/{_id}:
+  get:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Get HSK Ingredient Filter by ID
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: ID của filter thành phần cần lấy.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Chi tiết filter thành phần.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskIngredient.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-filters/update-filter-hsk-ingredient/{_id}:
+  put:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Update an HSK Ingredient Filter
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: ID của filter thành phần cần cập nhật.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterHskIngredientReqBody.yaml'
+    responses:
+      '200':
+        description: Filter thành phần được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskIngredient.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-filters/update-filter-hsk-ingredient-state/{_id}:
+  put:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Update HSK Ingredient Filter State
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: ID của filter thành phần cần cập nhật trạng thái.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterHskIngredientReqBody.yaml'
+    responses:
+      '200':
+        description: Trạng thái filter thành phần được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskIngredient.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-filters/search-filter-hsk-ingredient:
+  get:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Search HSK Ingredient Filters by Name
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa tìm kiếm trong tên thành phần.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter thành phần phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskIngredientResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
