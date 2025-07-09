@@ -1,16 +1,14 @@
 import {
   BarChart4,
+  FileX2,
   Globe2,
   Home,
-  // Lựa chọn thay thế: Award, Crown
   Leaf,
-  // Lựa chọn thay thế: Face, Droplets
   ListChecks,
   Package,
-  // Lựa chọn thay thế: LineChart, PieChart
   Shield,
   ShoppingCart,
-  TicketPercent, // Lựa chọn thay thế: Ticket, Gift, Tag
+  TicketPercent,
   User2,
   UsersRound,
 } from "lucide-react";
@@ -39,33 +37,35 @@ const items = [
   { title: "Quản lý công dụng", url: "/admin/use", icon: ListChecks },
   { title: "Quản lý xuất xứ", url: "/admin/origin", icon: Globe2 },
 
-  // Các icon được đề xuất thay đổi hoặc có thêm lựa chọn
   {
     title: "Thống kê",
     url: "/admin/statics",
-    icon: BarChart4, // BarChart4, LineChart, PieChart trực quan hơn cho thống kê.
+    icon: BarChart4,
   },
   {
     title: "Quản lý thương hiệu",
     url: "/admin/brand",
-    icon: Shield, // Shield (khiên) rất tốt, thể hiện sự bảo chứng. Award (phần thưởng) hoặc Crown (vương miện) cũng là lựa chọn hay để thể hiện thương hiệu hàng đầu.
+    icon: Shield,
   },
   {
     title: "Quản lý loại da",
     url: "/admin/typeskin",
-    icon: Leaf, // Leaf (chiếc lá) gợi ý về sự tự nhiên, chăm sóc. Face (khuôn mặt) hoặc Droplets (giọt nước - cho dưỡng ẩm) cũng là những lựa chọn phù hợp.
+    icon: Leaf,
   },
   {
     title: "Quản lý voucher",
     url: "/admin/voucher",
-    icon: TicketPercent, // TicketPercent, Ticket (vé), Gift (quà tặng), hoặc Tag (nhãn) đều phù hợp hơn Globe2 (quả địa cầu) rất nhiều.
+    icon: TicketPercent,
+  },
+  {
+    title: "Quản lý đơn hủy",
+    url: "/admin/cancel-request",
+    icon: FileX2,
   },
 ];
-
 const AppSidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>

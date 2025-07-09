@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 
 import { useHeader } from "@/contexts/header.context";
-
-import ManageOrdersStaff from "../Staff/ManageOrdersStaff";
+import ManageOrdersStaff from "@/features/Staff/ManageOrdersStaff";
 
 const ManageOrders: React.FC = () => {
   const { setHeaderName } = useHeader();

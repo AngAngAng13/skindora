@@ -1,23 +1,24 @@
 import type { RouteObject } from "react-router-dom";
 
 import Admin from "@/features/Admin";
-import AddVoucherPage from "@/features/Admin/Voucher/AddVoucherPage";
 import BrandDetail from "@/features/Admin/Brand/BrandDetail";
-import UpdateBrand from "@/features/Admin/Brand/UpdateBrand";
 import CreateBrand from "@/features/Admin/Brand/CreateBrand";
-import ManageBrand from "@/features/Admin/ManageBrand";
-import ManageUsers from "@/features/Admin/ManageCustomer";
-import ManageOrders from "@/features/Admin/ManageOrders";
-import ManageProducts from "@/features/Admin/ManageProduct";
-import ManageVoucher from "@/features/Admin/ManageVoucher";
+import ManageBrand from "@/features/Admin/Brand/ManageBrand";
+import UpdateBrand from "@/features/Admin/Brand/UpdateBrand";
+import ManageRequest from "@/features/Admin/Cancel-Request/ManageRequest";
+import ManageCustomer from "@/features/Admin/Customer/ManageCustomer";
+import ManageOrders from "@/features/Admin/Order/ManageOrders";
 import OrderDetailPage from "@/features/Admin/Order/OrderDetailPage";
 import ManageOrigin from "@/features/Admin/Origin/ManageOrigin";
+import ManageProducts from "@/features/Admin/Product/ManageProduct";
 import ProductDetail from "@/features/Admin/Product/ProductDetail";
 import UpdateDetailProduct from "@/features/Admin/Product/UpdateDetail";
-import ProfileAdmin from "@/features/Admin/ProfileAdmin";
+import ProfileAdmin from "@/features/Admin/Profile/ProfileAdmin";
 import ManageSkin from "@/features/Admin/Skin/ManageSkin";
 import ManageStatics from "@/features/Admin/Statics/ManageStatics";
 import ManageUse from "@/features/Admin/Uses/ManageUse";
+import AddVoucherPage from "@/features/Admin/Voucher/AddVoucherPage";
+import ManageVoucher from "@/features/Admin/Voucher/ManageVoucher";
 import UpdateVoucher from "@/features/Admin/Voucher/UpdateVoucher";
 import VoucherDetail from "@/features/Admin/Voucher/VoucherDetail";
 import AddProductPage from "@/features/Admin/components/AddProduct";
@@ -31,11 +32,15 @@ const adminRoutes: RouteObject[] = [
       { index: true, element: <Admin /> },
       {
         path: "customers",
-        element: <ManageUsers />,
+        element: <ManageCustomer />,
       },
       {
         path: "products",
         element: <ManageProducts />,
+      },
+      {
+        path: "cancel-request",
+        element: <ManageRequest />,
       },
       {
         path: "brand",

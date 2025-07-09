@@ -8,11 +8,11 @@ import { Card } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchVoucher } from "@/hooks/Voucher/useFetchVoucher";
 
-import { vouchersColumns } from "./columns/vouchersColumn";
-import { CardDemo } from "./components/Card";
-import { PaginationDemo } from "./components/Pagination";
+import { vouchersColumns } from "../columns/vouchersColumn";
+import { CardDemo } from "../components/Card";
+import { PaginationDemo } from "../components/Pagination";
 // Component đã được cập nhật
-import { DataTable } from "./components/TableCustom";
+import { DataTable } from "../components/TableCustom";
 
 const ManageVoucher: React.FC = () => {
   const { setHeaderName, headerName } = useHeader();
