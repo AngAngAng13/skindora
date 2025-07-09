@@ -2562,3 +2562,155 @@
               $ref: '../components/schemas/PaginatedFilterHskProductTypeResponse.yaml'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/create-new-filter-hsk-size:
+  post:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Create a New HSK Size Filter
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateFilterHskSizeReqBody.yaml'
+    responses:
+      '200':
+        description: Filter kích thước được tạo thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/get-all-filter-hsk-sizes:
+  get:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Get All HSK Size Filters
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: Trả về danh sách các filter kích thước.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskSizeResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-filter-hsk-size-detail/{_id}:
+  get:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Get HSK Size Filter by ID
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Chi tiết filter kích thước.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskSize.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-size/{_id}:
+  put:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Update an HSK Size Filter
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterHskSizeReqBody.yaml'
+    responses:
+      '200':
+        description: Filter kích thước được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskSize.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-size-state/{_id}:
+  put:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Update HSK Size Filter State
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterHskSizeReqBody.yaml'
+    responses:
+      '200':
+        description: Trạng thái filter kích thước được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskSize.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/search-filter-hsk-size:
+  get:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Search HSK Size Filters by Name
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa tìm kiếm trong tên kích thước.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter kích thước phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskSizeResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
