@@ -10,7 +10,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 
 import { ProductList } from "./components/ProductList";
 import { AccordionFilter } from "./components/AccordionFilter";
-import { ProductBanner } from "./components/ProductBanner";
+// import { ProductBanner } from "./components/ProductBanner";
 import { StoreFooter } from "./components/StoreFooter";
 
 const StoreFront = () => {
