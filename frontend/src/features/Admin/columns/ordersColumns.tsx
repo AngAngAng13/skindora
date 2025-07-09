@@ -23,7 +23,7 @@ export const ActionsCell = ({ row }: { row: { original: Order } }) => {
   const { updateStatus } = useUpdateStatus(String(_id));
   const handleUpdateStatus = () => {
     updateStatus();
-    // window.location.reload();
+    window.location.reload();
   };
   return (
     <div className="text-right">

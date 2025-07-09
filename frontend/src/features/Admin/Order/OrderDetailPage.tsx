@@ -1,20 +1,14 @@
 // Import icons từ lucide-react cho trực quan
-import { ChevronLeft, FileText, Truck, User } from "lucide-react";
+import { ChevronLeft, FileText, Loader2, Truck, User } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-// Import các component từ shadcn/ui
 import { Badge } from "@/components/ui/badge";
+// Import các component từ shadcn/ui
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useFetchOrderByID } from "@/hooks/Orders/useFetchOrderByID";
+import { useUpdateStatus } from "@/hooks/Orders/useUpdateStatus";
 
 // Định nghĩa kiểu cho trạng thái để Badge có màu sắc khác nhau
 // type OrderStatus = "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
@@ -24,62 +18,35 @@ const OrderDetailPage = () => {
   const navigate = useNavigate();
   // Đổi tên hook cho nhất quán với việc fetch order
   const { loading, data: order, FetchProductByID } = useFetchOrderByID(String(orderId));
+  const { updateStatus } = useUpdateStatus(String(orderId));
+  const handleUpdateStatus = () => {
+    updateStatus();
+    window.location.reload();
+  };
   useEffect(() => {
     FetchProductByID();
   }, []);
 
-  // const getStatusVariant = (status: OrderStatus) => {
-  //   switch (status) {
-  //     case "Pending":
-  //       return "default";
-  //     case "Processing":
-  //       return "secondary";
-  //     case "Shipped":
-  //       return "outline";
-  //     case "Delivered":
-  //       return "success";
-  //     case "Cancelled":
-  //       return "destructive";
-  //     default:
-  //       return "default";
-  //   }
-  // };
-
   if (loading || !order) {
     return (
-      <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-        <div className="flex items-center gap-4">
-          <Skeleton className="h-9 w-9" />
-          <div className="flex-1">
-            <Skeleton className="h-7 w-48" />
-            <Skeleton className="mt-1 h-4 w-64" />
-          </div>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <Skeleton className="h-6 w-40" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Skeleton className="h-5 w-full" />
-              <Skeleton className="h-5 w-5/6" />
-              <Skeleton className="h-5 w-full" />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-6 w-32" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Skeleton className="h-5 w-full" />
-              <Skeleton className="h-5 w-5/6" />
-            </CardContent>
-          </Card>
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="text-muted-foreground flex items-center gap-2">
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
+          <span className="text-lg">Đang tải dữ liệu...</span>
         </div>
       </div>
     );
   }
-
+  const variant =
+    order.Status === "DELIVERED"
+      ? "complete"
+      : order.Status === "CANCELLED"
+        ? "danger"
+        : order.Status === "RETURNED"
+          ? "default"
+          : order.Status === "SHIPPING"
+            ? "waiting"
+            : "secondary";
   return (
     <div className="bg-muted/40 flex min-h-screen w-full flex-col">
       <div className="flex flex-col sm:gap-4 sm:py-4">
@@ -93,13 +60,8 @@ const OrderDetailPage = () => {
               <h1 className="flex-1 shrink-0 text-xl font-semibold tracking-tight whitespace-nowrap sm:grow-0">
                 Chi tiết đơn hàng
               </h1>
-              <Badge className="ml-auto sm:ml-0">{order.Status}</Badge>
-              <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                <Button variant="outline" size="sm">
-                  Hủy
-                </Button>
-                <Button size="sm">Lưu thay đổi</Button>
-              </div>
+
+              <Badge variant={variant}>{order.Status}</Badge>
             </div>
 
             {/* Main Content */}
@@ -160,21 +122,9 @@ const OrderDetailPage = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="grid gap-2">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="outline" className="w-full justify-start">
-                            <span>Thay đổi trạng thái</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start">
-                          <DropdownMenuItem>Pending</DropdownMenuItem>
-                          <DropdownMenuItem>Processing</DropdownMenuItem>
-                          <DropdownMenuItem>Shipped</DropdownMenuItem>
-                          <DropdownMenuItem>Delivered</DropdownMenuItem>
-                          <DropdownMenuItem>Cancelled</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                      <Button variant="outline">In hóa đơn</Button>
+                      <Button variant="outline" className="w-full justify-start" onClick={() => handleUpdateStatus()}>
+                        <span>Thay đổi trạng thái</span>
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>

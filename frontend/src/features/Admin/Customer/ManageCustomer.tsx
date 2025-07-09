@@ -5,13 +5,13 @@ import { Card } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchUser } from "@/hooks/User/useFetchUser";
 
-import { userColumn } from "./columns/usersColums";
-import { CardDemo } from "./components/Card";
-import { PaginationDemo } from "./components/Pagination";
-import { ChartRadialText } from "./components/RadialChart";
+import { userColumn } from "../columns/usersColums";
+import { CardDemo } from "../components/Card";
+import { PaginationDemo } from "../components/Pagination";
+import { ChartRadialText } from "../components/RadialChart";
+import { DataTable } from "../components/TableCustom";
 // Component đã được cập nhật
-import { DataTable } from "./components/TableCustom";
-import { UserChart } from "./components/UserChart";
+import { UserChart } from "../components/UserChart";
 
 const ManageCustomer: React.FC = () => {
   const { setHeaderName } = useHeader();

@@ -67,12 +67,6 @@ export default function AddProductPage() {
     if (filter?.filter_origin) {
       setOrigin(filter.filter_origin);
     }
-    console.log("Skin", uses);
-    console.log("Skin", dactinh);
-    console.log("Skin", size);
-    console.log("Skin", uses);
-    console.log("Skin", ingredient);
-    console.log("Skin", skinType);
   }, [filter, uses, productType]);
   const navigate = useNavigate();
   const form = useForm<ProductFormValues>({
@@ -100,7 +94,7 @@ export default function AddProductPage() {
       filter_origin: "",
       filter_hsk_ingredient: "",
       filter_dac_tinh: "",
-      filter_size: "",
+      filter_hsk_size: "",
     },
   });
 
@@ -663,7 +657,7 @@ export default function AddProductPage() {
                 {/* Size Filter */}
                 <FormField
                   control={form.control}
-                  name="filter_size"
+                  name="filter_hsk_size"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg font-semibold text-blue-700">Size</FormLabel>

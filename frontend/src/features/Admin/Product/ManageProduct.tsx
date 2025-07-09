@@ -6,7 +6,7 @@ import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
 import { useHeader } from "@/contexts/header.context";
 
-import { ProductOverview } from "./components/ProductOverview";
+import { ProductOverview } from "../components/ProductOverview";
 
 const ManageProduct: React.FC = () => {
   const navigate = useNavigate();

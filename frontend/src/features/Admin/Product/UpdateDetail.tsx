@@ -28,7 +28,7 @@ import httpClient from "@/lib/axios";
 import type { ProductFormValues } from "@/lib/productSchema";
 import { productSchema } from "@/lib/productSchema";
 
-import TiptapEditor from "./components/TiptapEditor";
+import TiptapEditor from "../components/TiptapEditor";
 
 // Chuyển ImageUrlInput ra ngoài để tránh re-render không cần thiết
 const ImageUrlInput = ({ control, name, label, placeholder }: any) => (
@@ -150,7 +150,7 @@ export default function UpdateProductPage() {
       filter_origin: product?.filter_origin || "",
       filter_hsk_ingredient: product?.filter_hsk_ingredient || "",
       filter_dac_tinh: product?.filter_dac_tinh || "",
-      filter_size: product?.filter_size || "",
+      filter_hsk_size: product?.filter_hsk_size || "",
     };
   }, [product]);
 
@@ -658,7 +658,7 @@ export default function UpdateProductPage() {
                 {/* Size Filter */}
                 <FormField
                   control={form.control}
-                  name="filter_size"
+                  name="filter_hsk_size"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg font-semibold text-blue-700">Size</FormLabel>
