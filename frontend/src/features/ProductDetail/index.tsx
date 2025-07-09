@@ -1,5 +1,5 @@
 import { ArrowLeft, LoaderCircle } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/auth.context";
 import { useAddToWishlistMutation } from "@/hooks/mutations/useAddToWishlistMutation";
+import { useBuyNowMutation } from "@/hooks/mutations/useBuyNowMutation";
 import { useRemoveFromWishlistMutation } from "@/hooks/mutations/useRemoveFromWishlistMutation";
 import { useFilterOptionsQuery } from "@/hooks/queries/useFilterOptionsQuery";
 import { useProductByIdQuery } from "@/hooks/queries/useProductByIdQuery";
@@ -24,6 +25,7 @@ const ProductDetailPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated } = useAuth();
+  const [quantity, setQuantity] = useState(1); 
 
   const { data: product, isLoading, isError, error } = useProductByIdQuery(id);
   const { data: filterOptions } = useFilterOptionsQuery();
@@ -31,6 +33,18 @@ const ProductDetailPage = () => {
   const { data: wishlist, isLoading: isWishlistLoading } = useWishlistQuery(isAuthenticated);
   const { mutate: addToWishlist, isPending: isAddingToWishlist } = useAddToWishlistMutation();
   const { mutate: removeFromWishlist, isPending: isRemovingFromWishlist } = useRemoveFromWishlistMutation();
+  const { mutate: buyNow, isPending: isBuyingNow } = useBuyNowMutation(); 
+
+  const handleQuantityChange = (newQuantity: number) => {
+    if (newQuantity >= 1 && newQuantity <= (product?.quantity || 1)) {
+      setQuantity(newQuantity);
+    }
+  };
+
+  const handleBuyNow = () => {
+    if (!product) return;
+    buyNow({ productId: product._id, quantity });
+  };
 
   const isInWishlist = useMemo(() => {
     return !!(product && wishlist?.includes(product._id));
@@ -100,7 +114,14 @@ const ProductDetailPage = () => {
           />
           <ProductPrice product={product} />
           <Separator />
-          <ProductStockAndActions product={product} filterIdToNameMap={filterIdToNameMap} />
+          <ProductStockAndActions
+            product={product}
+            filterIdToNameMap={filterIdToNameMap}
+            quantity={quantity}
+            onQuantityChange={handleQuantityChange}
+            onBuyNow={handleBuyNow}
+            isBuyingNow={isBuyingNow}
+          />
           <Separator />
           <ProductShippingAndReturns />
         </div>
