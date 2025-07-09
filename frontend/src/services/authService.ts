@@ -1,10 +1,5 @@
 import { apiClient } from "@/lib/apiClient";
-import type {
-  ForgotPasswordFormData,
-  LoginFormData,
-  RegisterFormData,
-  ResetPasswordFormData,
-} from "@/schemas/authSchemas";
+import type { LoginFormData, RegisterFormData, ResetPasswordFormData } from "@/schemas/authSchemas";
 
 interface AuthResponse {
   message: string;
@@ -69,28 +64,33 @@ export const authService = {
     });
   },
 
-  forgotPassword: async (data: ForgotPasswordFormData) => {
-    return apiClient.post<{ message: string }, ForgotPasswordFormData>("/users/forgot-password", data, {
-      skipAuth: true,
-    });
-  },
   updateMe: async (payload: UpdateMePayload) => {
     return apiClient.patch<UpdateUserResponse, UpdateMePayload>("/users/me", payload);
   },
   resendVerificationEmail: async () => {
     return apiClient.post<{ message: string }>("/users/resend-verify-email", {});
   },
-  resetPassword: async (token: string, data: ResetPasswordFormData) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
-    const { confirmPassword, ...resetData } = data;
-    return apiClient.post<{ message: string }, Omit<ResetPasswordFormData, "confirmPassword">>(
-      `/users/reset-password?forgot_password_token=${token}`,
-      resetData,
+  forgotPassword: (data: { email: string }) => {
+    return apiClient.post<{ message: string }, { email: string }>("/users/forgot-password", data, {
+      skipAuth: true,
+    });
+  },
+
+  resetPassword: (token: string, data: Omit<ResetPasswordFormData, "confirmPassword">) => {
+    return apiClient.post<{ message: string }, { forgot_password_token: string; password: string }>(
+      "/users/reset-password",
+      {
+        forgot_password_token: token,
+        password: data.password,
+      },
       { skipAuth: true }
     );
   },
 
   getMe: async () => {
     return apiClient.get<UserProfileResponse>("/users/me");
+  },
+  verifyEmail: async (token: string) => {
+    return apiClient.post<AuthResponse>("/users/verify-email", { email_verify_token: token }, { skipAuth: true });
   },
 };

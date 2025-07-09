@@ -1,1 +1,3 @@
-//Chỗ này chưa biết chưa dàm điền hehee
+export * from "./Product/index";
+export * from "./Auth";
+export * from "./Product/index";
