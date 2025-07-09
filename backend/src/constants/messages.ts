@@ -288,7 +288,21 @@ export const ADMIN_MESSAGES = {
   FILTER_SIZE_STATE_MUST_BE_A_STRING: 'Filter size state must be a string',
   CREATE_NEW_FILTER_SIZE_SUCCESS: 'Create new filter size successfully',
   UPDATE_FILTER_SIZE_SUCCESS: 'Update filter size successfully',
-  UPDATE_FILTER_SIZE_STATE_SUCCESS: 'Filter size update state successfully'
+  UPDATE_FILTER_SIZE_STATE_SUCCESS: 'Filter size update state successfully',
+  //filter skin type
+  UPDATE_FILTER_SKIN_TYPE_FAILED: 'Update filter skin type failed',
+  FILTER_SKIN_TYPE_ID_IS_INVALID: 'Filter skin type ID is invalid',
+  FILTER_SKIN_TYPE_NOT_FOUND: 'Filter skin type not found',
+  FILTER_SKIN_TYPE_OPTION_NAME_IS_REQUIRED: 'Filter skin type option name is required',
+  FILTER_SKIN_TYPE_OPTION_NAME_MUST_BE_STRING: 'Filter skin type option name must be a string',
+  FILTER_SKIN_TYPE_CATEGORY_NAME_IS_REQUIRED: 'Filter skin type category name is required',
+  FILTER_SKIN_TYPE_CATEGORY_NAME_MUST_BE_STRING: 'Filter skin type category name must be a string',
+  FILTER_SKIN_TYPE_CATEGORY_PARAM_IS_REQUIRED: 'Filter skin type category param is required',
+  FILTER_SKIN_TYPE_CATEGORY_PARAM_MUST_BE_STRING: 'Filter skin type category param must be a string',
+  FILTER_SKIN_TYPE_STATE_MUST_BE_A_STRING: 'Filter skin type state must be a string',
+  CREATE_NEW_FILTER_SKIN_TYPE_SUCCESS: 'Create new filter skin type successfully',
+  UPDATE_FILTER_SKIN_TYPE_SUCCESS: 'Update filter skin type successfully',
+  UPDATE_FILTER_SKIN_TYPE_STATE_SUCCESS: 'Filter skin type update state successfully'
 } as const
 
 export const CART_MESSAGES = {
