@@ -13,11 +13,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// Giả sử bạn có hook này để cập nhật trạng thái yêu cầu
-// import { useUpdateCancelRequestStatus } from "@/hooks/CancelRequest/useUpdateCancelRequestStatus";
+import { useApproveCancelRequest } from "@/hooks/CancelRequest/useApproveCancelRequest";
+import { useRejectCancelRequest } from "@/hooks/CancelRequest/useRejectCancelRequest";
 import type { CancelRequest } from "@/types/cancelRequest";
 
-// Hàm định dạng tiền tệ
 const formatCurrency = (amount: number | string) => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -33,17 +32,20 @@ const formatDate = (dateString: string) => {
 
 // Component chứa các hành động cho mỗi hàng
 export const ActionsCell = ({ row }: { row: { original: CancelRequest } }) => {
-  const { _id, UserID, CancelRequest: requestDetails } = row.original;
+  const { _id, UserID } = row.original;
   const navigate = useNavigate();
-
-  const loading = false;
-
+  const { appproveCancelRequest } = useApproveCancelRequest(String(_id));
+  const { rejectedCancelRequest } = useRejectCancelRequest(String(_id));
   const handleApprove = () => {
     console.log("Approving request:", _id);
+    appproveCancelRequest();
+    window.location.reload();
   };
 
   const handleReject = () => {
     console.log("Rejecting request:", _id);
+    rejectedCancelRequest();
+    window.location.reload();
   };
 
   return (
@@ -60,24 +62,8 @@ export const ActionsCell = ({ row }: { row: { original: CancelRequest } }) => {
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(UserID)}>Copy Mã người dùng</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/order-detail/${_id}`)}>Xem chi tiết</DropdownMenuItem>
-          {requestDetails.status === "PENDING" && (
-            <>
-              <DropdownMenuItem
-                disabled={loading}
-                onClick={handleApprove}
-                className="font-semibold text-green-600 focus:bg-green-100 focus:text-green-700"
-              >
-                {loading ? "Đang xử lý..." : "Chấp thuận"}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                disabled={loading}
-                onClick={handleReject}
-                className="font-semibold text-red-600 focus:bg-red-100 focus:text-red-700"
-              >
-                {loading ? "Đang xử lý..." : "Từ chối"}
-              </DropdownMenuItem>
-            </>
-          )}
+          <DropdownMenuItem onClick={() => handleApprove()}>Chấp nhận</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleReject()}>Từ chối</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

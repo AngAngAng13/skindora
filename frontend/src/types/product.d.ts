@@ -34,5 +34,5 @@ export interface ProductFE {
   filter_hsk_product_type: string;
   filter_origin: string;
   filter_dac_tinh: string;
-  filter_size: string;
+  filter_hsk_size: string;
 }
