@@ -107,8 +107,8 @@ const ProfilePage = () => {
             </div>
           </CardContent>
         </Card>
-        <Tabs defaultValue="personal" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3">
+        <Tabs defaultValue="personal" >
+          <TabsList className="grid  grid-cols-2 sm:grid-cols-3">
             <TabsTrigger value="personal">Personal Info</TabsTrigger>
             <TabsTrigger value="preferences">Skin Preferences</TabsTrigger>
             <TabsTrigger value="orders">Order History</TabsTrigger>

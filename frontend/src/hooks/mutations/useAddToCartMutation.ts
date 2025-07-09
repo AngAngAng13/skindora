@@ -23,8 +23,9 @@ export const useAddToCartMutation = () => {
         queryClient.invalidateQueries({ queryKey: PREPARED_ORDER_QUERY_KEY });
       } else {
         toast.error("Failed to add to cart", {
-          // description: result.error.message || "Please log in and try again.",
-          description: "Please log in first",
+           description: result.error.message || "Please log in and try again.",
+
+          // description: "Please log in first",
         });
       }
     },

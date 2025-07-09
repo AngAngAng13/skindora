@@ -3,7 +3,39 @@ import type { Result } from "neverthrow";
 import { apiClient } from "@/lib/apiClient";
 import type { ApiError } from "@/utils";
 import type { ApiResponse } from "@/utils/axios/types";
-export type OrderStatus = "PENDING" | "CONFIRMED" | "PROCESSING" | "SHIPPING" | "DELIVERED" | "CANCELLED" | "RETURNED" | "FAILED";
+export interface OrderByIdResponse {
+  message: string;
+  result: {
+    _id: string;
+    UserID: string;
+    ShipAddress: string;
+    Description: string;
+    RequireDate: string;
+    Discount?: string;
+    TotalPrice: string;
+    PaymentMethod: string;
+    PaymentStatus: string;
+    Status: "PENDING" | "CONFIRMED" | "PROCESSING" | "SHIPPING" | "DELIVERED" | "CANCELLED" | "RETURNED" | "FAILED";
+    orderDetail: MyOrderDetail[];
+    created_at: string;
+    updated_at: string;
+    CancelRequest?: {
+      status: "REQUESTED" | "APPROVED" | "REJECTED";
+      reason: string;
+      requestedAt: string;
+      staffId: string | null;
+    };
+  };
+}
+export type OrderStatus =
+  | "PENDING"
+  | "CONFIRMED"
+  | "PROCESSING"
+  | "SHIPPING"
+  | "DELIVERED"
+  | "CANCELLED"
+  | "RETURNED"
+  | "FAILED";
 export interface CheckoutPayload {
   ShipAddress: string;
   Description?: string;
@@ -31,28 +63,12 @@ export interface MyOrderDetail {
 export interface MyOrder {
   orderId: string;
   orderDetail: MyOrderDetail[];
-  orderStatus: OrderStatus; 
+  orderStatus: OrderStatus;
 }
-export interface OrderByIdResponse {
-  message: string;
-  result: {
-    _id: string;
-    UserID: string;
-    ShipAddress: string;
-    Description: string;
-    RequireDate: string; 
-    Discount: string;
-    TotalPrice: string;
-    PaymentMethod: string;
-    PaymentStatus: string;
-    Status: "PENDING" | "CONFIRMED" | "PROCESSING" | "SHIPPING" | "DELIVERED" | "CANCELLED" | "RETURNED" | "FAILED";
-    orderDetail: MyOrderDetail[];
-  };
-}
+
 export interface MyOrdersApiResponse {
   message: string;
   result: MyOrder[];
-  
 }
 export interface ProductInOrder {
   ProductID: string;
@@ -60,7 +76,7 @@ export interface ProductInOrder {
   PricePerUnit: number;
   TotalPrice: number;
   name: string;
-  image: string; 
+  image: string;
 }
 
 export interface PreparedOrder {
@@ -94,14 +110,13 @@ export interface CreatedOrderResponse {
       ProductID: string;
       OrderID: string;
       Quantity: string;
-      OrderDate: string; 
+      OrderDate: string;
       UnitPrice: string;
     }>;
   };
 }
 
 export const ordersService = {
-  
   getPreparedOrder: (): Promise<Result<ApiResponse<PreparedOrderResponse>, ApiError>> => {
     return apiClient.get<PreparedOrderResponse>("/orders/current");
   },
@@ -116,11 +131,17 @@ export const ordersService = {
   getMyOrders: (): Promise<Result<ApiResponse<MyOrdersApiResponse>, ApiError>> => {
     return apiClient.get<MyOrdersApiResponse>("/orders/me");
   },
- 
+
   createOrder: (payload: CheckoutPayload): Promise<Result<ApiResponse<CreatedOrderResponse>, ApiError>> => {
     return apiClient.post<CreatedOrderResponse, CheckoutPayload>("/orders/checkout", payload);
   },
   getOrderById: (orderId: string): Promise<Result<ApiResponse<OrderByIdResponse>, ApiError>> => {
     return apiClient.get<OrderByIdResponse>(`/orders/${orderId}`);
+  },
+  requestCancelOrder: (
+    orderId: string,
+    reason: string
+  ): Promise<Result<ApiResponse<{ message: string }>, ApiError>> => {
+    return apiClient.post<{ message: string }, { reason: string }>(`/orders/${orderId}/cancel-request`, { reason });
   },
 };
