@@ -28,7 +28,7 @@ import httpClient from "@/lib/axios";
 import type { ProductFormValues } from "@/lib/productSchema";
 import { productSchema } from "@/lib/productSchema";
 
-import TiptapEditor from "./components/TiptapEditor";
+import TiptapEditor from "../components/TiptapEditor";
 
 // Chuyển ImageUrlInput ra ngoài để tránh re-render không cần thiết
 const ImageUrlInput = ({ control, name, label, placeholder }: any) => (
