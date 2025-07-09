@@ -246,6 +246,20 @@ export const ADMIN_MESSAGES = {
   UPDATE_FILTER_DAC_TINH_STATE_SUCCESS: 'Filter dac tinh update state successfully',
   //option_name search
   OPTION_NAME_SEARCH_MUST_BE_STRING: 'Option name search must be a string',
+  //ingredient
+  UPDATE_FILTER_INGREDIENT_FAILED: 'Update filter ingredient failed',
+  FILTER_INGREDIENT_OPTION_NAME_IS_REQUIRED: 'Filter ingredient option name is required',
+  FILTER_INGREDIENT_OPTION_NAME_MUST_BE_STRING: 'Filter ingredient option name must be a string',
+  FILTER_INGREDIENT_CATEGORY_NAME_IS_REQUIRED: 'Filter ingredient category name is required',
+  FILTER_INGREDIENT_CATEGORY_NAME_MUST_BE_STRING: 'Filter ingredient category name must be a string',
+  FILTER_INGREDIENT_CATEGORY_PARAM_IS_REQUIRED: 'Filter ingredient category param is required',
+  FILTER_INGREDIENT_CATEGORY_PARAM_MUST_BE_STRING: 'Filter ingredient category param must be a string',
+  FILTER_INGREDIENT_STATE_MUST_BE_A_STRING: 'Filter ingredient state must be a string',
+  FILTER_INGREDIENT_ID_IS_INVALID: 'Filter ingredient ID is invalid',
+  CREATE_NEW_FILTER_INGREDIENT_SUCCESS: 'Create new filter ingredient successfully',
+  FILTER_INGREDIENT_NOT_FOUND: 'Filter ingredient not found',
+  UPDATE_FILTER_INGREDIENT_SUCCESS: 'Update filter ingredient successfully',
+  UPDATE_FILTER_INGREDIENT_STATE_SUCCESS: 'Filter ingredient update state successfully',
 
 } as const
 

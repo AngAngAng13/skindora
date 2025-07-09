@@ -172,6 +172,17 @@ components:
       $ref: './components/schemas/DisableFilterDacTinhReqBody.yaml'
     PaginatedFilterDacTinhResponse:
       $ref: './components/schemas/PaginatedFilterDacTinhResponse.yaml'
+    # FilterHskIngredient
+    FilterHskIngredient:
+      $ref: './components/schemas/FilterHskIngredient.yaml'
+    CreateFilterHskIngredientReqBody:
+      $ref: './components/schemas/CreateFilterHskIngredientReqBody.yaml'
+    UpdateFilterHskIngredientReqBody:
+      $ref: './components/schemas/UpdateFilterHskIngredientReqBody.yaml'
+    DisableFilterHskIngredientReqBody:
+      $ref: './components/schemas/DisableFilterHskIngredientReqBody.yaml'
+    PaginatedFilterHskIngredientResponse:
+      $ref: './components/schemas/PaginatedFilterHskIngredientResponse.yaml'
 
     # --- Response Schemas ---
     AuthSuccessResponse:
