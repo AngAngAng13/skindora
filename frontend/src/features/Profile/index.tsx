@@ -11,6 +11,7 @@ import type { User } from "@/types";
 
 import { OrderHistoryTab } from "./components/OrderHistoryTab";
 import { PersonalInfoTab } from "./components/PersonalInfoTab";
+import { SecurityTab } from "./components/SecurityTab";
 import { SkinPreferencesTab } from "./components/SkinPreferencesTab";
 import { useProfilePageLogic } from "./hooks/useProfilePageLogic";
 
@@ -115,10 +116,11 @@ const ProfileTabs: React.FC<Pick<UserCardProps, "user" | "isEditing">> = ({ user
 
   return (
     <Tabs value={activeTab} onValueChange={handleTabChange}>
-      <TabsList className="grid grid-cols-2 sm:grid-cols-3">
+      <TabsList className="grid grid-cols-2 sm:grid-cols-4">
         <TabsTrigger value="personal">Personal Info</TabsTrigger>
         <TabsTrigger value="preferences">Skin Preferences</TabsTrigger>
         <TabsTrigger value="orders">Order History</TabsTrigger>
+        <TabsTrigger value="security">Security</TabsTrigger>
       </TabsList>
       <TabsContent value="personal" className="mt-6">
         <PersonalInfoTab
@@ -135,6 +137,9 @@ const ProfileTabs: React.FC<Pick<UserCardProps, "user" | "isEditing">> = ({ user
       </TabsContent>
       <TabsContent value="orders" className="mt-6">
         <OrderHistoryTab />
+      </TabsContent>
+      <TabsContent value="security" className="mt-6">
+        <SecurityTab />
       </TabsContent>
     </Tabs>
   );
@@ -170,7 +175,7 @@ const ProfilePage = () => {
           user={user}
           isEditing={isEditing}
           isSubmittingActions={isSubmittingActions}
-          isSubmittingForm={false} 
+          isSubmittingForm={false}
           watchedAvatar={watchedAvatar}
           displayName={displayName}
           avatarFallbackChar={avatarFallbackChar}

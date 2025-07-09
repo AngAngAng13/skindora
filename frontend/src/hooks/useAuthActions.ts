@@ -12,7 +12,8 @@ import { useLogoutMutation } from "./mutations/useLogoutMutation";
 import { useRegisterMutation } from "./mutations/useRegisterMutation";
 import { useResetPasswordMutation } from "./mutations/useResetPasswordMutation";
 import { useVerifyEmailMutation } from "./mutations/useVerifyEmailMutation";
-
+import { authService } from "@/services/authService";
+import { useMutation } from "@tanstack/react-query";
 export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<boolean>>) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -22,6 +23,32 @@ export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<
   const logoutMutation = useLogoutMutation();
   const forgotPasswordMutation = useForgotPasswordMutation();
   const resetPasswordMutation = useResetPasswordMutation();
+   const changePasswordMutation = useMutation({
+      mutationFn: ({ oldPassword, newPassword }: { oldPassword: string, newPassword: string }) => 
+          authService.changePassword(oldPassword, newPassword)
+  });
+    const changePassword = useCallback(
+    (oldPassword: string, newPassword: string) => {
+      return new Promise((resolve, reject) => {
+        changePasswordMutation.mutate(
+          { oldPassword, newPassword },
+          {
+            onSuccess: (result) => {
+              if (result.isOk()) {
+                resolve(result.value);
+              } else {
+                reject(result.error);
+              }
+            },
+            onError: (error) => {
+              reject(error);
+            },
+          }
+        );
+      });
+    },
+    [changePasswordMutation]
+  );
   const login = useCallback(
     (credentials: LoginFormData) => {
       loginMutation.mutate(credentials, {
@@ -55,6 +82,7 @@ export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<
             setHasToken(true);
             queryClient.invalidateQueries({ queryKey: ["user", "me"] });
             toast.success("Registration Successful", { description: "Your account has been created." });
+            navigate("/", { replace: true }); 
           } else {
             toast.error("Registration Failed", { description: result.error.message });
           }
@@ -65,7 +93,7 @@ export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<
         },
       });
     },
-    [registerMutation, queryClient, setHasToken]
+    [registerMutation, queryClient, setHasToken,navigate]
   );
 
   const verifyEmail = useCallback(
@@ -161,5 +189,7 @@ export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<
     isRequestingReset: forgotPasswordMutation.isPending,
     resetPassword,
     isResettingPassword: resetPasswordMutation.isPending,
+    changePassword,
+    isChangingPassword: changePasswordMutation.isPending,
   };
 };
