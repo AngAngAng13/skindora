@@ -43,7 +43,7 @@ import {
   searchFilterBrandsController,
   updateFilterBrandController
 } from '~/controllers/filterBrand.controllers'
-import { disableFilterBrandReqBody, disableFilterDacTinhReqBody, updateFilterBrandReqBody, updateFilterDacTinhReqBody } from '~/models/requests/Admin.requests'
+import { disableFilterBrandReqBody, disableFilterDacTinhReqBody, disableFilterHskIngredientReqBody, updateFilterBrandReqBody, updateFilterDacTinhReqBody, updateFilterHskIngredientReqBody } from '~/models/requests/Admin.requests'
 import {
   disableFilterBrandValidator,
   getFilterBrandByIdValidator,
@@ -51,6 +51,8 @@ import {
 } from '~/middlewares/filterBrand.middlewares'
 import { createNewFilterDacTinhValidator, disableFilterDacTinhValidator, getFilterDacTinhByIdValidator, updateFilterDacTinhValidator } from '~/middlewares/filterDacTinh.middlewares'
 import { createNewFilterDacTinhController, disableFilterDacTinhController, getAllFilterDacTinhsController, getFilterDacTinhByIdController, searchFilterDacTinhsController, updateFilterDacTinhController } from '~/controllers/filterDacTinh.controllers'
+import { createNewFilterHskIngredientController, disableFilterHskIngredientController, getAllFilterHskIngredientsController, getFilterHskIngredientByIdController, searchFilterHskIngredientsController, updateFilterHskIngredientController } from '~/controllers/filterHskIngredient.controllers'
+import { createNewFilterHskIngredientValidator, disableFilterHskIngredientValidator, getFilterHskIngredientByIdValidator, updateFilterHskIngredientValidator } from '~/middlewares/filterHskIngredient.middlewares'
 
 const adminRouter = Router()
 //user management
@@ -297,4 +299,53 @@ adminRouter.get(
   wrapAsync(searchFilterDacTinhsController)
 )
 
+//ingredient filter
+adminRouter.get(
+  '/manage-filters/get-all-filter-hsk-ingredients',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getAllFilterHskIngredientsController)
+)
+
+adminRouter.post(
+  '/manage-filters/create-new-filter-hsk-ingredient',
+  accessTokenValidator,
+  isAdminValidator,
+  createNewFilterHskIngredientValidator,
+  wrapAsync(createNewFilterHskIngredientController)
+)
+
+adminRouter.get(
+  '/manage-filters/search-filter-hsk-ingredient',
+  accessTokenValidator,
+  isAdminValidator,
+  searchFilterOptionNameValidator,
+  wrapAsync(searchFilterHskIngredientsController)
+)
+
+adminRouter.get(
+  '/manage-filters/get-filter-hsk-ingredient-detail/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  getFilterHskIngredientByIdValidator,
+  wrapAsync(getFilterHskIngredientByIdController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-ingredient/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<updateFilterHskIngredientReqBody>(['option_name', 'category_name', 'category_param']),
+  updateFilterHskIngredientValidator,
+  wrapAsync(updateFilterHskIngredientController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-ingredient-state/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<disableFilterHskIngredientReqBody>(['state']),
+  disableFilterHskIngredientValidator,
+  wrapAsync(disableFilterHskIngredientController)
+)
 export default adminRouter
