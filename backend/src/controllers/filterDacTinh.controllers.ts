@@ -8,8 +8,9 @@ import {
   updateFilterDacTinhReqBody
 } from '~/models/requests/Admin.requests'
 import filterDacTinhService from '~/services/filterDacTinh.services'
-import { ObjectId } from 'mongodb'
+import { Filter, ObjectId } from 'mongodb'
 import { ADMIN_MESSAGES } from '~/constants/messages'
+import FilterDacTinh from '~/models/schemas/FilterDacTinh.schema'
 
 export const getAllFilterDacTinhsController = async (req: Request, res: Response, next: NextFunction) => {
   await sendPaginatedResponse(res, next, databaseService.filterDacTinh, req.query)
@@ -76,4 +77,18 @@ export const disableFilterDacTinhController = async (
     message: ADMIN_MESSAGES.UPDATE_FILTER_DAC_TINH_STATE_SUCCESS,
     data: result
   })
+}
+
+export const searchFilterDacTinhsController = async (req: Request, res: Response, next: NextFunction) => {
+  const { keyword } = req.query
+  const filter: Filter<FilterDacTinh> = {}
+
+  if (keyword) {
+    filter.option_name = {
+      $regex: keyword as string,
+      $options: 'i'
+    }
+  }
+
+  await sendPaginatedResponse(res, next, databaseService.filterDacTinh, req.query, filter)
 }
