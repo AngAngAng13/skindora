@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Product } from "@/types";
+import { ReviewList } from "./ReviewList";
 
 interface ProductTabsProps {
   product: Product;
@@ -23,8 +24,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
             <div dangerouslySetInnerHTML={{ __html: product.ingredients_detail.rawHtml }} />
           </TabsContent>
           <TabsContent value="reviews">
-            <h3 className="text-lg font-medium">Customer Reviews</h3>
-            <p className="text-gray-500">No actual reviews available for this product yet.</p>
+            <ReviewList productId={product._id} />
           </TabsContent>
         </CardContent>
       </Tabs>

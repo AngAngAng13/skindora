@@ -11,7 +11,9 @@ import { useBuyNowMutation } from "@/hooks/mutations/useBuyNowMutation";
 import { useRemoveFromWishlistMutation } from "@/hooks/mutations/useRemoveFromWishlistMutation";
 import { useFilterOptionsQuery } from "@/hooks/queries/useFilterOptionsQuery";
 import { useProductByIdQuery } from "@/hooks/queries/useProductByIdQuery";
+import { useProductReviewsQuery } from "@/hooks/queries/useProductReviewsQuery";
 import { useWishlistQuery } from "@/hooks/queries/useWishlistQuery";
+
 
 import { ProductHeader } from "./components/ProductHeader";
 import { ProductImageGallery } from "./components/ProductImageGallery";
@@ -25,15 +27,28 @@ const ProductDetailPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated } = useAuth();
-  const [quantity, setQuantity] = useState(1); 
+  const [quantity, setQuantity] = useState(1);
 
   const { data: product, isLoading, isError, error } = useProductByIdQuery(id);
   const { data: filterOptions } = useFilterOptionsQuery();
+  const { data: paginatedReviews } = useProductReviewsQuery(id);
 
   const { data: wishlist, isLoading: isWishlistLoading } = useWishlistQuery(isAuthenticated);
   const { mutate: addToWishlist, isPending: isAddingToWishlist } = useAddToWishlistMutation();
   const { mutate: removeFromWishlist, isPending: isRemovingFromWishlist } = useRemoveFromWishlistMutation();
-  const { mutate: buyNow, isPending: isBuyingNow } = useBuyNowMutation(); 
+  const { mutate: buyNow, isPending: isBuyingNow } = useBuyNowMutation();
+
+  const { averageRating, reviewCount } = useMemo(() => {
+    const reviews = paginatedReviews?.data || [];
+    if (reviews.length === 0) {
+      return { averageRating: 0, reviewCount: 0 };
+    }
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return {
+      averageRating: totalRating / reviews.length,
+      reviewCount: reviews.length,
+    };
+  }, [paginatedReviews]);
 
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity >= 1 && newQuantity <= (product?.quantity || 1)) {
@@ -106,7 +121,9 @@ const ProductDetailPage = () => {
         <ProductImageGallery images={product.main_images_detail} name={product.productName_detail} autoSlide={false} />
         <div className="space-y-6">
           <ProductHeader
-            product={product}
+            productName={product.productName_detail}
+            averageRating={averageRating}
+            reviewCount={reviewCount}
             onToggleWishlist={handleToggleWishlist}
             isAddingToWishlist={isAddingToWishlist}
             isRemovingFromWishlist={isRemovingFromWishlist}

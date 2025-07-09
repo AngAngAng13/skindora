@@ -1,9 +1,14 @@
-import { Heart, LoaderCircle, Star } from "lucide-react";
+import { Heart, LoaderCircle } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import type { Product } from "@/types";
+
+import { StarRating } from "./StarRating";
+
 
 interface ProductHeaderProps {
-  product: Product;
+  productName: string;
+  averageRating: number;
+  reviewCount: number;
   onToggleWishlist: () => void;
   isAddingToWishlist: boolean;
   isRemovingFromWishlist: boolean;
@@ -11,11 +16,13 @@ interface ProductHeaderProps {
 }
 
 export function ProductHeader({
-  product,
-  isAddingToWishlist,
-  isInWishlist,
-  isRemovingFromWishlist,
+  productName,
+  averageRating,
+  reviewCount,
   onToggleWishlist,
+  isAddingToWishlist,
+  isRemovingFromWishlist,
+  isInWishlist,
 }: ProductHeaderProps) {
   const isWishlistLoading = isAddingToWishlist || isRemovingFromWishlist;
 
@@ -33,27 +40,16 @@ export function ProductHeader({
             <LoaderCircle className="h-5 w-5 animate-spin" />
           ) : (
             <Heart
-              className={`h-5 w-5 transition-colors ${
-                isInWishlist ? "fill-red-500 text-red-500" : "text-gray-500"
-              }`}
+              className={`h-5 w-5 transition-colors ${isInWishlist ? "fill-red-500 text-red-500" : "text-gray-500"}`}
             />
           )}
         </Button>
       </div>
-      <h1 className="mt-2 text-3xl font-bold">{product.productName_detail}</h1>
+      <h1 className="mt-2 text-3xl font-bold">{productName}</h1>
       <div className="mt-2 flex items-center">
-        <div className="flex items-center">
-          {[...Array(5)].map((_, i) => (
-            <Star
-              key={i}
-              className={`h-4 w-4 ${
-                i < Math.floor(product.rating || 0) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-              }`}
-            />
-          ))}
-        </div>
+        <StarRating rating={averageRating} />
         <span className="ml-2 text-sm text-gray-600">
-          {product.rating || 0} ({product.reviews || 0} reviews)
+          {averageRating.toFixed(1)} ({reviewCount} reviews)
         </span>
       </div>
     </div>
