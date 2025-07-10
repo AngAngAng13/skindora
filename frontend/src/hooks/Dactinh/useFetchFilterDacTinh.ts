@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
 import { fetchFilterDacTinh as fetchFilterDacTinh_api } from "@/api/dactinh";
-import type { DacTinh } from "@/types/dactinh";
+import type { DacTinh } from "@/types/Filter/dactinh";
 
 // <-- Make sure this import path is correct
 

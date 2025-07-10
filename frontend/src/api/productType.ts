@@ -1,0 +1,60 @@
+import httpClient from "@/lib/axios";
+import type { ProductType } from "@/types/Filter/productType";
+
+export interface FetchFilterProductTypeProps {
+  limit?: number | string;
+  page?: number | string;
+}
+//get-all-(filter_hsk_product_type)
+export const fetchFilterDacTinh = async (params: FetchFilterProductTypeProps) => {
+  return await httpClient
+    .get<API.IResponseSearch<ProductType>>("/admin/manage-filters/get-all-filter-hsk-product-types", {
+      limit: params.limit,
+      page: params.page,
+    })
+    .then((response) => response.data);
+};
+//create-(filter_hsk_product_type)
+export const createFilterProductType = async (payload: ProductType) => {
+  return await httpClient
+    .post("/admin/manage-filters/create-new-filter-hsk-product-type", payload)
+    .then((response) => response.data);
+};
+//get-all-(filter_hsk_product_type)
+export interface UpdateFilterDacTinhProps {
+  id: string;
+}
+export const fetchFilterProductTypeByID = async (params: UpdateFilterDacTinhProps) => {
+  return await httpClient
+    .get(`/admin/manage-filters/get-filter-hsk-product-type-detail/${params.id}`)
+    .then((response) => response.data);
+};
+//update-(filter_hsk_product_type)
+export const updateFilterDactinh = async (params: UpdateFilterDacTinhProps, payload: ProductType) => {
+  return await httpClient
+    .put(`/admin/manage-filters/update-filter-hsk-product-type/${params.id}`, payload)
+    .then((response) => response.data);
+};
+//update-status-(filter_hsk_product_type)
+export const updateStatusFilterDactinh = async (params: UpdateFilterDacTinhProps, payload: { state: string }) => {
+  return await httpClient
+    .put(`/admin/manage-filters/update-filter-hsk-product-type-state/${params.id}`, payload)
+    .then((response) => response.data);
+};
+//search-by-name(filter_hsk_product_type)
+export interface SearchProps {
+  option_name: string;
+}
+export const searchByNameFilterDactinh = async (params: SearchProps) => {
+  return await httpClient
+    .get("/admin/manage-filters/search-filter-hsk-product-type", {
+      option_name: params.option_name,
+    })
+    .then((response) => response.data);
+};
+//get-active-(filter_hsk_product_type)
+export const fetchFilterActiveDacTinh = async () => {
+  return await httpClient
+    .get("/admin/manage-filters/get-all-filter-hsk-product-type")
+    .then((response) => response.data);
+};

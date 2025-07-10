@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 
 import { fetchAllBrand } from "@/api/brand";
-import type { Brand } from "@/types/brand";
+import type { Brand } from "@/types/Filter/brand";
 
 export const useFetchBrand = () => {
   const [loading, setLoading] = useState<boolean>();

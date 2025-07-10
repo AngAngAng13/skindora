@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUpdateStatusBrand } from "@/hooks/Brand/useUpdateStatusBrand";
-import type { Brand } from "@/types/brand";
+import type { Brand } from "@/types/Filter/brand";
 
 // const formatCurrency = (amount: number | string) => {
 //   return new Intl.NumberFormat("vi-VN", {

@@ -1,5 +1,5 @@
 import httpClient from "@/lib/axios";
-import type { DacTinh } from "@/types/dactinh";
+import type { DacTinh } from "@/types/Filter/dactinh";
 
 export interface FetchFilterDacTinhProps {
   limit?: number | string;

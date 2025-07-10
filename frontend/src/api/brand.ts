@@ -1,5 +1,5 @@
 import httpClient from "@/lib/axios";
-import type { Brand } from "@/types/brand";
+import type { Brand } from "@/types/Filter/brand";
 
 export interface FetchAllBrandProps {
   limit?: string | number;
