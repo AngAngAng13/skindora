@@ -26,7 +26,7 @@ export interface IDFilterSkinTypeProps {
 }
 export const fetchFilterSkinByID = async (params: IDFilterSkinTypeProps) => {
   return await httpClient
-    .get<API.IResponseAPI>(`/admin/manage-filters/get-filter-hsk-skin-type/${params.id}`)
+    .get<API.IResponseAPI>(`/admin/manage-filters/get-filter-hsk-skin-type-detail/${params.id}`)
     .then((response) => response.data);
 };
 //update-(filter_hsk_skin_type)

@@ -33,6 +33,7 @@ export const ActionsCell = ({ row }: { row: { original: SkinType } }) => {
   });
   const handleUpdateStatus = () => {
     updateStateSkinType();
+    window.location.reload();
   };
 
   return (
@@ -48,8 +49,8 @@ export const ActionsCell = ({ row }: { row: { original: SkinType } }) => {
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>Copy tên hãng</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/detail-brand`)}>Xem chi tiết</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-brand`)}>Chỉnh sửa</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/skin-type-detail`)}>Xem chi tiết</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-skin-type`)}>Chỉnh sửa</DropdownMenuItem>
           {state === "ACTIVE" ? (
             <DropdownMenuItem
               disabled={loading}

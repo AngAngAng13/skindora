@@ -66,8 +66,8 @@ const items = [
     icon: Shield,
   },
   {
-    title: "Quản lý loại da",
-    url: "/admin/typeskin",
+    title: "Quản lý size",
+    url: "/admin/size",
     icon: Leaf,
   },
 
@@ -87,7 +87,7 @@ const items = [
     icon: Layers,
   },
   {
-    title: "Quản lý Skin Type",
+    title: "Quản lý loại da",
     url: "/admin/skin-type",
     icon: Droplet,
   },
