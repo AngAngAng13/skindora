@@ -52,3 +52,7 @@ export const searchByNameFilterDactinh = async (params: SearchProps) => {
     })
     .then((response) => response.data);
 };
+//get-active-(filter_hsk_dactinh)
+export const fetchFilterActiveDacTinh = async () => {
+  return await httpClient.get("/admin/manage-filters/get-all-filter-dac-tinhs").then((response) => response.data);
+};
