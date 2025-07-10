@@ -13,6 +13,7 @@ import { getLocalTime } from '~/utils/date'
 import { Filter } from 'mongodb'
 import FilterHskSize from '~/models/schemas/FilterHskSize.schema'
 import { ADMIN_MESSAGES } from '~/constants/messages'
+import { GenericFilterState } from '~/constants/enums'
 
 export const getAllFilterHskSizesController = async (req: Request, res: Response, next: NextFunction) => {
   await sendPaginatedResponse(res, next, databaseService.filterHskSize, req.query)
@@ -72,3 +73,15 @@ export const searchFilterHskSizesController = async (req: Request, res: Response
   }
   await sendPaginatedResponse(res, next, databaseService.filterHskSize, req.query, filter)
 }
+
+export const getActiveFilterHskSizesController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await databaseService.filterHskSize.find({ state: GenericFilterState.ACTIVE }).toArray();
+    res.json({
+      message: ADMIN_MESSAGES.GET_ACTIVE_FILTER_SIZES_SUCCESSFULLY,
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};

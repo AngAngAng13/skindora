@@ -216,6 +216,28 @@ components:
       $ref: './components/schemas/DisableFilterHskSkinTypeReqBody.yaml'
     PaginatedFilterHskSkinTypeResponse:
       $ref: './components/schemas/PaginatedFilterHskSkinTypeResponse.yaml'
+    # FilterHskUses
+    FilterHskUses:
+      $ref: './components/schemas/FilterHskUses.yaml'
+    CreateFilterHskUsesReqBody:
+      $ref: './components/schemas/CreateFilterHskUsesReqBody.yaml'
+    UpdateFilterHskUsesReqBody:
+      $ref: './components/schemas/UpdateFilterHskUsesReqBody.yaml'
+    DisableFilterHskUsesReqBody:
+      $ref: './components/schemas/DisableFilterHskUsesReqBody.yaml'
+    PaginatedFilterHskUsesResponse:
+      $ref: './components/schemas/PaginatedFilterHskUsesResponse.yaml'
+    # FilterHskOrigin
+    FilterHskOrigin:
+      $ref: './components/schemas/FilterHskOrigin.yaml'
+    CreateFilterHskOriginReqBody:
+      $ref: './components/schemas/CreateFilterHskOriginReqBody.yaml'
+    UpdateFilterHskOriginReqBody:
+      $ref: './components/schemas/UpdateFilterHskOriginReqBody.yaml'
+    DisableFilterHskOriginReqBody:
+      $ref: './components/schemas/DisableFilterHskOriginReqBody.yaml'
+    PaginatedFilterHskOriginResponse:
+      $ref: './components/schemas/PaginatedFilterHskOriginResponse.yaml'
 
     # --- Response Schemas ---
     AuthSuccessResponse:

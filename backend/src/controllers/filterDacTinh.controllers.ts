@@ -11,6 +11,7 @@ import filterDacTinhService from '~/services/filterDacTinh.services'
 import { Filter, ObjectId } from 'mongodb'
 import { ADMIN_MESSAGES } from '~/constants/messages'
 import FilterDacTinh from '~/models/schemas/FilterDacTinh.schema'
+import { GenericFilterState } from '~/constants/enums'
 
 export const getAllFilterDacTinhsController = async (req: Request, res: Response, next: NextFunction) => {
   await sendPaginatedResponse(res, next, databaseService.filterDacTinh, req.query)
@@ -91,4 +92,16 @@ export const searchFilterDacTinhsController = async (req: Request, res: Response
   }
 
   await sendPaginatedResponse(res, next, databaseService.filterDacTinh, req.query, filter)
+}
+
+export const getActiveFilterDacTinhsController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await databaseService.filterDacTinh.find({ state: GenericFilterState.ACTIVE }).toArray()
+    res.json({
+      message: ADMIN_MESSAGES.GET_ACTIVE_FILTER_DAC_TINH_SUCCESSFULLY,
+      data: result
+    })
+  } catch (error) {
+    next(error)
+  }
 }

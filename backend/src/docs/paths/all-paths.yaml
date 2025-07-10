@@ -1983,6 +1983,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterBrand.yaml'
+      '400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401':
         $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '403':
@@ -2164,6 +2172,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterDacTinh.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401':
         $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '403':
@@ -2340,6 +2356,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterHskIngredient.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401':
         $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '403':
@@ -2503,6 +2527,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterHskProductType.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
@@ -2655,6 +2687,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterHskSize.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
@@ -2807,6 +2847,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterHskSkinType.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
@@ -2864,5 +2912,509 @@
           application/json:
             schema:
               $ref: '../components/schemas/PaginatedFilterHskSkinTypeResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/create-new-filter-hsk-uses:
+  post:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Create a New HSK Uses Filter
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateFilterHskUsesReqBody.yaml'
+    responses:
+      '200':
+        description: Filter công dụng được tạo thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/get-all-filter-hsk-uses:
+  get:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Get All HSK Uses Filters
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: Trả về danh sách các filter công dụng.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskUsesResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-filter-hsk-uses-detail/{_id}:
+  get:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Get HSK Uses Filter by ID
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Chi tiết filter công dụng.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskUses.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-uses/{_id}:
+  put:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Update an HSK Uses Filter
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterHskUsesReqBody.yaml'
+    responses:
+      '200':
+        description: Filter công dụng được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskUses.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-uses-state/{_id}:
+  put:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Update HSK Uses Filter State
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterHskUsesReqBody.yaml'
+    responses:
+      '200':
+        description: Trạng thái filter công dụng được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskUses.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/search-filter-hsk-uses:
+  get:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Search HSK Uses Filters by Name
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa tìm kiếm trong tên công dụng.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter công dụng phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskUsesResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/create-new-filter-hsk-origin:
+  post:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Create a New HSK Origin Filter
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateFilterHskOriginReqBody.yaml'
+    responses:
+      '200':
+        description: Filter nguồn gốc được tạo thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/get-all-filter-hsk-origins:
+  get:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Get All HSK Origin Filters
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: Trả về danh sách các filter nguồn gốc.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskOriginResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-filter-hsk-origin-detail/{_id}:
+  get:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Get HSK Origin Filter by ID
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Chi tiết filter nguồn gốc.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskOrigin.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-origin/{_id}:
+  put:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Update an HSK Origin Filter
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterHskOriginReqBody.yaml'
+    responses:
+      '200':
+        description: Filter nguồn gốc được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskOrigin.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-origin-state/{_id}:
+  put:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Update HSK Origin Filter State
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterHskOriginReqBody.yaml'
+    responses:
+      '200':
+        description: Trạng thái filter nguồn gốc được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskOrigin.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/search-filter-hsk-origin:
+  get:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Search HSK Origin Filters by Name
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa tìm kiếm trong tên nguồn gốc.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter nguồn gốc phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskOriginResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-brands:
+  get:
+    tags: [Admin - Filter Brand]
+    summary: (Admin) Get All Active Filter Brands
+    description: Lấy danh sách tất cả các filter thương hiệu đang hoạt động để sử dụng trong việc tạo/cập nhật sản phẩm.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter thương hiệu.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter brands successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterBrand.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-dac-tinhs:
+  get:
+    tags: [Admin - Filter Dac Tinh]
+    summary: (Admin) Get All Active Filter Dac Tinhs
+    description: Lấy danh sách tất cả các filter đặc tính đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter đặc tính.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter dac tinhs successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterDacTinh.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-ingredients:
+  get:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Get All Active HSK Ingredient Filters
+    description: Lấy danh sách tất cả các filter thành phần đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter thành phần.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter ingredients successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskIngredient.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-product-types:
+  get:
+    tags: [Admin - Filter Product Type]
+    summary: (Admin) Get All Active HSK Product Type Filters
+    description: Lấy danh sách tất cả các filter loại sản phẩm đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter loại sản phẩm.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter product types successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskProductType.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-sizes:
+  get:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Get All Active HSK Size Filters
+    description: Lấy danh sách tất cả các filter kích thước đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter kích thước.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter sizes successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskSize.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-skin-types:
+  get:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Get All Active HSK Skin Type Filters
+    description: Lấy danh sách tất cả các filter loại da đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter loại da.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter skin types successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskSkinType.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-uses:
+  get:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Get All Active HSK Uses Filters
+    description: Lấy danh sách tất cả các filter công dụng đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter công dụng.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter uses successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskUses.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-origins:
+  get:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Get All Active HSK Origin Filters
+    description: Lấy danh sách tất cả các filter nguồn gốc đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter nguồn gốc.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter origins successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskOrigin.yaml'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
