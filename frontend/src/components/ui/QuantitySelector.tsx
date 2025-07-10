@@ -16,17 +16,17 @@ export const QuantitySelector = ({ quantity, onDecrease, onIncrease, maxStock, i
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 text-gray-600 hover:bg-gray-100"
+        className="h-8 w-8 text-gray-600 hover:bg-red-500"
         onClick={onDecrease}
         disabled={quantity <= 1 || isUpdating}
       >
-        <Minus className="h-4 w-4" />
+        <Minus className="h-4 w-4 " />
       </Button>
       <span className="w-10 text-center font-medium text-gray-800">{quantity}</span>
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 text-gray-600 hover:bg-gray-100"
+        className="h-8 w-8 text-gray-600 hover:bg-green-500"
         onClick={onIncrease}
         disabled={quantity >= maxStock || isUpdating}
       >
