@@ -331,8 +331,17 @@ export const ADMIN_MESSAGES = {
   CREATE_NEW_FILTER_ORIGIN_SUCCESS: 'Create new filter origin successfully',
   UPDATE_FILTER_ORIGIN_SUCCESS: 'Update filter origin successfully',
   UPDATE_FILTER_ORIGIN_STATE_SUCCESS: 'Filter origin update state successfully',
-  
 
+  //filter inactive cannot create new product
+  FILTER_BRAND_IS_INACTIVE: 'Selected brand is currently inactive. Please choose an active one.',
+  FILTER_DAC_TINH_IS_INACTIVE: 'Selected characteristic is currently inactive. Please choose an active one.',
+  FILTER_INGREDIENT_IS_INACTIVE: 'Selected ingredient is currently inactive. Please choose an active one.',
+  FILTER_PRODUCT_TYPE_IS_INACTIVE: 'Selected product type is currently inactive. Please choose an active one.',
+  FILTER_SIZE_IS_INACTIVE: 'Selected size is currently inactive. Please choose an active one.',
+  FILTER_SKIN_TYPE_IS_INACTIVE: 'Selected skin type is currently inactive. Please choose an active one.',
+  FILTER_USES_IS_INACTIVE: 'Selected uses is currently inactive. Please choose an active one.',
+  FILTER_ORIGIN_IS_INACTIVE: 'Selected origin is currently inactive. Please choose an active one.',
+  
 } as const
 
 export const CART_MESSAGES = {
