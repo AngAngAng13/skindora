@@ -36,9 +36,8 @@ interface OrderSummaryCardProps {
 export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({ order }) => {
   const navigate = useNavigate();
 
-  const orderTotal = order.orderDetail.reduce((acc, item) => {
-    return acc + parseInt(item.UnitPrice) * parseInt(item.Quantity);
-  }, 0);
+   const orderTotal = parseInt(order.TotalPrice || "0", 10);
+ 
 
   const totalItems = order.orderDetail.reduce((acc, item) => acc + parseInt(item.Quantity), 0);
 
@@ -70,12 +69,13 @@ export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({ order }) => 
               </div>
             )}
             <div className="min-w-0">
+
               <p className="text-primary flex items-center gap-2 text-sm font-semibold">
                 <Tag className="h-4 w-4" />
                 Order ID: {order.orderId.slice(-8).toUpperCase()}
               </p>
               <p className="text-muted-foreground mt-1 text-xs">
-                {format(new Date(order.orderDetail[0].OrderDate), "MMMM d, yyyy")}
+                {format(new Date(order.OrderDate), "MMMM d, yyyy")}
               </p>
               <p className="text-muted-foreground mt-1 flex items-center text-xs">
                 <Package className="mr-1.5 h-3 w-3" />

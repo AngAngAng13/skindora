@@ -13,6 +13,7 @@ export interface UserInOrder {
   phone_number: string;
   avatar: string;
 }
+
 export interface OrderData {
   _id: string;
   User: UserInOrder;
@@ -80,6 +81,9 @@ export interface MyOrderDetail {
 
 export interface MyOrder {
   orderId: string;
+    TotalPrice: string; 
+  OrderDate: string; 
+  
   orderDetail: MyOrderDetail[];
   orderStatus: OrderStatus;
 }
