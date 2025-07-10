@@ -8,7 +8,7 @@ export interface FetchFilterIngredientProps {
 //get-all-(filter_hsk_ingredient)
 export const fetchFilterIngredient = async (params: FetchFilterIngredientProps) => {
   return await httpClient
-    .get<API.IResponseSearch<Ingredient>>("/admin/manage-filters/get-all-filter-hsk-ingredient", {
+    .get<API.IResponseSearch<Ingredient>>("/admin/manage-filters/get-all-filter-hsk-ingredients", {
       limit: params.limit,
       page: params.page,
     })
@@ -26,7 +26,7 @@ export interface IDFilterIngredientProps {
 }
 export const fetchFilterIngredientByID = async (params: IDFilterIngredientProps) => {
   return await httpClient
-    .get(`/admin/manage-filters/get-filter-hsk-ingredient-detail/${params.id}`)
+    .get<API.IResponseAPI>(`/admin/manage-filters/get-filter-hsk-ingredient-detail/${params.id}`)
     .then((response) => response.data);
 };
 //update-(filter_hsk_ingredient)

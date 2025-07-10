@@ -14,24 +14,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUpdateStatusBrand } from "@/hooks/Brand/useUpdateStatusBrand";
+import { useUpdateStatusIngredient } from "@/hooks/Ingredient/useUpdateStatusIngredient";
 import type { Ingredient } from "@/types/Filter/ingredient";
-
-// Điều chỉnh đường dẫn này cho phù hợp
 
 export const ActionsCell = ({ row }: { row: { original: Ingredient } }) => {
   const { _id, option_name, state } = row.original;
-
   const navigate = useNavigate();
   const payload = {
     state: state === "ACTIVE" ? "INACTIVE" : "ACTIVE",
   };
-  const { updateStateBrand, loading } = useUpdateStatusBrand({
+  const { updateStateIngredient, loading } = useUpdateStatusIngredient({
     id: String(_id),
     payload,
   });
   const handleUpdateStatus = () => {
-    updateStateBrand();
+    updateStateIngredient();
     window.location.reload();
   };
 
@@ -48,8 +45,8 @@ export const ActionsCell = ({ row }: { row: { original: Ingredient } }) => {
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>Copy tên hãng</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/detail-brand`)}>Xem chi tiết</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-brand`)}>Chỉnh sửa</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/ingredient-detail`)}>Xem chi tiết</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-ingredient`)}>Chỉnh sửa</DropdownMenuItem>
           {state === "ACTIVE" ? (
             <DropdownMenuItem
               disabled={loading}

@@ -8,11 +8,9 @@ import { Card } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchFilterIngredient } from "@/hooks/Ingredient/useFetchFilterIngredient";
 
-// --- Import ingredientColumn từ tệp mới của nó ---
 import { ingredientColumn } from "../columns/ingredientsColumn";
 // Điều chỉnh đường dẫn này cho phù hợp
 
-// Import các component khác
 import { PaginationDemo } from "../components/Pagination";
 import { DataTable } from "../components/TableCustom";
 
@@ -24,7 +22,7 @@ const ManageIngredient: React.FC = () => {
 
   useEffect(() => {
     fetchFilterIngredient();
-  }, [params.page, fetchFilterIngredient]); // Add params.limit if you plan to change limit dynamically
+  }, [params.page, fetchFilterIngredient]);
 
   useEffect(() => {
     console.log("Ingredient Data:", data);
