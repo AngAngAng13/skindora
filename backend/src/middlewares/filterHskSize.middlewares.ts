@@ -40,7 +40,25 @@ export const createNewFilterHskSizeValidator = validate(
 
 export const updateFilterHskSizeValidator = validate(
   checkSchema({
-    _id: { in: ['params'], isMongoId: { errorMessage: ADMIN_MESSAGES.FILTER_SIZE_ID_IS_INVALID } },
+    _id: {
+      in: ['params'],
+      isMongoId: { errorMessage: ADMIN_MESSAGES.FILTER_SIZE_ID_IS_INVALID },
+      custom: {
+        options: async (value) => {
+          const size = await databaseService.filterHskSize.findOne({ _id: new ObjectId(value) })
+          if (!size) {
+            throw new ErrorWithStatus({ message: ADMIN_MESSAGES.FILTER_SIZE_NOT_FOUND, status: HTTP_STATUS.NOT_FOUND })
+          }
+          if (size.state === GenericFilterState.INACTIVE) {
+            throw new ErrorWithStatus({
+              message: ADMIN_MESSAGES.FILTER_IS_INACTIVE_CANNOT_UPDATE,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+          return true
+        }
+      }
+    },
     option_name: {
       optional: true,
       isString: { errorMessage: ADMIN_MESSAGES.FILTER_SIZE_OPTION_NAME_MUST_BE_STRING },

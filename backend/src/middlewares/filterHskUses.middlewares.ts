@@ -40,7 +40,25 @@ export const createNewFilterHskUsesValidator = validate(
 
 export const updateFilterHskUsesValidator = validate(
   checkSchema({
-    _id: { in: ['params'], isMongoId: { errorMessage: ADMIN_MESSAGES.FILTER_USES_ID_IS_INVALID } },
+    _id: {
+      in: ['params'],
+      isMongoId: { errorMessage: ADMIN_MESSAGES.FILTER_USES_ID_IS_INVALID },
+      custom: {
+        options: async (value) => {
+          const uses = await databaseService.filterHskUses.findOne({ _id: new ObjectId(value) })
+          if (!uses) {
+            throw new ErrorWithStatus({ message: ADMIN_MESSAGES.FILTER_USES_NOT_FOUND, status: HTTP_STATUS.NOT_FOUND })
+          }
+          if (uses.state === GenericFilterState.INACTIVE) {
+            throw new ErrorWithStatus({
+              message: ADMIN_MESSAGES.FILTER_IS_INACTIVE_CANNOT_UPDATE,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+          return true
+        }
+      }
+    },
     option_name: {
       optional: true,
       isString: { errorMessage: ADMIN_MESSAGES.FILTER_USES_OPTION_NAME_MUST_BE_STRING },

@@ -1983,6 +1983,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterBrand.yaml'
+      '400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401':
         $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '403':
@@ -2164,6 +2172,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterDacTinh.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401':
         $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '403':
@@ -2340,6 +2356,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterHskIngredient.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401':
         $ref: '../components/schemas/ErrorStatusResponse.yaml'
       '403':
@@ -2503,6 +2527,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterHskProductType.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
@@ -2655,6 +2687,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterHskSize.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
@@ -2807,6 +2847,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterHskSkinType.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
@@ -2959,6 +3007,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterHskUses.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
@@ -3111,6 +3167,14 @@
           application/json:
             schema:
               $ref: '../components/schemas/FilterHskOrigin.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }

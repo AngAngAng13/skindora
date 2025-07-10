@@ -3399,6 +3399,19 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
+          },
           "401": {
             "$ref": "#/components/schemas/ErrorStatusResponse"
           },
@@ -3711,6 +3724,19 @@
           },
           "422": {
             "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -4008,6 +4034,19 @@
           },
           "422": {
             "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -4300,6 +4339,19 @@
           },
           "422": {
             "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -4591,6 +4643,19 @@
           },
           "422": {
             "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -4882,6 +4947,19 @@
           },
           "422": {
             "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -5173,6 +5251,19 @@
           },
           "422": {
             "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -5464,6 +5555,19 @@
           },
           "422": {
             "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
           }
         }
       }

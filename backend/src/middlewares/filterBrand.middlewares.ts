@@ -2,6 +2,10 @@ import { validate } from '~/utils/validation'
 import { checkSchema } from 'express-validator'
 import { ADMIN_MESSAGES } from '~/constants/messages'
 import { FilterBrandState } from '~/constants/enums'
+import databaseService from '~/services/database.services'
+import { ObjectId } from 'mongodb'
+import { ErrorWithStatus } from '~/models/Errors'
+import HTTP_STATUS from '~/constants/httpStatus'
 
 export const updateFilterBrandValidator = validate(
   checkSchema({
@@ -9,6 +13,25 @@ export const updateFilterBrandValidator = validate(
       in: ['params'],
       isMongoId: {
         errorMessage: ADMIN_MESSAGES.FILTER_BRAND_ID_IS_INVALID
+      },
+      custom: {
+        options: async (value) => {
+          const brand = await databaseService.filterBrand.findOne({ _id: new ObjectId(value) })
+          if (!brand) {
+            throw new ErrorWithStatus({ message: ADMIN_MESSAGES.FILTER_BRAND_NOT_FOUND, status: HTTP_STATUS.NOT_FOUND })
+          }
+          if (
+            brand.state === FilterBrandState.INACTIVE ||
+            brand.state === FilterBrandState.SUSPENDED ||
+            brand.state === FilterBrandState.DISCONTINUED
+          ) {
+            throw new ErrorWithStatus({
+              message: ADMIN_MESSAGES.FILTER_IS_INACTIVE_CANNOT_UPDATE,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+          return true
+        }
       }
     },
     option_name: {

@@ -45,7 +45,28 @@ export const createNewFilterHskProductTypeValidator = validate(
 
 export const updateFilterHskProductTypeValidator = validate(
   checkSchema({
-    _id: { in: ['params'], isMongoId: { errorMessage: 'ID không hợp lệ' } },
+    _id: {
+      in: ['params'],
+      isMongoId: { errorMessage: ADMIN_MESSAGES.FILTER_PRODUCT_TYPE_ID_IS_INVALID },
+      custom: {
+        options: async (value) => {
+          const productType = await databaseService.filterHskProductType.findOne({ _id: new ObjectId(value) })
+          if (!productType) {
+            throw new ErrorWithStatus({
+              message: ADMIN_MESSAGES.FILTER_PRODUCT_TYPE_NOT_FOUND,
+              status: HTTP_STATUS.NOT_FOUND
+            })
+          }
+          if (productType.state === GenericFilterState.INACTIVE) {
+            throw new ErrorWithStatus({
+              message: ADMIN_MESSAGES.FILTER_IS_INACTIVE_CANNOT_UPDATE,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+          return true
+        }
+      }
+    },
     option_name: {
       optional: true,
       isString: { errorMessage: ADMIN_MESSAGES.FILTER_PRODUCT_TYPE_OPTION_NAME_MUST_BE_STRING },

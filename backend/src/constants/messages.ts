@@ -349,7 +349,8 @@ export const ADMIN_MESSAGES = {
   GET_ACTIVE_FILTER_SKIN_TYPES_SUCCESSFULLY: 'Get active filter skin types successfully',
   GET_ACTIVE_FILTER_USES_SUCCESSFULLY: 'Get active filter uses successfully',
   GET_ACTIVE_FILTER_ORIGINS_SUCCESSFULLY: 'Get active filter origins successfully',
-
+  //filter is inactive cannot update
+  FILTER_IS_INACTIVE_CANNOT_UPDATE: 'Cannot update an inactive filter. Please activate it first.'
 } as const
 
 export const CART_MESSAGES = {
