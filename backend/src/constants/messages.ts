@@ -423,7 +423,9 @@ export const ORDER_MESSAGES = {
   UNABLE_TO_CANCEL: 'This order cannot be cancelled',
   ORDER_CANCELLED: 'Order has been cancelled',
   INVALID_CANCELLED_STATUS: 'Invalid Cancelled status',
-  CANCEL_REQUESTING: 'This order is requesting for cancellation, cannot update to next status'
+  CANCEL_REQUESTING: 'This order is requesting for cancellation, cannot update to next status',
+  COUNT_SUCCESS: 'Get number of orders successfully',
+  COUNT_FAIL: 'Fail to Get number of orders'
 } as const
 
 export const VOUCHER_MESSAGES = {

@@ -6,6 +6,7 @@ import {
   buyNowController,
   cancelOrderController,
   checkOutController,
+  countOrderController,
   getAllCancelledOrdersController,
   getAllOrdersByAuthUserController,
   getAllOrdersByUserIdController,
@@ -30,7 +31,6 @@ import {
   prepareOrderValidator,
   requestCancelOrderValidator,
 } from '~/middlewares/orders.middlewares'
-import { isStaffValidator } from '~/middlewares/staff.middlewares'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import { OrderReqBody } from '~/models/requests/Orders.requests'
 
@@ -39,6 +39,8 @@ const ordersRouter = Router()
 ordersRouter
   .route('/')
   .get(accessTokenValidator, isAdminOrStaffValidator, getAllOrdersValidator, wrapAsync(getAllOrdersController))
+
+ordersRouter.route('/counts').get(accessTokenValidator, isAdminOrStaffValidator, wrapAsync(countOrderController))
 
 ordersRouter
   .route('/cancel')
