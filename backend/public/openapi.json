@@ -4699,6 +4699,297 @@
           }
         }
       }
+    },
+    "/admin/manage-filters/create-new-filter-hsk-skin-type": {
+      "post": {
+        "tags": [
+          "Admin - Filter Skin Type"
+        ],
+        "summary": "(Admin) Create a New HSK Skin Type Filter",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFilterHskSkinTypeReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter loại da được tạo thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-all-filter-hsk-skin-types": {
+      "get": {
+        "tags": [
+          "Admin - Filter Skin Type"
+        ],
+        "summary": "(Admin) Get All HSK Skin Type Filters",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về danh sách các filter loại da.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFilterHskSkinTypeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-filter-hsk-skin-type-detail/{_id}": {
+      "get": {
+        "tags": [
+          "Admin - Filter Skin Type"
+        ],
+        "summary": "(Admin) Get HSK Skin Type Filter by ID",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chi tiết filter loại da.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterHskSkinType"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/update-filter-hsk-skin-type/{_id}": {
+      "put": {
+        "tags": [
+          "Admin - Filter Skin Type"
+        ],
+        "summary": "(Admin) Update an HSK Skin Type Filter",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFilterHskSkinTypeReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter loại da được cập nhật thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterHskSkinType"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/update-filter-hsk-skin-type-state/{_id}": {
+      "put": {
+        "tags": [
+          "Admin - Filter Skin Type"
+        ],
+        "summary": "(Admin) Update HSK Skin Type Filter State",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisableFilterHskSkinTypeReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Trạng thái filter loại da được cập nhật thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterHskSkinType"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/search-filter-hsk-skin-type": {
+      "get": {
+        "tags": [
+          "Admin - Filter Skin Type"
+        ],
+        "summary": "(Admin) Search HSK Skin Type Filters by Name",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "description": "Từ khóa tìm kiếm trong tên loại da.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về danh sách các filter loại da phù hợp.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFilterHskSkinTypeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -6899,6 +7190,119 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FilterHskSize"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginatedUserResponse/properties/pagination"
+          }
+        }
+      },
+      "FilterHskSkinType": {
+        "type": "object",
+        "description": "Đại diện cho một đối tượng filter Loại Da HSK.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "option_name": {
+            "type": "string",
+            "example": "Da Dầu"
+          },
+          "category_name": {
+            "type": "string",
+            "example": "Loại Da HSK"
+          },
+          "category_param": {
+            "type": "string",
+            "example": "da-dau"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateFilterHskSkinTypeReqBody": {
+        "type": "object",
+        "required": [
+          "option_name",
+          "category_name",
+          "category_param"
+        ],
+        "properties": {
+          "option_name": {
+            "type": "string",
+            "example": "Da Hỗn Hợp"
+          },
+          "category_name": {
+            "type": "string",
+            "example": "Loại Da HSK"
+          },
+          "category_param": {
+            "type": "string",
+            "example": "da-hon-hop"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        }
+      },
+      "UpdateFilterHskSkinTypeReqBody": {
+        "type": "object",
+        "description": "Chỉ bao gồm các trường cần cập nhật cho loại da.",
+        "properties": {
+          "option_name": {
+            "type": "string"
+          },
+          "category_name": {
+            "type": "string"
+          },
+          "category_param": {
+            "type": "string"
+          }
+        }
+      },
+      "DisableFilterHskSkinTypeReqBody": {
+        "type": "object",
+        "required": [
+          "state"
+        ],
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "Trạng thái mới cho filter loại da.",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ],
+            "example": "INACTIVE"
+          }
+        }
+      },
+      "PaginatedFilterHskSkinTypeResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterHskSkinType"
             }
           },
           "pagination": {

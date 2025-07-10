@@ -205,6 +205,17 @@ components:
       $ref: './components/schemas/DisableFilterHskSizeReqBody.yaml'
     PaginatedFilterHskSizeResponse:
       $ref: './components/schemas/PaginatedFilterHskSizeResponse.yaml'
+    # FilterHskSkinType
+    FilterHskSkinType:
+      $ref: './components/schemas/FilterHskSkinType.yaml'
+    CreateFilterHskSkinTypeReqBody:
+      $ref: './components/schemas/CreateFilterHskSkinTypeReqBody.yaml'
+    UpdateFilterHskSkinTypeReqBody:
+      $ref: './components/schemas/UpdateFilterHskSkinTypeReqBody.yaml'
+    DisableFilterHskSkinTypeReqBody:
+      $ref: './components/schemas/DisableFilterHskSkinTypeReqBody.yaml'
+    PaginatedFilterHskSkinTypeResponse:
+      $ref: './components/schemas/PaginatedFilterHskSkinTypeResponse.yaml'
 
     # --- Response Schemas ---
     AuthSuccessResponse:

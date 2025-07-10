@@ -2714,3 +2714,155 @@
               $ref: '../components/schemas/PaginatedFilterHskSizeResponse.yaml'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/create-new-filter-hsk-skin-type:
+  post:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Create a New HSK Skin Type Filter
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateFilterHskSkinTypeReqBody.yaml'
+    responses:
+      '200':
+        description: Filter loại da được tạo thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/get-all-filter-hsk-skin-types:
+  get:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Get All HSK Skin Type Filters
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: Trả về danh sách các filter loại da.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskSkinTypeResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-filter-hsk-skin-type-detail/{_id}:
+  get:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Get HSK Skin Type Filter by ID
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Chi tiết filter loại da.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskSkinType.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-skin-type/{_id}:
+  put:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Update an HSK Skin Type Filter
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterHskSkinTypeReqBody.yaml'
+    responses:
+      '200':
+        description: Filter loại da được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskSkinType.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-skin-type-state/{_id}:
+  put:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Update HSK Skin Type Filter State
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterHskSkinTypeReqBody.yaml'
+    responses:
+      '200':
+        description: Trạng thái filter loại da được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskSkinType.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/search-filter-hsk-skin-type:
+  get:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Search HSK Skin Type Filters by Name
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa tìm kiếm trong tên loại da.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter loại da phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskSkinTypeResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
