@@ -15,6 +15,7 @@ const CartPage = () => {
     isCartLoading,
     isError,
     error,
+    handleApplyManualVoucher,
     cartItems,
     isAllSelected,
     isClearing,
@@ -122,6 +123,7 @@ const CartPage = () => {
             <div className="lg:col-span-1">
               <div className="sticky top-24 space-y-4">
                 <CartSummary
+                onApplyManualVoucher={handleApplyManualVoucher}
                   subtotal={subtotal}
                   shipping={shipping}
                   total={total}
@@ -141,6 +143,7 @@ const CartPage = () => {
         onOpenChange={setIsVoucherDialogOpen}
         onApplyVoucher={handleApplyVoucher}
         selectedVoucherCode={appliedVoucher?.code}
+        subtotal={subtotal}
       />
     </>
   );

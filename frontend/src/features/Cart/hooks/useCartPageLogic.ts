@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -8,6 +8,7 @@ import { usePrepareOrderMutation } from "@/hooks/mutations/usePrepareOrderMutati
 import { useRemoveFromCartMutation } from "@/hooks/mutations/useRemoveFromCartMutation";
 import { useUpdateCartMutation } from "@/hooks/mutations/useUpdateCartMutation";
 import { useCartQuery } from "@/hooks/queries/useCartQuery";
+import { useVouchersQuery } from "@/hooks/queries/useVouchersQuery";
 import type { Voucher } from "@/types/voucher";
 
 interface ApiCartProduct {
@@ -24,27 +25,18 @@ export const useCartPageLogic = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { data: cartResponse, isLoading: isCartLoading, isError, error } = useCartQuery(isAuthenticated);
+  const { data: voucherResponse } = useVouchersQuery(isAuthenticated); 
 
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
   const [isVoucherDialogOpen, setIsVoucherDialogOpen] = useState(false);
   const [appliedVoucher, setAppliedVoucher] = useState<Voucher | null>(null);
 
   const { mutate: clearCart, isPending: isClearing } = useClearCartMutation();
-  const { mutate: updateCart, isPending: isUpdating } = useUpdateCartMutation();
-  const { mutate: removeFromCart, isPending: isRemoving } = useRemoveFromCartMutation();
-  const { mutate: prepareOrder, isPending: isPreparingOrder } = usePrepareOrderMutation();
+  const updateCartMutation = useUpdateCartMutation();
+  const removeFromCartMutation = useRemoveFromCartMutation();
+  const { isPending: isPreparingOrder } = usePrepareOrderMutation();
 
-  const isMutating = isUpdating || isRemoving;
-
-  const handleApplyVoucher = (voucher: Voucher) => {
-    setAppliedVoucher(voucher);
-    toast.success(`Voucher "${voucher.code}" applied!`);
-  };
-
-  const clearVoucher = () => {
-    setAppliedVoucher(null);
-    toast.info("Voucher removed.");
-  };
+  const isMutating = updateCartMutation.isPending || removeFromCartMutation.isPending;
 
   const cartItems = useMemo(
     () =>
@@ -55,14 +47,6 @@ export const useCartPageLogic = () => {
     [cartResponse]
   );
 
-  useEffect(() => {
-    if (cartItems.length > 0) {
-      setSelectedItemIds(cartItems.map((item) => item.ProductID));
-    } else {
-      setSelectedItemIds([]);
-    }
-  }, [cartItems]);
-
   const selectedItems = useMemo(
     () => cartItems.filter((item) => selectedItemIds.includes(item.ProductID)),
     [cartItems, selectedItemIds]
@@ -72,6 +56,17 @@ export const useCartPageLogic = () => {
     () => selectedItems.reduce((total, item) => total + item.unitPrice * item.Quantity, 0),
     [selectedItems]
   );
+
+  
+  useEffect(() => {
+    if (appliedVoucher && subtotal < Number(appliedVoucher.minOrderValue)) {
+      setAppliedVoucher(null);
+      toast.warning("Voucher removed", {
+        description: `Your order total is now below the minimum required for the ${appliedVoucher.code} voucher.`,
+      });
+    }
+  }, [subtotal, appliedVoucher]);
+  
 
   const discountAmount = useMemo(() => {
     if (!appliedVoucher || subtotal < Number(appliedVoucher.minOrderValue)) return 0;
@@ -94,16 +89,57 @@ export const useCartPageLogic = () => {
     return calculatedTotal > 0 ? calculatedTotal : 0;
   }, [subtotal, shipping, discountAmount]);
 
+  const handleApplyVoucher = useCallback(
+    (voucher: Voucher) => {
+      if (subtotal < Number(voucher.minOrderValue)) {
+        toast.error("Cannot apply voucher", {
+          description: `Your order total does not meet the minimum requirement of ${Number(voucher.minOrderValue).toLocaleString("vi-VN")}₫.`,
+        });
+        return;
+      }
+      setAppliedVoucher(voucher);
+      toast.success(`Voucher "${voucher.code}" applied!`);
+    },
+    [subtotal]
+  );
+
+  const handleApplyManualVoucher = useCallback(
+    (code: string) => {
+      const allVouchers = voucherResponse?.data ?? [];
+      const voucherToApply = allVouchers.find((v) => v.code.toUpperCase() === code.toUpperCase());
+
+      if (!voucherToApply) {
+        toast.error("Invalid Voucher", { description: "The voucher code you entered does not exist." });
+        return;
+      }
+      handleApplyVoucher(voucherToApply);
+    },
+    [voucherResponse, handleApplyVoucher]
+  );
+
+  const clearVoucher = () => {
+    setAppliedVoucher(null);
+    toast.info("Voucher removed.");
+  };
+
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      setSelectedItemIds(cartItems.map((item) => item.ProductID));
+    } else {
+      setSelectedItemIds([]);
+    }
+  }, [cartItems]);
+
   const handleUpdateQuantity = (id: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(id);
+      removeFromCartMutation.mutate(id);
     } else {
-      updateCart({ productId: id, quantity });
+      updateCartMutation.mutate({ productId: id, quantity });
     }
   };
 
   const handleRemoveItem = (id: string) => {
-    removeFromCart(id);
+    removeFromCartMutation.mutate(id);
   };
 
   const handleSelectItem = (itemId: string) => {
@@ -139,9 +175,9 @@ export const useCartPageLogic = () => {
     handleRemoveItem,
     handleUpdateQuantity,
     handleApplyVoucher,
+    handleApplyManualVoucher,
     clearVoucher,
     clearCart,
-    prepareOrder,
     setIsVoucherDialogOpen,
   };
 };

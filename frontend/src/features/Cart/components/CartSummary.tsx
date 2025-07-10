@@ -1,5 +1,6 @@
 import { LoaderCircle, Ticket, X } from "lucide-react";
 import type { Result } from "neverthrow";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -22,6 +23,7 @@ interface CartSummaryProps {
   selectedItems: Array<{ ProductID: string }>;
   onOpenVoucherDialog: () => void;
   onClearVoucher?: () => void;
+  onApplyManualVoucher: (code: string) => void;
 }
 
 export function CartSummary({
@@ -32,9 +34,11 @@ export function CartSummary({
   selectedItems,
   onOpenVoucherDialog,
   onClearVoucher,
+  onApplyManualVoucher,
 }: CartSummaryProps) {
   const navigate = useNavigate();
   const { mutate: prepareOrder, isPending } = usePrepareOrderMutation();
+  const [manualCode, setManualCode] = useState(""); 
 
   const handleCheckout = () => {
     if (!selectedItems || selectedItems.length === 0) {
@@ -53,6 +57,12 @@ export function CartSummary({
         }
       },
     });
+  };
+
+  const handleApplyClick = () => {
+    if (!manualCode.trim()) return;
+    onApplyManualVoucher(manualCode.trim());
+    setManualCode(""); // Clear input after applying
   };
 
   return (
@@ -106,8 +116,16 @@ export function CartSummary({
             </div>
           ) : (
             <div className="flex gap-2">
-              <Input placeholder="Enter discount code" className="flex-1" />
-              <Button variant="secondary">APPLY</Button>
+              <Input
+                placeholder="Enter discount code"
+                className="flex-1"
+                value={manualCode}
+                onChange={(e) => setManualCode(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleApplyClick()}
+              />
+              <Button variant="secondary" onClick={handleApplyClick}>
+                APPLY
+              </Button>
             </div>
           )}
         </div>
