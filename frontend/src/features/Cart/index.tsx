@@ -97,7 +97,7 @@ const CartPage = () => {
                     size="sm"
                     onClick={() => clearCart()}
                     disabled={isClearing}
-                    className="text-gray-500 hover:text-red-500"
+                    className="text-gray-500 hover:text-white"
                   >
                     <Trash2 className="mr-1 h-4 w-4" /> Delete
                   </Button>

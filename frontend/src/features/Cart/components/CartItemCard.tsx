@@ -52,11 +52,11 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 text-gray-400 hover:text-red-500"
+        className="h-8 w-8 text-gray-400 hover:text-white"
         onClick={() => onRemoveItem(item.ProductID)}
         disabled={isMutating}
       >
-        {isMutating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+        {isMutating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4 " />}
       </Button>
     </div>
   );
