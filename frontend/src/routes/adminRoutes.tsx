@@ -178,6 +178,10 @@ const adminRoutes: RouteObject[] = [
         path: ":id/skin-type-detail",
         element: <SkinTypeDetail />,
       },
+      {
+        path: "origin",
+        element: <ManageOrigin />,
+      },
     ],
   },
 ];

@@ -8,7 +8,7 @@ export interface FetchFilterOriginProps {
 //get-all-(filter_hsk_origin)
 export const fetchFilterOrigin = async (params: FetchFilterOriginProps) => {
   return await httpClient
-    .get<API.IResponseSearch<Origin>>("/admin/manage-filters/create-new-filter-hsk-origins", {
+    .get<API.IResponseSearch<Origin>>("/admin/manage-filters/get-all-filter-hsk-origins", {
       limit: params.limit,
       page: params.page,
     })
