@@ -59,3 +59,56 @@ export interface updateFilterHskIngredientReqBody {
 export interface disableFilterHskIngredientReqBody {
   state: GenericFilterState
 }
+
+export interface createNewFilterHskProductTypeReqBody {
+  option_name: string
+  description?: string
+  category_name: string
+  category_param: string
+  state?: GenericFilterState
+}
+
+export interface updateFilterHskProductTypeReqBody {
+  option_name?: string
+  description?: string
+  category_name?: string
+  category_param?: string
+}
+
+export interface disableFilterHskProductTypeReqBody {
+  state: GenericFilterState
+}
+
+export interface createNewFilterHskSizeReqBody {
+  option_name: string
+  category_name: string
+  category_param: string
+  state?: GenericFilterState
+}
+
+export interface updateFilterHskSizeReqBody {
+  option_name?: string
+  category_name?: string
+  category_param?: string
+}
+
+export interface disableFilterHskSizeReqBody {
+  state: GenericFilterState
+}
+
+export interface createNewFilterHskSkinTypeReqBody {
+  option_name: string
+  category_name: string
+  category_param: string
+  state?: GenericFilterState
+}
+
+export interface updateFilterHskSkinTypeReqBody {
+  option_name?: string
+  category_name?: string
+  category_param?: string
+}
+
+export interface disableFilterHskSkinTypeReqBody {
+  state: GenericFilterState
+}
