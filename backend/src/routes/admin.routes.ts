@@ -30,7 +30,7 @@ import {
   getAllVoucherForAdminController,
   getVoucherDetailController
 } from '~/controllers/voucher.controllers'
-import { filterMiddleware, paginationValidator, parseDateFieldsMiddleware } from '~/middlewares/common.middlewares'
+import { filterMiddleware, paginationValidator, parseDateFieldsMiddleware, searchFilterOptionNameValidator } from '~/middlewares/common.middlewares'
 import { createVoucherValidator, updateVoucherValidator, voucherIdValidator } from '~/middlewares/voucher.middlewares'
 import { CreateNewVoucherReqBody, UpdateVoucherReqBody } from '~/models/requests/Vouchers.request'
 import { getOrderRevenueController } from '~/controllers/orders.controllers'
@@ -40,14 +40,25 @@ import {
   disableFilterBrandController,
   getAllFilterBrandsController,
   getFilterBrandByIdController,
+  searchFilterBrandsController,
   updateFilterBrandController
 } from '~/controllers/filterBrand.controllers'
-import { disableFilterBrandReqBody, updateFilterBrandReqBody } from '~/models/requests/Admin.requests'
+import { disableFilterBrandReqBody, disableFilterDacTinhReqBody, disableFilterHskIngredientReqBody, disableFilterHskProductTypeReqBody, disableFilterHskSizeReqBody, disableFilterHskSkinTypeReqBody, updateFilterBrandReqBody, updateFilterDacTinhReqBody, updateFilterHskIngredientReqBody, updateFilterHskProductTypeReqBody, updateFilterHskSizeReqBody, updateFilterHskSkinTypeReqBody } from '~/models/requests/Admin.requests'
 import {
   disableFilterBrandValidator,
   getFilterBrandByIdValidator,
   updateFilterBrandValidator
 } from '~/middlewares/filterBrand.middlewares'
+import { createNewFilterDacTinhValidator, disableFilterDacTinhValidator, getFilterDacTinhByIdValidator, updateFilterDacTinhValidator } from '~/middlewares/filterDacTinh.middlewares'
+import { createNewFilterDacTinhController, disableFilterDacTinhController, getAllFilterDacTinhsController, getFilterDacTinhByIdController, searchFilterDacTinhsController, updateFilterDacTinhController } from '~/controllers/filterDacTinh.controllers'
+import { createNewFilterHskIngredientController, disableFilterHskIngredientController, getAllFilterHskIngredientsController, getFilterHskIngredientByIdController, searchFilterHskIngredientsController, updateFilterHskIngredientController } from '~/controllers/filterHskIngredient.controllers'
+import { createNewFilterHskIngredientValidator, disableFilterHskIngredientValidator, getFilterHskIngredientByIdValidator, updateFilterHskIngredientValidator } from '~/middlewares/filterHskIngredient.middlewares'
+import { createNewFilterHskProductTypeController, disableFilterHskProductTypeController, getAllFilterHskProductTypesController, getFilterHskProductTypeByIdController, searchFilterHskProductTypesController, updateFilterHskProductTypeController } from '~/controllers/filterHskProductType.controllers'
+import { createNewFilterHskProductTypeValidator, disableFilterHskProductTypeValidator, getFilterHskProductTypeByIdValidator, updateFilterHskProductTypeValidator } from '~/middlewares/filterHskProductType.middlewares'
+import { createNewFilterHskSizeController, disableFilterHskSizeController, getAllFilterHskSizesController, getFilterHskSizeByIdController, searchFilterHskSizesController, updateFilterHskSizeController } from '~/controllers/filterHskSize.controllers'
+import { createNewFilterHskSizeValidator, disableFilterHskSizeValidator, getFilterHskSizeByIdValidator, updateFilterHskSizeValidator } from '~/middlewares/filterHskSize.middlewares'
+import { createNewFilterHskSkinTypeController, disableFilterHskSkinTypeController, getAllFilterHskSkinTypesController, getFilterHskSkinTypeByIdController, searchFilterHskSkinTypesController, updateFilterHskSkinTypeController } from '~/controllers/filterHskSkinType.controllers'
+import { createNewFilterHskSkinTypeValidator, disableFilterHskSkinTypeValidator, getFilterHskSkinTypeByIdValidator, updateFilterHskSkinTypeValidator } from '~/middlewares/filterHskSkinType.middlewares'
 
 const adminRouter = Router()
 //user management
@@ -229,5 +240,268 @@ adminRouter.get(
   isAdminValidator,
   getFilterBrandByIdValidator,
   wrapAsync(getFilterBrandByIdController)
+)
+
+adminRouter.get(
+  '/manage-filters/search-filter-brand',
+  accessTokenValidator,
+  isAdminValidator,
+  searchFilterOptionNameValidator,
+  wrapAsync(searchFilterBrandsController)
+)
+
+//FILTER DAC TINH
+//Tạo mới một đặc tính
+adminRouter.post(
+  '/manage-filters/create-new-filter-dac-tinh',
+  accessTokenValidator,
+  isAdminValidator,
+  createNewFilterDacTinhValidator,
+  wrapAsync(createNewFilterDacTinhController)
+)
+
+// Lấy danh sách tất cả đặc tính
+adminRouter.get(
+  '/manage-filters/get-all-filter-dac-tinh',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getAllFilterDacTinhsController)
+)
+
+//Cập nhật thông tin một "đặc tính"
+adminRouter.put(
+  '/manage-filters/update-filter-dac-tinh/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<updateFilterDacTinhReqBody>(['option_name', 'category_name', 'category_param']),
+  updateFilterDacTinhValidator,
+  wrapAsync(updateFilterDacTinhController)
+)
+
+//Cập nhật trạng thái (active/inactive) của một "đặc tính"
+adminRouter.put(
+  '/manage-filters/update-filter-dac-tinh-state/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<disableFilterDacTinhReqBody>(['state']),
+  disableFilterDacTinhValidator,
+  wrapAsync(disableFilterDacTinhController)
+)
+
+//Lấy chi tiết một "đặc tính" bằng ID
+adminRouter.get(
+  '/manage-filters/get-filter-dac-tinh-detail/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  getFilterDacTinhByIdValidator,
+  wrapAsync(getFilterDacTinhByIdController)
+)
+
+adminRouter.get(
+  '/manage-filters/search-filter-dac-tinh',
+  accessTokenValidator,
+  isAdminValidator,
+  searchFilterOptionNameValidator,
+  wrapAsync(searchFilterDacTinhsController)
+)
+
+//ingredient filter
+adminRouter.get(
+  '/manage-filters/get-all-filter-hsk-ingredients',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getAllFilterHskIngredientsController)
+)
+
+adminRouter.post(
+  '/manage-filters/create-new-filter-hsk-ingredient',
+  accessTokenValidator,
+  isAdminValidator,
+  createNewFilterHskIngredientValidator,
+  wrapAsync(createNewFilterHskIngredientController)
+)
+
+adminRouter.get(
+  '/manage-filters/search-filter-hsk-ingredient',
+  accessTokenValidator,
+  isAdminValidator,
+  searchFilterOptionNameValidator,
+  wrapAsync(searchFilterHskIngredientsController)
+)
+
+adminRouter.get(
+  '/manage-filters/get-filter-hsk-ingredient-detail/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  getFilterHskIngredientByIdValidator,
+  wrapAsync(getFilterHskIngredientByIdController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-ingredient/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<updateFilterHskIngredientReqBody>(['option_name', 'category_name', 'category_param']),
+  updateFilterHskIngredientValidator,
+  wrapAsync(updateFilterHskIngredientController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-ingredient-state/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<disableFilterHskIngredientReqBody>(['state']),
+  disableFilterHskIngredientValidator,
+  wrapAsync(disableFilterHskIngredientController)
+)
+
+//HSK Product Type filter
+adminRouter.get(
+  '/manage-filters/get-all-filter-hsk-product-types',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getAllFilterHskProductTypesController)
+)
+
+adminRouter.post(
+  '/manage-filters/create-new-filter-hsk-product-type',
+  accessTokenValidator,
+  isAdminValidator,
+  createNewFilterHskProductTypeValidator,
+  wrapAsync(createNewFilterHskProductTypeController)
+)
+
+adminRouter.get(
+  '/manage-filters/search-filter-hsk-product-type',
+  accessTokenValidator,
+  isAdminValidator,
+  searchFilterOptionNameValidator,
+  wrapAsync(searchFilterHskProductTypesController)
+)
+
+adminRouter.get(
+  '/manage-filters/get-filter-hsk-product-type-detail/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  getFilterHskProductTypeByIdValidator,
+  wrapAsync(getFilterHskProductTypeByIdController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-product-type/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<updateFilterHskProductTypeReqBody>(['option_name', 'description', 'category_name', 'category_param']),
+  updateFilterHskProductTypeValidator,
+  wrapAsync(updateFilterHskProductTypeController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-product-type-state/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<disableFilterHskProductTypeReqBody>(['state']),
+  disableFilterHskProductTypeValidator,
+  wrapAsync(disableFilterHskProductTypeController)
+)
+
+//HSK SIZE FILTER
+adminRouter.get(
+  '/manage-filters/get-all-filter-hsk-sizes',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getAllFilterHskSizesController)
+)
+
+adminRouter.post(
+  '/manage-filters/create-new-filter-hsk-size',
+  accessTokenValidator,
+  isAdminValidator,
+  createNewFilterHskSizeValidator,
+  wrapAsync(createNewFilterHskSizeController)
+)
+
+adminRouter.get(
+  '/manage-filters/search-filter-hsk-size',
+  accessTokenValidator,
+  isAdminValidator,
+  searchFilterOptionNameValidator,
+  wrapAsync(searchFilterHskSizesController)
+)
+
+adminRouter.get(
+  '/manage-filters/get-filter-hsk-size-detail/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  getFilterHskSizeByIdValidator,
+  wrapAsync(getFilterHskSizeByIdController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-size/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<updateFilterHskSizeReqBody>(['option_name', 'category_name', 'category_param']),
+  updateFilterHskSizeValidator,
+  wrapAsync(updateFilterHskSizeController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-size-state/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<disableFilterHskSizeReqBody>(['state']),
+  disableFilterHskSizeValidator,
+  wrapAsync(disableFilterHskSizeController)
+)
+
+//HSK SKIN TYPE FILTER
+adminRouter.get(
+  '/manage-filters/get-all-filter-hsk-skin-types',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getAllFilterHskSkinTypesController)
+)
+
+adminRouter.post(
+  '/manage-filters/create-new-filter-hsk-skin-type',
+  accessTokenValidator,
+  isAdminValidator,
+  createNewFilterHskSkinTypeValidator,
+  wrapAsync(createNewFilterHskSkinTypeController)
+)
+
+adminRouter.get(
+  '/manage-filters/search-filter-hsk-skin-type',
+  accessTokenValidator,
+  isAdminValidator,
+  searchFilterOptionNameValidator,
+  wrapAsync(searchFilterHskSkinTypesController)
+)
+
+adminRouter.get(
+  '/manage-filters/get-filter-hsk-skin-type-detail/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  getFilterHskSkinTypeByIdValidator,
+  wrapAsync(getFilterHskSkinTypeByIdController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-skin-type/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<updateFilterHskSkinTypeReqBody>(['option_name', 'category_name', 'category_param']),
+  updateFilterHskSkinTypeValidator,
+  wrapAsync(updateFilterHskSkinTypeController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-skin-type-state/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<disableFilterHskSkinTypeReqBody>(['state']),
+  disableFilterHskSkinTypeValidator,
+  wrapAsync(disableFilterHskSkinTypeController)
 )
 export default adminRouter
