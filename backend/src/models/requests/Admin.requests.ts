@@ -112,3 +112,20 @@ export interface updateFilterHskSkinTypeReqBody {
 export interface disableFilterHskSkinTypeReqBody {
   state: GenericFilterState
 }
+
+export interface createNewFilterHskUsesReqBody {
+  option_name: string
+  category_name: string
+  category_param: string
+  state?: GenericFilterState
+}
+
+export interface updateFilterHskUsesReqBody {
+  option_name?: string
+  category_name?: string
+  category_param?: string
+}
+
+export interface disableFilterHskUsesReqBody {
+  state: GenericFilterState
+}

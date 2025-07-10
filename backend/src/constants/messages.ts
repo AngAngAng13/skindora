@@ -302,7 +302,23 @@ export const ADMIN_MESSAGES = {
   FILTER_SKIN_TYPE_STATE_MUST_BE_A_STRING: 'Filter skin type state must be a string',
   CREATE_NEW_FILTER_SKIN_TYPE_SUCCESS: 'Create new filter skin type successfully',
   UPDATE_FILTER_SKIN_TYPE_SUCCESS: 'Update filter skin type successfully',
-  UPDATE_FILTER_SKIN_TYPE_STATE_SUCCESS: 'Filter skin type update state successfully'
+  UPDATE_FILTER_SKIN_TYPE_STATE_SUCCESS: 'Filter skin type update state successfully',
+  //filter uses
+  UPDATE_FILTER_USES_FAILED: 'Update filter uses failed',
+  FILTER_USES_ID_IS_INVALID: 'Filter uses ID is invalid',
+  FILTER_USES_NOT_FOUND: 'Filter uses not found',
+  FILTER_USES_OPTION_NAME_IS_REQUIRED: 'Filter uses option name is required',
+  FILTER_USES_OPTION_NAME_MUST_BE_STRING: 'Filter uses option name must be a string',
+  FILTER_USES_CATEGORY_NAME_IS_REQUIRED: 'Filter uses category name is required',
+  FILTER_USES_CATEGORY_NAME_MUST_BE_STRING: 'Filter uses category name must be a string',
+  FILTER_USES_CATEGORY_PARAM_IS_REQUIRED: 'Filter uses category param is required',
+  FILTER_USES_CATEGORY_PARAM_MUST_BE_STRING: 'Filter uses category param must be a string',
+  FILTER_USES_STATE_MUST_BE_A_STRING: 'Filter uses state must be a string',
+  CREATE_NEW_FILTER_USES_SUCCESS: 'Create new filter uses successfully',
+  UPDATE_FILTER_USES_SUCCESS: 'Update filter uses successfully',
+  UPDATE_FILTER_USES_STATE_SUCCESS: 'Filter uses update state successfully',
+  
+
 } as const
 
 export const CART_MESSAGES = {
