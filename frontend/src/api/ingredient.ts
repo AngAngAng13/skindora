@@ -8,7 +8,7 @@ export interface FetchFilterIngredientProps {
 //get-all-(filter_hsk_ingredient)
 export const fetchFilterIngredient = async (params: FetchFilterIngredientProps) => {
   return await httpClient
-    .get<API.IResponseSearch<Ingredient>>("/admin/manage-filters/create-new-filter-hsk-ingredient", {
+    .get<API.IResponseSearch<Ingredient>>("/admin/manage-filters/create-new-filter-hsk-ingredients", {
       limit: params.limit,
       page: params.page,
     })
