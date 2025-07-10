@@ -227,6 +227,17 @@ components:
       $ref: './components/schemas/DisableFilterHskUsesReqBody.yaml'
     PaginatedFilterHskUsesResponse:
       $ref: './components/schemas/PaginatedFilterHskUsesResponse.yaml'
+    # FilterHskOrigin
+    FilterHskOrigin:
+      $ref: './components/schemas/FilterHskOrigin.yaml'
+    CreateFilterHskOriginReqBody:
+      $ref: './components/schemas/CreateFilterHskOriginReqBody.yaml'
+    UpdateFilterHskOriginReqBody:
+      $ref: './components/schemas/UpdateFilterHskOriginReqBody.yaml'
+    DisableFilterHskOriginReqBody:
+      $ref: './components/schemas/DisableFilterHskOriginReqBody.yaml'
+    PaginatedFilterHskOriginResponse:
+      $ref: './components/schemas/PaginatedFilterHskOriginResponse.yaml'
 
     # --- Response Schemas ---
     AuthSuccessResponse:
