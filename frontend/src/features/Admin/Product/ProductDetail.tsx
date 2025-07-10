@@ -35,15 +35,6 @@ const ProductDetail = () => {
     }
   }, [data]);
 
-  const handleEdit = () => {
-    navigate(`/admin/manage-products/edit/${id}`);
-  };
-
-  const handleDelete = () => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${data?.productName_detail}" không?`)) {
-      console.log("Deleting product with ID:", id);
-    }
-  };
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
