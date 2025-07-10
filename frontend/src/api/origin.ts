@@ -26,7 +26,7 @@ export interface IDFilterOriginProps {
 }
 export const fetchFilterOriginByID = async (params: IDFilterOriginProps) => {
   return await httpClient
-    .get(`/admin/manage-filters/get-filter-hsk-origin-detail/${params.id}`)
+    .get<API.IResponseAPI>(`/admin/manage-filters/get-filter-hsk-origin-detail/${params.id}`)
     .then((response) => response.data);
 };
 //update-(filter_hsk_origin)

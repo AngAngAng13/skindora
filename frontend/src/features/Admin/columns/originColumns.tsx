@@ -41,12 +41,12 @@ export const ActionsCell = ({ row }: { row: { original: Origin } }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Hành động</DropdownMenuLabel>4
+          <DropdownMenuLabel>Hành động</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(_id)}>Copy mã voucher</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate(`/admin/order-detail/${_id}`)}>Xem chi tiết</DropdownMenuItem>
-          {/* <DropdownMenuItem onClick={() => navigate("")}>Chỉnh sửa</DropdownMenuItem> */}
-          <DropdownMenuItem>Cập nhật</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/origin-detail`)}>Xem chi tiết</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-origin`)}>Chỉnh sửa</DropdownMenuItem>
+
           {state === "ACTIVE" ? (
             <DropdownMenuItem
               disabled={loading}

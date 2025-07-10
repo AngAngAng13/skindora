@@ -17,7 +17,10 @@ import ManageIngredient from "@/features/Admin/Ingredient/ManageIngredient";
 import UpdateIngredient from "@/features/Admin/Ingredient/UpdateIngredient";
 import ManageOrders from "@/features/Admin/Order/ManageOrders";
 import OrderDetailPage from "@/features/Admin/Order/OrderDetailPage";
+import CreateOrigin from "@/features/Admin/Origin/CreateOrigin";
 import ManageOrigin from "@/features/Admin/Origin/ManageOrigin";
+import OriginDetail from "@/features/Admin/Origin/OriginDetail";
+import UpdateOrigin from "@/features/Admin/Origin/UpdateOrigin";
 import ManageProducts from "@/features/Admin/Product/ManageProduct";
 import ProductDetail from "@/features/Admin/Product/ProductDetail";
 import UpdateDetailProduct from "@/features/Admin/Product/UpdateDetail";
@@ -181,6 +184,18 @@ const adminRoutes: RouteObject[] = [
       {
         path: "origin",
         element: <ManageOrigin />,
+      },
+      {
+        path: ":id/origin-detail",
+        element: <OriginDetail />,
+      },
+      {
+        path: ":id/update-origin",
+        element: <UpdateOrigin />,
+      },
+      {
+        path: "create-origin",
+        element: <CreateOrigin />,
       },
     ],
   },
