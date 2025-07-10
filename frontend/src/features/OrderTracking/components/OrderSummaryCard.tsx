@@ -11,6 +11,8 @@ interface OrderSummaryCardProps {
   grandTotal: number;
   paymentMethod: string;
   requireDate: string;
+  discount?: number;
+  voucherCode?: string;
 }
 
 export const OrderSummaryCard = ({
@@ -19,6 +21,8 @@ export const OrderSummaryCard = ({
   grandTotal,
   paymentMethod,
   requireDate,
+  discount,
+  voucherCode,
 }: OrderSummaryCardProps) => (
   <Card>
     <CardHeader>
@@ -29,9 +33,15 @@ export const OrderSummaryCard = ({
         <span>Subtotal:</span>
         <span>{orderTotal.toLocaleString("vi-VN")}₫</span>
       </div>
+      {discount && discount > 0 && (
+        <div className="flex items-center justify-between text-sm font-medium text-green-600">
+          <span>Discount {voucherCode && `(${voucherCode})`}:</span>
+          <span>-{discount.toLocaleString("vi-VN")}₫</span>
+        </div>
+      )}
       <div className="flex justify-between">
         <span>Shipping:</span>
-        <span>{shippingFee.toLocaleString("vi-VN")}₫</span>
+        <span>{shippingFee > 0 ? `${shippingFee.toLocaleString("vi-VN")}₫` : "Free"}</span>
       </div>
       <Separator />
       <div className="flex justify-between text-lg font-bold">

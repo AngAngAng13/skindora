@@ -35,7 +35,7 @@ export const CancelDialog = ({
         <AlertDialogTitle>Are you sure you want to cancel this order?</AlertDialogTitle>
         <AlertDialogDescription>Please provide a reason for the cancellation.</AlertDialogDescription>
       </AlertDialogHeader>
-      <div className="py-2">
+      <div className="py-2 overflow-auto">
         <Textarea placeholder="Type your reason here..." value={reason} onChange={(e) => setReason(e.target.value)} />
       </div>
       <AlertDialogFooter>

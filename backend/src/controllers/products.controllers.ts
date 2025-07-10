@@ -200,6 +200,7 @@ export const userGetAllProductController = async (req: Request, res: Response, n
     productName_detail: 1,
     engName_detail: 1,
     filter_brand: 1,
+    quantity: 1,
     _id: 1
   }
   // const filter = {} as any

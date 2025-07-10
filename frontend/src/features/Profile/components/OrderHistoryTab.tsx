@@ -13,7 +13,8 @@ import { OrderSummaryCard } from "./OrderSummaryCard";
 export const OrderHistoryTab: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const { data: ordersResponse, isLoading, isError, error } = useMyOrdersQuery(isAuthenticated);
+  
+  const { data: ordersData, isLoading, isError, error } = useMyOrdersQuery(isAuthenticated);
 
   if (isLoading) {
     return (
@@ -39,7 +40,7 @@ export const OrderHistoryTab: React.FC = () => {
     );
   }
 
-  const orders = ordersResponse?.result || [];
+  const orders = ordersData || [];
 
   if (orders.length === 0) {
     return (
