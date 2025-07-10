@@ -1,4 +1,4 @@
-import { ArrowLeft, FilePenLine, Loader2, Trash2 } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -35,15 +35,6 @@ const ProductDetail = () => {
     }
   }, [data]);
 
-  const handleEdit = () => {
-    navigate(`/admin/manage-products/edit/${id}`);
-  };
-
-  const handleDelete = () => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${data?.productName_detail}" không?`)) {
-      console.log("Deleting product with ID:", id);
-    }
-  };
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -109,14 +100,7 @@ const ProductDetail = () => {
                   <p className="text-muted-foreground">{data.engName_detail}</p>
                 </div>
 
-                <div className="flex gap-2">
-                  <Button variant="outline" size="icon" onClick={handleEdit}>
-                    <FilePenLine className="h-4 w-4" />
-                  </Button>
-                  <Button variant="destructive" size="icon" onClick={handleDelete}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+                <div className="flex gap-2"></div>
               </div>
             </CardHeader>
             <CardContent className="flex-grow space-y-3">
@@ -125,23 +109,23 @@ const ProductDetail = () => {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">ID Sản phẩm:</span>
-                  <span className="font-mono">{data._id}</span>
+                  <span className="font-mono text-xl">{data._id}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Giá niêm yết:</span>
-                  <span className="font-semibold">{formatCurrency(data.price_on_list)}</span>
+                  <span className="text-xl font-semibold text-green-600">{formatCurrency(data.price_on_list)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">ID Thương hiệu:</span>
-                  <span className="font-mono">{data.filter_brand}</span>
+                  <span className="text-xl">{data.filter_brand}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">ID Loại da:</span>
-                  <span className="font-mono">{data.filter_hsk_skin_type}</span>
+                  <span className="text-xl">{data.filter_hsk_skin_type}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">ID Công dụng:</span>
-                  <span className="font-mono">{data.filter_hsk_uses}</span>
+                  <span className="text-xl">{data.filter_hsk_uses}</span>
                 </div>
               </div>
               <Separator />
