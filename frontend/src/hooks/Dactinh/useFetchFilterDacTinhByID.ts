@@ -5,13 +5,7 @@ import type { DacTinh } from "@/types/Filter/dactinh";
 
 export const useFetchFilterDacTinhByID = (id: string) => {
   const [loading, setLoading] = useState(false);
-  const [params, setParams] = useState({
-    limit: 10,
-    page: 1,
-    totalPages: 1,
-    totalRecords: 1,
-  });
-  const [data, setData] = useState<DacTinh>([]);
+  const [data, setData] = useState<DacTinh>();
   const fetchFilterDacTinhByID = useCallback(async () => {
     setLoading(true);
     try {
@@ -27,8 +21,6 @@ export const useFetchFilterDacTinhByID = (id: string) => {
   return {
     loading,
     data,
-    params,
-    setParams,
     fetchFilterDacTinhByID,
   };
 };

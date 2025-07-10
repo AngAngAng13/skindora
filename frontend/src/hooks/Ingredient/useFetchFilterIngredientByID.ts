@@ -6,7 +6,6 @@ import type { Ingredient } from "@/types/Filter/ingredient";
 export const useFetchIngredientByID = (id: string) => {
   const [loading, setLoading] = useState<boolean>();
   const [data, setData] = useState<Ingredient>();
-
   const fetchIngredientByID = useCallback(async () => {
     setLoading(true);
     try {

@@ -12,6 +12,7 @@ import DacTinhDetail from "@/features/Admin/Dactinh/DacTinhDetail";
 import ManageDacTinh from "@/features/Admin/Dactinh/ManageDacTinh";
 import UpdateDacTinh from "@/features/Admin/Dactinh/UpdateDacTinh";
 import CreateIngredient from "@/features/Admin/Ingredient/CreateIngredient";
+import IngredientDetail from "@/features/Admin/Ingredient/IngredientDetail";
 import ManageIngredient from "@/features/Admin/Ingredient/ManageIngredient";
 import UpdateIngredient from "@/features/Admin/Ingredient/UpdateIngredient";
 import ManageOrders from "@/features/Admin/Order/ManageOrders";
@@ -151,7 +152,7 @@ const adminRoutes: RouteObject[] = [
       },
       {
         path: ":id/ingredient-detail",
-        element: <DacTinhDetail />,
+        element: <IngredientDetail />,
       },
       {
         path: "create-ingredient",
