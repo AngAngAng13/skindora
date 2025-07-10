@@ -34,7 +34,7 @@ export const useCartPageLogic = () => {
   const { mutate: clearCart, isPending: isClearing } = useClearCartMutation();
   const updateCartMutation = useUpdateCartMutation();
   const removeFromCartMutation = useRemoveFromCartMutation();
-  const { isPending: isPreparingOrder } = usePrepareOrderMutation();
+  const {mutate:prepareOrder, isPending: isPreparingOrder } = usePrepareOrderMutation();
 
   const isMutating = updateCartMutation.isPending || removeFromCartMutation.isPending;
 
@@ -150,6 +150,19 @@ export const useCartPageLogic = () => {
     setSelectedItemIds(checked ? cartItems.map((item) => item.ProductID) : []);
   };
 
+  const handleCheckout = () => {
+    if (selectedItems.length === 0) {
+      toast.error("Please select items to checkout.");
+      return;
+    }
+    const selectedProductIDs = selectedItems.map((item) => item.ProductID);
+    prepareOrder(selectedProductIDs, {
+      onSuccess: () => {
+        
+        navigate("/checkout", { state: { appliedVoucher } });
+      },
+    });
+  };
   const isAllSelected = cartItems.length > 0 && selectedItemIds.length === cartItems.length;
 
   return {
@@ -179,5 +192,6 @@ export const useCartPageLogic = () => {
     clearVoucher,
     clearCart,
     setIsVoucherDialogOpen,
+    handleCheckout
   };
 };

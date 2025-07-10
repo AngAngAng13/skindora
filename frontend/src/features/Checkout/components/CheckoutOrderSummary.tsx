@@ -10,9 +10,17 @@ interface CheckoutOrderSummaryProps {
   discount: number;
   total: number;
   items: ProductInOrder[];
+  voucherCode?: string; 
 }
 
-export function CheckoutOrderSummary({ subtotal, shipping, discount, total, items }: CheckoutOrderSummaryProps) {
+export function CheckoutOrderSummary({
+  subtotal,
+  shipping,
+  discount,
+  total,
+  items,
+  voucherCode,
+}: CheckoutOrderSummaryProps) {
   return (
     <div className="sticky top-24 space-y-6">
       <Card>
@@ -28,9 +36,10 @@ export function CheckoutOrderSummary({ subtotal, shipping, discount, total, item
             <span>Shipping:</span>
             <span>{shipping.toLocaleString("vi-VN")}₫</span>
           </div>
+          
           {discount > 0 && (
             <div className="flex items-center justify-between text-sm font-medium text-green-600">
-              <span>Discount:</span>
+              <span>Discount {voucherCode && `(${voucherCode})`}:</span>
               <span>-{discount.toLocaleString("vi-VN")}₫</span>
             </div>
           )}

@@ -1,16 +1,9 @@
 import { LoaderCircle, Ticket, X } from "lucide-react";
-import type { Result } from "neverthrow";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { usePrepareOrderMutation } from "@/hooks/mutations/usePrepareOrderMutation";
-import type { PreparedOrderResponse } from "@/services/orders.service";
-import type { ApiError } from "@/utils";
-import type { ApiResponse } from "@/utils/axios/types";
 
 interface CartSummaryProps {
   subtotal: number;
@@ -24,6 +17,8 @@ interface CartSummaryProps {
   onOpenVoucherDialog: () => void;
   onClearVoucher?: () => void;
   onApplyManualVoucher: (code: string) => void;
+  onCheckout: () => void; 
+  isProcessingCheckout: boolean; 
 }
 
 export function CartSummary({
@@ -35,34 +30,15 @@ export function CartSummary({
   onOpenVoucherDialog,
   onClearVoucher,
   onApplyManualVoucher,
+  isProcessingCheckout,
+  onCheckout,
 }: CartSummaryProps) {
-  const navigate = useNavigate();
-  const { mutate: prepareOrder, isPending } = usePrepareOrderMutation();
-  const [manualCode, setManualCode] = useState(""); 
-
-  const handleCheckout = () => {
-    if (!selectedItems || selectedItems.length === 0) {
-      toast.error("Your cart is empty.");
-      return;
-    }
-    const selectedProductIDs = selectedItems.map((item) => item.ProductID);
-    prepareOrder(selectedProductIDs, {
-      onSuccess: (result: Result<ApiResponse<PreparedOrderResponse>, ApiError>) => {
-        if (result.isOk()) {
-          navigate("/checkout");
-        } else {
-          toast.error("Could not prepare your order", {
-            description: result.error.message || "Please try again.",
-          });
-        }
-      },
-    });
-  };
+  const [manualCode, setManualCode] = useState("");
 
   const handleApplyClick = () => {
     if (!manualCode.trim()) return;
     onApplyManualVoucher(manualCode.trim());
-    setManualCode(""); // Clear input after applying
+    setManualCode("");
   };
 
   return (
@@ -131,8 +107,13 @@ export function CartSummary({
         </div>
       </div>
 
-      <Button onClick={handleCheckout} disabled={selectedItems.length === 0 || isPending} className="w-full" size="lg">
-        {isPending ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : "Proceed to Checkout"}
+      <Button
+        onClick={onCheckout}
+        disabled={selectedItems.length === 0 || isProcessingCheckout}
+        className="w-full"
+        size="lg"
+      >
+        {isProcessingCheckout ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : "Proceed to Checkout"}
       </Button>
     </div>
   );

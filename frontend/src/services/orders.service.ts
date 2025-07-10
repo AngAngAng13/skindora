@@ -61,6 +61,7 @@ export interface CheckoutPayload {
   PaymentStatus: "UNPAID" | "PAID";
   Discount?: string;
   type: "cart" | "buy-now";
+voucherCode?: string; 
 }
 export interface MyOrderDetailProduct {
   productId: string;

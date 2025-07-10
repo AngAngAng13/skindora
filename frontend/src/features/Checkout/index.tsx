@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Frown, LoaderCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import * as z from "zod";
 
@@ -27,6 +27,8 @@ export type CheckoutFormData = z.infer<typeof checkoutFormSchema>;
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const appliedVoucher = location.state?.appliedVoucher;
   const { data: preparedOrderResponse, isLoading: isSummaryLoading, isError } = usePreparedOrderQuery(true);
 
   const { mutate: createOrderWithCOD, isPending: isSubmittingCOD } = useCheckoutMutation();
@@ -48,21 +50,42 @@ const CheckoutPage = () => {
 
     const totalAmount = orderDetails.FinalPrice || orderDetails.TotalPrice;
 
+    const basePayload: CheckoutPayload = {
+      ...formData,
+      RequireDate: formData.RequireDate.toISOString(),
+      PaymentStatus: "UNPAID",
+      type: "cart",
+    };
+
+    if (appliedVoucher) {
+      basePayload.voucherCode = appliedVoucher.code;
+    }
+
     switch (formData.PaymentMethod) {
       case "COD": {
         const payload: CheckoutPayload = {
-          ...formData,
-          RequireDate: formData.RequireDate.toISOString(),
-          type: "cart",
+          ...basePayload,
           PaymentStatus: "UNPAID",
         };
         createOrderWithCOD(payload, {
-          onSuccess: () => navigate("/profile"),
+          onSuccess: (result) => {
+            if (result.isOk()) {
+             
+              toast.success("Order Placed Successfully!", {
+                description: "Thank you for your purchase. We will process it shortly.",
+              });
+              navigate("/profile");
+            } else {
+              toast.error("Checkout Failed", {
+                description: result.error.message || "There was an issue placing your order. Please try again.",
+              });
+            }
+          },
         });
         break;
       }
+
       case "ZALOPAY": {
-        // Corrected: Replaced 'any' with the imported 'ProductInOrder' type
         const zaloPayPayload: ZaloPayPayload = {
           orderDetails: orderDetails.Products.map((p: ProductInOrder) => ({
             _id: p.ProductID,
@@ -115,12 +138,25 @@ const CheckoutPage = () => {
 
   const orderDetails = preparedOrderResponse.result;
   const shippingFee = orderDetails.TotalPrice > 500000 ? 0 : 30000;
+  const discountAmount =
+    appliedVoucher && orderDetails.TotalPrice >= Number(appliedVoucher.minOrderValue)
+      ? appliedVoucher.discountType === "PERCENTAGE"
+        ? Math.min(
+            (orderDetails.TotalPrice * Number(appliedVoucher.discountValue)) / 100,
+            Number(appliedVoucher.maxDiscountAmount) || Infinity
+          )
+        : Number(appliedVoucher.discountValue)
+      : 0;
+
+  const finalTotal = orderDetails.TotalPrice + shippingFee - discountAmount;
   const summaryDetails = {
     subtotal: orderDetails.TotalPrice,
     shipping: shippingFee,
     discount: orderDetails.DiscountAmount || 0,
-    total: (orderDetails.FinalPrice || orderDetails.TotalPrice) + shippingFee,
+    total: finalTotal > 0 ? finalTotal : 0,
+    // total: (orderDetails.FinalPrice || orderDetails.TotalPrice) + shippingFee,
     items: orderDetails.Products,
+    voucherCode: appliedVoucher?.code,
   };
 
   return (

@@ -14,6 +14,8 @@ const CartPage = () => {
     navigate,
     isCartLoading,
     isError,
+    handleCheckout,
+    isPreparingOrder,
     error,
     handleApplyManualVoucher,
     cartItems,
@@ -125,6 +127,9 @@ const CartPage = () => {
                 <CartSummary
                 onApplyManualVoucher={handleApplyManualVoucher}
                   subtotal={subtotal}
+                  isProcessingCheckout={isPreparingOrder}
+                  onCheckout={handleCheckout}
+                  
                   shipping={shipping}
                   total={total}
                   discount={appliedVoucher ? { code: appliedVoucher.code, amount: discountAmount } : undefined}
