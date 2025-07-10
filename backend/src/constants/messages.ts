@@ -331,7 +331,6 @@ export const ADMIN_MESSAGES = {
   CREATE_NEW_FILTER_ORIGIN_SUCCESS: 'Create new filter origin successfully',
   UPDATE_FILTER_ORIGIN_SUCCESS: 'Update filter origin successfully',
   UPDATE_FILTER_ORIGIN_STATE_SUCCESS: 'Filter origin update state successfully',
-
   //filter inactive cannot create new product
   FILTER_BRAND_IS_INACTIVE: 'Selected brand is currently inactive. Please choose an active one.',
   FILTER_DAC_TINH_IS_INACTIVE: 'Selected characteristic is currently inactive. Please choose an active one.',
@@ -341,7 +340,16 @@ export const ADMIN_MESSAGES = {
   FILTER_SKIN_TYPE_IS_INACTIVE: 'Selected skin type is currently inactive. Please choose an active one.',
   FILTER_USES_IS_INACTIVE: 'Selected uses is currently inactive. Please choose an active one.',
   FILTER_ORIGIN_IS_INACTIVE: 'Selected origin is currently inactive. Please choose an active one.',
-  
+  //api get all filter có state được quyền create và update product
+  GET_ACTIVE_FILTER_BRANDS_SUCCESSFULLY: 'Get active filter brands successfully',
+  GET_ACTIVE_FILTER_DAC_TINH_SUCCESSFULLY: 'Get active filter dac tinhs successfully',
+  GET_ACTIVE_FILTER_INGREDIENTS_SUCCESSFULLY: 'Get active filter ingredients successfully',
+  GET_ACTIVE_FILTER_PRODUCT_TYPES_SUCCESSFULLY: 'Get active filter product types successfully',
+  GET_ACTIVE_FILTER_SIZES_SUCCESSFULLY: 'Get active filter sizes successfully',
+  GET_ACTIVE_FILTER_SKIN_TYPES_SUCCESSFULLY: 'Get active filter skin types successfully',
+  GET_ACTIVE_FILTER_USES_SUCCESSFULLY: 'Get active filter uses successfully',
+  GET_ACTIVE_FILTER_ORIGINS_SUCCESSFULLY: 'Get active filter origins successfully',
+
 } as const
 
 export const CART_MESSAGES = {

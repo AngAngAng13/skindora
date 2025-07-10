@@ -15,6 +15,7 @@ import { Filter } from 'mongodb'
 import FilterHskOrigin from '~/models/schemas/FilterHskOrigin.schema'
 import { ADMIN_MESSAGES } from '~/constants/messages'
 import filterOriginService from '~/services/filterOrigin.services'
+import { GenericFilterState } from '~/constants/enums'
 
 export const getAllFilterHskOriginsController = async (req: Request, res: Response, next: NextFunction) => {
   await sendPaginatedResponse(res, next, databaseService.filterOrigin, req.query)
@@ -74,3 +75,15 @@ export const searchFilterHskOriginsController = async (req: Request, res: Respon
   }
   await sendPaginatedResponse(res, next, databaseService.filterOrigin, req.query, filter)
 }
+
+export const getActiveFilterHskOriginsController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await databaseService.filterOrigin.find({ state: GenericFilterState.ACTIVE }).toArray();
+    res.json({
+      message: ADMIN_MESSAGES.GET_ACTIVE_FILTER_ORIGINS_SUCCESSFULLY,
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
