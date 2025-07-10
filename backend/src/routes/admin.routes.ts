@@ -43,7 +43,7 @@ import {
   searchFilterBrandsController,
   updateFilterBrandController
 } from '~/controllers/filterBrand.controllers'
-import { disableFilterBrandReqBody, disableFilterDacTinhReqBody, disableFilterHskIngredientReqBody, disableFilterHskProductTypeReqBody, disableFilterHskSizeReqBody, disableFilterHskSkinTypeReqBody, disableFilterHskUsesReqBody, updateFilterBrandReqBody, updateFilterDacTinhReqBody, updateFilterHskIngredientReqBody, updateFilterHskProductTypeReqBody, updateFilterHskSizeReqBody, updateFilterHskSkinTypeReqBody, updateFilterHskUsesReqBody } from '~/models/requests/Admin.requests'
+import { disableFilterBrandReqBody, disableFilterDacTinhReqBody, disableFilterHskIngredientReqBody, disableFilterHskOriginReqBody, disableFilterHskProductTypeReqBody, disableFilterHskSizeReqBody, disableFilterHskSkinTypeReqBody, disableFilterHskUsesReqBody, updateFilterBrandReqBody, updateFilterDacTinhReqBody, updateFilterHskIngredientReqBody, updateFilterHskOriginReqBody, updateFilterHskProductTypeReqBody, updateFilterHskSizeReqBody, updateFilterHskSkinTypeReqBody, updateFilterHskUsesReqBody } from '~/models/requests/Admin.requests'
 import {
   disableFilterBrandValidator,
   getFilterBrandByIdValidator,
@@ -61,6 +61,8 @@ import { createNewFilterHskSkinTypeController, disableFilterHskSkinTypeControlle
 import { createNewFilterHskSkinTypeValidator, disableFilterHskSkinTypeValidator, getFilterHskSkinTypeByIdValidator, updateFilterHskSkinTypeValidator } from '~/middlewares/filterHskSkinType.middlewares'
 import { createNewFilterHskUsesController, disableFilterHskUsesController, getAllFilterHskUsesController, getFilterHskUsesByIdController, searchFilterHskUsesController, updateFilterHskUsesController } from '~/controllers/filterHskUses.controllers'
 import { createNewFilterHskUsesValidator, disableFilterHskUsesValidator, getFilterHskUsesByIdValidator, updateFilterHskUsesValidator } from '~/middlewares/filterHskUses.middlewares'
+import { createNewFilterHskOriginController, disableFilterHskOriginController, getAllFilterHskOriginsController, getFilterHskOriginByIdController, searchFilterHskOriginsController, updateFilterHskOriginController } from '~/controllers/filterHskOrigin.controllers'
+import { createNewFilterHskOriginValidator, disableFilterHskOriginValidator, getFilterHskOriginByIdValidator, updateFilterHskOriginValidator } from '~/middlewares/filterHskOrigin.middlewares'
 
 const adminRouter = Router()
 //user management
@@ -555,5 +557,55 @@ adminRouter.put(
   filterMiddleware<disableFilterHskUsesReqBody>(['state']),
   disableFilterHskUsesValidator,
   wrapAsync(disableFilterHskUsesController)
+)
+
+//HSK ORIGIN FILTER
+adminRouter.get(
+  '/manage-filters/get-all-filter-hsk-origins',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getAllFilterHskOriginsController)
+)
+
+adminRouter.post(
+  '/manage-filters/create-new-filter-hsk-origin',
+  accessTokenValidator,
+  isAdminValidator,
+  createNewFilterHskOriginValidator,
+  wrapAsync(createNewFilterHskOriginController)
+)
+
+adminRouter.get(
+  '/manage-filters/search-filter-hsk-origin',
+  accessTokenValidator,
+  isAdminValidator,
+  searchFilterOptionNameValidator,
+  wrapAsync(searchFilterHskOriginsController)
+)
+
+adminRouter.get(
+  '/manage-filters/get-filter-hsk-origin-detail/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  getFilterHskOriginByIdValidator,
+  wrapAsync(getFilterHskOriginByIdController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-origin/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<updateFilterHskOriginReqBody>(['option_name', 'category_name', 'category_param']),
+  updateFilterHskOriginValidator,
+  wrapAsync(updateFilterHskOriginController)
+)
+
+adminRouter.put(
+  '/manage-filters/update-filter-hsk-origin-state/:_id',
+  accessTokenValidator,
+  isAdminValidator,
+  filterMiddleware<disableFilterHskOriginReqBody>(['state']),
+  disableFilterHskOriginValidator,
+  wrapAsync(disableFilterHskOriginController)
 )
 export default adminRouter

@@ -29,6 +29,11 @@ export const createNewFilterHskUsesController = async (
 export const getFilterHskUsesByIdController = async (req: Request<{ _id: string }>, res: Response) => {
   const { _id } = req.params
   const result = await databaseService.filterHskUses.findOne({ _id: new ObjectId(_id) })
+  if (!result) {
+    res.status(404).json({
+      message: ADMIN_MESSAGES.FILTER_USES_NOT_FOUND
+    })
+  }
   res.json({ data: result })
 }
 

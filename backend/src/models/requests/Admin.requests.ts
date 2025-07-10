@@ -129,3 +129,20 @@ export interface updateFilterHskUsesReqBody {
 export interface disableFilterHskUsesReqBody {
   state: GenericFilterState
 }
+
+export interface createNewFilterHskOriginReqBody {
+  option_name: string
+  category_name: string
+  category_param: string
+  state?: GenericFilterState
+}
+
+export interface updateFilterHskOriginReqBody {
+  option_name?: string
+  category_name?: string
+  category_param?: string
+}
+
+export interface disableFilterHskOriginReqBody {
+  state: GenericFilterState
+}
