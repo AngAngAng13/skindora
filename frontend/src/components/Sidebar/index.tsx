@@ -1,13 +1,22 @@
 import {
   BarChart4,
+  // For "Quản lý Product Type"
+  Droplet,
+  // For "Quản lý Skin Type" (distinct from 'Leaf' used for 'loại da')
   FileX2,
+  // For "Quản lý đặc tính" (Features/Attributes)
+  FlaskConical,
   Globe2,
   Home,
+  // For "Quản lý Ingredient"
+  Layers,
   Leaf,
   ListChecks,
   Package,
   Shield,
   ShoppingCart,
+  // New icons for the updated items
+  SlidersHorizontal,
   TicketPercent,
   User2,
   UsersRound,
@@ -32,16 +41,25 @@ const items = [
   { title: "Tổng quan", url: "/admin", icon: Home },
   { title: "Hồ sơ", url: "/admin/profile", icon: User2 },
   { title: "Khách hàng", url: "/admin/customers", icon: UsersRound },
-  { title: "Quản lý sản phẩm", url: "/admin/products", icon: Package },
-  { title: "Quản lý đơn hàng", url: "/admin/orders", icon: ShoppingCart },
-  { title: "Quản lý công dụng", url: "/admin/use", icon: ListChecks },
-  { title: "Quản lý xuất xứ", url: "/admin/origin", icon: Globe2 },
-
   {
     title: "Thống kê",
     url: "/admin/statics",
     icon: BarChart4,
   },
+  {
+    title: "Quản lý voucher",
+    url: "/admin/voucher",
+    icon: TicketPercent,
+  },
+  {
+    title: "Quản lý đơn hủy",
+    url: "/admin/cancel-request",
+    icon: FileX2, // This icon is good for "cancel request"
+  },
+  { title: "Quản lý sản phẩm", url: "/admin/products", icon: Package },
+  { title: "Quản lý đơn hàng", url: "/admin/orders", icon: ShoppingCart },
+  { title: "Quản lý công dụng", url: "/admin/use", icon: ListChecks },
+  { title: "Quản lý xuất xứ", url: "/admin/origin", icon: Globe2 },
   {
     title: "Quản lý thương hiệu",
     url: "/admin/brand",
@@ -52,20 +70,26 @@ const items = [
     url: "/admin/typeskin",
     icon: Leaf,
   },
-  {
-    title: "Quản lý voucher",
-    url: "/admin/voucher",
-    icon: TicketPercent,
-  },
-  {
-    title: "Quản lý đơn hủy",
-    url: "/admin/cancel-request",
-    icon: FileX2,
-  },
+
   {
     title: "Quản lý đặc tính",
     url: "/admin/dac-tinh",
-    icon: FileX2,
+    icon: SlidersHorizontal,
+  },
+  {
+    title: "Quản lý Ingredient",
+    url: "/admin/ingredient",
+    icon: FlaskConical,
+  },
+  {
+    title: "Quản lý Product Type",
+    url: "/admin/product-type",
+    icon: Layers,
+  },
+  {
+    title: "Quản lý Skin Type",
+    url: "/admin/skin-type",
+    icon: Droplet,
   },
 ];
 const AppSidebar: React.FC = () => {

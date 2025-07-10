@@ -1,9 +1,9 @@
 import { useCallback, useState } from "react";
 
-import { fetchFilterDacTinh as fetchFilterDacTinh_api } from "@/api/dactinh";
-import type { DacTinh } from "@/types/Filter/dactinh";
+import { fetchFilterIngredient as fetchFilterIngredient_api } from "@/api/ingredient";
+import type { Ingredient } from "@/types/Filter/ingredient";
 
-export const useFetchFilterDacTinh = () => {
+export const useFetchFilterIngredient = () => {
   const [loading, setLoading] = useState(false);
   const [params, setParams] = useState({
     limit: 10,
@@ -11,12 +11,11 @@ export const useFetchFilterDacTinh = () => {
     totalPages: 1,
     totalRecords: 1,
   });
-  const [data, setData] = useState<DacTinh[]>([]);
-
-  const fetchFilterDacTinh = useCallback(async () => {
+  const [data, setData] = useState<Ingredient[]>([]);
+  const fetchFilterIngredient = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchFilterDacTinh_api({ limit: params.limit, page: params.page });
+      const response = await fetchFilterIngredient_api({ limit: params.limit, page: params.page });
       setData(response.data);
       setParams((prev) => ({
         ...prev,
@@ -35,6 +34,6 @@ export const useFetchFilterDacTinh = () => {
     data,
     params,
     setParams,
-    fetchFilterDacTinh,
+    fetchFilterIngredient,
   };
 };
