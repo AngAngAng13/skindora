@@ -55,6 +55,6 @@ export const searchByNameFilterDactinh = async (params: SearchProps) => {
 //get-active-(filter_hsk_product_type)
 export const fetchFilterActiveDacTinh = async () => {
   return await httpClient
-    .get("/admin/manage-filters/get-all-filter-hsk-product-type")
+    .get("/admin/manage-filters/get-active-filter-hsk-product-type")
     .then((response) => response.data);
 };

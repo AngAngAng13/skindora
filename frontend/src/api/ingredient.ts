@@ -54,5 +54,7 @@ export const searchByNameFilterIngredient = async (params: SearchProps) => {
 };
 //get-active-(filter_hsk_ingredient)
 export const fetchFilterActiveDacTinh = async () => {
-  return await httpClient.get("/admin/manage-filters/get-all-filter-hsk-ingredients").then((response) => response.data);
+  return await httpClient
+    .get("/admin/manage-filters/get-active-filter-hsk-ingredients")
+    .then((response) => response.data);
 };

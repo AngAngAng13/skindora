@@ -1,4 +1,4 @@
-export interface ProductType {
+export interface Size {
   _id: string;
   option_name: string;
   description: string;
