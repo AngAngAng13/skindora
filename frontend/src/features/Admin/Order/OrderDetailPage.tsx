@@ -1,33 +1,47 @@
-// Import icons từ lucide-react cho trực quan
-import { ChevronLeft, FileText, Loader2, Truck, User } from "lucide-react";
-import { useEffect } from "react";
+import { ChevronLeft, FileText, Loader2, Truck, User as UserIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+// Import useState
 import { useNavigate, useParams } from "react-router-dom";
 
+// Renamed User to UserIcon to avoid conflict
+
 import { Badge } from "@/components/ui/badge";
-// Import các component từ shadcn/ui
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+// Import Dialog components
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useFetchOrderByID } from "@/hooks/Orders/useFetchOrderByID";
 import { useUpdateStatus } from "@/hooks/Orders/useUpdateStatus";
+import type { User } from "@/types/order";
 
-// Định nghĩa kiểu cho trạng thái để Badge có màu sắc khác nhau
-// type OrderStatus = "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
+// Import User type
 
 const OrderDetailPage = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const navigate = useNavigate();
-  // Đổi tên hook cho nhất quán với việc fetch order
-  const { loading, data: order, FetchProductByID } = useFetchOrderByID(String(orderId));
+  const { loading, data, FetchProductByID } = useFetchOrderByID(String(orderId));
   const { updateStatus } = useUpdateStatus(String(orderId));
+
+  // State to control modal visibility
+  const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
+  // State to hold the customer data for the modal
+  const [selectedCustomer, setSelectedCustomer] = useState<User | null>(null);
+
   const handleUpdateStatus = () => {
     updateStatus();
     window.location.reload();
   };
+
+  const handleShowCustomerDetails = (user: User) => {
+    setSelectedCustomer(user);
+    setIsCustomerModalOpen(true);
+  };
+
   useEffect(() => {
     FetchProductByID();
-  }, []);
+  }, [FetchProductByID]);
 
-  if (loading || !order) {
+  if (loading || !data || !data.order || !data.orderDetail) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="text-muted-foreground flex items-center gap-2">
@@ -37,6 +51,9 @@ const OrderDetailPage = () => {
       </div>
     );
   }
+
+  const { order, orderDetail } = data; // Destructure order and orderDetail from data
+
   const variant =
     order.Status === "DELIVERED"
       ? "complete"
@@ -47,6 +64,7 @@ const OrderDetailPage = () => {
           : order.Status === "SHIPPING"
             ? "waiting"
             : "secondary";
+
   return (
     <div className="bg-muted/40 flex min-h-screen w-full flex-col">
       <div className="flex flex-col sm:gap-4 sm:py-4">
@@ -93,12 +111,18 @@ const OrderDetailPage = () => {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-start gap-4">
-                      <User className="text-muted-foreground h-6 w-6 flex-shrink-0" />
+                      <UserIcon className="text-muted-foreground h-6 w-6 flex-shrink-0" />
                       <div>
                         <p className="font-medium">Khách hàng</p>
-                        <p className="text-muted-foreground text-sm">ID: {order.UserID}</p>
-                        {/* Bạn có thể thêm link đến trang chi tiết user ở đây */}
-                        <Button variant="link" className="h-auto p-0 text-sm">
+                        <p className="text-muted-foreground text-sm">
+                          {order.User.first_name} {order.User.last_name} (ID: {order.User._id})
+                        </p>
+                        {/* Modified Button to trigger modal */}
+                        <Button
+                          variant="link"
+                          className="h-auto p-0 text-sm"
+                          onClick={() => handleShowCustomerDetails(order.User)}
+                        >
                           Xem chi tiết khách hàng
                         </Button>
                       </div>
@@ -112,6 +136,104 @@ const OrderDetailPage = () => {
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Order Detail Items Card */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Sản phẩm trong đơn hàng</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-4">
+                      {orderDetail.map((item: any) => (
+                        <div key={item._id} className="flex items-center gap-4">
+                          <img
+                            src={item.Products.image}
+                            alt={item.Products.name}
+                            className="aspect-square rounded-md object-cover"
+                            width={64}
+                            height={64}
+                          />
+                          <div className="grid gap-1">
+                            <p className="font-medium">{item.Products.name}</p>
+                            <p className="text-muted-foreground text-sm">
+                              Số lượng: {item.Quantity} x{" "}
+                              {parseInt(item.UnitPrice).toLocaleString("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              })}
+                            </p>
+                          </div>
+                          <div className="ml-auto font-medium">
+                            {(parseInt(item.Quantity) * parseInt(item.UnitPrice)).toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            })}
+                          </div>
+                        </div>
+                      ))}
+                      <div className="flex items-center justify-between border-t pt-4 font-semibold">
+                        <span>Tổng cộng:</span>
+                        <span>
+                          {parseInt(order.TotalPrice).toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Cancel Request Details Card (Conditional Rendering) */}
+                {order.CancelRequest && (
+                  <Card>
+                    <CardHeader className="pb-4">
+                      <CardTitle>Yêu cầu hủy đơn hàng</CardTitle>
+                      <CardDescription>
+                        Trạng thái:{" "}
+                        <Badge variant={order.CancelRequest.status === "APPROVED" ? "complete" : "danger"}>
+                          {order.CancelRequest.status}
+                        </Badge>
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-start gap-4">
+                        <FileText className="text-muted-foreground h-6 w-6 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium">Lý do hủy</p>
+                          <p className="text-muted-foreground text-sm">{order.CancelRequest.reason}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-4">
+                        <UserIcon className="text-muted-foreground h-6 w-6 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium">Được yêu cầu bởi nhân viên</p>
+                          <p className="text-muted-foreground text-sm">{order.CancelRequest.staffId}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-4">
+                        <FileText className="text-muted-foreground h-6 w-6 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium">Thời gian yêu cầu</p>
+                          <p className="text-muted-foreground text-sm">
+                            {new Date(order.CancelRequest.requestedAt).toLocaleString("vi-VN")}
+                          </p>
+                        </div>
+                      </div>
+                      {order.CancelRequest.approvedAt && (
+                        <div className="flex items-start gap-4">
+                          <FileText className="text-muted-foreground h-6 w-6 flex-shrink-0" />
+                          <div>
+                            <p className="font-medium">Thời gian chấp thuận</p>
+                            <p className="text-muted-foreground text-sm">
+                              {new Date(order.CancelRequest.approvedAt).toLocaleString("vi-VN")}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
               </div>
 
               {/* Right Sidebar - Actions */}
@@ -122,7 +244,7 @@ const OrderDetailPage = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="grid gap-2">
-                      <Button variant="outline" className="w-full justify-start" onClick={() => handleUpdateStatus()}>
+                      <Button variant="outline" className="w-full justify-start" onClick={handleUpdateStatus}>
                         <span>Thay đổi trạng thái</span>
                       </Button>
                     </div>
@@ -143,6 +265,54 @@ const OrderDetailPage = () => {
           </div>
         </main>
       </div>
+
+      {/* Customer Details Modal */}
+      <Dialog open={isCustomerModalOpen} onOpenChange={setIsCustomerModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Chi tiết khách hàng</DialogTitle>
+            <DialogDescription>Thông tin chi tiết về khách hàng này.</DialogDescription>
+          </DialogHeader>
+          {selectedCustomer && (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <span className="text-right font-medium">ID:</span>
+                <span className="col-span-3">{selectedCustomer._id}</span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <span className="text-right font-medium">Tên:</span>
+                <span className="col-span-3">
+                  {selectedCustomer.first_name} {selectedCustomer.last_name}
+                </span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <span className="text-right font-medium">Email:</span>
+                <span className="col-span-3">{selectedCustomer.email}</span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <span className="text-right font-medium">Username:</span>
+                <span className="col-span-3">{selectedCustomer.username}</span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <span className="text-right font-medium">Số điện thoại:</span>
+                <span className="col-span-3">{selectedCustomer.phone_number || "Không có"}</span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <span className="text-right font-medium">Địa chỉ:</span>
+                <span className="col-span-3">{selectedCustomer.location || "Không có"}</span>
+              </div>
+              {selectedCustomer.avatar && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <span className="text-right font-medium">Ảnh đại diện:</span>
+                  <div className="col-span-3">
+                    <img src={selectedCustomer.avatar} alt="Avatar" className="h-16 w-16 rounded-full object-cover" />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

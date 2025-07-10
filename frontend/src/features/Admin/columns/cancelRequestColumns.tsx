@@ -1,6 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,13 +25,11 @@ const formatCurrency = (amount: number | string) => {
   }).format(Number(amount));
 };
 
-// Hàm định dạng ngày
 const formatDate = (dateString: string) => {
   if (!dateString) return "N/A";
   return new Date(dateString).toLocaleDateString("vi-VN");
 };
 
-// Component chứa các hành động cho mỗi hàng
 export const ActionsCell = ({ row }: { row: { original: CancelRequest } }) => {
   const { _id, UserID } = row.original;
   const navigate = useNavigate();
@@ -39,12 +38,18 @@ export const ActionsCell = ({ row }: { row: { original: CancelRequest } }) => {
   const handleApprove = () => {
     console.log("Approving request:", _id);
     appproveCancelRequest();
+    toast.success("Thành công!", {
+      description: "Thông tin đơn hàng đã được cập nhật",
+    });
     window.location.reload();
   };
 
   const handleReject = () => {
     console.log("Rejecting request:", _id);
     rejectedCancelRequest();
+    toast.success("Thành công!", {
+      description: "Thông tin đơn hàng đã được cập nhật",
+    });
     window.location.reload();
   };
 
@@ -92,7 +97,7 @@ export const cancelRequestColumns: ColumnDef<CancelRequest>[] = [
   },
   {
     accessorKey: "_id",
-    header: "Mã Yêu Cầu",
+    header: "Mã Đơn Hàng",
     cell: ({ row }) => {
       return (
         <div>

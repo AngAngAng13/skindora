@@ -3,7 +3,6 @@ import { Edit, Eye, Loader2, Package, Star, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -495,7 +494,7 @@ export function ProductOverview() {
                           <h3 className="line-clamp-2 font-medium text-gray-900">{product.name_on_list}</h3>
                           <p className="text-sm text-gray-600">{product.engName_on_list}</p>
                           <div className="mt-2 flex flex-wrap items-center gap-2">
-                            <Badge variant="secondary">{product.filter_origin}</Badge>
+                            {/* <Badge variant="secondary">{product.filter_origin}</Badge> */}
                             <span className="text-lg font-semibold text-green-600">
                               {formatPrice(product.price_on_list)}
                             </span>

@@ -1,5 +1,5 @@
 import httpClient from "@/lib/axios";
-import type { Order } from "@/types/order";
+import type { Order, OrderAPIResult } from "@/types/order";
 
 export interface FetchListOrderProps {
   limit?: string | number;
@@ -38,7 +38,9 @@ export const updateStatusOrder = async (params: UpdateStatusOrderProps) => {
 };
 //get-order-by-id
 export const fetchOrderById = async (params: FetchOrderByIdProps) => {
-  return await httpClient.get<API.IResponseAPI<Order>>(`/orders/${params.orderId}`).then((response) => response.data);
+  return await httpClient
+    .get<API.IResponseAPI<OrderAPIResult>>(`/orders/${params.orderId}`)
+    .then((response) => response.data);
 };
 //(staff/admin) approver-order-request-cancel
 export const approveCancelRequest = async (params: ApproveCancelRequestProps) => {

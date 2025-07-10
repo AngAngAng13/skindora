@@ -141,7 +141,7 @@ const ManageCustomer: React.FC = () => {
                     <div className="p-3">
                       <DataTable
                         columns={userColumn}
-                        data={data}
+                        data={allUser}
                         filterColumnId="username"
                         filterPlaceholder="Tìm khách hàng"
                       />
