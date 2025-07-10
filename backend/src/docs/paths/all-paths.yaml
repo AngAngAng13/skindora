@@ -3170,3 +3170,187 @@
               $ref: '../components/schemas/PaginatedFilterHskOriginResponse.yaml'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-brands:
+  get:
+    tags: [Admin - Filter Brand]
+    summary: (Admin) Get All Active Filter Brands
+    description: Lấy danh sách tất cả các filter thương hiệu đang hoạt động để sử dụng trong việc tạo/cập nhật sản phẩm.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter thương hiệu.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter brands successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterBrand.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-dac-tinhs:
+  get:
+    tags: [Admin - Filter Dac Tinh]
+    summary: (Admin) Get All Active Filter Dac Tinhs
+    description: Lấy danh sách tất cả các filter đặc tính đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter đặc tính.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter dac tinhs successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterDacTinh.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-ingredients:
+  get:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Get All Active HSK Ingredient Filters
+    description: Lấy danh sách tất cả các filter thành phần đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter thành phần.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter ingredients successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskIngredient.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-product-types:
+  get:
+    tags: [Admin - Filter Product Type]
+    summary: (Admin) Get All Active HSK Product Type Filters
+    description: Lấy danh sách tất cả các filter loại sản phẩm đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter loại sản phẩm.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter product types successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskProductType.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-sizes:
+  get:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Get All Active HSK Size Filters
+    description: Lấy danh sách tất cả các filter kích thước đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter kích thước.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter sizes successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskSize.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-skin-types:
+  get:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Get All Active HSK Skin Type Filters
+    description: Lấy danh sách tất cả các filter loại da đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter loại da.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter skin types successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskSkinType.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-uses:
+  get:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Get All Active HSK Uses Filters
+    description: Lấy danh sách tất cả các filter công dụng đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter công dụng.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter uses successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskUses.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-origins:
+  get:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Get All Active HSK Origin Filters
+    description: Lấy danh sách tất cả các filter nguồn gốc đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter nguồn gốc.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter origins successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskOrigin.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
