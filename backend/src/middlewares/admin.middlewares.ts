@@ -5,7 +5,7 @@ import { ErrorWithStatus } from '~/models/Errors'
 import databaseService from '~/services/database.services'
 import { Request, Response, NextFunction } from 'express'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
-import { FilterBrandState, ProductState, Role, UserVerifyStatus } from '~/constants/enums'
+import { FilterBrandState, GenericFilterState, ProductState, Role, UserVerifyStatus } from '~/constants/enums'
 import { validate } from '~/utils/validation'
 import { ParamSchema, checkSchema } from 'express-validator'
 import filterBrandService from '~/services/filterBrand.services'
@@ -349,9 +349,24 @@ export const createNewProductValidator = validate(
             if (!value) {
               return true
             }
-            const isExist = await filterBrandService.checkBrandIdExist(value)
-            if (!isExist) {
+            // const isExist = await filterBrandService.checkBrandIdExist(value)
+            // if (!isExist) {
+            //   throw new Error(ADMIN_MESSAGES.BRAND_ID_NOT_FOUND)
+            // }
+            const brand = await databaseService.filterBrand.findOne({ _id: new ObjectId(value) })
+            if (!brand) {
               throw new Error(ADMIN_MESSAGES.BRAND_ID_NOT_FOUND)
+            }
+            //logic không thể tạo khi inactive brand
+            if (
+              [FilterBrandState.INACTIVE, FilterBrandState.SUSPENDED, FilterBrandState.DISCONTINUED].includes(
+                brand.state as FilterBrandState
+              )
+            ) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_BRAND_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -366,13 +381,17 @@ export const createNewProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterDacTinhService.checkDacTinhIdExist(value)
-            if (!isExist) {
+          options: async (value) => {
+            if (!value) return true
+            const dacTinh = await databaseService.filterDacTinh.findOne({ _id: new ObjectId(value) })
+            if (!dacTinh) {
               throw new Error(ADMIN_MESSAGES.DAC_TINH_ID_NOT_FOUND)
+            }
+            if (dacTinh.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_DAC_TINH_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -387,13 +406,17 @@ export const createNewProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterHskIngredientService.checkIngredientIdExist(value)
-            if (!isExist) {
+          options: async (value) => {
+            if (!value) return true
+            const ingredient = await databaseService.filterHskIngredient.findOne({ _id: new ObjectId(value) })
+            if (!ingredient) {
               throw new Error(ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND)
+            }
+            if (ingredient.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_INGREDIENT_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -408,13 +431,17 @@ export const createNewProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterHskProductTypeService.checkProductTypeIdExist(value)
-            if (!isExist) {
+          options: async (value) => {
+            if (!value) return true
+            const productType = await databaseService.filterHskProductType.findOne({ _id: new ObjectId(value) })
+            if (!productType) {
               throw new Error(ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND)
+            }
+            if (productType.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_PRODUCT_TYPE_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -429,13 +456,17 @@ export const createNewProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterHskSizeService.checkSizeIdExist(value)
-            if (!isExist) {
+          options: async (value) => {
+            if (!value) return true
+            const size = await databaseService.filterHskSize.findOne({ _id: new ObjectId(value) })
+            if (!size) {
               throw new Error(ADMIN_MESSAGES.SIZE_ID_NOT_FOUND)
+            }
+            if (size.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_SIZE_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -450,13 +481,17 @@ export const createNewProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterHskSkinTypeService.checkSkinTypeIdExist(value)
-            if (!isExist) {
+          options: async (value) => {
+            if (!value) return true
+            const skinType = await databaseService.filterHskSkinType.findOne({ _id: new ObjectId(value) })
+            if (!skinType) {
               throw new Error(ADMIN_MESSAGES.SKIN_TYPE_ID_NOT_FOUND)
+            }
+            if (skinType.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_SKIN_TYPE_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -471,13 +506,17 @@ export const createNewProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterHskUsesService.checkUsesIdExist(value)
-            if (!isExist) {
+          options: async (value) => {
+            if (!value) return true
+            const uses = await databaseService.filterHskUses.findOne({ _id: new ObjectId(value) })
+            if (!uses) {
               throw new Error(ADMIN_MESSAGES.USES_ID_NOT_FOUND)
+            }
+            if (uses.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_USES_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -492,13 +531,17 @@ export const createNewProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterOriginService.checkOriginIdExist(value)
-            if (!isExist) {
+          options: async (value) => {
+            if (!value) return true
+            const origin = await databaseService.filterOrigin.findOne({ _id: new ObjectId(value) })
+            if (!origin) {
               throw new Error(ADMIN_MESSAGES.ORIGIN_ID_NOT_FOUND)
+            }
+            if (origin.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_ORIGIN_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -811,13 +854,31 @@ export const updateProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterBrandService.checkBrandIdExist(value)
-            if (!isExist) {
+          // options: async (value, { req }) => {
+          //   if (!value) {
+          //     return true
+          //   }
+          //   const isExist = await filterBrandService.checkBrandIdExist(value)
+          //   if (!isExist) {
+          //     throw new Error(ADMIN_MESSAGES.BRAND_ID_NOT_FOUND)
+          //   }
+          //   return true
+          // }
+          options: async (value) => {
+            if (!value) return true
+            const brand = await databaseService.filterBrand.findOne({ _id: new ObjectId(value) })
+            if (!brand) {
               throw new Error(ADMIN_MESSAGES.BRAND_ID_NOT_FOUND)
+            }
+            if (
+              [FilterBrandState.INACTIVE, FilterBrandState.SUSPENDED, FilterBrandState.DISCONTINUED].includes(
+                brand.state as FilterBrandState
+              )
+            ) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_BRAND_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -832,13 +893,27 @@ export const updateProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterDacTinhService.checkDacTinhIdExist(value)
-            if (!isExist) {
+          // options: async (value, { req }) => {
+          //   if (!value) {
+          //     return true
+          //   }
+          //   const isExist = await filterDacTinhService.checkDacTinhIdExist(value)
+          //   if (!isExist) {
+          //     throw new Error(ADMIN_MESSAGES.DAC_TINH_ID_NOT_FOUND)
+          //   }
+          //   return true
+          // }
+          options: async (value) => {
+            if (!value) return true
+            const dacTinh = await databaseService.filterDacTinh.findOne({ _id: new ObjectId(value) })
+            if (!dacTinh) {
               throw new Error(ADMIN_MESSAGES.DAC_TINH_ID_NOT_FOUND)
+            }
+            if (dacTinh.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_DAC_TINH_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -853,13 +928,27 @@ export const updateProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterHskIngredientService.checkIngredientIdExist(value)
-            if (!isExist) {
+          // options: async (value, { req }) => {
+          //   if (!value) {
+          //     return true
+          //   }
+          //   const isExist = await filterHskIngredientService.checkIngredientIdExist(value)
+          //   if (!isExist) {
+          //     throw new Error(ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND)
+          //   }
+          //   return true
+          // }
+          options: async (value) => {
+            if (!value) return true
+            const ingredient = await databaseService.filterHskIngredient.findOne({ _id: new ObjectId(value) })
+            if (!ingredient) {
               throw new Error(ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND)
+            }
+            if (ingredient.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_INGREDIENT_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -874,13 +963,27 @@ export const updateProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterHskProductTypeService.checkProductTypeIdExist(value)
-            if (!isExist) {
+          // options: async (value, { req }) => {
+          //   if (!value) {
+          //     return true
+          //   }
+          //   const isExist = await filterHskProductTypeService.checkProductTypeIdExist(value)
+          //   if (!isExist) {
+          //     throw new Error(ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND)
+          //   }
+          //   return true
+          // }
+          options: async (value) => {
+            if (!value) return true
+            const productType = await databaseService.filterHskProductType.findOne({ _id: new ObjectId(value) })
+            if (!productType) {
               throw new Error(ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND)
+            }
+            if (productType.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_PRODUCT_TYPE_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -895,13 +998,27 @@ export const updateProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterHskSizeService.checkSizeIdExist(value)
-            if (!isExist) {
+          // options: async (value, { req }) => {
+          //   if (!value) {
+          //     return true
+          //   }
+          //   const isExist = await filterHskSizeService.checkSizeIdExist(value)
+          //   if (!isExist) {
+          //     throw new Error(ADMIN_MESSAGES.SIZE_ID_NOT_FOUND)
+          //   }
+          //   return true
+          // }
+          options: async (value) => {
+            if (!value) return true
+            const size = await databaseService.filterHskSize.findOne({ _id: new ObjectId(value) })
+            if (!size) {
               throw new Error(ADMIN_MESSAGES.SIZE_ID_NOT_FOUND)
+            }
+            if (size.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_SIZE_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -916,13 +1033,17 @@ export const updateProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterHskSkinTypeService.checkSkinTypeIdExist(value)
-            if (!isExist) {
+          options: async (value) => {
+            if (!value) return true
+            const skinType = await databaseService.filterHskSkinType.findOne({ _id: new ObjectId(value) })
+            if (!skinType) {
               throw new Error(ADMIN_MESSAGES.SKIN_TYPE_ID_NOT_FOUND)
+            }
+            if (skinType.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_SKIN_TYPE_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -937,13 +1058,27 @@ export const updateProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterHskUsesService.checkUsesIdExist(value)
-            if (!isExist) {
+          // options: async (value, { req }) => {
+          //   if (!value) {
+          //     return true
+          //   }
+          //   const isExist = await filterHskUsesService.checkUsesIdExist(value)
+          //   if (!isExist) {
+          //     throw new Error(ADMIN_MESSAGES.USES_ID_NOT_FOUND)
+          //   }
+          //   return true
+          // }
+          options: async (value) => {
+            if (!value) return true
+            const uses = await databaseService.filterHskUses.findOne({ _id: new ObjectId(value) })
+            if (!uses) {
               throw new Error(ADMIN_MESSAGES.USES_ID_NOT_FOUND)
+            }
+            if (uses.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_USES_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }
@@ -958,13 +1093,27 @@ export const updateProductValidator = validate(
           options: (value) => (value === '' ? null : value)
         },
         custom: {
-          options: async (value, { req }) => {
-            if (!value) {
-              return true
-            }
-            const isExist = await filterOriginService.checkOriginIdExist(value)
-            if (!isExist) {
+          // options: async (value, { req }) => {
+          //   if (!value) {
+          //     return true
+          //   }
+          //   const isExist = await filterOriginService.checkOriginIdExist(value)
+          //   if (!isExist) {
+          //     throw new Error(ADMIN_MESSAGES.ORIGIN_ID_NOT_FOUND)
+          //   }
+          //   return true
+          // }
+          options: async (value) => {
+            if (!value) return true
+            const origin = await databaseService.filterOrigin.findOne({ _id: new ObjectId(value) })
+            if (!origin) {
               throw new Error(ADMIN_MESSAGES.ORIGIN_ID_NOT_FOUND)
+            }
+            if (origin.state === GenericFilterState.INACTIVE) {
+              throw new ErrorWithStatus({
+                message: ADMIN_MESSAGES.FILTER_ORIGIN_IS_INACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
             }
             return true
           }

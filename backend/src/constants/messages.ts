@@ -302,7 +302,55 @@ export const ADMIN_MESSAGES = {
   FILTER_SKIN_TYPE_STATE_MUST_BE_A_STRING: 'Filter skin type state must be a string',
   CREATE_NEW_FILTER_SKIN_TYPE_SUCCESS: 'Create new filter skin type successfully',
   UPDATE_FILTER_SKIN_TYPE_SUCCESS: 'Update filter skin type successfully',
-  UPDATE_FILTER_SKIN_TYPE_STATE_SUCCESS: 'Filter skin type update state successfully'
+  UPDATE_FILTER_SKIN_TYPE_STATE_SUCCESS: 'Filter skin type update state successfully',
+  //filter uses
+  UPDATE_FILTER_USES_FAILED: 'Update filter uses failed',
+  FILTER_USES_ID_IS_INVALID: 'Filter uses ID is invalid',
+  FILTER_USES_NOT_FOUND: 'Filter uses not found',
+  FILTER_USES_OPTION_NAME_IS_REQUIRED: 'Filter uses option name is required',
+  FILTER_USES_OPTION_NAME_MUST_BE_STRING: 'Filter uses option name must be a string',
+  FILTER_USES_CATEGORY_NAME_IS_REQUIRED: 'Filter uses category name is required',
+  FILTER_USES_CATEGORY_NAME_MUST_BE_STRING: 'Filter uses category name must be a string',
+  FILTER_USES_CATEGORY_PARAM_IS_REQUIRED: 'Filter uses category param is required',
+  FILTER_USES_CATEGORY_PARAM_MUST_BE_STRING: 'Filter uses category param must be a string',
+  FILTER_USES_STATE_MUST_BE_A_STRING: 'Filter uses state must be a string',
+  CREATE_NEW_FILTER_USES_SUCCESS: 'Create new filter uses successfully',
+  UPDATE_FILTER_USES_SUCCESS: 'Update filter uses successfully',
+  UPDATE_FILTER_USES_STATE_SUCCESS: 'Filter uses update state successfully',
+  //filter origin
+  UPDATE_FILTER_ORIGIN_FAILED: 'Update filter origin failed',
+  FILTER_ORIGIN_ID_IS_INVALID: 'Filter origin ID is invalid',
+  FILTER_ORIGIN_NOT_FOUND: 'Filter origin not found',
+  FILTER_ORIGIN_OPTION_NAME_IS_REQUIRED: 'Filter origin option name is required',
+  FILTER_ORIGIN_OPTION_NAME_MUST_BE_STRING: 'Filter origin option name must be a string',
+  FILTER_ORIGIN_CATEGORY_NAME_IS_REQUIRED: 'Filter origin category name is required',
+  FILTER_ORIGIN_CATEGORY_NAME_MUST_BE_STRING: 'Filter origin category name must be a string',
+  FILTER_ORIGIN_CATEGORY_PARAM_IS_REQUIRED: 'Filter origin category param is required',
+  FILTER_ORIGIN_CATEGORY_PARAM_MUST_BE_STRING: 'Filter origin category param must be a string',
+  FILTER_ORIGIN_STATE_MUST_BE_A_STRING: 'Filter origin state must be a string',
+  CREATE_NEW_FILTER_ORIGIN_SUCCESS: 'Create new filter origin successfully',
+  UPDATE_FILTER_ORIGIN_SUCCESS: 'Update filter origin successfully',
+  UPDATE_FILTER_ORIGIN_STATE_SUCCESS: 'Filter origin update state successfully',
+  //filter inactive cannot create new product
+  FILTER_BRAND_IS_INACTIVE: 'Selected brand is currently inactive. Please choose an active one.',
+  FILTER_DAC_TINH_IS_INACTIVE: 'Selected characteristic is currently inactive. Please choose an active one.',
+  FILTER_INGREDIENT_IS_INACTIVE: 'Selected ingredient is currently inactive. Please choose an active one.',
+  FILTER_PRODUCT_TYPE_IS_INACTIVE: 'Selected product type is currently inactive. Please choose an active one.',
+  FILTER_SIZE_IS_INACTIVE: 'Selected size is currently inactive. Please choose an active one.',
+  FILTER_SKIN_TYPE_IS_INACTIVE: 'Selected skin type is currently inactive. Please choose an active one.',
+  FILTER_USES_IS_INACTIVE: 'Selected uses is currently inactive. Please choose an active one.',
+  FILTER_ORIGIN_IS_INACTIVE: 'Selected origin is currently inactive. Please choose an active one.',
+  //api get all filter có state được quyền create và update product
+  GET_ACTIVE_FILTER_BRANDS_SUCCESSFULLY: 'Get active filter brands successfully',
+  GET_ACTIVE_FILTER_DAC_TINH_SUCCESSFULLY: 'Get active filter dac tinhs successfully',
+  GET_ACTIVE_FILTER_INGREDIENTS_SUCCESSFULLY: 'Get active filter ingredients successfully',
+  GET_ACTIVE_FILTER_PRODUCT_TYPES_SUCCESSFULLY: 'Get active filter product types successfully',
+  GET_ACTIVE_FILTER_SIZES_SUCCESSFULLY: 'Get active filter sizes successfully',
+  GET_ACTIVE_FILTER_SKIN_TYPES_SUCCESSFULLY: 'Get active filter skin types successfully',
+  GET_ACTIVE_FILTER_USES_SUCCESSFULLY: 'Get active filter uses successfully',
+  GET_ACTIVE_FILTER_ORIGINS_SUCCESSFULLY: 'Get active filter origins successfully',
+  //filter is inactive cannot update
+  FILTER_IS_INACTIVE_CANNOT_UPDATE: 'Cannot update an inactive filter. Please activate it first.'
 } as const
 
 export const CART_MESSAGES = {

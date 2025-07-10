@@ -13,6 +13,7 @@ import { getLocalTime } from '~/utils/date'
 import { Filter } from 'mongodb'
 import FilterHskProductType from '~/models/schemas/FilterHskProductType.schema'
 import { ADMIN_MESSAGES } from '~/constants/messages'
+import { GenericFilterState } from '~/constants/enums'
 
 export const getAllFilterHskProductTypesController = async (req: Request, res: Response, next: NextFunction) => {
   await sendPaginatedResponse(res, next, databaseService.filterHskProductType, req.query)
@@ -72,3 +73,15 @@ export const searchFilterHskProductTypesController = async (req: Request, res: R
   }
   await sendPaginatedResponse(res, next, databaseService.filterHskProductType, req.query, filter)
 }
+
+export const getActiveFilterHskProductTypesController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await databaseService.filterHskProductType.find({ state: GenericFilterState.ACTIVE }).toArray();
+    res.json({
+      message: ADMIN_MESSAGES.GET_ACTIVE_FILTER_PRODUCT_TYPES_SUCCESSFULLY,
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
