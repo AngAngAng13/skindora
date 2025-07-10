@@ -29,7 +29,6 @@ import ManageProducts from "@/features/Admin/Product/ManageProduct";
 import ProductDetail from "@/features/Admin/Product/ProductDetail";
 import UpdateDetailProduct from "@/features/Admin/Product/UpdateDetail";
 import ProfileAdmin from "@/features/Admin/Profile/ProfileAdmin";
-import ManageSkin from "@/features/Admin/Skin/ManageSkin";
 import CreateSkinType from "@/features/Admin/SkinType/CreateSkinType";
 import ManageSkinType from "@/features/Admin/SkinType/ManageSkinType";
 import SkinTypeDetail from "@/features/Admin/SkinType/SkinTypeDetail";
