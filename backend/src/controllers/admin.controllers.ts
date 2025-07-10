@@ -31,7 +31,7 @@ export const createNewFilterBrandController = async (
   try {
     const result = await filterBrandService.createNewFilterBrand(req.body)
     res.json({
-      message: ADMIN_MESSAGES.CREATE_NEW_PRODUCT_SUCCESS,
+      message: ADMIN_MESSAGES.CREATE_NEW_FILTER_BRAND_SUCCESS,
       result
     })
   } catch (error) {

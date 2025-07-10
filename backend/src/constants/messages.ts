@@ -223,8 +223,86 @@ export const ADMIN_MESSAGES = {
   UPDATE_FILTER_BRAND_FAILED: 'Update filter brand failed',
   STATE_MUST_BE_ONE_OF_THE_FILTER_BRAND_STATE:
     'State must be one of the filter brand state: INACTIVE, ACTIVE, COLLABORATION, PARTNERSHIP, EXCLUSIVE, LIMITED_EDITION, SUSPENDED, DISCONTINUED',
-  FILTER_BRAND_DISABLE_SUCCESS: 'Filter brand disabled successfully',
-  VOUCHER_ID_INVALID: 'Please provide a valid voucher ID'
+  UPDATE_FILTER_BRAND_STATE_SUCCESS: 'Filter brand update state successfully',
+  VOUCHER_ID_INVALID: 'Please provide a valid voucher ID',
+  CREATE_NEW_FILTER_BRAND_SUCCESS: 'Create new filter brand successfully',
+  // Filter Dac Tinh
+  UPDATE_FILTER_DAC_TINH_FAILED: 'Update filter dac tinh failed',
+  FILTER_DAC_TINH_OPTION_NAME_IS_REQUIRED: 'Filter dac tinh option name is required',
+  FILTER_DAC_TINH_MUST_BE_STRING: 'Filter dac tinh must be a string',
+  FILTER_DAC_TINH_CATEGORY_NAME_IS_REQUIRED: 'Filter dac tinh category name is required',
+  FILTER_DAC_TINH_CATEGORY_NAME_MUST_BE_STRING: 'Filter dac tinh category name must be a string',
+  FILTER_DAC_TINH_CATEGORY_PARAM_MUST_BE_STRING: 'Filter dac tinh category param must be a string',
+  FILTER_DAC_TINH_STATE_MUST_BE_A_STRING: 'Filter dac tinh state must be a string',
+  FILTER_DAC_TINH_OPTION_NAME_MUST_BE_STRING: 'Filter dac tinh option name must be a string',
+  FILTER_DAC_TINH_CATEGORY_PARAM_IS_REQUIRED: 'Filter dac tinh category param is required',
+  FILTER_DAC_TINH_OPTION_NAME_MUST_BE_A_STRING: 'Filter dac tinh option name must be a string',
+  FILTER_DAC_TINH_CATEGORY_NAME_MUST_BE_A_STRING: 'Filter dac tinh category name must be a string',
+  FILTER_DAC_TINH_CATEGORY_PARAM_MUST_BE_A_STRING: 'Filter dac tinh category param must be a string',
+  FILTER_DAC_TINH_ID_IS_INVALID: 'Filter dac tinh ID is invalid',
+  CREATE_NEW_FILTER_DAC_TINH_SUCCESS: 'Create new filter dac tinh successfully',
+  FILTER_DAC_TINH_NOT_FOUND: 'Filter dac tinh not found',
+  UPDATE_FILTER_DAC_TINH_SUCCESS: 'Update filter dac tinh successfully',
+  UPDATE_FILTER_DAC_TINH_STATE_SUCCESS: 'Filter dac tinh update state successfully',
+  //option_name search
+  OPTION_NAME_SEARCH_MUST_BE_STRING: 'Option name search must be a string',
+  //ingredient
+  UPDATE_FILTER_INGREDIENT_FAILED: 'Update filter ingredient failed',
+  FILTER_INGREDIENT_OPTION_NAME_IS_REQUIRED: 'Filter ingredient option name is required',
+  FILTER_INGREDIENT_OPTION_NAME_MUST_BE_STRING: 'Filter ingredient option name must be a string',
+  FILTER_INGREDIENT_CATEGORY_NAME_IS_REQUIRED: 'Filter ingredient category name is required',
+  FILTER_INGREDIENT_CATEGORY_NAME_MUST_BE_STRING: 'Filter ingredient category name must be a string',
+  FILTER_INGREDIENT_CATEGORY_PARAM_IS_REQUIRED: 'Filter ingredient category param is required',
+  FILTER_INGREDIENT_CATEGORY_PARAM_MUST_BE_STRING: 'Filter ingredient category param must be a string',
+  FILTER_INGREDIENT_STATE_MUST_BE_A_STRING: 'Filter ingredient state must be a string',
+  FILTER_INGREDIENT_ID_IS_INVALID: 'Filter ingredient ID is invalid',
+  CREATE_NEW_FILTER_INGREDIENT_SUCCESS: 'Create new filter ingredient successfully',
+  FILTER_INGREDIENT_NOT_FOUND: 'Filter ingredient not found',
+  UPDATE_FILTER_INGREDIENT_SUCCESS: 'Update filter ingredient successfully',
+  UPDATE_FILTER_INGREDIENT_STATE_SUCCESS: 'Filter ingredient update state successfully',
+  //product type
+  UPDATE_FILTER_PRODUCT_TYPE_FAILED: 'Update filter product type failed',
+  FILTER_PRODUCT_TYPE_OPTION_NAME_IS_REQUIRED: 'Filter product type option name is required',
+  FILTER_PRODUCT_TYPE_OPTION_NAME_MUST_BE_STRING: 'Filter product type option name must be a string',
+  FILTER_PRODUCT_TYPE_CATEGORY_NAME_IS_REQUIRED: 'Filter product type category name is required',
+  FILTER_PRODUCT_TYPE_CATEGORY_NAME_MUST_BE_STRING: 'Filter product type category name must be a string',
+  FILTER_PRODUCT_TYPE_CATEGORY_PARAM_IS_REQUIRED: 'Filter product type category param is required',
+  FILTER_PRODUCT_TYPE_CATEGORY_PARAM_MUST_BE_STRING: 'Filter product type category param must be a string',
+  FILTER_PRODUCT_TYPE_STATE_MUST_BE_A_STRING: 'Filter product type state must be a string',
+  FILTER_PRODUCT_TYPE_DESCRIPTION_MUST_BE_STRING: 'Filter product type description must be a string',
+  FILTER_PRODUCT_TYPE_ID_IS_INVALID: 'Filter product type ID is invalid',
+  CREATE_NEW_FILTER_PRODUCT_TYPE_SUCCESS: 'Create new filter product type successfully',
+  FILTER_PRODUCT_TYPE_NOT_FOUND: 'Filter product type not found',
+  UPDATE_FILTER_PRODUCT_TYPE_SUCCESS: 'Update filter product type successfully',
+  UPDATE_FILTER_PRODUCT_TYPE_STATE_SUCCESS: 'Filter product type update state successfully',
+  //HSK Size
+  UPDATE_FILTER_SIZE_FAILED: 'Update filter size failed',
+  FILTER_SIZE_ID_IS_INVALID: 'Filter size ID is invalid',
+  FILTER_SIZE_NOT_FOUND: 'Filter size not found',
+  FILTER_SIZE_OPTION_NAME_IS_REQUIRED: 'Filter size option name is required',
+  FILTER_SIZE_OPTION_NAME_MUST_BE_STRING: 'Filter size option name must be a string',
+  FILTER_SIZE_CATEGORY_NAME_IS_REQUIRED: 'Filter size category name is required',
+  FILTER_SIZE_CATEGORY_NAME_MUST_BE_STRING: 'Filter size category name must be a string',
+  FILTER_SIZE_CATEGORY_PARAM_IS_REQUIRED: 'Filter size category param is required',
+  FILTER_SIZE_CATEGORY_PARAM_MUST_BE_STRING: 'Filter size category param must be a string',
+  FILTER_SIZE_STATE_MUST_BE_A_STRING: 'Filter size state must be a string',
+  CREATE_NEW_FILTER_SIZE_SUCCESS: 'Create new filter size successfully',
+  UPDATE_FILTER_SIZE_SUCCESS: 'Update filter size successfully',
+  UPDATE_FILTER_SIZE_STATE_SUCCESS: 'Filter size update state successfully',
+  //filter skin type
+  UPDATE_FILTER_SKIN_TYPE_FAILED: 'Update filter skin type failed',
+  FILTER_SKIN_TYPE_ID_IS_INVALID: 'Filter skin type ID is invalid',
+  FILTER_SKIN_TYPE_NOT_FOUND: 'Filter skin type not found',
+  FILTER_SKIN_TYPE_OPTION_NAME_IS_REQUIRED: 'Filter skin type option name is required',
+  FILTER_SKIN_TYPE_OPTION_NAME_MUST_BE_STRING: 'Filter skin type option name must be a string',
+  FILTER_SKIN_TYPE_CATEGORY_NAME_IS_REQUIRED: 'Filter skin type category name is required',
+  FILTER_SKIN_TYPE_CATEGORY_NAME_MUST_BE_STRING: 'Filter skin type category name must be a string',
+  FILTER_SKIN_TYPE_CATEGORY_PARAM_IS_REQUIRED: 'Filter skin type category param is required',
+  FILTER_SKIN_TYPE_CATEGORY_PARAM_MUST_BE_STRING: 'Filter skin type category param must be a string',
+  FILTER_SKIN_TYPE_STATE_MUST_BE_A_STRING: 'Filter skin type state must be a string',
+  CREATE_NEW_FILTER_SKIN_TYPE_SUCCESS: 'Create new filter skin type successfully',
+  UPDATE_FILTER_SKIN_TYPE_SUCCESS: 'Update filter skin type successfully',
+  UPDATE_FILTER_SKIN_TYPE_STATE_SUCCESS: 'Filter skin type update state successfully'
 } as const
 
 export const CART_MESSAGES = {
@@ -296,7 +374,8 @@ export const ORDER_MESSAGES = {
   INVALID_FILTER_ID: 'FilterId must be a valid ObjectId',
   UNABLE_TO_CANCEL: 'This order cannot be cancelled',
   ORDER_CANCELLED: 'Order has been cancelled',
-  INVALID_CANCELLED_STATUS: 'Invalid Cancelled status'
+  INVALID_CANCELLED_STATUS: 'Invalid Cancelled status',
+  CANCEL_REQUESTING: 'This order is requesting for cancellation, cannot update to next status'
 } as const
 
 export const VOUCHER_MESSAGES = {

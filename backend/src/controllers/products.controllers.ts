@@ -133,21 +133,56 @@ export const removeReviewController = async (req: Request, res: Response) => {
 }
 
 export const getReviewController = async (req: Request, res: Response, next: NextFunction) => {
-  const {productId} = req.params
-  logger.info(productId)
-  const filter: Filter<Review> = {
-    productID : new ObjectId(productId),
+  try {
+    const page = parseInt(req.query.page as string) || 1
+    const limit = parseInt(req.query.limit as string) || 10
+    const skip = (page - 1) * limit
 
-  }
-  if (req.query.rating) {
-    const rating = parseInt(req.query.rating as string, 10)
-    if (!isNaN(rating)) {
-      filter.rating = rating
+    const filter: Filter<Review> = {
+      isDeleted: false,
+      productID: new ObjectId(req.params.productId)
     }
-  }
 
-  filter.isDeleted = false
-  await sendPaginatedResponse(res, next, databaseService.reviews, req.query, filter)
+    if (req.query.rating) {
+      const rating = parseInt(req.query.rating as string, 10)
+      if (!isNaN(rating)) {
+        filter.rating = rating
+      }
+    }
+
+    const [totalRecords, paginatedReviews, allReviews] = await Promise.all([
+      databaseService.reviews.countDocuments(filter),
+      databaseService.reviews.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).toArray(),
+      databaseService.reviews.find({ productID: new ObjectId(req.params.productId), isDeleted: false }).toArray()
+    ])
+
+    const totalPages = Math.ceil(totalRecords / limit)
+
+    const total = allReviews.length
+    const average = total > 0 ? allReviews.reduce((sum, r) => sum + r.rating, 0) / total : 0
+    const grouped = allReviews.reduce(
+      (acc, r) => {
+        acc[r.rating] = (acc[r.rating] || 0) + 1
+        return acc
+      },
+      {} as Record<number, number>
+    )
+
+    res.status(200).json({
+      data: paginatedReviews,
+      pagination: {
+        currentPage: page,
+        limit,
+        totalPages,
+        totalRecords
+      },
+      total,
+      average,
+      grouped
+    })
+  } catch (err) {
+    next(err)
+  }
 }
 
 export const getAllProductController = async (req: Request, res: Response, next: NextFunction) => {
