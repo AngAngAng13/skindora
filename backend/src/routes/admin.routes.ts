@@ -2,6 +2,9 @@ import { Router } from 'express'
 import {
   createNewFilterBrandController,
   getAllUserController,
+  getLowStockProductsController,
+  getOnSaleProductsController,
+  getOutOfStockProductsController,
   getUserDetailController,
   updateProductController,
   updateProductStateController,
@@ -10,7 +13,8 @@ import {
 import {
   createNewProductController,
   getAllProductController,
-  getProductDetailController
+  getProductDetailController,
+  getProductStatsController
 } from '~/controllers/products.controllers'
 import {
   createNewFilterBrandValidator,
@@ -140,11 +144,40 @@ adminRouter.put(
 
 //product management
 adminRouter.get(
+  '/manage-products/stats',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getProductStatsController)
+)
+adminRouter.get(
   '/manage-products/get-all',
   accessTokenValidator,
   isAdminValidator,
   paginationValidator,
   wrapAsync(getAllProductController)
+)
+adminRouter.get(
+  '/manage-products/on-sale',
+  accessTokenValidator,
+  isAdminValidator,
+  paginationValidator,
+  wrapAsync(getOnSaleProductsController)
+)
+
+adminRouter.get(
+  '/manage-products/low-stock',
+  accessTokenValidator,
+  isAdminValidator,
+  paginationValidator,
+  wrapAsync(getLowStockProductsController)
+)
+
+adminRouter.get(
+  '/manage-products/out-of-stock',
+  accessTokenValidator,
+  isAdminValidator,
+  paginationValidator,
+  wrapAsync(getOutOfStockProductsController)
 )
 adminRouter.post(
   '/manage-products/create-new-product',

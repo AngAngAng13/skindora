@@ -1,10 +1,13 @@
 import { Request, Response, NextFunction } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
+import { Filter } from 'mongodb'
+import { ProductState } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ADMIN_MESSAGES } from '~/constants/messages'
 import { createNewFilterBrandReqBody, UpdateUserStateReqBody } from '~/models/requests/Admin.requests'
 import { updateProductReqBody, UpdateProductStateReqBody } from '~/models/requests/Product.requests'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
+import Product from '~/models/schemas/Product.schema'
 import databaseService from '~/services/database.services'
 import filterBrandService from '~/services/filterBrand.services'
 import productService from '~/services/product.services'
@@ -113,3 +116,30 @@ export const updateProductStateController = async (
     next(error)
   }
 }
+
+export const getOnSaleProductsController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const filter: Filter<Product> = { state: ProductState.ACTIVE };
+    await sendPaginatedResponse(res, next, databaseService.products, req.query, filter);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getLowStockProductsController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const filter: Filter<Product> = { quantity: { $gt: 0, $lte: 10 } };
+    await sendPaginatedResponse(res, next, databaseService.products, req.query, filter);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getOutOfStockProductsController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const filter: Filter<Product> = { quantity: 0 };
+    await sendPaginatedResponse(res, next, databaseService.products, req.query, filter);
+  } catch (error) {
+    next(error);
+  }
+};

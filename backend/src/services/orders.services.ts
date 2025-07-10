@@ -313,8 +313,8 @@ class OrdersService {
     const orderDetails = await this.getOrderDetailByOrderId(order._id!.toString())
     const enrichedDetails = await this.enrichOrderDetailsWithProducts(orderDetails)
     const user = await databaseService.users.findOne(
-      { _id: order.UserID }, 
-      { 
+      { _id: order.UserID },
+      {
         projection: {
           _id: 1,
           first_name: 1,
@@ -324,9 +324,10 @@ class OrdersService {
           username: 1,
           phone_number: 1,
           avatar: 1
-        } 
-      })
-      const {_id, UserID, ...restOrder} = order
+        }
+      }
+    )
+    const { _id, UserID, ...restOrder } = order
 
     return {
       order: {
@@ -611,6 +612,31 @@ class OrdersService {
     })
 
     return dailyResult
+  }
+
+  async countOrder() {
+    const orders = await databaseService.orders
+      .aggregate([
+        {
+          $group: {
+            _id: '$Status',
+            count: { $sum: 1 }
+          }
+        }
+      ])
+      .toArray()
+
+    const countsByStatus = orders.reduce((acc, cur) => {
+      acc[cur._id] = cur.count
+      return acc
+    }, {})
+
+    const total = orders.reduce((sum, cur) => sum + cur.count, 0)
+
+    return {
+      total,
+      statusCounts: countsByStatus
+    }
   }
 
   async getOrderDetailByOrderId(id: string): Promise<Array<OrderDetail>> {

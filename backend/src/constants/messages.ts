@@ -350,7 +350,11 @@ export const ADMIN_MESSAGES = {
   GET_ACTIVE_FILTER_USES_SUCCESSFULLY: 'Get active filter uses successfully',
   GET_ACTIVE_FILTER_ORIGINS_SUCCESSFULLY: 'Get active filter origins successfully',
   //filter is inactive cannot update
-  FILTER_IS_INACTIVE_CANNOT_UPDATE: 'Cannot update an inactive filter. Please activate it first.'
+  FILTER_IS_INACTIVE_CANNOT_UPDATE: 'Cannot update an inactive filter. Please activate it first.',
+  GET_PRODUCT_STATS_SUCCESS: 'Get product statistics successfully',
+  GET_ON_SALE_PRODUCTS_SUCCESS: 'Get on-sale products successfully',
+  GET_LOW_STOCK_PRODUCTS_SUCCESS: 'Get low-stock products successfully',
+  GET_OUT_OF_STOCK_PRODUCTS_SUCCESS: 'Get out-of-stock products successfully'
 } as const
 
 export const CART_MESSAGES = {
@@ -423,7 +427,9 @@ export const ORDER_MESSAGES = {
   UNABLE_TO_CANCEL: 'This order cannot be cancelled',
   ORDER_CANCELLED: 'Order has been cancelled',
   INVALID_CANCELLED_STATUS: 'Invalid Cancelled status',
-  CANCEL_REQUESTING: 'This order is requesting for cancellation, cannot update to next status'
+  CANCEL_REQUESTING: 'This order is requesting for cancellation, cannot update to next status',
+  COUNT_SUCCESS: 'Get number of orders successfully',
+  COUNT_FAIL: 'Fail to Get number of orders'
 } as const
 
 export const VOUCHER_MESSAGES = {
