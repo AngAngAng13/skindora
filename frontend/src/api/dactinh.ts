@@ -21,22 +21,22 @@ export const createFilterDacTinh = async (payload: DacTinh) => {
     .then((response) => response.data);
 };
 //get-all-(filter_hsk_dactinh)
-export interface UpdateFilterDacTinhProps {
+export interface IDFilterDacTinhProps {
   id: string;
 }
-export const fetchFilterDacTinhByID = async (params: UpdateFilterDacTinhProps) => {
+export const fetchFilterDacTinhByID = async (params: IDFilterDacTinhProps) => {
   return await httpClient
     .get(`/admin/manage-filters/get-filter-dac-tinh-detail/${params.id}`)
     .then((response) => response.data);
 };
 //update-(filter_hsk_dactinh)
-export const updateFilterDactinh = async (params: UpdateFilterDacTinhProps, payload: DacTinh) => {
+export const updateFilterDactinh = async (params: IDFilterDacTinhProps, payload: DacTinh) => {
   return await httpClient
     .put(`/admin/manage-filters/update-filter-dac-tinh/${params.id}`, payload)
     .then((response) => response.data);
 };
 //update-status-(filter_hsk_dactinh)
-export const updateStatusFilterDactinh = async (params: UpdateFilterDacTinhProps, payload: { state: string }) => {
+export const updateStatusFilterDactinh = async (params: IDFilterDacTinhProps, payload: { state: string }) => {
   return await httpClient
     .put(`/admin/manage-filters/update-filter-dac-tinh-state/${params.id}`, payload)
     .then((response) => response.data);

@@ -6,7 +6,7 @@ export interface FetchFilterProductTypeProps {
   page?: number | string;
 }
 //get-all-(filter_hsk_product_type)
-export const fetchFilterDacTinh = async (params: FetchFilterProductTypeProps) => {
+export const fetchFilterProductType = async (params: FetchFilterProductTypeProps) => {
   return await httpClient
     .get<API.IResponseSearch<ProductType>>("/admin/manage-filters/get-all-filter-hsk-product-types", {
       limit: params.limit,
@@ -30,13 +30,13 @@ export const fetchFilterProductTypeByID = async (params: UpdateFilterDacTinhProp
     .then((response) => response.data);
 };
 //update-(filter_hsk_product_type)
-export const updateFilterDactinh = async (params: UpdateFilterDacTinhProps, payload: ProductType) => {
+export const updateFilterProductType = async (params: UpdateFilterDacTinhProps, payload: ProductType) => {
   return await httpClient
     .put(`/admin/manage-filters/update-filter-hsk-product-type/${params.id}`, payload)
     .then((response) => response.data);
 };
 //update-status-(filter_hsk_product_type)
-export const updateStatusFilterDactinh = async (params: UpdateFilterDacTinhProps, payload: { state: string }) => {
+export const updateStatusFilterProductType = async (params: UpdateFilterDacTinhProps, payload: { state: string }) => {
   return await httpClient
     .put(`/admin/manage-filters/update-filter-hsk-product-type-state/${params.id}`, payload)
     .then((response) => response.data);
@@ -45,7 +45,7 @@ export const updateStatusFilterDactinh = async (params: UpdateFilterDacTinhProps
 export interface SearchProps {
   option_name: string;
 }
-export const searchByNameFilterDactinh = async (params: SearchProps) => {
+export const searchByNameFilterProductType = async (params: SearchProps) => {
   return await httpClient
     .get("/admin/manage-filters/search-filter-hsk-product-type", {
       option_name: params.option_name,
@@ -53,7 +53,7 @@ export const searchByNameFilterDactinh = async (params: SearchProps) => {
     .then((response) => response.data);
 };
 //get-active-(filter_hsk_product_type)
-export const fetchFilterActiveDacTinh = async () => {
+export const fetchFilterActiveProductType = async () => {
   return await httpClient
     .get("/admin/manage-filters/get-active-filter-hsk-product-type")
     .then((response) => response.data);
