@@ -2866,3 +2866,155 @@
               $ref: '../components/schemas/PaginatedFilterHskSkinTypeResponse.yaml'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/create-new-filter-hsk-uses:
+  post:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Create a New HSK Uses Filter
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateFilterHskUsesReqBody.yaml'
+    responses:
+      '200':
+        description: Filter công dụng được tạo thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/get-all-filter-hsk-uses:
+  get:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Get All HSK Uses Filters
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: Trả về danh sách các filter công dụng.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskUsesResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-filter-hsk-uses-detail/{_id}:
+  get:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Get HSK Uses Filter by ID
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Chi tiết filter công dụng.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskUses.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-uses/{_id}:
+  put:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Update an HSK Uses Filter
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterHskUsesReqBody.yaml'
+    responses:
+      '200':
+        description: Filter công dụng được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskUses.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-uses-state/{_id}:
+  put:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Update HSK Uses Filter State
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterHskUsesReqBody.yaml'
+    responses:
+      '200':
+        description: Trạng thái filter công dụng được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskUses.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/search-filter-hsk-uses:
+  get:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Search HSK Uses Filters by Name
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa tìm kiếm trong tên công dụng.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter công dụng phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskUsesResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
