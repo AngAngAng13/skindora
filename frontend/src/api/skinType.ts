@@ -6,7 +6,7 @@ export interface FetchFilterSizeProps {
   page?: number | string;
 }
 //get-all-(filter_hsk_skin_type)
-export const fetchFilterSize = async (params: FetchFilterSizeProps) => {
+export const fetchFilterSkin = async (params: FetchFilterSizeProps) => {
   return await httpClient
     .get<API.IResponseSearch<SkinType>>("/admin/manage-filters/get-all-filter-hsk-skin-types", {
       limit: params.limit,
@@ -15,7 +15,7 @@ export const fetchFilterSize = async (params: FetchFilterSizeProps) => {
     .then((response) => response.data);
 };
 //create-(filter_hsk_skin_type)
-export const createFilterSize = async (payload: SkinType) => {
+export const createFilterSkin = async (payload: SkinType) => {
   return await httpClient
     .post("/admin/manage-filters/create-new-filter-hsk-skin-type", payload)
     .then((response) => response.data);
@@ -24,19 +24,19 @@ export const createFilterSize = async (payload: SkinType) => {
 export interface IDFilterSkinTypeProps {
   id: string;
 }
-export const fetchFilterSizeByID = async (params: IDFilterSkinTypeProps) => {
+export const fetchFilterSkinByID = async (params: IDFilterSkinTypeProps) => {
   return await httpClient
-    .get(`/admin/manage-filters/get-filter-hsk-skin-type/${params.id}`)
+    .get<API.IResponseAPI>(`/admin/manage-filters/get-filter-hsk-skin-type/${params.id}`)
     .then((response) => response.data);
 };
 //update-(filter_hsk_skin_type)
-export const updateFilterSize = async (params: IDFilterSkinTypeProps, payload: SkinType) => {
+export const updateFilterSkin = async (params: IDFilterSkinTypeProps, payload: SkinType) => {
   return await httpClient
     .put(`/admin/manage-filters/update-filter-hsk-skin-type/${params.id}`, payload)
     .then((response) => response.data);
 };
 //update-status-(filter_hsk_skin_type)
-export const updateStatusFilterSize = async (params: IDFilterSkinTypeProps, payload: { state: string }) => {
+export const updateStatusFilterSkin = async (params: IDFilterSkinTypeProps, payload: { state: string }) => {
   return await httpClient
     .put(`/admin/manage-filters/update-filter-hsk-skin-type/${params.id}`, payload)
     .then((response) => response.data);
@@ -45,7 +45,7 @@ export const updateStatusFilterSize = async (params: IDFilterSkinTypeProps, payl
 export interface SearchProps {
   option_name: string;
 }
-export const searchByNameFilterSize = async (params: SearchProps) => {
+export const searchByNameFilterSkin = async (params: SearchProps) => {
   return await httpClient
     .get("/admin/manage-filters/search-filter-hsk-skin-type", {
       option_name: params.option_name,
@@ -53,7 +53,7 @@ export const searchByNameFilterSize = async (params: SearchProps) => {
     .then((response) => response.data);
 };
 //get-active-(filter_hsk_size)
-export const fetchFilterActiveSize = async () => {
+export const fetchFilterActiveSkin = async () => {
   return await httpClient
     .get("/admin/manage-filters/get-active-filter-hsk-skin-type")
     .then((response) => response.data);
