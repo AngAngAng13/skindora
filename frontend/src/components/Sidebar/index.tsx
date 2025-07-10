@@ -58,7 +58,7 @@ const items = [
   },
   { title: "Quản lý sản phẩm", url: "/admin/products", icon: Package },
   { title: "Quản lý đơn hàng", url: "/admin/orders", icon: ShoppingCart },
-  { title: "Quản lý công dụng", url: "/admin/use", icon: ListChecks },
+  { title: "Quản lý công dụng", url: "/admin/uses", icon: ListChecks },
   { title: "Quản lý xuất xứ", url: "/admin/origin", icon: Globe2 },
   {
     title: "Quản lý thương hiệu",

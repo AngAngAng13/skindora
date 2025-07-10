@@ -31,7 +31,10 @@ import ManageSkinType from "@/features/Admin/SkinType/ManageSkinType";
 import SkinTypeDetail from "@/features/Admin/SkinType/SkinTypeDetail";
 import UpdateSkinType from "@/features/Admin/SkinType/UpdateSkinType";
 import ManageStatics from "@/features/Admin/Statics/ManageStatics";
-import ManageUse from "@/features/Admin/Uses/ManageUse";
+import CreateUses from "@/features/Admin/Uses/CreateUses";
+import ManageUses from "@/features/Admin/Uses/ManageUses";
+import UpdateUses from "@/features/Admin/Uses/UpdateUses";
+import UsesDetail from "@/features/Admin/Uses/UsesDetail";
 import AddVoucherPage from "@/features/Admin/Voucher/AddVoucherPage";
 import ManageVoucher from "@/features/Admin/Voucher/ManageVoucher";
 import UpdateVoucher from "@/features/Admin/Voucher/UpdateVoucher";
@@ -77,10 +80,7 @@ const adminRoutes: RouteObject[] = [
         path: "typeskin",
         element: <ManageSkin />,
       },
-      {
-        path: "use",
-        element: <ManageUse />,
-      },
+
       {
         path: "origin",
         element: <ManageOrigin />,
@@ -196,6 +196,30 @@ const adminRoutes: RouteObject[] = [
       {
         path: "create-origin",
         element: <CreateOrigin />,
+      },
+      {
+        path: "uses",
+        element: <ManageUses />,
+      },
+      {
+        path: "create-uses",
+        element: <CreateUses />,
+      },
+      {
+        path: ":id/update-uses",
+        element: <CreateUses />,
+      },
+      {
+        path: ":id/uses-detail",
+        element: <UsesDetail />,
+      },
+      {
+        path: ":id/uses-detail",
+        element: <UsesDetail />,
+      },
+      {
+        path: ":id/update-uses",
+        element: <UpdateUses />,
       },
     ],
   },

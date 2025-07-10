@@ -1,3 +1,4 @@
+// src/features/Admin/columns/usesColumn.tsx
 import { Checkbox } from "@radix-ui/react-checkbox";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
@@ -15,21 +16,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUpdateStatusIngredient } from "@/hooks/Ingredient/useUpdateStatusIngredient";
-import type { Ingredient } from "@/types/Filter/ingredient";
+import { useUpdateStatusFilterUses } from "@/hooks/Uses/useUpdateStatusUses";
+import { type Uses } from "@/types/Filter/uses";
 
-export const ActionsCell = ({ row }: { row: { original: Ingredient } }) => {
+// Ensure this path is correct
+export const ActionsCell = ({ row }: { row: { original: Uses } }) => {
   const { _id, option_name, state } = row.original;
   const navigate = useNavigate();
   const payload = {
     state: state === "ACTIVE" ? "INACTIVE" : "ACTIVE",
   };
-  const { updateStateIngredient, loading } = useUpdateStatusIngredient({
+  const { updateStateFilterUses, loading } = useUpdateStatusFilterUses({
     id: String(_id),
     payload,
   });
   const handleUpdateStatus = () => {
-    updateStateIngredient();
+    updateStateFilterUses();
     window.location.reload();
   };
 
@@ -46,8 +48,8 @@ export const ActionsCell = ({ row }: { row: { original: Ingredient } }) => {
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>Copy tên hãng</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/ingredient-detail`)}>Xem chi tiết</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-ingredient`)}>Chỉnh sửa</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/uses-detail`)}>Xem chi tiết</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-uses`)}>Chỉnh sửa</DropdownMenuItem>
           {state === "ACTIVE" ? (
             <DropdownMenuItem
               disabled={loading}
@@ -70,7 +72,7 @@ export const ActionsCell = ({ row }: { row: { original: Ingredient } }) => {
     </div>
   );
 };
-export const ingredientColumn: ColumnDef<Ingredient>[] = [
+export const usesColumn: ColumnDef<Uses>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -105,12 +107,13 @@ export const ingredientColumn: ColumnDef<Ingredient>[] = [
     accessorKey: "option_name",
     header: ({ column }) => (
       <ShadcnButton variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Tên Ingredient
+        Tên Công dụng
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </ShadcnButton>
     ),
     cell: ({ row }) => <div className="capitalize">{row.getValue("option_name")}</div>,
   },
+
   {
     accessorKey: "category_name",
     header: "Tên Danh mục",
@@ -132,6 +135,8 @@ export const ingredientColumn: ColumnDef<Ingredient>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => <ActionsCell row={row} />,
+    cell: ({ row }) => {
+      return <ActionsCell row={row} />;
+    },
   },
 ];

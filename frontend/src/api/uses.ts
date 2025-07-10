@@ -26,7 +26,7 @@ export interface IDFilterUsesProps {
 }
 export const fetchFilterUsesByID = async (params: IDFilterUsesProps) => {
   return await httpClient
-    .get(`/admin/manage-filters/get-filter-hsk-uses-detail/${params.id}`)
+    .get<API.IResponseAPI>(`/admin/manage-filters/get-filter-hsk-uses-detail/${params.id}`)
     .then((response) => response.data);
 };
 //update-(filter_hsk_uses)
