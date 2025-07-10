@@ -1,3 +1,4 @@
+// src/features/Admin/ProductType/CreateProductType.tsx
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { ArrowLeft } from "lucide-react";
@@ -6,50 +7,57 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-// Ensure z is imported
-
+// Component UI dùng chung
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+// HTTP client của bạn (ví dụ: Axios instance)
 import httpClient from "@/lib/axios";
-import { type CreateSkinTypeFormValue, createSkinTypeSchema } from "@/lib/skinTypeSchema";
+// Import schema và kiểu dữ liệu từ tệp riêng mà chúng ta đã tạo ở Bước 1
+import { type CreateProductTypeFormValue, createProductTypeSchema } from "@/lib/productTypeSchema";
 
-const CreateSkinType: React.FC = () => {
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const navigate = useNavigate();
+const CreateProductType: React.FC = () => {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // Trạng thái đang gửi form
+  const navigate = useNavigate(); // Hook điều hướng của React Router Dom
 
-  const form = useForm<CreateSkinTypeFormValue>({
-    resolver: zodResolver(createSkinTypeSchema), // Use the new SkinType schema
+  // Khởi tạo form với React Hook Form và Zod resolver
+  const form = useForm<CreateProductTypeFormValue>({
+    resolver: zodResolver(createProductTypeSchema), // Áp dụng schema để validate form
     defaultValues: {
       option_name: "",
+      description: "", // Giá trị mặc định cho trường mô tả
       category_name: "",
       category_param: "",
-      state: "ACTIVE",
+      state: "ACTIVE", // Giá trị mặc định cho trạng thái
     },
   });
 
-  const onSubmit = async (values: CreateSkinTypeFormValue) => {
-    setIsSubmitting(true);
+  // Xử lý khi submit form
+  const onSubmit = async (values: CreateProductTypeFormValue) => {
+    setIsSubmitting(true); // Đặt trạng thái đang gửi
     const payload = {
       ...values,
     };
-    console.log("FINAL SKIN TYPE PAYLOAD TO SERVER:", payload); // Log for Skin Type
+    console.log("FINAL PRODUCT TYPE PAYLOAD TO SERVER:", payload); // Log payload gửi đi
 
     try {
-      // Adjust the API endpoint for creating a new skin type
-      const response = await httpClient.post("/admin/manage-filters/create-new-filter-hsk-skin-type", payload); // ASSUMED API ENDPOINT
+      // Gửi yêu cầu POST tới API để tạo Loại sản phẩm mới
+      // GIẢ ĐỊNH ENDPOINT API CỦA BẠN LÀ "/admin/manage-filters/create-new-filter-hsk-product-type"
+      const response = await httpClient.post("/admin/manage-filters/create-new-filter-hsk-product-type", payload);
 
       if (response.status === 200 || response.status === 201) {
+        // Xử lý thành công
         toast.success("Thành công!", {
-          description: "Loại da mới đã được thêm vào hệ thống.",
+          description: "Loại sản phẩm mới đã được thêm vào hệ thống.",
         });
-        form.reset();
-        navigate("/admin/skin-type");
+        form.reset(); // Reset form sau khi tạo thành công
+        navigate("/admin/product-type"); // Điều hướng về trang danh sách Loại sản phẩm
       }
     } catch (error: unknown) {
+      // Xử lý lỗi
       let errorMessage = "Có lỗi không xác định xảy ra.";
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -69,7 +77,7 @@ const CreateSkinType: React.FC = () => {
           errorMessage = responseData?.message || errorMessage;
         }
       }
-      console.error("Error creating skin type:", (error as AxiosError)?.response?.data); // Error log for Skin Type
+      console.error("Error creating brand:", (error as AxiosError)?.response?.data);
       toast.error("Thất bại!", {
         description: errorMessage,
       });
@@ -85,7 +93,7 @@ const CreateSkinType: React.FC = () => {
           className="hover:bg-transparent hover:text-green-600"
           variant="ghost"
           onClick={() => {
-            navigate("/admin/skin-type"); // Navigate back to skin type list
+            navigate("/admin/product-type"); // Nút quay lại
           }}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -97,24 +105,23 @@ const CreateSkinType: React.FC = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Card>
               <CardHeader>
-                <CardTitle>Tạo Loại da mới</CardTitle> {/* Title for Skin Type */}
-                <Typography>Cung cấp các thông tin chi tiết cho Loại da mới.</Typography>{" "}
-                {/* Description for Skin Type */}
+                <CardTitle>Tạo Loại sản phẩm mới</CardTitle>
+                <Typography>Cung cấp các thông tin chi tiết cho Loại sản phẩm mới.</Typography>
               </CardHeader>
               <CardContent className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                {/* Skin Type Information Section */}
                 <div className="md:col-span-2">
                   <h3 className="mb-4 text-lg font-medium">Thông tin cơ bản</h3>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {/* Trường Tên Loại sản phẩm */}
                     <FormField
                       control={form.control}
                       name="option_name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tên Loại da</FormLabel> {/* Label for Skin Type name */}
+                          <FormLabel>Tên Loại sản phẩm</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tên Loại da (ví dụ: Da dầu, Da khô)" // Placeholder for Skin Type name
+                              placeholder="Nhập tên Loại sản phẩm (ví dụ: Son môi, Kem chống nắng)"
                               {...field}
                               value={field.value || ""}
                             />
@@ -123,7 +130,25 @@ const CreateSkinType: React.FC = () => {
                         </FormItem>
                       )}
                     />
-
+                    {/* Trường Mô tả */}
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Mô tả</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Nhập mô tả (ví dụ: Sản phẩm dùng cho môi)"
+                              {...field}
+                              value={field.value || ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {/* Trường Tên danh mục */}
                     <FormField
                       control={form.control}
                       name="category_name"
@@ -132,7 +157,7 @@ const CreateSkinType: React.FC = () => {
                           <FormLabel>Tên danh mục</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tên danh mục (ví dụ: Loại da)" // Placeholder for category
+                              placeholder="Nhập tên danh mục (ví dụ: Chăm sóc da, Trang điểm)"
                               {...field}
                               value={field.value || ""}
                             />
@@ -141,6 +166,7 @@ const CreateSkinType: React.FC = () => {
                         </FormItem>
                       )}
                     />
+                    {/* Trường Tham số danh mục */}
                     <FormField
                       control={form.control}
                       name="category_param"
@@ -149,7 +175,7 @@ const CreateSkinType: React.FC = () => {
                           <FormLabel>Tham số danh mục</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tham số danh mục (ví dụ: da-dau, da-kho)" // Placeholder for category param
+                              placeholder="Nhập tham số danh mục (ví dụ: son-moi, kem-chong-nang)"
                               {...field}
                               value={field.value || ""}
                             />
@@ -158,7 +184,7 @@ const CreateSkinType: React.FC = () => {
                         </FormItem>
                       )}
                     />
-                    {/* FormField for state */}
+                    {/* Trường Trạng thái */}
                     <FormField
                       control={form.control}
                       name="state"
@@ -184,8 +210,9 @@ const CreateSkinType: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
+            {/* Nút submit */}
             <Button type="submit" disabled={isSubmitting} size="lg" className="w-full">
-              {isSubmitting ? "Đang tạo..." : "Tạo Loại da"} {/* Button text for Skin Type */}
+              {isSubmitting ? "Đang tạo..." : "Tạo Loại sản phẩm"}
             </Button>
           </form>
         </Form>
@@ -194,4 +221,4 @@ const CreateSkinType: React.FC = () => {
   );
 };
 
-export default CreateSkinType;
+export default CreateProductType;

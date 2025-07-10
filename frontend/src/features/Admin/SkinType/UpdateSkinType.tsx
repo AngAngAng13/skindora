@@ -30,7 +30,7 @@ const UpdateSkinType: React.FC = () => {
   const { data: fetchedSkinTypeData, fetchSkinTypeByID, loading } = useFetchSkinTypeByID(String(id));
 
   const form = useForm<CreateSkinTypeFormValue>({
-    resolver: zodResolver(createSkinTypeSchema), // Using the create schema for update validation
+    resolver: zodResolver(createSkinTypeSchema),
     defaultValues: {
       option_name: "",
       category_name: "",
@@ -50,11 +50,10 @@ const UpdateSkinType: React.FC = () => {
 
   useEffect(() => {
     if (fetchedSkinTypeData) {
-      // Ensure fetchedSkinTypeData is treated as SkinType
       const skinTypeToEdit = fetchedSkinTypeData as SkinType;
       form.reset({
         option_name: skinTypeToEdit.option_name,
-        description: skinTypeToEdit.description,
+
         category_name: skinTypeToEdit.category_name,
         category_param: skinTypeToEdit.category_param,
         state: skinTypeToEdit.state as "ACTIVE" | "INACTIVE",
@@ -70,16 +69,15 @@ const UpdateSkinType: React.FC = () => {
     console.log("FINAL SKIN TYPE UPDATE PAYLOAD TO SERVER:", payload);
 
     try {
-      // Adjust the API endpoint for updating a skin type
-      const response = await httpClient.put(`/admin/manage-filters/update-filter-hsk-skin-type/${id}`, payload); // ASSUMED API ENDPOINT
+      const response = await httpClient.put(`/admin/manage-filters/update-filter-hsk-skin-type/${id}`, payload);
 
       console.log(response);
       if (response.status === 200) {
         toast.success("Thành công!", {
-          description: "Thông tin Loại da đã được cập nhật.", // Success message for SkinType
+          description: "Thông tin Loại da đã được cập nhật.",
         });
 
-        navigate("/admin/skin-type"); // Navigate back to SkinType list
+        navigate("/admin/skin-type");
       }
     } catch (error: unknown) {
       let errorMessage = "Có lỗi không xác định xảy ra.";
@@ -101,7 +99,7 @@ const UpdateSkinType: React.FC = () => {
           errorMessage = responseData?.message || errorMessage;
         }
       }
-      console.error("Error updating skin type:", (error as AxiosError)?.response?.data); // Error log for SkinType
+      console.error("Error updating skin type:", (error as AxiosError)?.response?.data);
       toast.error("Thất bại!", {
         description: errorMessage,
       });
@@ -124,7 +122,7 @@ const UpdateSkinType: React.FC = () => {
               <Skeleton className="h-10 w-full" />
               <Skeleton className="h-10 w-full" />
               <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" /> {/* For description field */}
+              <Skeleton className="h-10 w-full" />
             </div>
           </CardContent>
         </Card>
@@ -135,7 +133,7 @@ const UpdateSkinType: React.FC = () => {
   if (!fetchedSkinTypeData) {
     return (
       <div className="container mx-auto py-8 text-center">
-        <h2 className="text-2xl font-bold">Loại da không tìm thấy</h2> {/* Not found message for SkinType */}
+        <h2 className="text-2xl font-bold">Loại da không tìm thấy</h2>
         <p className="mt-2 text-gray-500">Loại da với ID &quot;{id}&quot; không tồn tại hoặc không thể tải.</p>
         <Button onClick={() => navigate("/admin/skin-type")} className="mt-4">
           <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại danh sách Loại da
@@ -151,7 +149,7 @@ const UpdateSkinType: React.FC = () => {
           className="hover:bg-transparent hover:text-green-600"
           variant="ghost"
           onClick={() => {
-            navigate("/admin/skin-type"); // Navigate back to SkinType list
+            navigate("/admin/skin-type");
           }}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -163,8 +161,8 @@ const UpdateSkinType: React.FC = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Card>
               <CardHeader>
-                <CardTitle>Cập nhật Loại da</CardTitle> {/* Title for SkinType */}
-                <Typography>Chỉnh sửa các thông tin chi tiết cho Loại da.</Typography> {/* Description for SkinType */}
+                <CardTitle>Cập nhật Loại da</CardTitle>
+                <Typography>Chỉnh sửa các thông tin chi tiết cho Loại da.</Typography>
               </CardHeader>
               <CardContent className="grid grid-cols-1 gap-8 md:grid-cols-2">
                 {/* SkinType Information Section */}
@@ -176,10 +174,10 @@ const UpdateSkinType: React.FC = () => {
                       name="option_name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tên Loại da</FormLabel> {/* Label for SkinType name */}
+                          <FormLabel>Tên Loại da</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tên Loại da (ví dụ: Da dầu, Da khô)" // Placeholder for SkinType name
+                              placeholder="Nhập tên Loại da (ví dụ: Da dầu, Da khô)"
                               {...field}
                               value={field.value || ""}
                             />
@@ -197,7 +195,7 @@ const UpdateSkinType: React.FC = () => {
                           <FormLabel>Tên danh mục</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tên danh mục (ví dụ: Loại da)" // Placeholder for category
+                              placeholder="Nhập tên danh mục (ví dụ: Loại da)"
                               {...field}
                               value={field.value || ""}
                             />
@@ -214,7 +212,7 @@ const UpdateSkinType: React.FC = () => {
                           <FormLabel>Tham số danh mục</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tham số danh mục (ví dụ: da-dau, da-kho)" // Placeholder for category param
+                              placeholder="Nhập tham số danh mục (ví dụ: da-dau, da-kho)"
                               {...field}
                               value={field.value || ""}
                             />
@@ -250,7 +248,7 @@ const UpdateSkinType: React.FC = () => {
               </CardContent>
             </Card>
             <Button type="submit" disabled={isSubmitting} size="lg" className="w-full">
-              {isSubmitting ? "Đang cập nhật..." : "Cập nhật Loại da"} {/* Button text for SkinType */}
+              {isSubmitting ? "Đang cập nhật..." : "Cập nhật Loại da"}
             </Button>
           </form>
         </Form>

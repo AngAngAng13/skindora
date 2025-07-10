@@ -21,6 +21,10 @@ import CreateOrigin from "@/features/Admin/Origin/CreateOrigin";
 import ManageOrigin from "@/features/Admin/Origin/ManageOrigin";
 import OriginDetail from "@/features/Admin/Origin/OriginDetail";
 import UpdateOrigin from "@/features/Admin/Origin/UpdateOrigin";
+import CreateProductType from "@/features/Admin/ProducType/CreateProductType";
+import ManageProductType from "@/features/Admin/ProducType/ManageProductType";
+import ProductTypeDetail from "@/features/Admin/ProducType/ProductTypeDetail";
+import UpdateProductType from "@/features/Admin/ProducType/UpdateProductType";
 import ManageProducts from "@/features/Admin/Product/ManageProduct";
 import ProductDetail from "@/features/Admin/Product/ProductDetail";
 import UpdateDetailProduct from "@/features/Admin/Product/UpdateDetail";
@@ -220,6 +224,22 @@ const adminRoutes: RouteObject[] = [
       {
         path: ":id/update-uses",
         element: <UpdateUses />,
+      },
+      {
+        path: "product-type",
+        element: <ManageProductType />,
+      },
+      {
+        path: ":id/product-type-detail",
+        element: <ProductTypeDetail />,
+      },
+      {
+        path: ":id/update-product-type",
+        element: <UpdateProductType />,
+      },
+      {
+        path: "create-product-type",
+        element: <CreateProductType />,
       },
     ],
   },

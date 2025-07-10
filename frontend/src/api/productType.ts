@@ -26,7 +26,7 @@ export interface IDFilterProductTypeProps {
 }
 export const fetchFilterProductTypeByID = async (params: IDFilterProductTypeProps) => {
   return await httpClient
-    .get(`/admin/manage-filters/get-filter-hsk-product-type-detail/${params.id}`)
+    .get<API.IResponseAPI>(`/admin/manage-filters/get-filter-hsk-product-type-detail/${params.id}`)
     .then((response) => response.data);
 };
 //update-(filter_hsk_product_type)
