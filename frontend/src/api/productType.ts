@@ -21,22 +21,22 @@ export const createFilterProductType = async (payload: ProductType) => {
     .then((response) => response.data);
 };
 //get-all-(filter_hsk_product_type)
-export interface UpdateFilterDacTinhProps {
+export interface IDFilterProductTypeProps {
   id: string;
 }
-export const fetchFilterProductTypeByID = async (params: UpdateFilterDacTinhProps) => {
+export const fetchFilterProductTypeByID = async (params: IDFilterProductTypeProps) => {
   return await httpClient
     .get(`/admin/manage-filters/get-filter-hsk-product-type-detail/${params.id}`)
     .then((response) => response.data);
 };
 //update-(filter_hsk_product_type)
-export const updateFilterProductType = async (params: UpdateFilterDacTinhProps, payload: ProductType) => {
+export const updateFilterProductType = async (params: IDFilterProductTypeProps, payload: ProductType) => {
   return await httpClient
     .put(`/admin/manage-filters/update-filter-hsk-product-type/${params.id}`, payload)
     .then((response) => response.data);
 };
 //update-status-(filter_hsk_product_type)
-export const updateStatusFilterProductType = async (params: UpdateFilterDacTinhProps, payload: { state: string }) => {
+export const updateStatusFilterProductType = async (params: IDFilterProductTypeProps, payload: { state: string }) => {
   return await httpClient
     .put(`/admin/manage-filters/update-filter-hsk-product-type-state/${params.id}`, payload)
     .then((response) => response.data);

@@ -21,22 +21,22 @@ export const createFilterSize = async (payload: Size) => {
     .then((response) => response.data);
 };
 //get-all-(filter_hsk_size)
-export interface UpdateFilterDacTinhProps {
+export interface IDFilterSizeProps {
   id: string;
 }
-export const fetchFilterSizeByID = async (params: UpdateFilterDacTinhProps) => {
+export const fetchFilterSizeByID = async (params: IDFilterSizeProps) => {
   return await httpClient
     .get(`/admin/manage-filters/get-filter-hsk-size-detail/${params.id}`)
     .then((response) => response.data);
 };
 //update-(filter_hsk_size)
-export const updateFilterSize = async (params: UpdateFilterDacTinhProps, payload: Size) => {
+export const updateFilterSize = async (params: IDFilterSizeProps, payload: Size) => {
   return await httpClient
     .put(`/admin/manage-filters/update-filter-hsk-size/${params.id}`, payload)
     .then((response) => response.data);
 };
 //update-status-(filter_hsk_size)
-export const updateStatusFilterSize = async (params: UpdateFilterDacTinhProps, payload: { state: string }) => {
+export const updateStatusFilterSize = async (params: IDFilterSizeProps, payload: { state: string }) => {
   return await httpClient
     .put(`/admin/manage-filters/update-filter-hsk-size-state/${params.id}`, payload)
     .then((response) => response.data);

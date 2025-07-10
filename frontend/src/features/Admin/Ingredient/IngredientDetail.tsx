@@ -6,32 +6,25 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-// Adjust path if necessary
-
-// --- Import your Ingredient fetch hook ---
 import { useFetchIngredientByID } from "@/hooks/Ingredient/useFetchFilterIngredientByID";
-// --- Import your Ingredient interface ---
 import { type Ingredient } from "@/types/Filter/ingredient";
-
-// Adjust path if necessary
 
 const IngredientDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // Use the Ingredient-specific hook
   const { data: ingredientData, fetchIngredientByID, loading } = useFetchIngredientByID(String(id));
 
   useEffect(() => {
     fetchIngredientByID();
-  }, [fetchIngredientByID]); // Depend on the function itself
+  }, [fetchIngredientByID]);
 
   useEffect(() => {
     console.log("Ingredient Data:", ingredientData);
   }, [ingredientData]);
 
   const handleGoBack = () => {
-    navigate(-1); // Navigate back to the previous page in history
+    navigate(-1);
   };
 
   if (loading) {
@@ -45,7 +38,6 @@ const IngredientDetail = () => {
     );
   }
 
-  // Use 'ingredient' for clarity, assuming ingredientData will be a single object
   const ingredient: Ingredient | undefined = ingredientData;
 
   if (!ingredient) {
@@ -63,21 +55,19 @@ const IngredientDetail = () => {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Chi tiết Ingredient</h1> {/* Updated title */}
+        <h1 className="text-3xl font-bold">Chi tiết Ingredient</h1>
         <Button onClick={handleGoBack} variant="outline">
           Quay lại
         </Button>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl font-bold">{ingredient.option_name}</CardTitle> {/* Display Ingredient name */}
+          <CardTitle className="text-3xl font-bold">{ingredient.option_name}</CardTitle>
           <CardDescription className="text-lg text-gray-600">
             Details for Ingredient ID: {ingredient._id}
           </CardDescription>{" "}
-          {/* Display Ingredient ID */}
         </CardHeader>
         <CardContent className="grid gap-6">
-          {/* Category Information */}
           <div>
             <Label htmlFor="category-info" className="text-sm font-medium text-gray-700">
               Danh mục
@@ -95,7 +85,7 @@ const IngredientDetail = () => {
             <Badge
               id="state"
               className={`mt-1 text-sm font-medium ${
-                ingredient.state === "ACTIVE" // Use 'ACTIVE' (uppercase) as per your schema
+                ingredient.state === "ACTIVE"
                   ? "bg-green-100 text-green-800 hover:bg-green-200"
                   : "bg-red-100 text-red-800 hover:bg-red-200"
               }`}
