@@ -351,7 +351,10 @@ export const ADMIN_MESSAGES = {
   GET_ACTIVE_FILTER_ORIGINS_SUCCESSFULLY: 'Get active filter origins successfully',
   //filter is inactive cannot update
   FILTER_IS_INACTIVE_CANNOT_UPDATE: 'Cannot update an inactive filter. Please activate it first.',
-  GET_PRODUCT_STATS_SUCCESS: 'Get product statistics successfully'
+  GET_PRODUCT_STATS_SUCCESS: 'Get product statistics successfully',
+  GET_ON_SALE_PRODUCTS_SUCCESS: 'Get on-sale products successfully',
+  GET_LOW_STOCK_PRODUCTS_SUCCESS: 'Get low-stock products successfully',
+  GET_OUT_OF_STOCK_PRODUCTS_SUCCESS: 'Get out-of-stock products successfully'
 } as const
 
 export const CART_MESSAGES = {
