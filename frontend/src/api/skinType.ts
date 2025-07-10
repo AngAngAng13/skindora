@@ -38,9 +38,10 @@ export const updateFilterSkin = async (params: IDFilterSkinTypeProps, payload: S
 //update-status-(filter_hsk_skin_type)
 export const updateStatusFilterSkin = async (params: IDFilterSkinTypeProps, payload: { state: string }) => {
   return await httpClient
-    .put(`/admin/manage-filters/update-filter-hsk-skin-type/${params.id}`, payload)
+    .put(`/admin/manage-filters/update-filter-hsk-skin-type-state/${params.id}`, payload)
     .then((response) => response.data);
 };
+
 //search-by-name(filter_hsk_skin_type)
 export interface SearchProps {
   option_name: string;

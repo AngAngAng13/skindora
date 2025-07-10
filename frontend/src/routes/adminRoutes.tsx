@@ -23,6 +23,10 @@ import ProductDetail from "@/features/Admin/Product/ProductDetail";
 import UpdateDetailProduct from "@/features/Admin/Product/UpdateDetail";
 import ProfileAdmin from "@/features/Admin/Profile/ProfileAdmin";
 import ManageSkin from "@/features/Admin/Skin/ManageSkin";
+import CreateSkinType from "@/features/Admin/SkinType/CreateSkinType";
+import ManageSkinType from "@/features/Admin/SkinType/ManageSkinType";
+import SkinTypeDetail from "@/features/Admin/SkinType/SkinTypeDetail";
+import UpdateSkinType from "@/features/Admin/SkinType/UpdateSkinType";
 import ManageStatics from "@/features/Admin/Statics/ManageStatics";
 import ManageUse from "@/features/Admin/Uses/ManageUse";
 import AddVoucherPage from "@/features/Admin/Voucher/AddVoucherPage";
@@ -157,6 +161,22 @@ const adminRoutes: RouteObject[] = [
       {
         path: "create-ingredient",
         element: <CreateIngredient />,
+      },
+      {
+        path: "skin-type",
+        element: <ManageSkinType />,
+      },
+      {
+        path: "create-skin-type",
+        element: <CreateSkinType />,
+      },
+      {
+        path: ":id/update-skin-type",
+        element: <UpdateSkinType />,
+      },
+      {
+        path: ":id/skin-type-detail",
+        element: <SkinTypeDetail />,
       },
     ],
   },
