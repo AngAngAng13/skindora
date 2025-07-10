@@ -1,7 +1,3 @@
-// src/app/users/columns.tsx
-
-"use client";
-
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 

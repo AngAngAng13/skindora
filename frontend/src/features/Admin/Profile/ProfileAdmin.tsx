@@ -8,11 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useHeader } from "@/contexts/header.context";
-
-import { OrderHistoryTab } from "../Profile/components/OrderHistoryTab";
-import { PersonalInfoTab } from "../Profile/components/PersonalInfoTab";
-import { SkinPreferencesTab } from "../Profile/components/SkinPreferencesTab";
-import { useProfilePageLogic } from "../Profile/hooks/useProfilePageLogic";
+import { OrderHistoryTab } from "@/features/Profile/components/OrderHistoryTab";
+import { PersonalInfoTab } from "@/features/Profile/components/PersonalInfoTab";
+import { SkinPreferencesTab } from "@/features/Profile/components/SkinPreferencesTab";
+import { useProfilePageLogic } from "@/features/Profile/hooks/useProfilePageLogic";
 
 const ProfilePage = () => {
   const { setHeaderName } = useHeader();

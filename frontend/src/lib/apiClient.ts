@@ -57,8 +57,8 @@ const apiClientConfig: HttpClientConfig = {
   timeout: 60000,
   DEBUG: import.meta.env.DEV,
   defaultRetry: {
-    maxRetries: 3,
-    delayMs: 1000,
+    maxRetries: 1,
+    delayMs: 100,
   },
 };
 

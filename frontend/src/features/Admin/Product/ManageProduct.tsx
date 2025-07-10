@@ -1,17 +1,15 @@
 import { Plus } from "lucide-react";
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
 import { useHeader } from "@/contexts/header.context";
 
-import { ProductOverview } from "./components/ProductOverview";
-import type { Product } from "./components/ProductOverview";
+import { ProductOverview } from "../components/ProductOverview";
 
 const ManageProduct: React.FC = () => {
-  const [, setSelectedProduct] = React.useState<Product | null>(null);
-  const [, setActiveView] = React.useState("overview");
-
+  const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
 
   useEffect(() => {
@@ -25,7 +23,7 @@ const ManageProduct: React.FC = () => {
           <div className="mt-3 mb-6 flex justify-between">
             <Typography className="text-2xl font-bold">{headerName}</Typography>
             <div className="bg-primary hover:bg-primary/90 r rounded-lg text-white">
-              <Button className="cursor-pointer p-5">
+              <Button className="cursor-pointer p-5" onClick={() => navigate("/admin/createProduct")}>
                 <div className="flex items-center gap-4">
                   <div>
                     <Plus />
@@ -37,15 +35,9 @@ const ManageProduct: React.FC = () => {
               </Button>
             </div>
           </div>
-          {/* <div>
-            <Typography className="text-2xl font-bold">Quản lý khách hàng</Typography>
-          </div> */}
-          {/* <div className="mt-8">
-            <TableProduct />
-          </div>
-        </div> */}
+
           <div>
-            <ProductOverview onSelectProduct={setSelectedProduct} onEditProduct={() => setActiveView("editor")} />
+            <ProductOverview />
           </div>
         </div>
       </div>

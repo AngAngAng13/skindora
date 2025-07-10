@@ -1,19 +1,17 @@
-
-import { BadgeCheck, Building2, FlaskConical, Ruler, ShoppingBag, Sparkles, Trash2 } from "lucide-react";
+import { Tooltip } from "@radix-ui/react-tooltip";
+import { BadgeCheck, Building2, FlaskConical, Info, Ruler, ShoppingBag, Sparkles, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 import BudgetSlider from "./components/BudgetSlider";
 import ChatContainer from "./components/ChatContainer";
 import FilterAccordionItem from "./components/FilterAccordionItem";
-
 import ImageUpload from "./components/ImageUpload";
 import PreferenceButtons from "./components/PreferenceButtons";
-
-
 import { useSkincareAI } from "./components/hooks/useSkincareAI";
 
 const SkincareAI = () => {
@@ -137,24 +135,57 @@ const SkincareAI = () => {
                       )}
                       {allFilterOptions.filter_hsk_product_type &&
                         allFilterOptions.filter_hsk_product_type.length > 0 && (
-                          <FilterAccordionItem
-                            title="Product Types"
-                            icon={<ShoppingBag size={16} className="mr-2 text-gray-500" />}
-                            options={allFilterOptions.filter_hsk_product_type}
-                            selectedValues={selectedProductTypes}
-                            onSelectionChange={setSelectedProductTypes}
-                            value="productTypes"
-                          />
+                          <div className="relative">
+                            <FilterAccordionItem
+                              title="Product Types"
+                              icon={<ShoppingBag size={16} className="mr-2 text-gray-500" />}
+                              options={allFilterOptions.filter_hsk_product_type}
+                              selectedValues={selectedProductTypes}
+                              onSelectionChange={setSelectedProductTypes}
+                              value="productTypes"
+                            />
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="absolute top-4.5 right-10">
+                                    <Info size={14} className="text-gray-400 hover:text-gray-600" />
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p className="">
+                                    This filter acts as a suggestion to help the AI prioritize product types.
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
                         )}
                       {allFilterOptions.filter_hsk_uses && allFilterOptions.filter_hsk_uses.length > 0 && (
-                        <FilterAccordionItem
-                          title="Desired Uses/Effects"
-                          icon={<Sparkles size={16} className="mr-2 text-gray-500" />}
-                          options={allFilterOptions.filter_hsk_uses}
-                          selectedValues={selectedUses}
-                          onSelectionChange={setSelectedUses}
-                          value="uses"
-                        />
+                        <div className="relative">
+                          <FilterAccordionItem
+                            title="Desired Uses/Effects"
+                            icon={<Sparkles size={16} className="mr-2 text-gray-500" />}
+                            options={allFilterOptions.filter_hsk_uses}
+                            selectedValues={selectedUses}
+                            onSelectionChange={setSelectedUses}
+                            value="uses"
+                          />
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="absolute top-4.5 right-10">
+                                 
+                                  <Info size={14} className="text-gray-400 hover:text-gray-600" />
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p className="max-w-xs">
+                                  This filter helps the AI understand your desired outcomes for the routine.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
                       )}
                       {allFilterOptions.filter_hsk_ingredient && allFilterOptions.filter_hsk_ingredient.length > 0 && (
                         <FilterAccordionItem

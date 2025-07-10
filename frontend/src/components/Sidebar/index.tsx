@@ -1,4 +1,17 @@
-import { ChartNoAxesColumnIncreasing, Home, Package, ShoppingCart, User2, UsersRound } from "lucide-react";
+import {
+  BarChart4,
+  FileX2,
+  Globe2,
+  Home,
+  Leaf,
+  ListChecks,
+  Package,
+  Shield,
+  ShoppingCart,
+  TicketPercent,
+  User2,
+  UsersRound,
+} from "lucide-react";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -19,15 +32,40 @@ const items = [
   { title: "Tổng quan", url: "/admin", icon: Home },
   { title: "Hồ sơ", url: "/admin/profile", icon: User2 },
   { title: "Khách hàng", url: "/admin/customers", icon: UsersRound },
-  { title: "Sản phẩm", url: "/admin/products", icon: Package },
-  { title: "Đơn hàng", url: "/admin/orders", icon: ShoppingCart },
-  { title: "Thống kê", url: "/admin/statics", icon: ChartNoAxesColumnIncreasing },
-];
+  { title: "Quản lý sản phẩm", url: "/admin/products", icon: Package },
+  { title: "Quản lý đơn hàng", url: "/admin/orders", icon: ShoppingCart },
+  { title: "Quản lý công dụng", url: "/admin/use", icon: ListChecks },
+  { title: "Quản lý xuất xứ", url: "/admin/origin", icon: Globe2 },
 
+  {
+    title: "Thống kê",
+    url: "/admin/statics",
+    icon: BarChart4,
+  },
+  {
+    title: "Quản lý thương hiệu",
+    url: "/admin/brand",
+    icon: Shield,
+  },
+  {
+    title: "Quản lý loại da",
+    url: "/admin/typeskin",
+    icon: Leaf,
+  },
+  {
+    title: "Quản lý voucher",
+    url: "/admin/voucher",
+    icon: TicketPercent,
+  },
+  {
+    title: "Quản lý đơn hủy",
+    url: "/admin/cancel-request",
+    icon: FileX2,
+  },
+];
 const AppSidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 import { ProductCard } from "@/components/ui/ProductCard";
 import { Button } from "@/components/ui/button";
-// Corrected import path
 import { useAuth } from "@/contexts/auth.context";
 import { useAddToCartMutation } from "@/hooks/mutations/useAddToCartMutation";
 import { useRemoveFromWishlistMutation } from "@/hooks/mutations/useRemoveFromWishlistMutation";
@@ -60,7 +59,7 @@ const WishlistPage = () => {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
+    <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-6 flex items-center">
         <Button variant="ghost" onClick={() => navigate("/products")} className="mr-4">
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -69,11 +68,12 @@ const WishlistPage = () => {
         <h1 className="text-2xl font-bold">Your Wishlist ({wishlistItems.length} items)</h1>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-3">
         {wishlistItems.map((item) => (
           <ProductCard
             key={item._id}
             product={item}
+            
             variant="wishlist"
             onRemoveFromWishlist={handleRemove}
             onAddToCart={handleAddToCart}

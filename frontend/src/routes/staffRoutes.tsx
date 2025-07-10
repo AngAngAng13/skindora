@@ -1,10 +1,9 @@
 import type { RouteObject } from "react-router-dom";
 
-import ManageUsers from "@/features/Admin/ManageCustomer";
-import ManageProducts from "@/features/Admin/ManageProduct";
-import ManageStatics from "@/features/Admin/ManageStatics";
-import ProfileAdmin from "@/features/Admin/ProfileAdmin";
+import ProfilePage from "@/features/Admin/Profile/ProfileAdmin";
+import ManageStatics from "@/features/Admin/Statics/ManageStatics";
 import ManageOrdersStaff from "@/features/Staff/ManageOrdersStaff";
+import ManageProduct from "@/features/Staff/ManageProductStaff";
 import StaffLayout from "@/layouts/staffLayout";
 
 const staffRoutes: RouteObject[] = [
@@ -12,14 +11,10 @@ const staffRoutes: RouteObject[] = [
     path: "/staff",
     element: <StaffLayout />,
     children: [
-      { index: true, element: <ProfileAdmin /> },
-      {
-        path: "customers",
-        element: <ManageUsers />,
-      },
+      { index: true, element: <ProfilePage /> },
       {
         path: "products",
-        element: <ManageProducts />,
+        element: <ManageProduct />,
       },
       {
         path: "orders",
@@ -27,7 +22,7 @@ const staffRoutes: RouteObject[] = [
       },
       {
         path: "profile",
-        element: <ProfileAdmin />,
+        element: <ProfilePage />,
       },
       {
         path: "statics",
