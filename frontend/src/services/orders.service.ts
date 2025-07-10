@@ -3,28 +3,40 @@ import type { Result } from "neverthrow";
 import { apiClient } from "@/lib/apiClient";
 import type { ApiError } from "@/utils";
 import type { ApiResponse } from "@/utils/axios/types";
+export interface UserInOrder {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  location: string;
+  username: string;
+  phone_number: string;
+  avatar: string;
+}
+export interface OrderData {
+  _id: string;
+  User: UserInOrder;
+  ShipAddress: string;
+  Description: string;
+  RequireDate: string;
+  PaymentMethod: string;
+  PaymentStatus: string;
+  Status: OrderStatus;
+  TotalPrice: string;
+  created_at: string;
+  updated_at: string;
+  CancelRequest?: {
+    status: "REQUESTED" | "APPROVED" | "REJECTED";
+    reason: string;
+    requestedAt: string;
+    staffId: string | null;
+  };
+}
 export interface OrderByIdResponse {
   message: string;
   result: {
-    _id: string;
-    UserID: string;
-    ShipAddress: string;
-    Description: string;
-    RequireDate: string;
-    Discount?: string;
-    TotalPrice: string;
-    PaymentMethod: string;
-    PaymentStatus: string;
-    Status: "PENDING" | "CONFIRMED" | "PROCESSING" | "SHIPPING" | "DELIVERED" | "CANCELLED" | "RETURNED" | "FAILED";
+    order: OrderData;
     orderDetail: MyOrderDetail[];
-    created_at: string;
-    updated_at: string;
-    CancelRequest?: {
-      status: "REQUESTED" | "APPROVED" | "REJECTED";
-      reason: string;
-      requestedAt: string;
-      staffId: string | null;
-    };
   };
 }
 export interface BuyNowPayload {

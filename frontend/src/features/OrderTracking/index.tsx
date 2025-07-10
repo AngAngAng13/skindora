@@ -23,30 +23,30 @@ import { ShippingProgressCard } from "./components/ShippingProgressCard";
 const generateShippingSteps = (status: string, orderDate: string, requireDate: string) => {
   const steps = [
     {
-      status: "confirmed",
+      status: "CONFIRMED",
       title: "Order Confirmed",
       description: "Your order has been confirmed and is being prepared.",
     },
-    { status: "processing", title: "Processing", description: "The items are being carefully packaged." },
-    { status: "shipping", title: "In Transit", description: "The order is on its way to you." },
-    { status: "delivered", title: "Delivered", description: "Your order has been successfully delivered." },
+    { status: "PROCESSING", title: "Processing", description: "The items are being carefully packaged." },
+    { status: "SHIPPING", title: "In Transit", description: "The order is on its way to you." },
+    { status: "DELIVERED", title: "Delivered", description: "Your order has been successfully delivered." },
   ];
   const statusHierarchy = ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPING", "DELIVERED", "CANCELLED", "FAILED"];
   const currentStatusIndex = statusHierarchy.indexOf(status);
-  const getStepDate = (index: number) => {
-    if (index === 0) return format(new Date(orderDate), "yyyy-MM-dd HH:mm");
-    if (index === 3 && status === "DELIVERED") return format(new Date(requireDate), "yyyy-MM-dd HH:mm");
-    if (index < currentStatusIndex)
-      return format(new Date(new Date(orderDate).getTime() + index * 24 * 60 * 60 * 1000), "yyyy-MM-dd HH:mm");
+
+  const getStepDate = (stepStatus: string) => {
+    if (stepStatus === "CONFIRMED") return format(new Date(orderDate), "yyyy-MM-dd HH:mm");
+    if (stepStatus === "DELIVERED" && status === "DELIVERED") return format(new Date(requireDate), "yyyy-MM-dd HH:mm");
     return "";
   };
-  return steps.map((step, index) => {
+
+  return steps.map((step) => {
     const stepIndexInHierarchy = statusHierarchy.indexOf(step.status.toUpperCase());
     return {
       ...step,
       completed: stepIndexInHierarchy < currentStatusIndex,
       current: stepIndexInHierarchy === currentStatusIndex,
-      date: stepIndexInHierarchy <= currentStatusIndex ? getStepDate(index) : "",
+      date: stepIndexInHierarchy <= currentStatusIndex ? getStepDate(step.status) : "",
     };
   });
 };
@@ -117,7 +117,7 @@ const OrderTracking = () => {
     );
   }
 
-  if (isError || !orderResponse) {
+  if (isError || !orderResponse?.result?.order) {
     return (
       <div className="flex min-h-[80vh] flex-col items-center justify-center p-4 text-center">
         <AlertCircle className="text-destructive h-16 w-16" />
@@ -125,15 +125,17 @@ const OrderTracking = () => {
         <p className="text-muted-foreground mt-2">
           {error?.message || "We couldn't find the order you're looking for."}
         </p>
-        <Button onClick={() => navigate("/profile/orders")} variant="outline" className="mt-6">
+        <Button onClick={() => navigate("/profile")} variant="outline" className="mt-6">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to My Orders
         </Button>
       </div>
     );
   }
 
-  const order = orderResponse.result;
-  const shippingSteps = generateShippingSteps(order.Status, order.orderDetail[0].OrderDate, order.RequireDate);
+ 
+  const { order, orderDetail } = orderResponse.result;
+
+  const shippingSteps = generateShippingSteps(order.Status, order.created_at, order.RequireDate);
   const orderTotal = parseFloat(order.TotalPrice);
   const shippingFee = orderTotal > 500000 ? 0 : 30000;
   const grandTotal = orderTotal + shippingFee;
@@ -143,12 +145,12 @@ const OrderTracking = () => {
     <>
       <div className="min-h-screen bg-gray-50 p-4 md:p-8">
         <div className="mx-auto max-w-4xl">
-          <PageHeader orderId={order._id} orderDate={order.orderDetail[0].OrderDate} />
+          <PageHeader orderId={order._id} orderDate={order.created_at} />
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
               <ShippingProgressCard steps={shippingSteps} />
               <OrderItemsCard
-                orderDetails={order.orderDetail}
+                orderDetails={orderDetail}
                 orderStatus={order.Status}
                 onOpenReviewModal={openReviewModal}
                 reviewedProductIds={reviewedProductIds}

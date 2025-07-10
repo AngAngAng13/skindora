@@ -1,0 +1,90 @@
+import { LoaderCircle, TicketPercent } from "lucide-react";
+import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { useVouchersQuery } from "@/hooks/queries/useVouchersQuery";
+import type { Voucher } from "@/types/voucher";
+
+interface VoucherDialogProps {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  onApplyVoucher: (voucher: Voucher) => void;
+  selectedVoucherCode?: string | null;
+}
+
+const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString("en-GB");
+
+export const VoucherDialog = ({ isOpen, onOpenChange, onApplyVoucher, selectedVoucherCode }: VoucherDialogProps) => {
+  const { data: voucherResponse, isLoading } = useVouchersQuery(true);
+  const [locallySelectedCode, setLocallySelectedCode] = useState<string | null>(selectedVoucherCode || null);
+
+  const vouchers = voucherResponse?.data ?? [];
+
+  const handleApply = () => {
+    const selectedVoucher = vouchers.find((v: Voucher) => v.code === locallySelectedCode);
+    if (selectedVoucher) {
+      onApplyVoucher(selectedVoucher);
+      onOpenChange(false);
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg p-0">
+        <DialogHeader className="flex flex-row items-center justify-between p-6 pb-4">
+          <DialogTitle className="text-xl font-bold">My Vouchers & Offers</DialogTitle>
+          <DialogClose asChild>
+            {/* <Button variant="ghost" size="icon" className="h-7 w-7">
+              <X className="h-4 w-4" />
+            </Button> */}
+          </DialogClose>
+        </DialogHeader>
+        <Separator />
+        <div className="p-6">
+          {isLoading ? (
+            <div className="flex h-64 items-center justify-center">
+              <LoaderCircle className="text-primary h-8 w-8 animate-spin" />
+            </div>
+          ) : (
+            <RadioGroup value={locallySelectedCode || ""} onValueChange={setLocallySelectedCode}>
+              <ScrollArea className="h-[50vh] pr-4">
+                <div className="space-y-3">
+                  {/* FIX: Provide explicit type for 'voucher' */}
+                  {vouchers.map((voucher: Voucher) => (
+                    <label
+                      key={voucher.code}
+                      htmlFor={voucher.code}
+                      className="has-[:checked]:border-primary has-[:checked]:bg-primary/5 flex cursor-pointer items-start gap-4 rounded-lg border p-4"
+                    >
+                      <div className="bg-primary/10 text-primary flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-md">
+                        <TicketPercent className="h-8 w-8" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold">{voucher.description}</p>
+                        <p className="text-xs text-gray-500">Expires: {formatDate(voucher.endDate)}</p>
+                      </div>
+                      <RadioGroupItem value={voucher.code} id={voucher.code} className="mt-1" />
+                    </label>
+                  ))}
+                </div>
+              </ScrollArea>
+            </RadioGroup>
+          )}
+        </div>
+        <Separator />
+        <div className="flex items-center justify-between p-6">
+          <span className="text-sm font-medium">
+            {locallySelectedCode ? "1 Voucher selected" : "0 Vouchers selected"}
+          </span>
+          <Button onClick={handleApply} disabled={!locallySelectedCode}>
+            Apply
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
