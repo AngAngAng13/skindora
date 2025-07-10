@@ -7,6 +7,7 @@ import ManageBrand from "@/features/Admin/Brand/ManageBrand";
 import UpdateBrand from "@/features/Admin/Brand/UpdateBrand";
 import ManageRequest from "@/features/Admin/Cancel-Request/ManageRequest";
 import ManageCustomer from "@/features/Admin/Customer/ManageCustomer";
+import ManageDacTinh from "@/features/Admin/Dactinh/ManageDacTinh";
 import ManageOrders from "@/features/Admin/Order/ManageOrders";
 import OrderDetailPage from "@/features/Admin/Order/OrderDetailPage";
 import ManageOrigin from "@/features/Admin/Origin/ManageOrigin";
@@ -117,6 +118,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "voucher-detail/:_id",
         element: <VoucherDetail />,
+      },
+      {
+        path: "dac-tinh",
+        element: <ManageDacTinh />,
       },
     ],
   },

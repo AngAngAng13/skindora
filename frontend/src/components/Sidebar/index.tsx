@@ -62,6 +62,11 @@ const items = [
     url: "/admin/cancel-request",
     icon: FileX2,
   },
+  {
+    title: "Quản lý đặc tính",
+    url: "/admin/dac-tinh",
+    icon: FileX2,
+  },
 ];
 const AppSidebar: React.FC = () => {
   const location = useLocation();

@@ -8,7 +8,7 @@ export interface FetchFilterDacTinhProps {
 //get-all-(filter_hsk_dactinh)
 export const fetchFilterDacTinh = async (params: FetchFilterDacTinhProps) => {
   return await httpClient
-    .get<API.IResponseSearch<DacTinh>>("/admin/manage-filters/get-all-filter-dac-tinhs", {
+    .get<API.IResponseSearch<DacTinh>>("/admin/manage-filters/get-all-filter-dac-tinh", {
       limit: params.limit,
       page: params.page,
     })
@@ -26,7 +26,7 @@ export interface IDFilterDacTinhProps {
 }
 export const fetchFilterDacTinhByID = async (params: IDFilterDacTinhProps) => {
   return await httpClient
-    .get(`/admin/manage-filters/get-filter-dac-tinh-detail/${params.id}`)
+    .get<API.IResponseAPI<DacTinh>>(`/admin/manage-filters/get-filter-dac-tinh-detail/${params.id}`)
     .then((response) => response.data);
 };
 //update-(filter_hsk_dactinh)
