@@ -240,6 +240,8 @@ components:
       $ref: './components/schemas/PaginatedFilterHskOriginResponse.yaml'
 
     # --- Response Schemas ---
+    ProductStatsResponse:
+      $ref: './components/schemas/ProductStatsResponse.yaml'
     AuthSuccessResponse:
       $ref: './components/schemas/AuthSuccessResponse.yaml'
     LoginSuccessResponse:

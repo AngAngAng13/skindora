@@ -212,3 +212,15 @@ export const getProductDetailController = async (req: Request, res: Response) =>
     result: product
   })
 }
+
+export const getProductStatsController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const stats = await productService.getProductStats()
+    res.json({
+      message: ADMIN_MESSAGES.GET_PRODUCT_STATS_SUCCESS,
+      result: stats
+    })
+  } catch (error) {
+    next(error)
+  }
+}
