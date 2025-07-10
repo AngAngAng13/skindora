@@ -18,6 +18,8 @@ export interface OrderData {
   _id: string;
   User: UserInOrder;
   ShipAddress: string;
+
+    DiscountValue: string;
   Description: string;
   RequireDate: string;
   PaymentMethod: string;
@@ -31,6 +33,12 @@ export interface OrderData {
     reason: string;
     requestedAt: string;
     staffId: string | null;
+  };
+  VoucherSnapshot?: {
+    code: string;
+    discountType: string;
+    discountValue: string;
+    maxDiscountAmount: string;
   };
 }
 export interface OrderByIdResponse {

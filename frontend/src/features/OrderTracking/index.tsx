@@ -132,13 +132,15 @@ const OrderTracking = () => {
     );
   }
 
- 
   const { order, orderDetail } = orderResponse.result;
 
   const shippingSteps = generateShippingSteps(order.Status, order.created_at, order.RequireDate);
-  const orderTotal = parseFloat(order.TotalPrice);
-  const shippingFee = orderTotal > 500000 ? 0 : 30000;
-  const grandTotal = orderTotal + shippingFee;
+  const finalTotal = parseFloat(order.TotalPrice);
+  const discountAmount = parseFloat(order.DiscountValue || "0");
+  const subtotal = finalTotal + discountAmount;
+
+  const shippingFee = subtotal > 500000 ? 0 : 30000;
+  const grandTotal = subtotal - discountAmount + shippingFee;
   const isCancelable = (order.Status === "PENDING" || order.Status === "CONFIRMED") && !order.CancelRequest;
 
   return (
@@ -159,11 +161,13 @@ const OrderTracking = () => {
             <div className="space-y-6 lg:col-span-1">
               <ShippingAddressCard address={order.ShipAddress} />
               <OrderSummaryCard
-                orderTotal={orderTotal}
+                orderTotal={subtotal}
                 shippingFee={shippingFee}
+                discount={discountAmount}
                 grandTotal={grandTotal}
                 paymentMethod={order.PaymentMethod}
                 requireDate={order.RequireDate}
+                voucherCode={order.VoucherSnapshot?.code}
               />
               <OrderActionsCard
                 isCancelable={isCancelable}
