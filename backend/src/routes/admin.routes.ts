@@ -10,7 +10,8 @@ import {
 import {
   createNewProductController,
   getAllProductController,
-  getProductDetailController
+  getProductDetailController,
+  getProductStatsController
 } from '~/controllers/products.controllers'
 import {
   createNewFilterBrandValidator,
@@ -139,6 +140,12 @@ adminRouter.put(
 )
 
 //product management
+adminRouter.get(
+  '/manage-products/stats',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getProductStatsController)
+)
 adminRouter.get(
   '/manage-products/get-all',
   accessTokenValidator,
