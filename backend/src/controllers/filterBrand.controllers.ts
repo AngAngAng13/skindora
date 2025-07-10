@@ -7,6 +7,7 @@ import filterBrandService from '~/services/filterBrand.services'
 import { ADMIN_MESSAGES } from '~/constants/messages'
 import { Filter, ObjectId } from 'mongodb'
 import FilterBrand from '~/models/schemas/FilterBrand.schema'
+import { FilterBrandState } from '~/constants/enums'
 
 export const getAllFilterBrandsController = async (req: Request, res: Response, next: NextFunction) => {
   await sendPaginatedResponse(res, next, databaseService.filterBrand, req.query)
@@ -93,3 +94,22 @@ export const searchFilterBrandsController = async (req: Request, res: Response, 
 
   await sendPaginatedResponse(res, next, databaseService.filterBrand, req.query, filter)
 }
+
+export const getActiveFilterBrandsController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const activeStates = [
+      FilterBrandState.ACTIVE,
+      FilterBrandState.COLLABORATION,
+      FilterBrandState.PARTNERSHIP,
+      FilterBrandState.EXCLUSIVE,
+      FilterBrandState.LIMITED_EDITION
+    ];
+    const result = await databaseService.filterBrand.find({ state: { $in: activeStates } }).toArray();
+    res.json({
+      message: ADMIN_MESSAGES.GET_ACTIVE_FILTER_BRANDS_SUCCESSFULLY,
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};

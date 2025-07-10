@@ -3399,6 +3399,19 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
+          },
           "401": {
             "$ref": "#/components/schemas/ErrorStatusResponse"
           },
@@ -3711,6 +3724,19 @@
           },
           "422": {
             "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -4008,6 +4034,19 @@
           },
           "422": {
             "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -4300,6 +4339,19 @@
           },
           "422": {
             "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -4591,6 +4643,19 @@
           },
           "422": {
             "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -4882,6 +4947,19 @@
           },
           "422": {
             "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -4978,6 +5056,966 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaginatedFilterHskSkinTypeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/create-new-filter-hsk-uses": {
+      "post": {
+        "tags": [
+          "Admin - Filter Uses"
+        ],
+        "summary": "(Admin) Create a New HSK Uses Filter",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFilterHskUsesReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter công dụng được tạo thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-all-filter-hsk-uses": {
+      "get": {
+        "tags": [
+          "Admin - Filter Uses"
+        ],
+        "summary": "(Admin) Get All HSK Uses Filters",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về danh sách các filter công dụng.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFilterHskUsesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-filter-hsk-uses-detail/{_id}": {
+      "get": {
+        "tags": [
+          "Admin - Filter Uses"
+        ],
+        "summary": "(Admin) Get HSK Uses Filter by ID",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chi tiết filter công dụng.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterHskUses"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/update-filter-hsk-uses/{_id}": {
+      "put": {
+        "tags": [
+          "Admin - Filter Uses"
+        ],
+        "summary": "(Admin) Update an HSK Uses Filter",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFilterHskUsesReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter công dụng được cập nhật thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterHskUses"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/update-filter-hsk-uses-state/{_id}": {
+      "put": {
+        "tags": [
+          "Admin - Filter Uses"
+        ],
+        "summary": "(Admin) Update HSK Uses Filter State",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisableFilterHskUsesReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Trạng thái filter công dụng được cập nhật thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterHskUses"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/search-filter-hsk-uses": {
+      "get": {
+        "tags": [
+          "Admin - Filter Uses"
+        ],
+        "summary": "(Admin) Search HSK Uses Filters by Name",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "description": "Từ khóa tìm kiếm trong tên công dụng.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về danh sách các filter công dụng phù hợp.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFilterHskUsesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/create-new-filter-hsk-origin": {
+      "post": {
+        "tags": [
+          "Admin - Filter Origin"
+        ],
+        "summary": "(Admin) Create a New HSK Origin Filter",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFilterHskOriginReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter nguồn gốc được tạo thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-all-filter-hsk-origins": {
+      "get": {
+        "tags": [
+          "Admin - Filter Origin"
+        ],
+        "summary": "(Admin) Get All HSK Origin Filters",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về danh sách các filter nguồn gốc.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFilterHskOriginResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-filter-hsk-origin-detail/{_id}": {
+      "get": {
+        "tags": [
+          "Admin - Filter Origin"
+        ],
+        "summary": "(Admin) Get HSK Origin Filter by ID",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chi tiết filter nguồn gốc.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterHskOrigin"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/update-filter-hsk-origin/{_id}": {
+      "put": {
+        "tags": [
+          "Admin - Filter Origin"
+        ],
+        "summary": "(Admin) Update an HSK Origin Filter",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFilterHskOriginReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter nguồn gốc được cập nhật thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterHskOrigin"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          },
+          "400'": {
+            "description": "Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse",
+                  "example": {
+                    "message": "Cannot update an inactive filter. Please activate it first."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/update-filter-hsk-origin-state/{_id}": {
+      "put": {
+        "tags": [
+          "Admin - Filter Origin"
+        ],
+        "summary": "(Admin) Update HSK Origin Filter State",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisableFilterHskOriginReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Trạng thái filter nguồn gốc được cập nhật thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterHskOrigin"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/search-filter-hsk-origin": {
+      "get": {
+        "tags": [
+          "Admin - Filter Origin"
+        ],
+        "summary": "(Admin) Search HSK Origin Filters by Name",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "description": "Từ khóa tìm kiếm trong tên nguồn gốc.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về danh sách các filter nguồn gốc phù hợp.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFilterHskOriginResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-active-filter-brands": {
+      "get": {
+        "tags": [
+          "Admin - Filter Brand"
+        ],
+        "summary": "(Admin) Get All Active Filter Brands",
+        "description": "Lấy danh sách tất cả các filter thương hiệu đang hoạt động để sử dụng trong việc tạo/cập nhật sản phẩm.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về một mảng các đối tượng filter thương hiệu.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Get active filter brands successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FilterBrand"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-active-filter-dac-tinhs": {
+      "get": {
+        "tags": [
+          "Admin - Filter Dac Tinh"
+        ],
+        "summary": "(Admin) Get All Active Filter Dac Tinhs",
+        "description": "Lấy danh sách tất cả các filter đặc tính đang hoạt động.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về một mảng các đối tượng filter đặc tính.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Get active filter dac tinhs successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FilterDacTinh"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-active-filter-hsk-ingredients": {
+      "get": {
+        "tags": [
+          "Admin - Filter Ingredient"
+        ],
+        "summary": "(Admin) Get All Active HSK Ingredient Filters",
+        "description": "Lấy danh sách tất cả các filter thành phần đang hoạt động.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về một mảng các đối tượng filter thành phần.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Get active filter ingredients successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FilterHskIngredient"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-active-filter-hsk-product-types": {
+      "get": {
+        "tags": [
+          "Admin - Filter Product Type"
+        ],
+        "summary": "(Admin) Get All Active HSK Product Type Filters",
+        "description": "Lấy danh sách tất cả các filter loại sản phẩm đang hoạt động.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về một mảng các đối tượng filter loại sản phẩm.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Get active filter product types successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FilterHskProductType"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-active-filter-hsk-sizes": {
+      "get": {
+        "tags": [
+          "Admin - Filter Size"
+        ],
+        "summary": "(Admin) Get All Active HSK Size Filters",
+        "description": "Lấy danh sách tất cả các filter kích thước đang hoạt động.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về một mảng các đối tượng filter kích thước.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Get active filter sizes successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FilterHskSize"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-active-filter-hsk-skin-types": {
+      "get": {
+        "tags": [
+          "Admin - Filter Skin Type"
+        ],
+        "summary": "(Admin) Get All Active HSK Skin Type Filters",
+        "description": "Lấy danh sách tất cả các filter loại da đang hoạt động.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về một mảng các đối tượng filter loại da.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Get active filter skin types successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FilterHskSkinType"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-active-filter-hsk-uses": {
+      "get": {
+        "tags": [
+          "Admin - Filter Uses"
+        ],
+        "summary": "(Admin) Get All Active HSK Uses Filters",
+        "description": "Lấy danh sách tất cả các filter công dụng đang hoạt động.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về một mảng các đối tượng filter công dụng.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Get active filter uses successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FilterHskUses"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-active-filter-hsk-origins": {
+      "get": {
+        "tags": [
+          "Admin - Filter Origin"
+        ],
+        "summary": "(Admin) Get All Active HSK Origin Filters",
+        "description": "Lấy danh sách tất cả các filter nguồn gốc đang hoạt động.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về một mảng các đối tượng filter nguồn gốc.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Get active filter origins successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FilterHskOrigin"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -7303,6 +8341,232 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FilterHskSkinType"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginatedUserResponse/properties/pagination"
+          }
+        }
+      },
+      "FilterHskUses": {
+        "type": "object",
+        "description": "Đại diện cho một đối tượng filter Công Dụng (Uses).",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "option_name": {
+            "type": "string",
+            "example": "Phục Hồi Da"
+          },
+          "category_name": {
+            "type": "string",
+            "example": "Công Dụng HSK"
+          },
+          "category_param": {
+            "type": "string",
+            "example": "phuc-hoi-da"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateFilterHskUsesReqBody": {
+        "type": "object",
+        "required": [
+          "option_name",
+          "category_name",
+          "category_param"
+        ],
+        "properties": {
+          "option_name": {
+            "type": "string",
+            "example": "Trị Mụn"
+          },
+          "category_name": {
+            "type": "string",
+            "example": "Công Dụng HSK"
+          },
+          "category_param": {
+            "type": "string",
+            "example": "tri-mun"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        }
+      },
+      "UpdateFilterHskUsesReqBody": {
+        "type": "object",
+        "description": "Chỉ bao gồm các trường cần cập nhật cho công dụng.",
+        "properties": {
+          "option_name": {
+            "type": "string"
+          },
+          "category_name": {
+            "type": "string"
+          },
+          "category_param": {
+            "type": "string"
+          }
+        }
+      },
+      "DisableFilterHskUsesReqBody": {
+        "type": "object",
+        "required": [
+          "state"
+        ],
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "Trạng thái mới cho filter công dụng.",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ],
+            "example": "INACTIVE"
+          }
+        }
+      },
+      "PaginatedFilterHskUsesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterHskUses"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginatedUserResponse/properties/pagination"
+          }
+        }
+      },
+      "FilterHskOrigin": {
+        "type": "object",
+        "description": "Đại diện cho một đối tượng filter Nguồn Gốc (Origin).",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "format": "mongoId"
+          },
+          "option_name": {
+            "type": "string",
+            "example": "Hàn Quốc"
+          },
+          "category_name": {
+            "type": "string",
+            "example": "Nguồn Gốc HSK"
+          },
+          "category_param": {
+            "type": "string",
+            "example": "han-quoc"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateFilterHskOriginReqBody": {
+        "type": "object",
+        "required": [
+          "option_name",
+          "category_name",
+          "category_param"
+        ],
+        "properties": {
+          "option_name": {
+            "type": "string",
+            "example": "Nhật Bản"
+          },
+          "category_name": {
+            "type": "string",
+            "example": "Nguồn Gốc HSK"
+          },
+          "category_param": {
+            "type": "string",
+            "example": "nhat-ban"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        }
+      },
+      "UpdateFilterHskOriginReqBody": {
+        "type": "object",
+        "description": "Chỉ bao gồm các trường cần cập nhật cho nguồn gốc.",
+        "properties": {
+          "option_name": {
+            "type": "string"
+          },
+          "category_name": {
+            "type": "string"
+          },
+          "category_param": {
+            "type": "string"
+          }
+        }
+      },
+      "DisableFilterHskOriginReqBody": {
+        "type": "object",
+        "required": [
+          "state"
+        ],
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "Trạng thái mới cho filter nguồn gốc.",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE"
+            ],
+            "example": "INACTIVE"
+          }
+        }
+      },
+      "PaginatedFilterHskOriginResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterHskOrigin"
             }
           },
           "pagination": {

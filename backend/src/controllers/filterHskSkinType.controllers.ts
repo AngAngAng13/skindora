@@ -13,6 +13,7 @@ import { getLocalTime } from '~/utils/date'
 import { Filter } from 'mongodb'
 import FilterHskSkinType from '~/models/schemas/FilterHskSkinType.schema'
 import { ADMIN_MESSAGES } from '~/constants/messages'
+import { GenericFilterState } from '~/constants/enums'
 
 export const getAllFilterHskSkinTypesController = async (req: Request, res: Response, next: NextFunction) => {
   await sendPaginatedResponse(res, next, databaseService.filterHskSkinType, req.query)
@@ -72,3 +73,15 @@ export const searchFilterHskSkinTypesController = async (req: Request, res: Resp
   }
   await sendPaginatedResponse(res, next, databaseService.filterHskSkinType, req.query, filter)
 }
+
+export const getActiveFilterHskSkinTypesController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await databaseService.filterHskSkinType.find({ state: GenericFilterState.ACTIVE }).toArray();
+    res.json({
+      message: ADMIN_MESSAGES.GET_ACTIVE_FILTER_SKIN_TYPES_SUCCESSFULLY,
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
