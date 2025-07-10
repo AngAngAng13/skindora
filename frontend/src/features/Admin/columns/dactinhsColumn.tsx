@@ -53,8 +53,8 @@ export const DacTinhActionsCell = ({ row }: { row: { original: DacTinh } }) => {
             Copy tên đặc tính
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/detail-dactinh`)}>Xem chi tiết</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-dactinh`)}>Chỉnh sửa</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/dac-tinh-detail`)}>Xem chi tiết</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-dac-tinh`)}>Chỉnh sửa</DropdownMenuItem>
           {state === "ACTIVE" ? (
             <DropdownMenuItem
               disabled={loading}

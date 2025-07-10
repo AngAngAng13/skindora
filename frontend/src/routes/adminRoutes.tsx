@@ -7,7 +7,10 @@ import ManageBrand from "@/features/Admin/Brand/ManageBrand";
 import UpdateBrand from "@/features/Admin/Brand/UpdateBrand";
 import ManageRequest from "@/features/Admin/Cancel-Request/ManageRequest";
 import ManageCustomer from "@/features/Admin/Customer/ManageCustomer";
+import CreateDacTinh from "@/features/Admin/Dactinh/CreateDacTinh";
+import DacTinhDetail from "@/features/Admin/Dactinh/DacTinhDetail";
 import ManageDacTinh from "@/features/Admin/Dactinh/ManageDacTinh";
+import UpdateDacTinh from "@/features/Admin/Dactinh/UpdateDacTinh";
 import ManageOrders from "@/features/Admin/Order/ManageOrders";
 import OrderDetailPage from "@/features/Admin/Order/OrderDetailPage";
 import ManageOrigin from "@/features/Admin/Origin/ManageOrigin";
@@ -122,6 +125,18 @@ const adminRoutes: RouteObject[] = [
       {
         path: "dac-tinh",
         element: <ManageDacTinh />,
+      },
+      {
+        path: "create-dac-tinh",
+        element: <CreateDacTinh />,
+      },
+      {
+        path: ":id/update-dac-tinh",
+        element: <UpdateDacTinh />,
+      },
+      {
+        path: ":id/dac-tinh-detail",
+        element: <DacTinhDetail />,
       },
     ],
   },

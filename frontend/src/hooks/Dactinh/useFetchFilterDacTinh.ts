@@ -20,6 +20,11 @@ export const useFetchFilterDacTinh = () => {
     try {
       const response = await fetchFilterDacTinh_api({ limit: params.limit, page: params.page });
       setData(response.data);
+      setParams((prev) => ({
+        ...prev,
+        totalPages: response.pagination.totalPages,
+        totalRecords: response.pagination.totalRecords,
+      }));
     } catch (error) {
       console.error("Failed to fetch all users:", error);
     } finally {

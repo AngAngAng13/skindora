@@ -1,10 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { z } from "zod";
+
+// Import z for schema definition
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
@@ -12,20 +15,40 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useFetchBrandByID } from "@/hooks/Brand/useFetchBrandByID";
+import { useFetchFilterDacTinhByID } from "@/hooks/Dactinh/useFetchFilterDacTinhByID";
 import httpClient from "@/lib/axios";
-import { type CreateBrandFormValue, createBrandSchema } from "@/lib/brandSchema";
 
-const UpdateBrand: React.FC = () => {
+export interface DacTinh {
+  _id: string;
+  option_name: string;
+  category_name: string;
+  category_param: string;
+  state: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Define the Zod schema for form validation
+const updateDacTinhSchema = z.object({
+  option_name: z.string().min(1, "Tên đặc tính không được để trống."),
+  category_name: z.string().min(1, "Tên danh mục không được để trống."),
+  category_param: z.string().min(1, "Tham số danh mục không được để trống."),
+  state: z.enum(["ACTIVE", "INACTIVE"], {
+    errorMap: () => ({ message: "Trạng thái không hợp lệ." }),
+  }),
+});
+
+type UpdateDacTinhFormValue = z.infer<typeof updateDacTinhSchema>;
+
+const UpdateDacTinh: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // Fetch brand data using the hook
-  const { data: fetchedBrandData, fetchBrandByID, loading } = useFetchBrandByID(String(id));
+  const { data: fetchedDacTinhData, loading, fetchFilterDacTinhByID } = useFetchFilterDacTinhByID(String(id));
 
-  const form = useForm<CreateBrandFormValue>({
-    resolver: zodResolver(createBrandSchema),
+  const form = useForm<UpdateDacTinhFormValue>({
+    resolver: zodResolver(updateDacTinhSchema),
     defaultValues: {
       option_name: "",
       category_name: "",
@@ -36,39 +59,37 @@ const UpdateBrand: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      fetchBrandByID();
+      fetchFilterDacTinhByID();
     }
-    console.log(fetchedBrandData);
-  }, [id, fetchBrandByID]);
+  }, [id, fetchFilterDacTinhByID]);
 
   useEffect(() => {
-    if (fetchedBrandData) {
-      const brandToEdit = fetchedBrandData;
+    if (fetchedDacTinhData) {
       form.reset({
-        option_name: brandToEdit.option_name,
-        category_name: brandToEdit.category_name,
-        category_param: brandToEdit.category_param,
-        state: brandToEdit.state as "ACTIVE" | "INACTIVE",
+        option_name: fetchedDacTinhData.option_name,
+        category_name: fetchedDacTinhData.category_name,
+        category_param: fetchedDacTinhData.category_param,
+        state: fetchedDacTinhData.state as "ACTIVE" | "INACTIVE",
       });
     }
-  }, [fetchedBrandData, form]);
+  }, [fetchedDacTinhData, form]);
 
-  const onSubmit = async (values: CreateBrandFormValue) => {
+  const onSubmit = async (values: UpdateDacTinhFormValue) => {
     setIsSubmitting(true);
     const payload = {
       ...values,
     };
-    console.log("FINAL BRAND UPDATE PAYLOAD TO SERVER:", payload);
+    console.log("FINAL DAC TINH UPDATE PAYLOAD TO SERVER:", payload);
 
     try {
-      const response = await httpClient.put(`/admin/manage-filters/update-filter-brand/${id}`, payload);
+      const response = await httpClient.put(`/admin/manage-filters/update-filter-dac-tinh/${id}`, payload);
       console.log(response);
       if (response.status === 200) {
         toast.success("Thành công!", {
-          description: "Thông tin thương hiệu đã được cập nhật.",
+          description: "Thông tin đặc tính đã được cập nhật.",
         });
 
-        navigate("/admin/brand");
+        navigate("/admin/dac-tinh");
       }
     } catch (error: unknown) {
       let errorMessage = "Có lỗi không xác định xảy ra.";
@@ -90,7 +111,7 @@ const UpdateBrand: React.FC = () => {
           errorMessage = responseData?.message || errorMessage;
         }
       }
-      console.error("Error updating brand:", (error as AxiosError)?.response?.data);
+      console.error("Error updating dac tinh:", (error as AxiosError)?.response?.data);
       toast.error("Thất bại!", {
         description: errorMessage,
       });
@@ -110,13 +131,13 @@ const UpdateBrand: React.FC = () => {
     );
   }
 
-  if (!fetchedBrandData) {
+  if (!fetchedDacTinhData && !loading) {
     return (
       <div className="container mx-auto py-8 text-center">
-        <h2 className="text-2xl font-bold">Thương hiệu không tìm thấy</h2>
-        <p className="mt-2 text-gray-500">Thương hiệu với ID "{id}" không tồn tại hoặc không thể tải.</p>
-        <Button onClick={() => navigate("/admin/brand")} className="mt-4">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại danh sách thương hiệu
+        <h2 className="text-2xl font-bold">Đặc tính không tìm thấy</h2>
+        <p className="mt-2 text-gray-500">Đặc tính với ID &quot;{id}&quot; không tồn tại hoặc không thể tải.</p>
+        <Button onClick={() => navigate("/admin/dac-tinh")} className="mt-4">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại danh sách đặc tính
         </Button>
       </div>
     );
@@ -129,7 +150,7 @@ const UpdateBrand: React.FC = () => {
           className="hover:bg-transparent hover:text-green-600"
           variant="ghost"
           onClick={() => {
-            navigate("/admin/brands"); // Navigate back to brand list
+            navigate("/admin/dac-tinh");
           }}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -141,11 +162,11 @@ const UpdateBrand: React.FC = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Card>
               <CardHeader>
-                <CardTitle>Cập nhật thương hiệu</CardTitle>
-                <Typography>Chỉnh sửa các thông tin chi tiết cho thương hiệu.</Typography>
+                <CardTitle>Cập nhật Đặc tính</CardTitle>
+                <Typography>Chỉnh sửa các thông tin chi tiết cho đặc tính.</Typography>
               </CardHeader>
               <CardContent className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                {/* Brand Information Section */}
+                {/* Dac Tinh Information Section */}
                 <div className="md:col-span-2">
                   <h3 className="mb-4 text-lg font-medium">Thông tin cơ bản</h3>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -154,10 +175,10 @@ const UpdateBrand: React.FC = () => {
                       name="option_name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tên thương hiệu</FormLabel>
+                          <FormLabel>Tên đặc tính</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tên thương hiệu (ví dụ: Nike, Adidas)"
+                              placeholder="Nhập tên đặc tính (ví dụ: Màu sắc, Kích cỡ)"
                               {...field}
                               value={field.value || ""}
                             />
@@ -191,7 +212,7 @@ const UpdateBrand: React.FC = () => {
                           <FormLabel>Tham số danh mục</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tham số danh mục (ví dụ: giay, quan-ao)"
+                              placeholder="Nhập tham số danh mục (ví dụ: mau-sac, kich-co)"
                               {...field}
                               value={field.value || ""}
                             />
@@ -206,14 +227,14 @@ const UpdateBrand: React.FC = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Trạng thái</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value} disabled>
+                          <Select onValueChange={field.onChange} value={field.value} disabled={isSubmitting}>
                             <FormControl>
-                              <SelectTrigger>
+                              <SelectTrigger disabled>
                                 <SelectValue placeholder="Chọn trạng thái" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="ACTIVE">ACTIVE </SelectItem>
+                              <SelectItem value="ACTIVE">ACTIVE</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -225,7 +246,7 @@ const UpdateBrand: React.FC = () => {
               </CardContent>
             </Card>
             <Button type="submit" disabled={isSubmitting} size="lg" className="w-full">
-              {isSubmitting ? "Đang cập nhật..." : "Cập nhật thương hiệu"}
+              {isSubmitting ? "Đang cập nhật..." : "Cập nhật đặc tính"}
             </Button>
           </form>
         </Form>
@@ -234,4 +255,4 @@ const UpdateBrand: React.FC = () => {
   );
 };
 
-export default UpdateBrand;
+export default UpdateDacTinh;

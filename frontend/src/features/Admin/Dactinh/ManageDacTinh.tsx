@@ -56,7 +56,7 @@ const ManageDacTinh: React.FC = () => {
               <div className="mt-3 mb-6 flex justify-between">
                 <Typography className="text-2xl font-bold">{headerName}</Typography>
                 <div className="bg-primary hover:bg-primary/90 rounded-lg text-white">
-                  <Button className="cursor-pointer p-5" onClick={() => navigate("/admin/create-dactinh")}>
+                  <Button className="cursor-pointer p-5" onClick={() => navigate("/admin/create-dac-tinh")}>
                     <div className="flex items-center gap-4">
                       <div>
                         <Plus />

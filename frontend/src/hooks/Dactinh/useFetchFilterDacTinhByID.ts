@@ -20,7 +20,7 @@ export const useFetchFilterDacTinhByID = (id: string) => {
     } catch (error) {
       console.error("Failed to fetch all users:", error);
     } finally {
-      setTimeout(() => setLoading(false), 10000);
+      setLoading(false);
     }
   }, []);
 

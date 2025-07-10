@@ -1,10 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { ArrowLeft } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { z } from "zod";
+
+// Import zod for schema definition
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
@@ -12,63 +15,51 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useFetchBrandByID } from "@/hooks/Brand/useFetchBrandByID";
 import httpClient from "@/lib/axios";
-import { type CreateBrandFormValue, createBrandSchema } from "@/lib/brandSchema";
 
-const UpdateBrand: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+const createDacTinhSchema = z.object({
+  option_name: z.string().min(1, "Tên đặc tính không được để trống."),
+  category_name: z.string().min(1, "Tên danh mục không được để trống."),
+  category_param: z.string().min(1, "Tham số danh mục không được để trống."),
+  state: z.enum(["ACTIVE", "INACTIVE"], {
+    required_error: "Trạng thái là bắt buộc.",
+  }),
+});
+
+type CreateDacTinhFormValue = z.infer<typeof createDacTinhSchema>;
+
+const CreateDacTinh: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // Fetch brand data using the hook
-  const { data: fetchedBrandData, fetchBrandByID, loading } = useFetchBrandByID(String(id));
-
-  const form = useForm<CreateBrandFormValue>({
-    resolver: zodResolver(createBrandSchema),
+  const form = useForm<CreateDacTinhFormValue>({
+    resolver: zodResolver(createDacTinhSchema),
     defaultValues: {
       option_name: "",
       category_name: "",
       category_param: "",
-      state: "ACTIVE",
+      state: "ACTIVE", // Default state is ACTIVE
     },
   });
 
-  useEffect(() => {
-    if (id) {
-      fetchBrandByID();
-    }
-    console.log(fetchedBrandData);
-  }, [id, fetchBrandByID]);
-
-  useEffect(() => {
-    if (fetchedBrandData) {
-      const brandToEdit = fetchedBrandData;
-      form.reset({
-        option_name: brandToEdit.option_name,
-        category_name: brandToEdit.category_name,
-        category_param: brandToEdit.category_param,
-        state: brandToEdit.state as "ACTIVE" | "INACTIVE",
-      });
-    }
-  }, [fetchedBrandData, form]);
-
-  const onSubmit = async (values: CreateBrandFormValue) => {
+  // Handle form submission
+  const onSubmit = async (values: CreateDacTinhFormValue) => {
     setIsSubmitting(true);
     const payload = {
       ...values,
     };
-    console.log("FINAL BRAND UPDATE PAYLOAD TO SERVER:", payload);
+    console.log("FINAL DAC TINH PAYLOAD TO SERVER:", payload);
 
     try {
-      const response = await httpClient.put(`/admin/manage-filters/update-filter-brand/${id}`, payload);
-      console.log(response);
-      if (response.status === 200) {
-        toast.success("Thành công!", {
-          description: "Thông tin thương hiệu đã được cập nhật.",
-        });
+      // Adjust the API endpoint for creating a new DacTinh
+      const response = await httpClient.post("/admin/manage-filters/create-new-filter-dac-tinh", payload);
 
-        navigate("/admin/brand");
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Thành công!", {
+          description: "Đặc tính mới đã được thêm vào hệ thống.",
+        });
+        form.reset(); // Reset form after successful submission
+        // navigate("/admin/dac-tinh");
       }
     } catch (error: unknown) {
       let errorMessage = "Có lỗi không xác định xảy ra.";
@@ -90,7 +81,7 @@ const UpdateBrand: React.FC = () => {
           errorMessage = responseData?.message || errorMessage;
         }
       }
-      console.error("Error updating brand:", (error as AxiosError)?.response?.data);
+      console.error("Error creating DacTinh:", (error as AxiosError)?.response?.data);
       toast.error("Thất bại!", {
         description: errorMessage,
       });
@@ -99,65 +90,46 @@ const UpdateBrand: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="text-muted-foreground flex items-center gap-2">
-          <Loader2 className="text-primary h-8 w-8 animate-spin" />
-          <span className="text-lg">Đang tải dữ liệu...</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (!fetchedBrandData) {
-    return (
-      <div className="container mx-auto py-8 text-center">
-        <h2 className="text-2xl font-bold">Thương hiệu không tìm thấy</h2>
-        <p className="mt-2 text-gray-500">Thương hiệu với ID "{id}" không tồn tại hoặc không thể tải.</p>
-        <Button onClick={() => navigate("/admin/brand")} className="mt-4">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại danh sách thương hiệu
-        </Button>
-      </div>
-    );
-  }
-
   return (
     <div>
+      {/* Back button */}
       <div className="mt-3 ml-10">
         <Button
           className="hover:bg-transparent hover:text-green-600"
           variant="ghost"
           onClick={() => {
-            navigate("/admin/brands"); // Navigate back to brand list
+            navigate("/admin/dac-tinh"); // Navigate back to DacTinh list
           }}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Quay lại
         </Button>
       </div>
+
+      {/* Form container */}
       <div className="container mx-auto p-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Card>
               <CardHeader>
-                <CardTitle>Cập nhật thương hiệu</CardTitle>
-                <Typography>Chỉnh sửa các thông tin chi tiết cho thương hiệu.</Typography>
+                <CardTitle>Tạo đặc tính mới</CardTitle>
+                <Typography>Cung cấp các thông tin chi tiết cho đặc tính mới.</Typography>
               </CardHeader>
               <CardContent className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                {/* Brand Information Section */}
+                {/* Basic Information Section */}
                 <div className="md:col-span-2">
                   <h3 className="mb-4 text-lg font-medium">Thông tin cơ bản</h3>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {/* option_name field */}
                     <FormField
                       control={form.control}
                       name="option_name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tên thương hiệu</FormLabel>
+                          <FormLabel>Tên đặc tính</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tên thương hiệu (ví dụ: Nike, Adidas)"
+                              placeholder="Nhập tên đặc tính (ví dụ: Màu sắc, Kích thước)"
                               {...field}
                               value={field.value || ""}
                             />
@@ -166,6 +138,7 @@ const UpdateBrand: React.FC = () => {
                         </FormItem>
                       )}
                     />
+                    {/* category_name field */}
                     <FormField
                       control={form.control}
                       name="category_name"
@@ -174,7 +147,7 @@ const UpdateBrand: React.FC = () => {
                           <FormLabel>Tên danh mục</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tên danh mục (ví dụ: Giày, Quần áo)"
+                              placeholder="Nhập tên danh mục (ví dụ: Điện thoại, Áo)"
                               {...field}
                               value={field.value || ""}
                             />
@@ -183,15 +156,16 @@ const UpdateBrand: React.FC = () => {
                         </FormItem>
                       )}
                     />
+                    {/* category_param field */}
                     <FormField
                       control={form.control}
                       name="category_param"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tham số danh mục</FormLabel>
+                          <FormLabel>Giá trị đặc tính</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tham số danh mục (ví dụ: giay, quan-ao)"
+                              placeholder="Nhập giá trị đặc tính (ví dụ: Đỏ, L)"
                               {...field}
                               value={field.value || ""}
                             />
@@ -200,20 +174,22 @@ const UpdateBrand: React.FC = () => {
                         </FormItem>
                       )}
                     />
+                    {/* state field */}
                     <FormField
                       control={form.control}
                       name="state"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Trạng thái</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value} disabled>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Chọn trạng thái" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="ACTIVE">ACTIVE </SelectItem>
+                              <SelectItem value="ACTIVE">ACTIVE</SelectItem>
+                              <SelectItem value="INACTIVE">INACTIVE</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -224,8 +200,9 @@ const UpdateBrand: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
+            {/* Submit button */}
             <Button type="submit" disabled={isSubmitting} size="lg" className="w-full">
-              {isSubmitting ? "Đang cập nhật..." : "Cập nhật thương hiệu"}
+              {isSubmitting ? "Đang tạo..." : "Tạo đặc tính"}
             </Button>
           </form>
         </Form>
@@ -234,4 +211,4 @@ const UpdateBrand: React.FC = () => {
   );
 };
 
-export default UpdateBrand;
+export default CreateDacTinh;
