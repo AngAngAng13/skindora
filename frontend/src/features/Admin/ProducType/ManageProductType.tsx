@@ -18,7 +18,8 @@ const ManageProductType: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { loading, data, fetchListFilterProductType, params, setParams } = useFetchFilterProductType();
+  const { loading, data, fetchListFilterProductType, params, setParams, searchTerm, setSearchTerm } =
+    useFetchFilterProductType();
 
   useEffect(() => {
     fetchListFilterProductType();
@@ -86,7 +87,13 @@ const ManageProductType: React.FC = () => {
                 <div className="mt-6 w-5/5">
                   <Card className="w-full">
                     <div className="p-3">
-                      <DataTable columns={productTypeColumn(fetchListFilterProductType)} data={data} />
+                      <DataTable
+                        columns={productTypeColumn(fetchListFilterProductType)}
+                        data={data}
+                        onSearchChange={setSearchTerm}
+                        searchValue={searchTerm}
+                        filterPlaceholder="Tìm product-type theo tên..."
+                      />
                       <div className="mt-4">
                         <PaginationDemo
                           totalPages={params.totalPages ?? 1}

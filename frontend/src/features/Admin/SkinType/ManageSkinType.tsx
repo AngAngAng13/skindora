@@ -18,7 +18,7 @@ const ManageSkinType: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { loading, data, fetchListSkin, params, setParams } = useFetchSkinType();
+  const { loading, data, fetchListSkin, params, setParams, searchTerm, setSearchTerm } = useFetchSkinType();
 
   useEffect(() => {
     fetchListSkin();
@@ -85,7 +85,8 @@ const ManageSkinType: React.FC = () => {
                       <DataTable
                         columns={skinTypeColumn(fetchListSkin)}
                         data={data}
-                        // filterColumnId="option_name"
+                        onSearchChange={setSearchTerm}
+                        searchValue={searchTerm}
                         filterPlaceholder="Tìm Loại da"
                       />
                       <div className="mt-4">
