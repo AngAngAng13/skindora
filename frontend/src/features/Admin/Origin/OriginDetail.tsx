@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 // --- Import your Origin fetch hook ---
 import { useFetchOriginByID } from "@/hooks/Origin/useFetchOriginByID";
 // --- Import your Origin interface ---
-import { type Origin } from "@/types/Filter/origin";
+import type { Origin } from "@/types/Filter/origin";
 
 // Adjust path if necessary
 

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useFetchFilterProductTypeByID } from "@/hooks/ProductType/useFetchProductTypeByID";
-import { type ProductType } from "@/types/Filter/productType";
+import type { ProductType } from "@/types/Filter/productType";
 
 const ProductTypeDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -70,15 +70,6 @@ const ProductTypeDetail = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <div>
-            <Label htmlFor="description" className="text-sm font-medium text-gray-700">
-              Mô tả
-            </Label>
-            <p id="description" className="text-base text-gray-800">
-              {productType.description}
-            </p>
-          </div>
-
           <div>
             <Label htmlFor="category-info" className="text-sm font-medium text-gray-700">
               Danh mục

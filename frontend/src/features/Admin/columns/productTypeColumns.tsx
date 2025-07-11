@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUpdateStatusProductType } from "@/hooks/ProductType/useUpdateStatusProductType";
-import { type ProductType } from "@/types/Filter/productType";
+import type { ProductType } from "@/types/Filter/productType";
 
 export const ActionsCell = ({ row, refetchData }: { row: { original: ProductType }; refetchData: () => void }) => {
   const { _id, option_name, state } = row.original;

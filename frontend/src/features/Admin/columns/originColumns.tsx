@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUpdateStatusOrigin } from "@/hooks/Origin/useUpdateStatusOrigin";
-import { type Origin } from "@/types/Filter/origin";
+import type { Origin } from "@/types/Filter/origin";
 
 export const ActionsCell = ({ row, refetchData }: { row: { original: Origin }; refetchData: () => void }) => {
   const navigate = useNavigate();

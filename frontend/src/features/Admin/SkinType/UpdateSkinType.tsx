@@ -15,8 +15,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFetchSkinTypeByID } from "@/hooks/SkinType/useFetchSkinTypeByID";
 import httpClient from "@/lib/axios";
-import { type CreateSkinTypeFormValue, createSkinTypeSchema } from "@/lib/skinTypeSchema";
-import { type SkinType } from "@/types/Filter/skinType";
+import type { CreateSkinTypeFormValue } from "@/lib/skinTypeSchema";
+import { createSkinTypeSchema } from "@/lib/skinTypeSchema";
+import type { SkinType } from "@/types/Filter/skinType";
 
 const UpdateSkinType: React.FC = () => {
   const { id } = useParams<{ id: string }>();

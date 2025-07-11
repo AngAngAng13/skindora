@@ -6,40 +6,29 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-// Điều chỉnh đường dẫn này nếu cần
-
-// --- Import useFetchUsesByID hook của bạn ---
 import { useFetchUsesByID } from "@/hooks/Uses/useFetchUsesByID";
-// --- Import your Uses interface ---
-import { type Uses } from "@/types/Filter/uses";
-
-// Điều chỉnh đường dẫn này nếu cần
+import type { Uses } from "@/types/Filter/uses";
 
 const UsesDetail = () => {
-  const { id } = useParams<{ id: string }>(); // Lấy ID từ URL
-  const navigate = useNavigate(); // Hook để điều hướng
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
-  // Sử dụng hook để fetch dữ liệu Công dụng
   const { data: usesData, fetchUsesByID, loading } = useFetchUsesByID(String(id));
 
-  // Gọi hàm fetch khi component mount hoặc ID thay đổi
   useEffect(() => {
     if (id) {
       fetchUsesByID();
     }
-  }, [id, fetchUsesByID]); // Dependencies: ID và hàm fetchUsesByID
+  }, [id, fetchUsesByID]);
 
-  // Log dữ liệu khi nó thay đổi (cho mục đích debug)
   useEffect(() => {
     console.log("Uses Data:", usesData);
   }, [usesData]);
 
-  // Hàm để quay lại trang trước
   const handleGoBack = () => {
-    navigate(-1); // Quay lại trang trước trong lịch sử
+    navigate(-1); //
   };
 
-  // Hiển thị trạng thái loading
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -51,10 +40,8 @@ const UsesDetail = () => {
     );
   }
 
-  // Gán data vào biến 'uses' để dễ sử dụng
   const uses: Uses | undefined = usesData;
 
-  // Hiển thị khi không tìm thấy dữ liệu hoặc dữ liệu là null/undefined
   if (!uses) {
     return (
       <div className="container mx-auto py-8 text-center">
@@ -83,14 +70,6 @@ const UsesDetail = () => {
         </CardHeader>
         <CardContent className="grid gap-6">
           {/* Mục Mô tả */}
-          <div>
-            <Label htmlFor="description" className="text-sm font-medium text-gray-700">
-              Mô tả
-            </Label>
-            <p id="description" className="text-base text-gray-800">
-              {uses.description}
-            </p>
-          </div>
 
           {/* Mục Danh mục */}
           <div>
@@ -120,7 +99,6 @@ const UsesDetail = () => {
             </Badge>
           </div>
 
-          {/* Mục Ngày tạo và Ngày cập nhật */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <Label htmlFor="created-at" className="text-sm font-medium text-gray-700">

@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUpdateStatusSize } from "@/hooks/Size/useUpdateSkin";
-import { type Size } from "@/types/Filter/size";
+import type { Size } from "@/types/Filter/size";
 
 export const ActionsCell = ({ row, refetchData }: { row: { original: Size }; refetchData: () => void }) => {
   const { _id, option_name, state } = row.original;

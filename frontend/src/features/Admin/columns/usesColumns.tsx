@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUpdateStatusFilterUses } from "@/hooks/Uses/useUpdateStatusUses";
-import { type Uses } from "@/types/Filter/uses";
+import type { Uses } from "@/types/Filter/uses";
 
 // Ensure this path is correct
 export const ActionsCell = ({ row, refetchData }: { row: { original: Uses }; refetchData: () => void }) => {

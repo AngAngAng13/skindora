@@ -17,9 +17,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useFetchOriginByID } from "@/hooks/Origin/useFetchOriginByID";
 import httpClient from "@/lib/axios";
 // Import your Origin schema and type
-import { type CreateOriginFormValue, createOriginSchema } from "@/lib/originSchema";
+import type { CreateOriginFormValue } from "@/lib/originSchema";
+import { createOriginSchema } from "@/lib/originSchema";
 // Import your Origin interface
-import { type Origin } from "@/types/Filter/origin";
+import type { Origin } from "@/types/Filter/origin";
 
 const UpdateOrigin: React.FC = () => {
   const { id } = useParams<{ id: string }>();

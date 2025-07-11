@@ -17,8 +17,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFetchFilterProductTypeByID } from "@/hooks/ProductType/useFetchProductTypeByID";
 import httpClient from "@/lib/axios";
-import { type UpdateProductTypeFormValue, createProductTypeSchema } from "@/lib/productTypeSchema";
-import { type ProductType } from "@/types/Filter/productType";
+import type { UpdateProductTypeFormValue } from "@/lib/productTypeSchema";
+import { createProductTypeSchema } from "@/lib/productTypeSchema";
+import type { ProductType } from "@/types/Filter/productType";
 
 const UpdateProductType: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,7 +32,7 @@ const UpdateProductType: React.FC = () => {
     resolver: zodResolver(createProductTypeSchema),
     defaultValues: {
       option_name: "",
-      description: "",
+
       category_name: "",
       category_param: "",
       state: "ACTIVE",
@@ -53,7 +54,6 @@ const UpdateProductType: React.FC = () => {
       const productTypeToEdit = fetchedProductTypeData as ProductType;
       form.reset({
         option_name: productTypeToEdit.option_name,
-        description: productTypeToEdit.description,
         category_name: productTypeToEdit.category_name,
         category_param: productTypeToEdit.category_param,
         state: productTypeToEdit.state as "ACTIVE" | "INACTIVE",
@@ -168,24 +168,6 @@ const UpdateProductType: React.FC = () => {
                           <FormControl>
                             <Input
                               placeholder="Nhập tên Loại sản phẩm (ví dụ: Son môi, Kem chống nắng)"
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Mô tả</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Nhập mô tả (ví dụ: Sản phẩm dùng cho môi)"
                               {...field}
                               value={field.value || ""}
                             />

@@ -6,25 +6,18 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-// Adjust path if necessary
-
-// --- Import your DacTinh fetch hook ---
 import { useFetchFilterDacTinhByID } from "@/hooks/Dactinh/useFetchFilterDacTinhByID";
-// --- Import your DacTinh interface ---
-import { type DacTinh } from "@/types/Filter/dactinh";
-
-// Adjust path if necessary
+import type { DacTinh } from "@/types/Filter/dactinh";
 
 const DacTinhDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // Use the DacTinh-specific hook
   const { data: dacTinhData, fetchFilterDacTinhByID, loading } = useFetchFilterDacTinhByID(String(id));
 
   useEffect(() => {
     fetchFilterDacTinhByID();
-  }, [fetchFilterDacTinhByID]); // Depend on the function itself
+  }, [fetchFilterDacTinhByID]);
 
   useEffect(() => {
     console.log("DacTinh Data:", dacTinhData);

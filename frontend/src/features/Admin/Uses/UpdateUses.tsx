@@ -15,8 +15,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFetchUsesByID } from "@/hooks/Uses/useFetchUsesByID";
 import httpClient from "@/lib/axios";
-import { type CreateUsesFormValue, createUsesSchema } from "@/lib/usesSchema";
-import { type Uses } from "@/types/Filter/uses";
+import type { CreateUsesFormValue } from "@/lib/usesSchema";
+import { createUsesSchema } from "@/lib/usesSchema";
+import type { Uses } from "@/types/Filter/uses";
 
 const UpdateUses: React.FC = () => {
   const { id } = useParams<{ id: string }>();

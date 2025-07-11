@@ -28,7 +28,6 @@ const CreateProductType: React.FC = () => {
     resolver: zodResolver(createProductTypeSchema), // Áp dụng schema để validate form
     defaultValues: {
       option_name: "",
-      description: "", // Giá trị mặc định cho trường mô tả
       category_name: "",
       category_param: "",
       state: "ACTIVE", // Giá trị mặc định cho trạng thái
@@ -131,23 +130,6 @@ const CreateProductType: React.FC = () => {
                       )}
                     />
                     {/* Trường Mô tả */}
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Mô tả</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Nhập mô tả (ví dụ: Sản phẩm dùng cho môi)"
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                     {/* Trường Tên danh mục */}
                     <FormField
                       control={form.control}

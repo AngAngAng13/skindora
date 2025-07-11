@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 // --- Import your SkinType fetch hook ---
 import { useFetchSkinTypeByID } from "@/hooks/SkinType/useFetchSkinTypeByID";
 // --- Import your SkinType interface ---
-import { type SkinType } from "@/types/Filter/skinType";
+import type { SkinType } from "@/types/Filter/skinType";
 
 // Adjust path if necessary
 
@@ -88,16 +88,6 @@ const SkinTypeDetail = () => {
               {skinType.option_name}
             </p>
           </div> */}
-
-          {/* Description */}
-          <div>
-            <Label htmlFor="description" className="text-sm font-medium text-gray-700">
-              Mô tả
-            </Label>
-            <p id="description" className="text-base text-gray-800">
-              {skinType.description}
-            </p>
-          </div>
 
           {/* Category Information */}
           <div>

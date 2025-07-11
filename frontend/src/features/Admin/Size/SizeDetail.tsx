@@ -46,7 +46,7 @@ const SizeDetail = () => {
   }
 
   // Destructure sizeData for easier access
-  const { _id, option_name, description, category_name, category_param, state, created_at, updated_at } = sizeData;
+  const { _id, option_name, category_name, category_param, state, created_at, updated_at } = sizeData;
 
   return (
     <div className="container mx-auto py-8">
@@ -66,18 +66,6 @@ const SizeDetail = () => {
         </CardHeader>
 
         <CardContent className="grid gap-6 p-6">
-          {/* Description Field (Conditional rendering if description exists and not empty) */}
-          {description && description.trim() !== "" && (
-            <div>
-              <Label htmlFor="size-description" className="text-sm font-medium text-gray-700">
-                Mô tả
-              </Label>
-              <p id="size-description" className="mt-1 text-base text-gray-800">
-                {description}
-              </p>
-            </div>
-          )}
-
           {/* Category Information */}
           <div>
             <Label htmlFor="category-info" className="text-sm font-medium text-gray-700">
