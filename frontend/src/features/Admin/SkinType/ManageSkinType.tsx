@@ -31,16 +31,13 @@ const ManageSkinType: React.FC = () => {
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
       newParams.set("page", page.toString());
-
       return newParams;
     });
-
     setParams((prevParams) => ({
       ...prevParams,
       page: page,
     }));
   };
-
   useEffect(() => {
     setHeaderName("Quản Lý Loại da");
   }, [setHeaderName]);
@@ -74,7 +71,7 @@ const ManageSkinType: React.FC = () => {
                         <Plus />
                       </div>
                       <div>
-                        <span className="text-sm font-semibold">Tạo Loại da mới</span> {/* Button text for Skin Type */}
+                        <span className="text-sm font-semibold">Tạo Loại da mới</span>
                       </div>
                     </div>
                   </Button>
@@ -86,10 +83,10 @@ const ManageSkinType: React.FC = () => {
                   <Card className="w-full">
                     <div className="p-3">
                       <DataTable
-                        columns={skinTypeColumn(fetchListSkin)} // Use the new skinTypeColumn
+                        columns={skinTypeColumn(fetchListSkin)}
                         data={data}
-                        filterColumnId="option_name" // Filter by option_name for SkinType
-                        filterPlaceholder="Tìm Loại da" // Updated placeholder
+                        filterColumnId="option_name"
+                        filterPlaceholder="Tìm Loại da"
                       />
                       <div className="mt-4">
                         <PaginationDemo

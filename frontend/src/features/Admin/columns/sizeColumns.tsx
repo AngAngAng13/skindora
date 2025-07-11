@@ -1,4 +1,5 @@
-// src/features/Admin/columns/skinTypeColumn.tsx
+// src/features/Admin/columns/sizeColumns.tsx
+import { Checkbox } from "@radix-ui/react-checkbox";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { MoreHorizontal } from "lucide-react";
@@ -6,8 +7,6 @@ import { useNavigate } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button as ShadcnButton } from "@/components/ui/button";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,42 +15,48 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUpdateStatusSkinType } from "@/hooks/SkinType/useUpdateStatusSkinType";
-import type { SkinType } from "@/types/Filter/skinType";
+import { useUpdateStatusSize } from "@/hooks/Size/useUpdateSkin";
+import { type Size } from "@/types/Filter/size";
 
-export const ActionsCell = ({ row, refetchData }: { row: { original: SkinType }; refetchData: () => void }) => {
+export const ActionsCell = ({ row, refetchData }: { row: { original: Size }; refetchData: () => void }) => {
   const { _id, option_name, state } = row.original;
   const navigate = useNavigate();
+
   const payload = {
     state: state === "ACTIVE" ? "INACTIVE" : "ACTIVE",
   };
-  const { updateStateSkinType, loading } = useUpdateStatusSkinType({
+
+  const { updateStateSize, loading } = useUpdateStatusSize({
     id: String(_id),
     payload,
   });
-  const handleUpdateStatus = () => {
-    updateStateSkinType(refetchData);
+
+  const handleUpdateStatus = async () => {
+    updateStateSize();
+    refetchData();
   };
 
   return (
     <div className="text-right">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
+          <ShadcnButton variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Mở menu</span>
             <MoreHorizontal className="h-4 w-4" />
-          </Button>
+          </ShadcnButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>Copy tên hãng</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>
+            Copy tên kích thước
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/skin-type-detail`)}>Xem chi tiết</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-skin-type`)}>Chỉnh sửa</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/size-detail`)}>Xem chi tiết</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-size`)}>Chỉnh sửa</DropdownMenuItem>
           {state === "ACTIVE" ? (
             <DropdownMenuItem
               disabled={loading}
-              onClick={() => handleUpdateStatus()}
+              onClick={handleUpdateStatus}
               className="font-bold text-red-600 focus:text-red-600"
             >
               {loading ? "Đang xử lý..." : "Vô hiệu hóa"}
@@ -59,7 +64,7 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: SkinType };
           ) : (
             <DropdownMenuItem
               disabled={loading}
-              onClick={() => handleUpdateStatus()}
+              onClick={handleUpdateStatus}
               className="font-bold text-green-600 focus:text-green-600"
             >
               {loading ? "Đang xử lý..." : "Kích hoạt"}
@@ -70,7 +75,9 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: SkinType };
     </div>
   );
 };
-export const skinTypeColumn = (refetchData: () => void): ColumnDef<SkinType>[] => [
+
+// Định nghĩa các cột cho bảng kích thước
+export const sizeColumn = (refetchData: () => void): ColumnDef<Size>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -105,18 +112,16 @@ export const skinTypeColumn = (refetchData: () => void): ColumnDef<SkinType>[] =
     ),
     cell: ({ row }) => <div className="capitalize">{row.getValue("_id")}</div>,
   },
-
   {
     accessorKey: "option_name",
     header: ({ column }) => (
       <ShadcnButton variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Tên Loại da
+        Tên Kích thước
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </ShadcnButton>
     ),
     cell: ({ row }) => <div className="capitalize">{row.getValue("option_name")}</div>,
   },
-
   {
     accessorKey: "category_name",
     header: "Tên Danh mục",
@@ -138,6 +143,9 @@ export const skinTypeColumn = (refetchData: () => void): ColumnDef<SkinType>[] =
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => <ActionsCell row={row} refetchData={refetchData} />,
+    cell: ({ row }) => {
+      // Truyền hàm refetchData xuống ActionsCell
+      return <ActionsCell row={row} refetchData={refetchData} />;
+    },
   },
 ];

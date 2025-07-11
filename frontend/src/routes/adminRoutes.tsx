@@ -29,6 +29,9 @@ import ManageProducts from "@/features/Admin/Product/ManageProduct";
 import ProductDetail from "@/features/Admin/Product/ProductDetail";
 import UpdateDetailProduct from "@/features/Admin/Product/UpdateDetail";
 import ProfileAdmin from "@/features/Admin/Profile/ProfileAdmin";
+import CreateSize from "@/features/Admin/Size/CreateSize";
+import ManageSize from "@/features/Admin/Size/ManageSize";
+import UpdateSize from "@/features/Admin/Size/UpdateSize";
 import CreateSkinType from "@/features/Admin/SkinType/CreateSkinType";
 import ManageSkinType from "@/features/Admin/SkinType/ManageSkinType";
 import SkinTypeDetail from "@/features/Admin/SkinType/SkinTypeDetail";
@@ -234,6 +237,18 @@ const adminRoutes: RouteObject[] = [
       {
         path: "create-product-type",
         element: <CreateProductType />,
+      },
+      {
+        path: "size",
+        element: <ManageSize />,
+      },
+      {
+        path: "create-size",
+        element: <CreateSize />,
+      },
+      {
+        path: ":id/update-size",
+        element: <UpdateSize />,
       },
     ],
   },

@@ -13,11 +13,12 @@ export interface useUpdateStatusSkinTypeProps {
 }
 export const useUpdateStatusSkinType = (params: useUpdateStatusSkinTypeProps) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const updateStateSkinType = useCallback(async () => {
+  const updateStateSkinType = useCallback(async (onSuccessCallback?: () => void) => {
     try {
-      console.log(params.id);
-      const response = await updateStatusFilterSkin({ id: params.id }, params.payload);
-      console.log(response);
+      await updateStatusFilterSkin({ id: params.id }, params.payload);
+      if (onSuccessCallback) {
+        onSuccessCallback();
+      }
     } catch (error) {
       console.error("Failed to update order status:", error);
     } finally {

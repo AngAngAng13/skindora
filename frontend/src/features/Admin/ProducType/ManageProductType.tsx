@@ -41,13 +41,6 @@ const ManageProductType: React.FC = () => {
       page: page,
     }));
   };
-  useEffect(() => {
-    const pageFromURL = Number(searchParams.get("page") || "1");
-    setParams((prev) => ({
-      ...prev,
-      page: pageFromURL,
-    }));
-  }, [searchParams]);
 
   useEffect(() => {
     setHeaderName("Quản Lý Loại Sản phẩm");
