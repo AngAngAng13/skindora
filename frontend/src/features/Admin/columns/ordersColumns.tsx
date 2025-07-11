@@ -17,12 +17,12 @@ import {
 import { useUpdateStatus } from "@/hooks/Orders/useUpdateStatus";
 import type { Order } from "@/types/order";
 
-export const ActionsCell = ({ row }: { row: { original: Order } }) => {
+export const ActionsCell = ({ row, refechData }: { row: { original: Order }; refechData: () => void }) => {
   const navigate = useNavigate();
   const { _id } = row.original;
   const { updateStatus } = useUpdateStatus(String(_id));
   const handleUpdateStatus = () => {
-    updateStatus();
+    updateStatus(refechData);
     // window.location.reload();
   };
   return (
@@ -41,29 +41,12 @@ export const ActionsCell = ({ row }: { row: { original: Order } }) => {
           <DropdownMenuItem onClick={() => navigate(`/admin/order-detail/${_id}`)}>Xem chi tiết</DropdownMenuItem>
           {/* <DropdownMenuItem onClick={() => navigate("")}>Chỉnh sửa</DropdownMenuItem> */}
           <DropdownMenuItem onClick={() => handleUpdateStatus()}>Cập nhật</DropdownMenuItem>
-          {/* {isActive ? (
-            <DropdownMenuItem
-              disabled={loading}
-              onClick={() => handleUpdateStatus()}
-              className="font-bold text-red-600 focus:text-red-600"
-            >
-              {loading ? "Đang xử lý..." : "Vô hiệu hóa"}
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem
-              disabled={loading}
-              onClick={() => handleUpdateStatus()}
-              className="font-bold text-green-600 focus:text-green-600"
-            >
-              {loading ? "Đang xử lý..." : "Kích hoạt"}
-            </DropdownMenuItem>
-          )} */}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
   );
 };
-export const orderColumn: ColumnDef<Order, unknown>[] = [
+export const orderColumn = (refechData: () => void): ColumnDef<Order, unknown>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -181,7 +164,7 @@ export const orderColumn: ColumnDef<Order, unknown>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      return <ActionsCell row={row} />;
+      return <ActionsCell row={row} refetchData={refechData} />;
     },
   },
 ];
