@@ -164,7 +164,7 @@ export const orderColumn = (refechData: () => void): ColumnDef<Order, unknown>[]
   {
     id: "actions",
     cell: ({ row }) => {
-      return <ActionsCell row={row} refetchData={refechData} />;
+      return <ActionsCell row={row} refechData={refechData} />;
     },
   },
 ];
