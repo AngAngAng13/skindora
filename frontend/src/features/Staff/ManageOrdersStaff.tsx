@@ -111,7 +111,7 @@ const ManageOrdersStaff: React.FC = () => {
         </CardHeader>
         <CardContent>
           <DataTable
-            columns={orderColumn}
+            columns={orderColumn(fetchOrder)}
             data={data}
             status={params.status}
             isHaveFilter={true}
