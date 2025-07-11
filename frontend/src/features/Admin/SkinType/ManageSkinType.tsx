@@ -85,7 +85,7 @@ const ManageSkinType: React.FC = () => {
                       <DataTable
                         columns={skinTypeColumn(fetchListSkin)}
                         data={data}
-                        filterColumnId="option_name"
+                        // filterColumnId="option_name"
                         filterPlaceholder="Tìm Loại da"
                       />
                       <div className="mt-4">

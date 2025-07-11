@@ -1,7 +1,16 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
-import { fetchFilterUses } from "@/api/uses";
+import { fetchFilterUses, searchByNameFilterUses } from "@/api/uses";
 import type { Uses } from "@/types/Filter/uses";
+
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+  return debouncedValue;
+};
 
 export const useFetchUses = () => {
   const [loading, setLoading] = useState<boolean>();
@@ -12,6 +21,8 @@ export const useFetchUses = () => {
     totalPages: 1,
     totalRecords: 1,
   });
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const changePage = React.useCallback((page: number) => {
     setParams((prev) => ({ ...prev, page }));
   }, []);
@@ -21,10 +32,19 @@ export const useFetchUses = () => {
   const fetchListUses = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchFilterUses({
-        limit: params.limit,
-        page: params.page,
-      });
+      let response;
+      if (debouncedSearchTerm) {
+        response = await searchByNameFilterUses({
+          option_name: debouncedSearchTerm,
+          limit: params.limit,
+          page: params.page,
+        });
+      } else {
+        response = await fetchFilterUses({
+          limit: params.limit,
+          page: params.page,
+        });
+      }
       setData(response.data);
       setParams((prev) => ({
         ...prev,
@@ -37,7 +57,7 @@ export const useFetchUses = () => {
     } finally {
       setLoading(false);
     }
-  }, [params.limit, params.page]);
+  }, [params.limit, params.page, debouncedSearchTerm]);
   return {
     loading,
     changePage,
@@ -46,5 +66,7 @@ export const useFetchUses = () => {
     data,
     setParams,
     fetchListUses,
+    searchTerm,
+    setSearchTerm,
   };
 };

@@ -94,7 +94,7 @@ const ManageDacTinh: React.FC = () => {
                       <DataTable
                         columns={dacTinhColumn(fetchFilterDacTinh)}
                         data={data}
-                        filterColumnId="option_name"
+                        // filterColumnId="option_name"
                         filterPlaceholder="Tìm đặc tính"
                       />
                       <div className="mt-4">

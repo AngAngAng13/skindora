@@ -85,7 +85,7 @@ const ManageIngredient: React.FC = () => {
                       <DataTable
                         columns={ingredientColumn(fetchFilterIngredient)}
                         data={data}
-                        filterColumnId="option_name"
+                        // filterColumnId="option_name"
                         filterPlaceholder="Tìm Ingredient"
                       />
                       <div className="mt-4">

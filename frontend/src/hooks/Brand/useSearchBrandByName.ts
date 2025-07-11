@@ -16,12 +16,12 @@ export const useSearchBrand = () => {
     totalRecords: 1,
   });
   const [searchName, setSearchName] = useState<string>("");
-  const changePage = useCallback((page: number) => {
-    setParams((prev) => ({ ...prev, page }));
-  }, []);
-  const changeLimit = useCallback((limit: number) => {
-    setParams((prev) => ({ ...prev, limit }));
-  }, []);
+  // const changePage = useCallback((page: number) => {
+  //   setParams((prev) => ({ ...prev, page }));
+  // }, []);
+  // const changeLimit = useCallback((limit: number) => {
+  //   setParams((prev) => ({ ...prev, limit }));
+  // }, []);
   const searchBrandName = useCallback(async () => {
     setLoading(true);
     try {

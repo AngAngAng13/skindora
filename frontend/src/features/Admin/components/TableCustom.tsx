@@ -16,16 +16,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 export interface FilterOptionsProps {
   value: string;
-  label:
+  status?:
     | "SHIPPING"
     | "FAILED"
     | "CANCELLED"
     | "RETURNED"
     | "DELIVERED"
     | "PROCESSING"
+    | "ALL"
     | "CONFIRMED"
-    | "PENDING"
-    | "ALL";
+    | "PENDING";
 }
 
 interface DataTableProps<TData, TValue> {
@@ -34,7 +34,7 @@ interface DataTableProps<TData, TValue> {
 
   isHaveFilter?: boolean;
   filterOptions?: FilterOptionsProps[];
-  callBackFunction?: (status?: FilterOptionsProps["label"]) => void;
+  callBackFunction?: (status?: FilterOptionsProps["status"]) => void;
   status?: string;
 
   filterPlaceholder?: string;
@@ -94,13 +94,13 @@ export function DataTable<TData, TValue>({
           {filterOptions?.map((option) => {
             const handleClick = () => {
               if (callBackFunction) {
-                callBackFunction(option.label as any);
+                callBackFunction(option.status as any);
               }
             };
             return (
               <div key={option.value}>
-                <Button variant={status === option.label ? "default" : "secondary"} onClick={handleClick}>
-                  {option.label}
+                <Button variant={status === option.status ? "default" : "secondary"} onClick={handleClick}>
+                  {option.status}
                 </Button>
               </div>
             );

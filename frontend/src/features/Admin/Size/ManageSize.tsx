@@ -102,8 +102,8 @@ const ManageSize: React.FC = () => {
                       <DataTable
                         columns={sizeColumn(fetchListSize)}
                         data={data}
-                        filterColumnId="option_name" // Assuming your size data has 'option_name' for filtering
-                        filterPlaceholder="Tìm kích thước"
+                        // filterColumnId="option_name" // Assuming your size data has 'option_name' for filtering
+                        // filterPlaceholder="Tìm kích thước"
                       />
                       <div className="mt-4">
                         <PaginationDemo

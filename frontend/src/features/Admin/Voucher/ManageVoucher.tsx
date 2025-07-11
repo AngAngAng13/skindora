@@ -99,8 +99,8 @@ const ManageVoucher: React.FC = () => {
                       <DataTable
                         columns={vouchersColumns}
                         data={voucher}
-                        filterColumnId="code"
-                        filterPlaceholder="Tìm voucher"
+                        // filterColumnId="code"
+                        // filterPlaceholder="Tìm voucher"
                       />
                       <div className="mt-4">
                         <PaginationDemo

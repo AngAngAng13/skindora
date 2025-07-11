@@ -84,6 +84,6 @@ export const useFetchBrand = () => {
     changeLimit,
     searchTerm,
     setSearchTerm,
-    fetchListBrand, // Vẫn trả về để có thể gọi lại thủ công nếu cần (ví dụ: nút refresh)
+    fetchListBrand,
   };
 };

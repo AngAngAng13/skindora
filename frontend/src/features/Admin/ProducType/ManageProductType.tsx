@@ -86,12 +86,7 @@ const ManageProductType: React.FC = () => {
                 <div className="mt-6 w-5/5">
                   <Card className="w-full">
                     <div className="p-3">
-                      <DataTable
-                        columns={productTypeColumn(fetchListFilterProductType)}
-                        data={data}
-                        filterColumnId="option_name"
-                        filterPlaceholder="Tìm Loại sản phẩm"
-                      />
+                      <DataTable columns={productTypeColumn(fetchListFilterProductType)} data={data} />
                       <div className="mt-4">
                         <PaginationDemo
                           totalPages={params.totalPages ?? 1}
