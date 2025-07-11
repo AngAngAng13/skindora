@@ -63,3 +63,18 @@ export const rejectCancelRequest = async (params: ApproveCancelRequestProps) => 
     .patch(`/orders/${params.id}/cancel-request/reject`, params.payload)
     .then((response) => response.data);
 };
+//(staff/admin) statics-order
+export interface OrderStatics {
+  total: number;
+  statusCounts: {
+    RETURNED: number | string;
+    PENDING: number | string;
+    DELIVERED: number | string;
+    CANCELLED: number | string;
+    SHIPPING: number | string;
+    CONFIRMED: number | string;
+  };
+}
+export const StaticsOrder = async () => {
+  return await httpClient.get<API.IResponseAPI<OrderStatics>>("/orders/counts").then((response) => response.data);
+};
