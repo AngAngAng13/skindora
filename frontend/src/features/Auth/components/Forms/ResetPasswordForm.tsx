@@ -139,14 +139,13 @@ export const ResetPasswordForm = () => {
       </CardContent>
       <CardFooter className="flex flex-col space-y-4 text-center">
         <div className="text-muted-foreground text-sm">
-          Remember your password?{" "}
+          Remember your password?
           <Link
             to="/auth/login"
             className="text-primary hover:text-primary/80 font-medium transition-all duration-200 hover:underline"
           >
-            Sign in [cite_start]
-          </Link>{" "}
-          [cite: 240]
+            Sign in 
+          </Link>
         </div>
       </CardFooter>
     </Card>
