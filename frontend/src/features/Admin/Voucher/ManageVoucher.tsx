@@ -18,7 +18,7 @@ import { DataTable } from "../components/TableCustom";
 const ManageVoucher: React.FC = () => {
   const { setHeaderName, headerName } = useHeader();
 
-  const { loading, params, setParams, voucher, fetchAllVoucher } = useFetchVoucher();
+  const { loading, params, setParams, voucher, fetchAllVoucher, searchTerm, setSearchTerm } = useFetchVoucher();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const navigate = useNavigate();
@@ -97,10 +97,11 @@ const ManageVoucher: React.FC = () => {
                   <Card className="w-full">
                     <div className="p-3">
                       <DataTable
-                        columns={vouchersColumns}
+                        columns={vouchersColumns(fetchAllVoucher)}
                         data={voucher}
-                        // filterColumnId="code"
-                        // filterPlaceholder="Tìm voucher"
+                        onSearchChange={setSearchTerm}
+                        searchValue={searchTerm}
+                        filterPlaceholder="Tìm brand theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

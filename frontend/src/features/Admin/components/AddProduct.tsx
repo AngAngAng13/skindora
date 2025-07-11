@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
-import { Link2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -12,62 +11,69 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useFetchBrand } from "@/hooks/Brand/useFetchBrand";
-import {
-  type filter_dac_tinh_type_props,
-  type filter_hsk_ingredient_props,
-  type filter_hsk_product_type_props,
-  type filter_hsk_size_props,
-  type filter_hsk_skin_type_props,
-  type filter_hsk_uses_props,
-  type filter_origin_props,
-  useFetchFilter,
-} from "@/hooks/Filter/useFetchFilter";
+import { useFetchFilter } from "@/hooks/Filter/useFetchActiveFilter";
 import httpClient from "@/lib/axios";
 import type { ProductFormValues } from "@/lib/productSchema";
 import { productSchema } from "@/lib/productSchema";
+import type { Brand } from "@/types/Filter/brand";
+import type { DacTinh } from "@/types/Filter/dactinh";
+import type { Ingredient } from "@/types/Filter/ingredient";
+import type { Origin } from "@/types/Filter/origin";
+import type { ProductType } from "@/types/Filter/productType";
+import type { Size } from "@/types/Filter/size";
+import type { SkinType } from "@/types/Filter/skinType";
 
 import TiptapEditor from "./TiptapEditor";
 
 export default function AddProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uses, setUses] = useState<filter_hsk_uses_props[]>([]);
-  const [productType, setProductType] = useState<filter_hsk_product_type_props[]>([]);
-  const [dactinh, setDactinh] = useState<filter_dac_tinh_type_props[]>([]);
-  const [size, setSize] = useState<filter_hsk_size_props[]>([]);
-  const [ingredient, setIngredient] = useState<filter_hsk_ingredient_props[]>([]);
-  const [skinType, setSkinType] = useState<filter_hsk_skin_type_props[]>([]);
-  const [origin, setOrigin] = useState<filter_origin_props[]>([]);
+  const [uses, setUses] = useState<Brand[]>([]);
+  const [productType, setProductType] = useState<ProductType[]>([]);
+  const [dactinh, setDactinh] = useState<DacTinh[]>([]);
+  const [size, setSize] = useState<Size[]>([]);
+  const [ingredient, setIngredient] = useState<Ingredient[]>([]);
+  const [skinType, setSkinType] = useState<SkinType[]>([]);
+  const [origin, setOrigin] = useState<Origin[]>([]);
+  const [brand, setBrand] = useState<Brand[]>([]);
   const { data: filter, fetchFilter } = useFetchFilter();
-  const { fetchListBrand, data } = useFetchBrand();
+
   useEffect(() => {
-    fetchListBrand();
     fetchFilter();
-  }, [fetchListBrand, fetchFilter]);
+  }, [fetchFilter]);
   useEffect(() => {
-    console.log(filter);
+    if (filter?.filter_brand) {
+      // Access .data here
+      setBrand(filter.filter_brand);
+    }
     if (filter?.filter_hsk_uses) {
+      // Access .data here
       setUses(filter.filter_hsk_uses);
     }
     if (filter?.filter_hsk_product_type) {
+      // Access .data here
       setProductType(filter.filter_hsk_product_type);
     }
     if (filter?.filter_dac_tinh) {
+      // Access .data here
       setDactinh(filter.filter_dac_tinh);
     }
     if (filter?.filter_hsk_size) {
+      // Access .data here
       setSize(filter.filter_hsk_size);
     }
     if (filter?.filter_hsk_ingredient) {
+      // Access .data here
       setIngredient(filter.filter_hsk_ingredient);
     }
     if (filter?.filter_hsk_skin_type) {
+      // Access .data here - THIS IS THE PRIMARY FIX FOR YOUR ERROR
       setSkinType(filter.filter_hsk_skin_type);
     }
     if (filter?.filter_origin) {
+      // Access .data here
       setOrigin(filter.filter_origin);
     }
-  }, [filter, uses, productType]);
+  }, [filter]);
   const navigate = useNavigate();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -78,7 +84,7 @@ export default function AddProductPage() {
       quantity: 0,
       image_on_list: "",
       hover_image_on_list: "",
-      product_detail_url: "",
+      // product_detail_url: "",
       productName_detail: "",
       engName_detail: "",
       description_detail: { rawHtml: "", plainText: "" },
@@ -191,15 +197,8 @@ export default function AddProductPage() {
           <FormItem>
             <FormLabel>{label}</FormLabel>
             <div className="grid grid-cols-1 gap-4 rounded-lg border p-4 md:grid-cols-2">
-              {/* Cột 1: Trình soạn thảo */}
-              {/* ✅ SỬA DÒNG NÀY */}
-              <TiptapEditor
-                // Chỉ truyền chuỗi HTML, không truyền cả object
-                value={field.value?.rawHtml || ""}
-                onChange={field.onChange}
-              />
+              <TiptapEditor value={field.value?.rawHtml || ""} onChange={field.onChange} />
 
-              {/* Cột 2: Khung xem trước (Giữ nguyên) */}
               <div className="prose bg-muted max-w-none rounded-md border p-3">
                 <h4 className="text-muted-foreground mb-2 text-sm font-semibold italic">Xem trước trực tiếp</h4>
                 {field.value && field.value.rawHtml ? (
@@ -332,12 +331,6 @@ export default function AddProductPage() {
                 <div className="md:col-span-2">
                   <h3 className="mb-4 text-lg font-medium">Hình ảnh</h3>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    {/* <ImageUrlInput
-                      control={form.control}
-                      name="image_on_list"
-                      label="URL Ảnh chính (danh sách)"
-                      placeholder="Dán URL ảnh chính..."
-                    /> */}
                     <FormField
                       control={form.control}
                       name="image_on_list"
@@ -345,18 +338,16 @@ export default function AddProductPage() {
                         <FormItem>
                           <FormLabel>URL Ảnh chính (danh sách)</FormLabel>
                           <FormControl>
-                            {/* The Input component remains the same */}
                             <Input type="url" {...field} />
                           </FormControl>
                           <FormMessage />
 
-                          {/* Conditionally render the image preview below the input and message */}
                           {field.value && typeof field.value === "string" && (
                             <img
                               src={field.value}
                               alt="Image Preview"
                               className="mt-4 rounded-md border"
-                              style={{ maxWidth: "200px", maxHeight: "200px" }} // Optional styling
+                              style={{ maxWidth: "200px", maxHeight: "200px" }}
                             />
                           )}
                         </FormItem>
@@ -395,7 +386,7 @@ export default function AddProductPage() {
                   </div>
                 </div>
 
-                <div className="md:col-span-2">
+                {/* <div className="md:col-span-2">
                   <FormField
                     control={form.control}
                     name="product_detail_url"
@@ -428,7 +419,7 @@ export default function AddProductPage() {
                       </FormItem>
                     )}
                   />
-                </div>
+                </div> */}
               </CardContent>
             </Card>
 
@@ -522,7 +513,7 @@ export default function AddProductPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
-                          {data.map((brand) => (
+                          {brand.map((brand) => (
                             <SelectItem
                               key={brand._id}
                               value={brand._id}
@@ -538,7 +529,6 @@ export default function AddProductPage() {
                   )}
                 />
 
-                {/* Skin Type Filter */}
                 <FormField
                   control={form.control}
                   name="filter_hsk_skin_type"
@@ -553,8 +543,8 @@ export default function AddProductPage() {
                         </FormControl>
                         <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
                           {skinType.map((skin) => (
-                            <SelectItem key={skin.filter_ID} value={skin.filter_ID}>
-                              {skin.name}
+                            <SelectItem key={skin._id} value={skin._id}>
+                              {skin.option_name}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -582,8 +572,8 @@ export default function AddProductPage() {
                             (
                               useItem // Renamed 'uses' to 'useItem' for clarity
                             ) => (
-                              <SelectItem key={useItem.filter_ID} value={useItem.filter_ID}>
-                                {useItem.name}
+                              <SelectItem key={useItem._id} value={useItem._id}>
+                                {useItem.option_name}
                               </SelectItem>
                             )
                           )}
@@ -612,8 +602,8 @@ export default function AddProductPage() {
                             (
                               productTypeItem // Renamed 'productType' to 'productTypeItem'
                             ) => (
-                              <SelectItem key={productTypeItem.filter_ID} value={productTypeItem.filter_ID}>
-                                {productTypeItem.name}
+                              <SelectItem key={productTypeItem._id} value={productTypeItem._id}>
+                                {productTypeItem.option_name}
                               </SelectItem>
                             )
                           )}
@@ -642,8 +632,8 @@ export default function AddProductPage() {
                             (
                               originItem // Renamed 'temp' to 'originItem'
                             ) => (
-                              <SelectItem key={originItem.filter_ID} value={originItem.filter_ID}>
-                                {originItem.name}
+                              <SelectItem key={originItem._id} value={originItem._id}>
+                                {originItem.option_name}
                               </SelectItem>
                             )
                           )}
@@ -672,8 +662,8 @@ export default function AddProductPage() {
                             (
                               sizeItem // Renamed 'temp' to 'sizeItem'
                             ) => (
-                              <SelectItem key={sizeItem.filter_ID} value={sizeItem.filter_ID}>
-                                {sizeItem.name}
+                              <SelectItem key={sizeItem._id} value={sizeItem._id}>
+                                {sizeItem.option_name}
                               </SelectItem>
                             )
                           )}
@@ -703,8 +693,8 @@ export default function AddProductPage() {
                             (
                               dactinhItem // Renamed 'temp' to 'dactinhItem'
                             ) => (
-                              <SelectItem key={dactinhItem.filter_ID} value={dactinhItem.filter_ID}>
-                                {dactinhItem.name}
+                              <SelectItem key={dactinhItem._id} value={dactinhItem._id}>
+                                {dactinhItem.option_name}
                               </SelectItem>
                             )
                           )}
@@ -733,8 +723,8 @@ export default function AddProductPage() {
                             (
                               ingredientItem // Renamed 'temp' to 'ingredientItem'
                             ) => (
-                              <SelectItem key={ingredientItem.filter_ID} value={ingredientItem.filter_ID}>
-                                {ingredientItem.name}
+                              <SelectItem key={ingredientItem._id} value={ingredientItem._id}>
+                                {ingredientItem.option_name}
                               </SelectItem>
                             )
                           )}
