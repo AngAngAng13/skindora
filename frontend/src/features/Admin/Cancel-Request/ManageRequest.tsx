@@ -6,9 +6,7 @@ import { Card } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchCancelRequest } from "@/hooks/CancelRequest/useFetchCancelRequest";
 
-// Giả sử đường dẫn hook
 import { cancelRequestColumns } from "../columns/cancelRequestColumns";
-// Cần tạo file này
 import { PaginationDemo } from "../components/Pagination";
 import { DataTable } from "../components/TableCustom";
 
@@ -49,12 +47,7 @@ const ManageRequest: React.FC = () => {
                 <div className="mt-6 w-5/5">
                   <Card className="w-full">
                     <div className="p-3">
-                      <DataTable
-                        columns={cancelRequestColumns} // Sử dụng columns cho request
-                        data={data}
-                        filterColumnId="UserID" // Cột để lọc, ví dụ: UserID
-                        filterPlaceholder="Tìm yêu cầu..." // Placeholder cho ô tìm kiếm
-                      />
+                      <DataTable columns={cancelRequestColumns} data={data} />
                       <div className="mt-4">
                         <PaginationDemo
                           totalPages={params.totalPages ?? 1}

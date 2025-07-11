@@ -35,7 +35,6 @@ const ManageProduct: React.FC = () => {
               </Button>
             </div>
           </div>
-
           <div>
             <ProductOverview />
           </div>

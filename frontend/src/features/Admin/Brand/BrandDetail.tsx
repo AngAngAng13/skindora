@@ -2,19 +2,15 @@ import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-// Import useNavigate
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-// Shadcn UI Components
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-// Import Button component
 import { useFetchBrandByID } from "@/hooks/Brand/useFetchBrandByID";
 
 const BrandDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate();
   const { data: brandData, fetchBrandByID, loading } = useFetchBrandByID(String(id));
 
   useEffect(() => {
@@ -26,7 +22,7 @@ const BrandDetail = () => {
   }, [brandData]);
 
   const handleGoBack = () => {
-    navigate(-1); // Navigate back to the previous page in history
+    navigate(-1);
   };
 
   if (loading) {
@@ -59,8 +55,6 @@ const BrandDetail = () => {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Brand Details</h1>
         <Button onClick={handleGoBack} variant="outline">
-          {" "}
-          {/* Using 'outline' variant for a subtle look */}
           Quay lại
         </Button>
       </div>
@@ -70,7 +64,6 @@ const BrandDetail = () => {
           <CardDescription className="text-lg text-gray-600">Details for Brand ID: {brand._id}</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
-          {/* Combined and styled Category Information */}
           <div>
             <Label htmlFor="category-info" className="text-sm font-medium text-gray-700">
               Category
