@@ -7,12 +7,9 @@ import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
-
 import { useFetchOrigin } from "@/hooks/Origin/useFetchOrigin";
 
-
 import { originColumn } from "../columns/originColumns";
-
 import { PaginationDemo } from "../components/Pagination";
 import { DataTable } from "../components/TableCustom";
 

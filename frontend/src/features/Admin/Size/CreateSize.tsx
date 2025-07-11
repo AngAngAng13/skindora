@@ -24,7 +24,6 @@ const CreateSize: React.FC = () => {
     resolver: zodResolver(createSizeSchema),
     defaultValues: {
       option_name: "",
-      description: "", // New field for size
       category_name: "",
       category_param: "",
       state: "ACTIVE",
@@ -123,24 +122,7 @@ const CreateSize: React.FC = () => {
                         </FormItem>
                       )}
                     />
-                    {/* Form field for Description */}
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Mô tả kích thước</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Nhập mô tả cho kích thước (ví dụ: Kích thước nhỏ, Kích thước giày 38)"
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+
                     {/* Form field for Category Name */}
                     <FormField
                       control={form.control}

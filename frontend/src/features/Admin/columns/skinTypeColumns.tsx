@@ -103,7 +103,7 @@ export const skinTypeColumn = (refetchData: () => void): ColumnDef<SkinType>[] =
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </ShadcnButton>
     ),
-    cell: ({ row }) => <div className="capitalize">{row.getValue("_id")}</div>,
+    cell: ({ row }) => <div className="pl-2 font-medium text-blue-600">{row.getValue("_id")}</div>,
   },
 
   {

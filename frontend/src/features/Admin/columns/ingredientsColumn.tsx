@@ -1,12 +1,11 @@
-import { Checkbox } from "@radix-ui/react-checkbox";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
-import { Button as ShadcnButton } from "@/components/ui/button";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -73,18 +72,23 @@ export const ingredientColumn = (refetchData: () => void): ColumnDef<Ingredient>
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
+      <>
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </>
     ),
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <>
+        <Checkbox
+          className="ml-0"
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -93,7 +97,8 @@ export const ingredientColumn = (refetchData: () => void): ColumnDef<Ingredient>
     accessorKey: "_id",
     header: ({ column }) => (
       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Mã Voucher <ArrowUpDown className="ml-2 h-4 w-4" />
+        ID
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
@@ -103,10 +108,10 @@ export const ingredientColumn = (refetchData: () => void): ColumnDef<Ingredient>
   {
     accessorKey: "option_name",
     header: ({ column }) => (
-      <ShadcnButton variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
         Tên Ingredient
         <ArrowUpDown className="ml-2 h-4 w-4" />
-      </ShadcnButton>
+      </Button>
     ),
     cell: ({ row }) => <div className="capitalize">{row.getValue("option_name")}</div>,
   },

@@ -16,7 +16,7 @@ export const useUpdateStatusIngredient = (params: useUpdateIngredientFilterProps
 
   const updateStateIngredient = useCallback(async (onSuccessCallback?: () => void) => {
     try {
-      const response = await updateStatusFilterIngredient({ id: params.id }, params.payload);
+      await updateStatusFilterIngredient({ id: params.id }, params.payload);
       if (onSuccessCallback) {
         onSuccessCallback();
       }

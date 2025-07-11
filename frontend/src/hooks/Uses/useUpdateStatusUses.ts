@@ -15,7 +15,7 @@ export const useUpdateStatusFilterUses = (params: useUpdateStatusSkinTypeProps) 
   const [loading, setLoading] = useState<boolean>(false);
   const updateStateFilterUses = useCallback(async (onSuccessCallback?: () => void) => {
     try {
-      const response = await updateStatusFilterUses({ id: params.id }, params.payload);
+      await updateStatusFilterUses({ id: params.id }, params.payload);
       if (onSuccessCallback) {
         onSuccessCallback();
       }

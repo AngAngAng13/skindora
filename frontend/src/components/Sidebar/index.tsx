@@ -1,5 +1,4 @@
 import {
-  BarChart4,
   // For "Quản lý Product Type"
   Droplet,
   // For "Quản lý Skin Type" (distinct from 'Leaf' used for 'loại da')
@@ -41,11 +40,11 @@ const items = [
   { title: "Tổng quan", url: "/admin", icon: Home },
   { title: "Hồ sơ", url: "/admin/profile", icon: User2 },
   { title: "Khách hàng", url: "/admin/customers", icon: UsersRound },
-  {
-    title: "Thống kê",
-    url: "/admin/statics",
-    icon: BarChart4,
-  },
+  // {
+  //   title: "Thống kê",
+  //   url: "/admin/statics",
+  //   icon: BarChart4,
+  // },
   {
     title: "Quản lý voucher",
     url: "/admin/voucher",

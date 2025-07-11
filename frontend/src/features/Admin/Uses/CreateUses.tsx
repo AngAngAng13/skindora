@@ -27,7 +27,6 @@ const CreateUses: React.FC = () => {
     resolver: zodResolver(createUsesSchema),
     defaultValues: {
       option_name: "",
-      description: "",
       category_name: "",
       category_param: "",
       state: "ACTIVE",
@@ -115,24 +114,6 @@ const CreateUses: React.FC = () => {
                           <FormControl>
                             <Input
                               placeholder="Nhập tên Công dụng (ví dụ: Dưỡng ẩm, Chống lão hóa)"
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    {/* Trường description */}
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Mô tả</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Nhập mô tả (ví dụ: Giúp da mềm mịn và đủ ẩm)"
                               {...field}
                               value={field.value || ""}
                             />

@@ -57,7 +57,7 @@ const UpdateOrigin: React.FC = () => {
         option_name: originToEdit.option_name,
         category_name: originToEdit.category_name,
         category_param: originToEdit.category_param,
-        state: originToEdit.state as "ACTIVE" | "INACTIVE", // Populate with fetched state
+        state: originToEdit.state as "ACTIVE" | "INACTIVE",
       });
     }
   }, [fetchedOriginData, form]);
@@ -71,15 +71,15 @@ const UpdateOrigin: React.FC = () => {
 
     try {
       // Adjust the API endpoint for updating an origin
-      const response = await httpClient.put(`/admin/manage-filters/update-filter-hsk-origin/${id}`, payload); // ASSUMED API ENDPOINT
+      const response = await httpClient.put(`/admin/manage-filters/update-filter-hsk-origin/${id}`, payload);
 
       console.log(response);
       if (response.status === 200) {
         toast.success("Thành công!", {
-          description: "Thông tin Xuất xứ đã được cập nhật.", // Success message for Origin
+          description: "Thông tin Xuất xứ đã được cập nhật.",
         });
 
-        navigate("/admin/origin"); // Navigate back to Origin list
+        navigate("/admin/origin");
       }
     } catch (error: unknown) {
       let errorMessage = "Có lỗi không xác định xảy ra.";
@@ -106,6 +106,7 @@ const UpdateOrigin: React.FC = () => {
         description: errorMessage,
       });
     } finally {
+      console.log("Submit finished, isSubmitting set to false."); // <-- Thêm dòng này
       setIsSubmitting(false);
     }
   };
@@ -230,7 +231,7 @@ const UpdateOrigin: React.FC = () => {
                             </FormControl>
                             <SelectContent>
                               <SelectItem value="ACTIVE">ACTIVE</SelectItem>
-                              {/* <SelectItem value="INACTIVE">INACTIVE</SelectItem> */}
+                              <SelectItem value="INACTIVE">INACTIVE</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

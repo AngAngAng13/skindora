@@ -243,7 +243,7 @@ const UpdateProductType: React.FC = () => {
                             disabled={isSubmitting} // Vô hiệu hóa khi đang gửi form
                           >
                             <FormControl>
-                              <SelectTrigger>
+                              <SelectTrigger disabled>
                                 <SelectValue placeholder="Chọn trạng thái" />
                               </SelectTrigger>
                             </FormControl>

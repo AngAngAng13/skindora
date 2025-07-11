@@ -26,7 +26,7 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: Origin }; r
     state: state === "ACTIVE" ? "INACTIVE" : "ACTIVE",
   };
   const { updateStateOrigin, loading } = useUpdateStatusOrigin({ id: String(_id), payload });
-  const handleUpdateStatus =  () => {
+  const handleUpdateStatus = () => {
     updateStateOrigin(refetchData);
   };
   return (
@@ -103,7 +103,7 @@ export const originColumn = (refetchData: () => void): ColumnDef<Origin>[] => [
     cell: ({ row }) => {
       // Có thể cắt ngắn ID nếu quá dài
       const id = row.getValue("_id") as string;
-      return <div className="ml-3 py-3 font-mono">{id.substring(0, 10)}...</div>;
+      return <div className="pl-2 font-medium text-blue-600">{id.substring(0, 10)}...</div>;
     },
   },
   {

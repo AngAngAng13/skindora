@@ -23,7 +23,7 @@ export const ActionsCell = ({ row }: { row: { original: Order } }) => {
   const { updateStatus } = useUpdateStatus(String(_id));
   const handleUpdateStatus = () => {
     updateStatus();
-    window.location.reload();
+    // window.location.reload();
   };
   return (
     <div className="text-right">
@@ -99,7 +99,7 @@ export const orderColumn: ColumnDef<Order, unknown>[] = [
     cell: ({ row }) => {
       // Có thể cắt ngắn ID nếu quá dài
       const id = row.getValue("_id") as string;
-      return <div className="ml-3 py-3 font-mono">{id.substring(0, 10)}...</div>;
+      return <div className="pl-2 font-medium text-blue-600">{id.substring(0, 10)}...</div>;
     },
   },
 

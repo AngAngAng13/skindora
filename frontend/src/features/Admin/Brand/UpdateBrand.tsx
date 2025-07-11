@@ -130,7 +130,7 @@ const UpdateBrand: React.FC = () => {
           className="hover:bg-transparent hover:text-green-600"
           variant="ghost"
           onClick={() => {
-            navigate("/admin/brands"); // Navigate back to brand list
+            navigate("/admin/brand");
           }}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
