@@ -18,7 +18,8 @@ const ManageProductType: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { loading, data, fetchListFilterProductType, params, setParams } = useFetchFilterProductType();
+  const { loading, data, fetchListFilterProductType, params, setParams, searchTerm, setSearchTerm } =
+    useFetchFilterProductType();
 
   useEffect(() => {
     fetchListFilterProductType();
@@ -89,8 +90,9 @@ const ManageProductType: React.FC = () => {
                       <DataTable
                         columns={productTypeColumn(fetchListFilterProductType)}
                         data={data}
-                        filterColumnId="option_name"
-                        filterPlaceholder="Tìm Loại sản phẩm"
+                        onSearchChange={setSearchTerm}
+                        searchValue={searchTerm}
+                        filterPlaceholder="Tìm product-type theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

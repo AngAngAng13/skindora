@@ -3,6 +3,7 @@ import { Edit, Eye, Loader2, Package, Star, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -75,7 +76,6 @@ export function ProductOverview() {
   } = useFetchProduct();
   const { data: brand, fetchListBrand } = useFetchBrand();
 
-  // State for selected filter values
   const [selectedBrand, setSelectedBrand] = useState<string>("");
   const [selectedUses, setSelectedUses] = useState<string>("");
   const [selectedProductType, setSelectedProductType] = useState<string>("");
@@ -85,7 +85,6 @@ export function ProductOverview() {
   const [selectedSkinType, setSelectedSkinType] = useState<string>("");
   const [selectedOrigin, setSelectedOrigin] = useState<string>("");
 
-  // State for filter options data
   const [uses, setUses] = useState<filter_hsk_uses_props[]>([]);
   const [productType, setProductType] = useState<filter_hsk_product_type_props[]>([]);
   const [dactinh, setDactinh] = useState<filter_dac_tinh_type_props[]>([]);
@@ -96,14 +95,12 @@ export function ProductOverview() {
 
   const { data: filter, fetchFilter } = useFetchFilter();
 
-  // State to manage expanded/collapsed sections for the filters (Accordion behavior)
-  const [expandedSection, setExpandedSection] = useState<string | null>("skin-type"); // Default to 'Loại da' open initially
+  const [expandedSection, setExpandedSection] = useState<string | null>("skin-type");
 
   const toggleSection = (sectionName: string) => {
     setExpandedSection(expandedSection === sectionName ? null : sectionName);
   };
 
-  // Helper component for collapsible filter sections with improved styling
   const FilterSection = ({
     title,
     children,
@@ -130,12 +127,7 @@ export function ProductOverview() {
       {expandedSection === sectionName && (
         <div className="animate-slide-down bg-white px-3 pb-3">
           {" "}
-          {/* Reduced top padding here */}
-          <div className="custom-scrollbar max-h-[150px] overflow-y-auto">
-            {" "}
-            {/* Added max-height and overflow-y-auto */}
-            {children}
-          </div>
+          <div className="custom-scrollbar max-h-[150px] overflow-y-auto"> {children}</div>
         </div>
       )}
     </div>
@@ -152,7 +144,6 @@ export function ProductOverview() {
     }).format(priceValue);
   };
 
-  // Function to clear all selected filters
   const clearAllFilters = () => {
     setSelectedBrand("");
     setSelectedUses("");
@@ -162,7 +153,6 @@ export function ProductOverview() {
     setSelectedIngredient("");
     setSelectedSkinType("");
     setSelectedOrigin("");
-    // After clearing states, the useEffect below will trigger fetchListProduct with empty filters
   };
 
   useEffect(() => {
@@ -283,14 +273,12 @@ export function ProductOverview() {
                 </SelectContent>
               </Select>
             </FilterSection>
-            {/* Skin Type Filter (as clickable items/checkboxes) */}
             <FilterSection title="Loại da" sectionName="skin-type">
               <div className="space-y-1">
                 {skinType.map((item) => (
                   <div
                     key={item.filter_ID}
                     className={`cursor-pointer rounded-md px-2 py-1 text-sm transition-colors duration-200 ${
-                      // Smaller padding and font
                       selectedSkinType === item.filter_ID
                         ? "bg-blue-100 font-medium text-blue-800"
                         : "text-gray-700 hover:bg-gray-50"
@@ -302,14 +290,12 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            {/* Product Type Filter */}
             <FilterSection title="Loại sản phẩm" sectionName="product-type">
               <div className="space-y-1">
                 {productType.map((item) => (
                   <div
                     key={item.filter_ID}
                     className={`cursor-pointer rounded-md px-2 py-1 text-sm transition-colors duration-200 ${
-                      // Smaller padding and font
                       selectedProductType === item.filter_ID
                         ? "bg-blue-100 font-medium text-blue-800"
                         : "text-gray-700 hover:bg-gray-50"
@@ -321,7 +307,6 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            {/* Ingredient Filter */}
             <FilterSection title="Thành phần" sectionName="ingredient">
               <div className="space-y-1">
                 {ingredient.map((item) => (
@@ -340,7 +325,6 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            {/* Uses Filter */}
             <FilterSection title="Công dụng" sectionName="uses">
               <div className="space-y-1">
                 {uses.map((item) => (
@@ -378,14 +362,12 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            {/* Dac Tinh Filter */}
             <FilterSection title="Đặc tính" sectionName="dactinh">
               <div className="space-y-1">
                 {dactinh.map((item) => (
                   <div
                     key={item.filter_ID}
                     className={`cursor-pointer rounded-md px-2 py-1 text-sm transition-colors duration-200 ${
-                      // Smaller padding and font
                       selectedDactinh === item.filter_ID
                         ? "bg-blue-100 font-medium text-blue-800"
                         : "text-gray-700 hover:bg-gray-50"
@@ -397,14 +379,12 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            {/* Size Filter (last one, so no bottom border in FilterSection itself) */}
             <FilterSection title="Kích cỡ" sectionName="size" hasNoBorder={true}>
               <div className="space-y-1">
                 {size.map((item) => (
                   <div
                     key={item.filter_ID}
                     className={`cursor-pointer rounded-md px-2 py-1 text-sm transition-colors duration-200 ${
-                      // Smaller padding and font
                       selectedSize === item.filter_ID
                         ? "bg-blue-100 font-medium text-blue-800"
                         : "text-gray-700 hover:bg-gray-50"
@@ -418,11 +398,9 @@ export function ProductOverview() {
             </FilterSection>
           </div>
 
-          {/* Main Content - Right Column */}
           <div className="flex-1 space-y-6">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {" "}
-              {/* Added sm:grid-cols-2 for better responsiveness */}
               <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
@@ -494,7 +472,7 @@ export function ProductOverview() {
                           <h3 className="line-clamp-2 font-medium text-gray-900">{product.name_on_list}</h3>
                           <p className="text-sm text-gray-600">{product.engName_on_list}</p>
                           <div className="mt-2 flex flex-wrap items-center gap-2">
-                            {/* <Badge variant="secondary">{product.filter_origin}</Badge> */}
+                            <Badge variant="secondary">{product.filter_origin}</Badge>
                             <span className="text-lg font-semibold text-green-600">
                               {formatPrice(product.price_on_list)}
                             </span>

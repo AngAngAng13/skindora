@@ -17,7 +17,8 @@ const ManageIngredient: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { loading, data, fetchFilterIngredient, params, setParams } = useFetchFilterIngredient();
+  const { loading, data, fetchFilterIngredient, params, setParams, searchTerm, setSearchTerm } =
+    useFetchFilterIngredient();
 
   useEffect(() => {
     fetchFilterIngredient();
@@ -85,7 +86,8 @@ const ManageIngredient: React.FC = () => {
                       <DataTable
                         columns={ingredientColumn(fetchFilterIngredient)}
                         data={data}
-                        filterColumnId="option_name"
+                        onSearchChange={setSearchTerm}
+                        searchValue={searchTerm}
                         filterPlaceholder="Tìm Ingredient"
                       />
                       <div className="mt-4">

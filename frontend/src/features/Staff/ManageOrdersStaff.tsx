@@ -27,14 +27,14 @@ const ManageOrdersStaff: React.FC = () => {
   };
 
   const filterOptions: FilterOptionsProps[] = [
-    { value: "", label: "ALL" as const },
-    { value: "failed", label: "FAILED" as const },
-    { value: "shipping", label: "SHIPPING" as const },
-    { value: "delivered", label: "DELIVERED" as const },
-    { value: "cancelled", label: "CANCELLED" as const },
-    { value: "returned", label: "RETURNED" as const },
-    { value: "confirmed", label: "CONFIRMED" as const },
-    { value: "pending", label: "PENDING" as const },
+    { value: "", status: "ALL" as const },
+    { value: "failed", status: "FAILED" as const },
+    { value: "shipping", status: "SHIPPING" as const },
+    { value: "delivered", status: "DELIVERED" as const },
+    { value: "cancelled", status: "CANCELLED" as const },
+    { value: "returned", status: "RETURNED" as const },
+    { value: "confirmed", status: "CONFIRMED" as const },
+    { value: "pending", status: "PENDING" as const },
   ];
 
   return (
@@ -56,8 +56,6 @@ const ManageOrdersStaff: React.FC = () => {
                     columns={orderColumn}
                     data={data}
                     status={params.status}
-                    filterColumnId="_id"
-                    filterPlaceholder="Tìm khách hàng"
                     isHaveFilter={true}
                     filterOptions={filterOptions}
                     callBackFunction={changeStatus}

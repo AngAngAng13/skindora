@@ -44,11 +44,17 @@ export const updateStatusFilterDactinh = async (params: IDFilterDacTinhProps, pa
 //search-by-name(filter_hsk_dactinh)
 export interface SearchProps {
   option_name: string;
+  limit?: string | number;
+  page?: string | number;
+  totalPages?: string | number;
+  totalRecords?: number;
 }
 export const searchByNameFilterDactinh = async (params: SearchProps) => {
   return await httpClient
-    .get("/admin/manage-filters/search-filter-dac-tinh", {
-      option_name: params.option_name,
+    .get<API.IResponseSearch>("/admin/manage-filters/search-filter-dac-tinh", {
+      limit: params.limit,
+      page: params.page,
+      keyword: params.option_name,
     })
     .then((response) => response.data);
 };

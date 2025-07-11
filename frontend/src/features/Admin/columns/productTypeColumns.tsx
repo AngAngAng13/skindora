@@ -117,11 +117,6 @@ export const productTypeColumn = (refetchData: () => void): ColumnDef<ProductTyp
     cell: ({ row }) => <div className="capitalize">{row.getValue("option_name")}</div>,
   },
   {
-    accessorKey: "description",
-    header: "Mô tả",
-    cell: ({ row }) => <div>{row.getValue("description")}</div>,
-  },
-  {
     accessorKey: "category_name",
     header: "Tên Danh mục",
     cell: ({ row }) => <div className="capitalize">{row.getValue("category_name")}</div>,

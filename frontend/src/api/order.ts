@@ -4,7 +4,16 @@ import type { Order, OrderAPIResult } from "@/types/order";
 export interface FetchListOrderProps {
   limit?: string | number;
   page?: string | number;
-  status?: "SHIPPING" | "FAILED" | "CANCELLED" | "RETURNED" | "DELIVERED" | "PROCESSING" | "ALL";
+  status?:
+    | "SHIPPING"
+    | "FAILED"
+    | "CANCELLED"
+    | "RETURNED"
+    | "DELIVERED"
+    | "PROCESSING"
+    | "ALL"
+    | "CONFIRMED"
+    | "PENDING";
   totalPages?: string | number;
   totalRecords?: number;
 }

@@ -17,8 +17,8 @@ const ManageUses: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
   const [searchParams, setSearchParams] = useSearchParams();
-  // Use the new useFetchUses hook
-  const { loading, data, fetchListUses, params, setParams } = useFetchUses();
+
+  const { loading, data, fetchListUses, params, setParams, searchTerm, setSearchTerm } = useFetchUses();
 
   useEffect(() => {
     fetchListUses();
@@ -73,7 +73,7 @@ const ManageUses: React.FC = () => {
                         <Plus />
                       </div>
                       <div>
-                        <span className="text-sm font-semibold">Tạo Công dụng mới</span> {/* Button text for Uses */}
+                        <span className="text-sm font-semibold">Tạo Công dụng mới</span> 
                       </div>
                     </div>
                   </Button>
@@ -85,10 +85,11 @@ const ManageUses: React.FC = () => {
                   <Card className="w-full">
                     <div className="p-3">
                       <DataTable
-                        columns={usesColumn(fetchListUses)} // Use the new usesColumn
+                        columns={usesColumn(fetchListUses)} 
                         data={data}
-                        filterColumnId="option_name" // Filter by option_name for Uses
-                        filterPlaceholder="Tìm Công dụng" // Updated placeholder
+                        onSearchChange={setSearchTerm}
+                        searchValue={searchTerm}
+                        filterPlaceholder="Tìm uses theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

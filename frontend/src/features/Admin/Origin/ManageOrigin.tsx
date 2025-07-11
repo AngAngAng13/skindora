@@ -18,7 +18,7 @@ const ManageOrigin: React.FC = () => {
   const { setHeaderName, headerName } = useHeader();
   const [searchParams, setSearchParams] = useSearchParams();
   // Use the new useFetchOrigin hook
-  const { loading, data, fetchListOrigin, params, setParams } = useFetchOrigin();
+  const { loading, data, fetchListOrigin, params, setParams, searchTerm, setSearchTerm } = useFetchOrigin();
 
   useEffect(() => {
     fetchListOrigin();
@@ -73,7 +73,7 @@ const ManageOrigin: React.FC = () => {
                         <Plus />
                       </div>
                       <div>
-                        <span className="text-sm font-semibold">Tạo Xuất xứ mới</span> {/* Button text for Origin */}
+                        <span className="text-sm font-semibold">Tạo Xuất xứ mới</span>
                       </div>
                     </div>
                   </Button>
@@ -85,10 +85,11 @@ const ManageOrigin: React.FC = () => {
                   <Card className="w-full">
                     <div className="p-3">
                       <DataTable
-                        columns={originColumn(fetchListOrigin)} // Use the new originColumn
+                        columns={originColumn(fetchListOrigin)}
                         data={data}
-                        filterColumnId="option_name" // Filter by option_name for Origin
-                        filterPlaceholder="Tìm Xuất xứ" // Updated placeholder
+                        onSearchChange={setSearchTerm}
+                        searchValue={searchTerm}
+                        filterPlaceholder="Tìm brand theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

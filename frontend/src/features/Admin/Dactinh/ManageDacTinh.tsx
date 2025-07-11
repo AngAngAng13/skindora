@@ -19,7 +19,7 @@ const ManageDacTinh: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { loading, data, fetchFilterDacTinh, params, setParams } = useFetchFilterDacTinh();
+  const { loading, data, fetchFilterDacTinh, params, setParams, searchTerm, setSearchTerm } = useFetchFilterDacTinh();
 
   useEffect(() => {
     fetchFilterDacTinh();
@@ -94,8 +94,9 @@ const ManageDacTinh: React.FC = () => {
                       <DataTable
                         columns={dacTinhColumn(fetchFilterDacTinh)}
                         data={data}
-                        filterColumnId="option_name"
-                        filterPlaceholder="Tìm đặc tính"
+                        onSearchChange={setSearchTerm}
+                        searchValue={searchTerm}
+                        filterPlaceholder="Tìm đặc tính theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

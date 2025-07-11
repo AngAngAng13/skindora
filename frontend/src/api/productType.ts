@@ -45,11 +45,17 @@ export const updateStatusFilterProductType = async (params: IDFilterProductTypeP
 //search-by-name(filter_hsk_product_type)
 export interface SearchProps {
   option_name: string;
+  limit?: string | number;
+  page?: string | number;
+  totalPages?: string | number;
+  totalRecords?: number;
 }
 export const searchByNameFilterProductType = async (params: SearchProps) => {
   return await httpClient
-    .get("/admin/manage-filters/search-filter-hsk-product-type", {
-      option_name: params.option_name,
+    .get<API.IResponseSearch>("/admin/manage-filters/search-filter-hsk-product-type", {
+      limit: params.limit,
+      page: params.page,
+      keyword: params.option_name,
     })
     .then((response) => response.data);
 };

@@ -16,8 +16,9 @@ import { DataTable } from "../components/TableCustom";
 const ManageBrand: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
-  const { loading, data, fetchListBrand, params, setParams } = useFetchBrand();
+  const { loading, data, fetchListBrand, params, setParams, searchTerm, setSearchTerm } = useFetchBrand();
   const [searchParams, setSearchParams] = useSearchParams();
+
   useEffect(() => {
     fetchListBrand();
   }, [params.page]);
@@ -83,8 +84,9 @@ const ManageBrand: React.FC = () => {
                       <DataTable
                         columns={brandsColumn(fetchListBrand)}
                         data={data}
-                        filterColumnId="option_name"
-                        filterPlaceholder="Tìm brand"
+                        onSearchChange={setSearchTerm}
+                        searchValue={searchTerm}
+                        filterPlaceholder="Tìm brand theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

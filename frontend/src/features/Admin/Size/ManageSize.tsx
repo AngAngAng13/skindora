@@ -22,7 +22,7 @@ const ManageSize: React.FC = () => {
   const { setHeaderName, headerName } = useHeader();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const { loading, data, fetchListSize, params, setParams } = useFetchSize();
+  const { loading, data, fetchListSize, params, setParams, searchTerm, setSearchTerm } = useFetchSize();
 
   useEffect(() => {
     fetchListSize();
@@ -102,8 +102,9 @@ const ManageSize: React.FC = () => {
                       <DataTable
                         columns={sizeColumn(fetchListSize)}
                         data={data}
-                        filterColumnId="option_name" // Assuming your size data has 'option_name' for filtering
-                        filterPlaceholder="Tìm kích thước"
+                        onSearchChange={setSearchTerm}
+                        searchValue={searchTerm}
+                        filterPlaceholder="Tìm size theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

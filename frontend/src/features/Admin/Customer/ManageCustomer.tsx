@@ -139,12 +139,7 @@ const ManageCustomer: React.FC = () => {
                 <div className="mt-3 w-5/5">
                   <Card className="w-5/5">
                     <div className="p-3">
-                      <DataTable
-                        columns={userColumn}
-                        data={allUser}
-                        filterColumnId="username"
-                        filterPlaceholder="Tìm khách hàng"
-                      />
+                      <DataTable columns={userColumn} data={allUser} filterPlaceholder="Tìm khách hàng" />
                       <div className="mt-4">
                         <PaginationDemo
                           totalPages={params.totalPages ?? 1}
