@@ -98,7 +98,7 @@ class UsersService {
   private signForgotPasswordToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     return signToken({
       payload: { user_id, token_type: TokenType.ForgotPasswordToken, verify },
-      options: { expiresIn: '7d' },
+      options: { expiresIn: '1d' },
       privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
     })
   }
@@ -187,7 +187,17 @@ class UsersService {
     return { access_token, refresh_token }
   }
 
-  async forgotPassword({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+  async forgotPassword({
+    user_id,
+    verify,
+    email,
+    first_name
+  }: {
+    user_id: string
+    verify: UserVerifyStatus
+    email: string
+    first_name: string
+  }) {
     const forgot_password_token = await this.signForgotPasswordToken({
       user_id,
       verify
@@ -200,9 +210,38 @@ class UsersService {
         }
       }
     ])
-    console.log(forgot_password_token)
+
+    //mail
+    try {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_APP,
+          pass: process.env.EMAIL_PASSWORD_APP
+        }
+      })
+
+      // const resetURL = `${process.env.FRONTEND_URL}/reset-password?token=${forgot_password_token}`
+      const resetURL = `http://localhost:${process.env.PORT}/users/verify-forgot-password?forgot_password_token=${forgot_password_token}`
+
+      const htmlContent = readEmailTemplate('forgot-password.html', {
+        userName: first_name,
+        resetURL: resetURL
+      })
+
+      const mailOptions = {
+        from: `"SKINDORA" <${process.env.EMAIL_APP}>`,
+        to: email,
+        subject: 'Yêu cầu đặt lại mật khẩu cho tài khoản SKINDORA',
+        html: htmlContent
+      }
+
+      transporter.sendMail(mailOptions)
+      console.log('Forgot password email sent successfully to:', email)
+    } catch (error) {
+      console.error('Error sending forgot-password email:', error)
+    }
     return { message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD }
-    //chỗ này làm email to reset password
   }
 
   async resetPassword({ user_id, password }: { user_id: string; password: string }) {
