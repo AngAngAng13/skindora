@@ -50,3 +50,51 @@ export const fetchProductByStaff = async (params: FetchProductProps) => {
     })
     .then((response) => response.data);
 };
+
+//get-all-out-of-stock-product
+export interface FetchOutOfStockProductProps {
+  limit?: string | number;
+  page?: string | number;
+  totalPages?: string | number;
+  totalRecords?: number;
+}
+export const fetchOutOfStockProduct = async (params: FetchOutOfStockProductProps) => {
+  return await httpClient
+    .get<API.IResponseSearch<ProductFE>>("/admin/manage-products/out-of-stock", {
+      limit: params.limit,
+      page: params.page,
+    })
+    .then((response) => response.data);
+};
+
+//get-low-stock-product
+export interface FetchLowStockProductProps {
+  limit?: string | number;
+  page?: string | number;
+  totalPages?: string | number;
+  totalRecords?: number;
+}
+export const fetchLowStockProduct = async (params: FetchLowStockProductProps) => {
+  return await httpClient
+    .get<API.IResponseSearch<ProductFE>>("/admin/manage-products/low-stock", {
+      limit: params.limit,
+      page: params.page,
+    })
+    .then((response) => response.data);
+};
+
+//get-low-stock-product
+export interface FetchOnSaleProductProps {
+  limit?: string | number;
+  page?: string | number;
+  totalPages?: string | number;
+  totalRecords?: number;
+}
+export const fetchOnSaleProduct = async (params: FetchOnSaleProductProps) => {
+  return await httpClient
+    .get<API.IResponseSearch<ProductFE>>("/admin/manage-products/on-sale", {
+      limit: params.limit,
+      page: params.page,
+    })
+    .then((response) => response.data);
+};

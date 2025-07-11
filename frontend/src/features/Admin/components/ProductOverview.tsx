@@ -26,7 +26,10 @@ import type {
   filter_origin_props,
 } from "@/hooks/Filter/useFetchAllFilter";
 import { useFetchFilter } from "@/hooks/Filter/useFetchAllFilter";
+import { useFetchLowStock } from "@/hooks/Product/useFetchLowStock";
+import { useFetchOnSale } from "@/hooks/Product/useFetchOnSaleProduct";
 import { useFetchProduct } from "@/hooks/Product/useFetchProduct";
+import { useFetchOutOfStock } from "@/hooks/Product/useFetchProductOutOfStock";
 
 import { PaginationDemo } from "./Pagination";
 
@@ -104,7 +107,9 @@ export function ProductOverview() {
   const { data: filter, fetchFilter } = useFetchFilter();
 
   const [expandedSection, setExpandedSection] = useState<string | null>("skin-type");
-
+  const { fetchOutOfStockProduct, params: OutOfStockProductPagination } = useFetchOutOfStock();
+  const { fetchLowStockProduct, params: LowStockProductPagination } = useFetchLowStock();
+  const { fetchOnSaleProduct, params: OnSaleProductPagination } = useFetchOnSale();
   const toggleSection = (sectionName: string) => {
     setExpandedSection(expandedSection === sectionName ? null : sectionName);
   };
@@ -235,7 +240,11 @@ export function ProductOverview() {
       setOrigin(filter.filter_origin);
     }
   }, [filter]);
-
+  useEffect(() => {
+    fetchOutOfStockProduct();
+    fetchLowStockProduct();
+    fetchOnSaleProduct();
+  }, [fetchOutOfStockProduct, fetchLowStockProduct, fetchOnSaleProduct]);
   return (
     <div className="flex min-h-screen flex-col gap-6 bg-gray-50 p-4 lg:flex-row">
       {" "}
@@ -425,7 +434,7 @@ export function ProductOverview() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-green-100">Đang bán</p>
-                      <p className="text-3xl font-bold">{params.totalRecords}</p>
+                      <p className="text-3xl font-bold">{OnSaleProductPagination.totalRecords}</p>
                     </div>
                     <Star className="h-8 w-8 text-green-200" />
                   </div>
@@ -436,7 +445,7 @@ export function ProductOverview() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-yellow-100">Sắp hết hàng</p>
-                      <p className="text-3xl font-bold">23</p>
+                      <p className="text-3xl font-bold">{LowStockProductPagination.totalRecords}</p>
                     </div>
                     <Package className="h-8 w-8 text-yellow-200" />
                   </div>
@@ -447,7 +456,7 @@ export function ProductOverview() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-red-100">Hết hàng</p>
-                      <p className="text-3xl font-bold">68</p>
+                      <p className="text-3xl font-bold">{OutOfStockProductPagination.totalRecords}</p>
                     </div>
                     <Package className="h-8 w-8 text-red-200" />
                   </div>
