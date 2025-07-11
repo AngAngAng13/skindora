@@ -14,11 +14,12 @@ export interface useUpdateStatusDacTinhProps {
 export const useUpdateStatusDacTinh = (params: useUpdateStatusDacTinhProps) => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const updateStateDacTinh = useCallback(async () => {
+  const updateStateDacTinh = useCallback(async (onSuccessCallback?: () => void) => {
     try {
-      console.log(params.id);
-      const response = await updateStatusFilterDactinh({ id: params.id }, params.payload);
-      console.log(response);
+      await updateStatusFilterDactinh({ id: params.id }, params.payload);
+      if (onSuccessCallback) {
+        onSuccessCallback();
+      }
     } catch (error) {
       console.error("Failed to update order status:", error);
     } finally {

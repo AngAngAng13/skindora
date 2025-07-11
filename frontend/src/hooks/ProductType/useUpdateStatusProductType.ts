@@ -13,12 +13,12 @@ export interface useUpdateProductTypeFilterProps {
 }
 export const useUpdateStatusProductType = (params: useUpdateProductTypeFilterProps) => {
   const [loading, setLoading] = useState<boolean>(false);
-
-  const updateStateProductType = useCallback(async () => {
+  const updateStateProductType = useCallback(async (onSuccessCallback?: () => void) => {
     try {
-      console.log(params.id);
-      const response = await updateStatusFilterProductType({ id: params.id }, params.payload);
-      console.log(response);
+      await updateStatusFilterProductType({ id: params.id }, params.payload);
+      if (onSuccessCallback) {
+        onSuccessCallback();
+      }
     } catch (error) {
       console.error("Failed to update order status:", error);
     } finally {

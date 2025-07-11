@@ -31,9 +31,8 @@ export const DacTinhActionsCell = ({ row, refetchData }: { row: { original: DacT
     id: String(_id),
     payload,
   });
-  const handleUpdateStatus = () => {
-    updateStateDacTinh();
-    window.location.reload();
+  const handleUpdateStatus = async () => {
+    updateStateDacTinh(refetchData);
   };
 
   return (

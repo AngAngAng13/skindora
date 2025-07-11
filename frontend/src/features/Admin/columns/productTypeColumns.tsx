@@ -18,7 +18,6 @@ import {
 import { useUpdateStatusProductType } from "@/hooks/ProductType/useUpdateStatusProductType";
 import { type ProductType } from "@/types/Filter/productType";
 
-
 export const ActionsCell = ({ row, refetchData }: { row: { original: ProductType }; refetchData: () => void }) => {
   const { _id, option_name, state } = row.original;
 
@@ -32,9 +31,8 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: ProductType
     payload,
   });
 
-  const handleUpdateStatus = async () => {
-    await updateStateProductType();
-    refetchData();
+  const handleUpdateStatus = () => {
+    updateStateProductType(refetchData);
   };
 
   return (
@@ -77,7 +75,6 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: ProductType
     </div>
   );
 };
-
 
 export const productTypeColumn = (refetchData: () => void): ColumnDef<ProductType>[] => [
   {

@@ -13,11 +13,12 @@ export interface useUpdateStatusSizeProps {
 }
 export const useUpdateStatusSize = (params: useUpdateStatusSizeProps) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const updateStateSize = useCallback(async () => {
+  const updateStateSize = useCallback(async (onSuccessCallback?: () => void) => {
     try {
-      console.log(params.id);
-      const response = await updateStatusFilterSize({ id: params.id }, params.payload);
-      console.log(response);
+      await updateStatusFilterSize({ id: params.id }, params.payload);
+      if (onSuccessCallback) {
+        onSuccessCallback();
+      }
     } catch (error) {
       console.error("Failed to update order status:", error);
     } finally {

@@ -30,9 +30,8 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: Uses }; ref
     id: String(_id),
     payload,
   });
-  const handleUpdateStatus = () => {
-    updateStateFilterUses();
-    refetchData();
+  const handleUpdateStatus = async () => {
+    updateStateFilterUses(refetchData);
   };
 
   return (

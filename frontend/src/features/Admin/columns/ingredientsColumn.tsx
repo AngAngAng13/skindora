@@ -29,8 +29,7 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: Ingredient 
     payload,
   });
   const handleUpdateStatus = () => {
-    updateStateIngredient();
-    refetchData();
+    updateStateIngredient(refetchData);
   };
 
   return (

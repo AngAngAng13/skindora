@@ -41,6 +41,7 @@ export const updateStatusFilterProductType = async (params: IDFilterProductTypeP
     .put(`/admin/manage-filters/update-filter-hsk-product-type-state/${params.id}`, payload)
     .then((response) => response.data);
 };
+
 //search-by-name(filter_hsk_product_type)
 export interface SearchProps {
   option_name: string;

@@ -32,8 +32,7 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: Size }; ref
   });
 
   const handleUpdateStatus = async () => {
-    updateStateSize();
-    refetchData();
+    updateStateSize(refetchData);
   };
 
   return (

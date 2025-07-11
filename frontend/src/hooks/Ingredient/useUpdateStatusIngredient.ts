@@ -14,11 +14,12 @@ export interface useUpdateIngredientFilterProps {
 export const useUpdateStatusIngredient = (params: useUpdateIngredientFilterProps) => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const updateStateIngredient = useCallback(async () => {
+  const updateStateIngredient = useCallback(async (onSuccessCallback?: () => void) => {
     try {
-      console.log(params.id);
       const response = await updateStatusFilterIngredient({ id: params.id }, params.payload);
-      console.log(response);
+      if (onSuccessCallback) {
+        onSuccessCallback();
+      }
     } catch (error) {
       console.error("Failed to update order status:", error);
     } finally {

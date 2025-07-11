@@ -19,7 +19,6 @@ import {
 import { useUpdateStatusOrigin } from "@/hooks/Origin/useUpdateStatusOrigin";
 import { type Origin } from "@/types/Filter/origin";
 
-// Ensure this path is correct
 export const ActionsCell = ({ row, refetchData }: { row: { original: Origin }; refetchData: () => void }) => {
   const navigate = useNavigate();
   const { _id, state } = row.original;
@@ -27,9 +26,8 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: Origin }; r
     state: state === "ACTIVE" ? "INACTIVE" : "ACTIVE",
   };
   const { updateStateOrigin, loading } = useUpdateStatusOrigin({ id: String(_id), payload });
-  const handleUpdateStatus = () => {
-    updateStateOrigin();
-    window.location.reload();
+  const handleUpdateStatus =  () => {
+    updateStateOrigin(refetchData);
   };
   return (
     <div className="text-right">

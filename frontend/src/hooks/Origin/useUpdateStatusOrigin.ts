@@ -13,11 +13,12 @@ export interface useUpdateStatusOriginProps {
 }
 export const useUpdateStatusOrigin = (params: useUpdateStatusOriginProps) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const updateStateOrigin = useCallback(async () => {
+  const updateStateOrigin = useCallback(async (onSuccessCallback?: () => void) => {
     try {
-      console.log(params.id);
-      const response = await updateStatusFilterOrigin({ id: params.id }, params.payload);
-      console.log(response);
+      await updateStatusFilterOrigin({ id: params.id }, params.payload);
+      if (onSuccessCallback) {
+        onSuccessCallback();
+      }
     } catch (error) {
       console.error("Failed to update order status:", error);
     } finally {
