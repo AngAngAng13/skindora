@@ -1,7 +1,16 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { fetchFilterDacTinh as fetchFilterDacTinh_api } from "@/api/dactinh";
+import { fetchFilterDacTinh as fetchFilterDacTinh_api, searchByNameFilterDactinh } from "@/api/dactinh";
 import type { DacTinh } from "@/types/Filter/dactinh";
+
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+  return debouncedValue;
+};
 
 export const useFetchFilterDacTinh = () => {
   const [loading, setLoading] = useState(false);
@@ -12,11 +21,24 @@ export const useFetchFilterDacTinh = () => {
     totalRecords: 1,
   });
   const [data, setData] = useState<DacTinh[]>([]);
-
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const fetchFilterDacTinh = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchFilterDacTinh_api({ limit: params.limit, page: params.page });
+      let response;
+      if (debouncedSearchTerm) {
+        response = await searchByNameFilterDactinh({
+          option_name: debouncedSearchTerm,
+          limit: params.limit,
+          page: params.page,
+        });
+      } else {
+        response = await fetchFilterDacTinh_api({
+          limit: params.limit,
+          page: params.page,
+        });
+      }
       setData(response.data);
       setParams((prev) => ({
         ...prev,
@@ -28,13 +50,15 @@ export const useFetchFilterDacTinh = () => {
     } finally {
       setLoading(false);
     }
-  }, [params.page, params.limit]);
+  }, [params.page, params.limit, debouncedSearchTerm]);
 
   return {
     loading,
     data,
     params,
     setParams,
+    searchTerm,
+    setSearchTerm,
     fetchFilterDacTinh,
   };
 };
