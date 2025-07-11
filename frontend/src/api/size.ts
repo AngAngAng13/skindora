@@ -60,5 +60,7 @@ export const searchByNameFilterSize = async (params: SearchProps) => {
 };
 //get-active-(filter_hsk_size)
 export const fetchFilterActiveSize = async () => {
-  return await httpClient.get("/admin/manage-filters/get-active-filter-hsk-sizes").then((response) => response.data);
+  return await httpClient
+    .get<API.IResponseAPI>("/admin/manage-filters/get-active-filter-hsk-sizes")
+    .then((response) => response.data);
 };

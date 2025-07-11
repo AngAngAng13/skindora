@@ -45,8 +45,13 @@ export const getBrandByID = async (params: getBrandByID) => {
     .then((response) => response.data);
 };
 //get-active-(filter_brand)
+// export const fetchFilterActiveBrand = async () => {
+//   return await httpClient.get("/admin/manage-filters/get-active-filter-brands").then((response) => response.data);
+// };
 export const fetchFilterActiveBrand = async () => {
-  return await httpClient.get("/admin/manage-filters/get-active-filter-brands").then((response) => response.data);
+  return await httpClient
+    .get<API.IResponseAPI>("/admin/manage-filters/get-active-filter-brands")
+    .then((response) => response.data);
 };
 //search-by-name(filter_brand)
 export interface SearchProps {

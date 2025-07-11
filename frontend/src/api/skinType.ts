@@ -62,6 +62,6 @@ export const searchByNameFilterSkin = async (params: SearchProps) => {
 //get-active-(filter_hsk_size)
 export const fetchFilterActiveSkin = async () => {
   return await httpClient
-    .get("/admin/manage-filters/get-active-filter-hsk-skin-type")
+    .get<API.IResponseAPI>("/admin/manage-filters/get-active-filter-hsk-skin-types")
     .then((response) => response.data);
 };

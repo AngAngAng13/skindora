@@ -59,6 +59,8 @@ export const searchByNameFilterOrigin = async (params: SearchProps) => {
     .then((response) => response.data);
 };
 //get-active-(filter_hsk_origin)
-export const fetchFilterActiveIngredient = async () => {
-  return await httpClient.get("/admin/manage-filters/get-active-filter-hsk-origins").then((response) => response.data);
+export const fetchFilterActiveOrigin = async () => {
+  return await httpClient
+    .get<API.IResponseAPI>("/admin/manage-filters/get-active-filter-hsk-origins")
+    .then((response) => response.data);
 };

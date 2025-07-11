@@ -60,5 +60,7 @@ export const searchByNameFilterUses = async (params: SearchProps) => {
 };
 //get-active-(filter_hsk_uses)
 export const fetchFilterActiveUses = async () => {
-  return await httpClient.get("/admin/manage-filters/get-active-filter-hsk-uses").then((response) => response.data);
+  return await httpClient
+    .get<API.IResponseAPI>("/admin/manage-filters/get-active-filter-hsk-uses")
+    .then((response) => response.data);
 };

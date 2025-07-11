@@ -8,16 +8,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFetchBrand } from "@/hooks/Brand/useFetchBrand";
-import {
-  type filter_dac_tinh_type_props,
-  type filter_hsk_ingredient_props,
-  type filter_hsk_product_type_props,
-  type filter_hsk_size_props,
-  type filter_hsk_skin_type_props,
-  type filter_hsk_uses_props,
-  type filter_origin_props,
-} from "@/hooks/Filter/useFetchFilter";
-import { useFetchFilter } from "@/hooks/Filter/useFetchFilter";
+// import {
+//   type filter_hsk_ingredient_props,
+//   type filter_hsk_product_type_props,
+//   type filter_hsk_size_props,
+//   type filter_hsk_skin_type_props,
+//   type filter_hsk_uses_props,
+//   type filter_origin_props,
+// } from "@/hooks/Filter/useFetchActiveFilter";
+import type {
+  filter_dac_tinh_type_props,
+  filter_hsk_ingredient_props,
+  filter_hsk_product_type_props,
+  filter_hsk_size_props,
+  filter_hsk_skin_type_props,
+  filter_hsk_uses_props,
+  filter_origin_props,
+} from "@/hooks/Filter/useFetchAllFilter";
+import { useFetchFilter } from "@/hooks/Filter/useFetchAllFilter";
 import { useFetchProduct } from "@/hooks/Product/useFetchProduct";
 
 import { PaginationDemo } from "./Pagination";

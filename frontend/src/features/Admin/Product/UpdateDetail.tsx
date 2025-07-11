@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Link2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 // Thêm useCallback
 import { useFieldArray, useForm } from "react-hook-form";
@@ -12,25 +13,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useFetchBrand } from "@/hooks/Brand/useFetchBrand";
-import {
-  type filter_dac_tinh_type_props,
-  type filter_hsk_ingredient_props,
-  type filter_hsk_product_type_props,
-  type filter_hsk_size_props,
-  type filter_hsk_skin_type_props,
-  type filter_hsk_uses_props,
-  type filter_origin_props,
-  useFetchFilter,
-} from "@/hooks/Filter/useFetchFilter";
+import { useFetchFilter } from "@/hooks/Filter/useFetchActiveFilter";
 import { useFetchProductByID } from "@/hooks/Product/useFetchProductByID";
 import httpClient from "@/lib/axios";
 import type { ProductFormValues } from "@/lib/productSchema";
 import { productSchema } from "@/lib/productSchema";
+import type { Brand } from "@/types/Filter/brand";
+import type { DacTinh } from "@/types/Filter/dactinh";
+import type { Ingredient } from "@/types/Filter/ingredient";
+import type { Origin } from "@/types/Filter/origin";
+import type { ProductType } from "@/types/Filter/productType";
+import type { Size } from "@/types/Filter/size";
+import type { SkinType } from "@/types/Filter/skinType";
+import type { Uses } from "@/types/Filter/uses";
 
 import TiptapEditor from "../components/TiptapEditor";
 
-// Chuyển ImageUrlInput ra ngoài để tránh re-render không cần thiết
 const ImageUrlInput = ({ control, name, label, placeholder }: any) => (
   <FormField
     control={control}
@@ -78,12 +76,9 @@ const EditorWithPreview = ({ control, name, label }: any) => {
           <FormLabel>{label}</FormLabel>
           <div className="grid grid-cols-1 gap-4 rounded-lg border p-4 md:grid-cols-2">
             <FormControl>
-              {/* Đây là sửa đổi quan trọng: Đảm bảo TiptapEditor nhận giá trị string */}
               <TiptapEditor
                 value={field.value?.rawHtml || ""} // Luôn đảm bảo là string, không phải undefined
                 onChange={(newContent: { rawHtml: string; plainText: string }) => {
-                  // TiptapEditor trả về object { rawHtml, plainText }
-                  // field.onChange mong đợi giá trị đúng kiểu schema
                   field.onChange(newContent);
                 }}
               />
@@ -111,17 +106,16 @@ export default function UpdateProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Khởi tạo các state cho filter data
-  const [uses, setUses] = useState<filter_hsk_uses_props[]>([]);
-  const [productType, setProductType] = useState<filter_hsk_product_type_props[]>([]);
-  const [dactinh, setDactinh] = useState<filter_dac_tinh_type_props[]>([]);
-  const [size, setSize] = useState<filter_hsk_size_props[]>([]);
-  const [ingredient, setIngredient] = useState<filter_hsk_ingredient_props[]>([]);
-  const [skinType, setSkinType] = useState<filter_hsk_skin_type_props[]>([]);
-  const [origin, setOrigin] = useState<filter_origin_props[]>([]);
+  const [uses, setUses] = useState<Uses[]>([]);
+  const [productType, setProductType] = useState<ProductType[]>([]);
+  const [dactinh, setDactinh] = useState<DacTinh[]>([]);
+  const [size, setSize] = useState<Size[]>([]);
+  const [ingredient, setIngredient] = useState<Ingredient[]>([]);
+  const [skinType, setSkinType] = useState<SkinType[]>([]);
+  const [origin, setOrigin] = useState<Origin[]>([]);
+  const [brand, setBrand] = useState<Brand[]>([]);
 
-  const { data: filter, fetchFilter } = useFetchFilter();
-  const { data: brands, fetchListBrand } = useFetchBrand();
-
+  const { data: filter, fetchFilter, loading } = useFetchFilter();
   const navigate = useNavigate();
 
   const getInitialFormValues = useCallback((): ProductFormValues => {
@@ -132,7 +126,7 @@ export default function UpdateProductPage() {
       quantity: Number(product?.quantity ?? 0),
       image_on_list: product?.image_on_list || "",
       hover_image_on_list: product?.hover_image_on_list || "",
-      product_detail_url: product?.product_detail_url || "",
+      // product_detail_url: product?.product_detail_url || "",
       productName_detail: product?.productName_detail || "",
       engName_detail: product?.engName_detail || "",
       description_detail: product?.description_detail || { rawHtml: "", plainText: "" },
@@ -162,15 +156,15 @@ export default function UpdateProductPage() {
   });
 
   useEffect(() => {
-    fetchListBrand();
     fetchFilter();
     if (id) {
       FetchProductByID();
     }
-  }, [id, fetchListBrand, fetchFilter, FetchProductByID]);
+  }, [id, fetchFilter, FetchProductByID]);
 
   useEffect(() => {
     if (filter) {
+      if (filter.filter_brand) setBrand(filter.filter_brand);
       if (filter.filter_hsk_uses) setUses(filter.filter_hsk_uses);
       if (filter.filter_hsk_product_type) setProductType(filter.filter_hsk_product_type);
       if (filter.filter_dac_tinh) setDactinh(filter.filter_dac_tinh);
@@ -209,7 +203,7 @@ export default function UpdateProductPage() {
     setIsSubmitting(true);
     const payload = {
       ...values,
-      // Đảm bảo chuyển đổi mảng object {value: string} thành mảng string
+
       main_images_detail: values.main_images_detail.map((img) => img.value),
       sub_images_detail: values.sub_images_detail.map((img) => img.value),
     };
@@ -217,25 +211,18 @@ export default function UpdateProductPage() {
     console.log("FINAL PAYLOAD TO SERVER:", payload);
 
     try {
-      // ✅ SỬA ĐIỂM NÀY: Dùng PUT nếu là cập nhật, POST nếu là tạo mới
-      // Nếu là cập nhật, endpoint phải có ID: `/admin/manage-products/${id}`
-      // Nếu là tạo mới, endpoint không có ID: `/admin/manage-products/create-new-product`
-      // Hiện tại code của bạn đang gọi POST tới `/admin/manage-products/create-new-product`
-      // cho một trang "UpdateProductPage", điều này có vẻ không hợp lý.
-      // Tôi sẽ giữ nguyên POST cho code này, nhưng bạn cần sửa lại API endpoint và method
-      // nếu đây thực sự là trang cập nhật.
       const response = await httpClient.put(`/admin/manage-products/update/${id}`, payload);
 
       if (response.status === 200 || response.status === 201) {
         toast.success("Thành công!", {
           description: "Sản phẩm đã được thêm vào hệ thống.",
         });
-        form.reset(getInitialFormValues()); // Reset form về trạng thái ban đầu của dữ liệu mới
-        navigate("/admin/products"); // Chuyển hướng sau khi thành công
+        form.reset(getInitialFormValues());
+        navigate("/admin/products");
       }
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message || "Có lỗi không xác định xảy ra.";
-      console.error("API Error:", error.response?.data || error); // Log chi tiết lỗi API
+      console.error("API Error:", error.response?.data || error);
       toast.error("Thất bại!", {
         description: errorMessage,
       });
@@ -244,18 +231,16 @@ export default function UpdateProductPage() {
     }
   }
 
-  // --- Render logic ---
-  // Bạn đã bỏ Loader2, nếu loading là quan trọng, hãy giữ lại
-  // if (loading) {
-  //   return (
-  //     <div className="flex min-h-[60vh] items-center justify-center">
-  //       <div className="text-muted-foreground flex items-center gap-2">
-  //         <Loader2 className="text-primary h-8 w-8 animate-spin" />
-  //         <span className="text-lg">Đang tải dữ liệu...</span>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="text-muted-foreground flex items-center gap-2">
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
+          <span className="text-lg">Đang tải dữ liệu...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -395,7 +380,7 @@ export default function UpdateProductPage() {
                   </div>
                 </div>
 
-                <div className="md:col-span-2">
+                {/* <div className="md:col-span-2">
                   <FormField
                     control={form.control}
                     name="product_detail_url"
@@ -427,7 +412,7 @@ export default function UpdateProductPage() {
                       </FormItem>
                     )}
                   />
-                </div>
+                </div> */}
               </CardContent>
             </Card>
 
@@ -519,7 +504,7 @@ export default function UpdateProductPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
-                          {(brands || []).map(
+                          {brand.map(
                             (
                               brand // Dùng 'brands' thay vì 'data'
                             ) => (
@@ -554,8 +539,8 @@ export default function UpdateProductPage() {
                         </FormControl>
                         <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
                           {skinType.map((skin) => (
-                            <SelectItem key={skin.filter_ID} value={skin.filter_ID}>
-                              {skin.name}
+                            <SelectItem key={skin._id} value={skin._id}>
+                              {skin.option_name}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -583,8 +568,8 @@ export default function UpdateProductPage() {
                             (
                               useItem // Renamed 'uses' to 'useItem' for clarity
                             ) => (
-                              <SelectItem key={useItem.filter_ID} value={useItem.filter_ID}>
-                                {useItem.name}
+                              <SelectItem key={useItem._id} value={useItem._id}>
+                                {useItem.option_name}
                               </SelectItem>
                             )
                           )}
@@ -613,8 +598,8 @@ export default function UpdateProductPage() {
                             (
                               productTypeItem // Renamed 'productType' to 'productTypeItem'
                             ) => (
-                              <SelectItem key={productTypeItem.filter_ID} value={productTypeItem.filter_ID}>
-                                {productTypeItem.name}
+                              <SelectItem key={productTypeItem._id} value={productTypeItem._id}>
+                                {productTypeItem.option_name}
                               </SelectItem>
                             )
                           )}
@@ -643,8 +628,8 @@ export default function UpdateProductPage() {
                             (
                               originItem // Renamed 'temp' to 'originItem'
                             ) => (
-                              <SelectItem key={originItem.filter_ID} value={originItem.filter_ID}>
-                                {originItem.name}
+                              <SelectItem key={originItem._id} value={originItem._id}>
+                                {originItem.option_name}
                               </SelectItem>
                             )
                           )}
@@ -673,8 +658,8 @@ export default function UpdateProductPage() {
                             (
                               sizeItem // Renamed 'temp' to 'sizeItem'
                             ) => (
-                              <SelectItem key={sizeItem.filter_ID} value={sizeItem.filter_ID}>
-                                {sizeItem.name}
+                              <SelectItem key={sizeItem._id} value={sizeItem._id}>
+                                {sizeItem.option_name}
                               </SelectItem>
                             )
                           )}
@@ -703,8 +688,8 @@ export default function UpdateProductPage() {
                             (
                               dactinhItem // Renamed 'temp' to 'dactinhItem'
                             ) => (
-                              <SelectItem key={dactinhItem.filter_ID} value={dactinhItem.filter_ID}>
-                                {dactinhItem.name}
+                              <SelectItem key={dactinhItem._id} value={dactinhItem._id}>
+                                {dactinhItem.option_name}
                               </SelectItem>
                             )
                           )}
@@ -733,8 +718,8 @@ export default function UpdateProductPage() {
                             (
                               ingredientItem // Renamed 'temp' to 'ingredientItem'
                             ) => (
-                              <SelectItem key={ingredientItem.filter_ID} value={ingredientItem.filter_ID}>
-                                {ingredientItem.name}
+                              <SelectItem key={ingredientItem._id} value={ingredientItem._id}>
+                                {ingredientItem.option_name}
                               </SelectItem>
                             )
                           )}

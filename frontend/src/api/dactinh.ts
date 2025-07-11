@@ -60,5 +60,7 @@ export const searchByNameFilterDactinh = async (params: SearchProps) => {
 };
 //get-active-(filter_hsk_dactinh)
 export const fetchFilterActiveDacTinh = async () => {
-  return await httpClient.get("/admin/manage-filters/get-active-filter-dac-tinhs").then((response) => response.data);
+  return await httpClient
+    .get<API.IResponseAPI>("/admin/manage-filters/get-active-filter-dac-tinhs")
+    .then((response) => response.data);
 };

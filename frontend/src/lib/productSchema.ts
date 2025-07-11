@@ -14,7 +14,7 @@ export const productSchema = z.object({
   quantity: z.coerce.number().min(0, "Số lượng không thể âm"),
   image_on_list: z.string().url({ message: "Vui lòng nhập URL hình ảnh hơp lệ" }),
   hover_image_on_list: z.string().url({ message: "Vui lòng nhập URL hợp lệ" }),
-  product_detail_url: z.string().url({ message: "Vui lòng nhập URL hợp lệ" }),
+  // product_detail_url: z.string().url({ message: "Vui lòng nhập URL hợp lệ" }),
   productName_detail: z.string().min(1, "Tên chi tiết không được để trống"),
   engName_detail: z.string().min(1, "Tên sản phẩm bằng tiếng anh không được để trống"),
   description_detail: detailObjectSchema,
