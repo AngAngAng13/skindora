@@ -147,7 +147,7 @@ class UsersService {
           pass: process.env.EMAIL_PASSWORD_APP
         }
       })
-      const verifyURL = `http://localhost:5173/auth/verify-email?email_verify_token=${email_verify_token}` // Đường dẫn xác nhận email
+      const verifyURL = `${process.env.FRONTEND_URL}/auth/verify-email?email_verify_token=${email_verify_token}` // Đường dẫn xác nhận email
 
       const htmlContent = readEmailTemplate('verify-email.html', {
         first_name: payload.first_name,
@@ -222,7 +222,8 @@ class UsersService {
       })
 
       // const resetURL = `${process.env.FRONTEND_URL}/reset-password?token=${forgot_password_token}`
-      const resetURL = `http://localhost:${process.env.PORT}/users/verify-forgot-password?forgot_password_token=${forgot_password_token}`
+      const resetURL = `${process.env.FRONTEND_URL}/auth/reset-password?token=${forgot_password_token}`
+
 
       const htmlContent = readEmailTemplate('forgot-password.html', {
         userName: first_name,
@@ -312,7 +313,7 @@ class UsersService {
           pass: process.env.EMAIL_PASSWORD_APP
         }
       })
-      const verifyURL = `http://localhost:${process.env.PORT}/users/verify-email?email_verify_token=${email_verify_token}`
+      const verifyURL = `${process.env.FRONTEND_URL}/auth/verify-email?email_verify_token=${email_verify_token}`
 
       // Sử dụng template 'resend-verify-email.html'
       const htmlContent = readEmailTemplate('resend-verify-email.html', {
@@ -517,3 +518,4 @@ class UsersService {
 
 const usersService = new UsersService()
 export default usersService
+
