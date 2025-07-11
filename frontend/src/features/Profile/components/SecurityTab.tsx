@@ -7,7 +7,7 @@ export const SecurityTab = () => {
 
   const handleSubmit = async (data: ChangePasswordFormData) => {
     try {
-      await actions.changePassword(data.oldPassword, data.newPassword);
+      await actions.changePassword(data.oldPassword, data.newPassword,data.confirmPassword);
       
       toast.success("Password Changed Successfully!", {
         description: "You will now be logged out for security purposes. Please log in again with your new password.",

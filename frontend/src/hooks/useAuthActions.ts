@@ -24,14 +24,14 @@ export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<
   const forgotPasswordMutation = useForgotPasswordMutation();
   const resetPasswordMutation = useResetPasswordMutation();
    const changePasswordMutation = useMutation({
-      mutationFn: ({ oldPassword, newPassword }: { oldPassword: string, newPassword: string }) => 
-          authService.changePassword(oldPassword, newPassword)
+      mutationFn: ({ oldPassword, newPassword ,confirm_password}: { oldPassword: string, newPassword: string ,confirm_password:string}) => 
+          authService.changePassword(oldPassword, newPassword,confirm_password)
   });
     const changePassword = useCallback(
-    (oldPassword: string, newPassword: string) => {
+    (oldPassword: string, newPassword: string,confirm_password:string) => {
       return new Promise((resolve, reject) => {
         changePasswordMutation.mutate(
-          { oldPassword, newPassword },
+          { oldPassword, newPassword,confirm_password },
           {
             onSuccess: (result) => {
               if (result.isOk()) {
