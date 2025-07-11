@@ -71,7 +71,9 @@ class OrdersService {
           ProductID: p.ProductID,
           Quantity: p.Quantity,
           PricePerUnit: unitPrice,
-          TotalPrice: totalPrice
+          TotalPrice: totalPrice,
+          name: product.name_on_list,
+          image: product.image_on_list
         }
       }),
       TotalPrice: finalPrice,
@@ -305,7 +307,7 @@ class OrdersService {
     return orders.map((order) => ({
       orderId: order._id,
       orderDetail: detailMap.get(order._id.toString()) || [],
-      orderStatus : order.Status
+      orderStatus: order.Status
     }))
   }
 
@@ -345,7 +347,7 @@ class OrdersService {
     const productIds = [...new Set(orderDetails.map((od) => od.ProductID?.toString()))].map((id) => new ObjectId(id))
     const products = await databaseService.products
       .find({ _id: { $in: productIds } })
-      .project({ _id: 1, name_on_list: 1, image_on_list: 1, price_on_list: 1})
+      .project({ _id: 1, name_on_list: 1, image_on_list: 1, price_on_list: 1 })
       .toArray()
 
     const productInfoMap = new Map(

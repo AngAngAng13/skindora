@@ -84,12 +84,13 @@ export const authService = {
       }
     );
   },
-  resetPassword: (token: string, data: Omit<ResetPasswordFormData, "confirmPassword">) => {
-    return apiClient.post<{ message: string }, { forgot_password_token: string; password: string }>(
+  resetPassword: (token: string, data: ResetPasswordFormData) => {
+    return apiClient.post<{ message: string }, { forgot_password_token: string; password: string,confirm_password:string }>(
       "/users/reset-password",
       {
         forgot_password_token: token,
         password: data.password,
+        confirm_password:data.confirmPassword
       },
       { skipAuth: true }
     );
