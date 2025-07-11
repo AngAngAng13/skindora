@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUpdateStatusBrand } from "@/hooks/Brand/useUpdateStatusBrand";
-import type { Brand } from "@/types/brand";
+import type { Brand } from "@/types/Filter/brand";
 
 // const formatCurrency = (amount: number | string) => {
 //   return new Intl.NumberFormat("vi-VN", {
@@ -26,7 +26,7 @@ const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString("vi-VN");
 };
 
-export const ActionsCell = ({ row }: { row: { original: Brand } }) => {
+export const ActionsCell = ({ row, refetchData }: { row: { original: Brand }; refetchData: () => void }) => {
   const { _id, option_name, state } = row.original;
 
   const navigate = useNavigate();
@@ -38,8 +38,7 @@ export const ActionsCell = ({ row }: { row: { original: Brand } }) => {
     payload,
   });
   const handleUpdateStatus = () => {
-    updateStateBrand();
-    window.location.reload();
+    updateStateBrand(refetchData);
   };
 
   return (
@@ -80,7 +79,7 @@ export const ActionsCell = ({ row }: { row: { original: Brand } }) => {
   );
 };
 
-export const brandsColumn: ColumnDef<Brand>[] = [
+export const brandsColumn = (refetchData: () => void): ColumnDef<Brand>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -149,6 +148,6 @@ export const brandsColumn: ColumnDef<Brand>[] = [
   // Cột Actions
   {
     id: "actions",
-    cell: ({ row }) => <ActionsCell row={row} />,
+    cell: ({ row }) => <ActionsCell row={row} refetchData={refetchData} />,
   },
 ];

@@ -1,6 +1,7 @@
 import { Loader2, Plus } from "lucide-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ const ManageBrand: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
   const { loading, data, fetchListBrand, params, setParams } = useFetchBrand();
+  const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     fetchListBrand();
   }, [params.page]);
@@ -23,6 +25,13 @@ const ManageBrand: React.FC = () => {
     console.log(data);
   });
   const handlePageChange = (page: number) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("page", page.toString());
+
+      return newParams;
+    });
+
     setParams((prevParams) => ({
       ...prevParams,
       page: page,
@@ -31,6 +40,13 @@ const ManageBrand: React.FC = () => {
   useEffect(() => {
     setHeaderName("Quản Lý Voucher");
   }, [setHeaderName]);
+  useEffect(() => {
+    const pageFromURL = Number(searchParams.get("page") || "1");
+    setParams((prev) => ({
+      ...prev,
+      page: pageFromURL,
+    }));
+  }, [searchParams]);
   return (
     <div className="">
       {loading ? (
@@ -65,7 +81,7 @@ const ManageBrand: React.FC = () => {
                   <Card className="w-full">
                     <div className="p-3">
                       <DataTable
-                        columns={brandsColumn}
+                        columns={brandsColumn(fetchListBrand)}
                         data={data}
                         filterColumnId="option_name"
                         filterPlaceholder="Tìm brand"

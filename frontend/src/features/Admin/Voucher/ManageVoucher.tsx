@@ -1,6 +1,7 @@
 import { Loader2, Plus } from "lucide-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,8 @@ const ManageVoucher: React.FC = () => {
   const { setHeaderName, headerName } = useHeader();
 
   const { loading, params, setParams, voucher, fetchAllVoucher } = useFetchVoucher();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const navigate = useNavigate();
   useEffect(() => {
     setHeaderName("Quản Lý Voucher");
@@ -26,11 +29,24 @@ const ManageVoucher: React.FC = () => {
     fetchAllVoucher();
   }, [params.page, fetchAllVoucher]);
   const handlePageChange = (page: number) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("page", page.toString());
+      return newParams;
+    });
+
     setParams((prevParams) => ({
       ...prevParams,
       page: page,
     }));
   };
+  useEffect(() => {
+    const pageFromURL = Number(searchParams.get("page") || "1");
+    setParams((prev) => ({
+      ...prev,
+      page: pageFromURL,
+    }));
+  }, [searchParams]);
   return (
     <div className="">
       {loading ? (

@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { ArrowLeft } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
@@ -12,7 +13,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useFetchBrandByID } from "@/hooks/Brand/useFetchBrandByID";
 import httpClient from "@/lib/axios";
 import { type CreateBrandFormValue, createBrandSchema } from "@/lib/brandSchema";
@@ -102,21 +102,11 @@ const UpdateBrand: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto py-8">
-        <Card>
-          <CardHeader>
-            <Skeleton className="mb-2 h-6 w-1/2" />
-            <Skeleton className="h-4 w-3/4" />
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-          </CardContent>
-        </Card>
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="text-muted-foreground flex items-center gap-2">
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
+          <span className="text-lg">Đang tải dữ liệu...</span>
+        </div>
       </div>
     );
   }
@@ -140,7 +130,7 @@ const UpdateBrand: React.FC = () => {
           className="hover:bg-transparent hover:text-green-600"
           variant="ghost"
           onClick={() => {
-            navigate("/admin/brands"); // Navigate back to brand list
+            navigate("/admin/brand");
           }}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
