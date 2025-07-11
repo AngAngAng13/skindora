@@ -245,6 +245,13 @@ class UsersService {
   }
 
   async resendEmailVerify(user_id: string) {
+    const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+    if (!user) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
     const email_verify_token = await this.signEmailVerifyToken({
       user_id,
       verify: UserVerifyStatus.Unverified
@@ -257,8 +264,35 @@ class UsersService {
         }
       }
     ])
-    //chỗ này sau này sẽ gửi mail
-    console.log(email_verify_token)
+    //mail
+    try {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_APP,
+          pass: process.env.EMAIL_PASSWORD_APP
+        }
+      })
+      const verifyURL = `http://localhost:${process.env.PORT}/users/verify-email?email_verify_token=${email_verify_token}`
+
+      // Sử dụng template 'resend-verify-email.html'
+      const htmlContent = readEmailTemplate('resend-verify-email.html', {
+        userName: user.first_name, //Truyền tên người dùng vào template
+        verifyURL: verifyURL
+      })
+
+      const mailOptions = {
+        from: `"SKINDORA" <${process.env.EMAIL_APP}>`,
+        to: user.email, //Gửi đến email của người dùng
+        subject: 'Yêu cầu gửi lại email xác thực tài khoản SKINDORA',
+        html: htmlContent
+      }
+
+      transporter.sendMail(mailOptions)
+      console.log('Resend verification email sent successfully to:', user.email)
+    } catch (error) {
+      console.error('Error sending resend-verification email:', error)
+    }
     return { message: USERS_MESSAGES.RESEND_EMAIL_VERIFY_SUCCESS }
   }
 
