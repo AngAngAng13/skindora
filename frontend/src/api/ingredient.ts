@@ -44,11 +44,17 @@ export const updateStatusFilterIngredient = async (params: IDFilterIngredientPro
 //search-by-name(filter_hsk_ingredient)
 export interface SearchProps {
   option_name: string;
+  limit?: string | number;
+  page?: string | number;
+  totalPages?: string | number;
+  totalRecords?: number;
 }
 export const searchByNameFilterIngredient = async (params: SearchProps) => {
   return await httpClient
-    .get("/admin/manage-filters/search-filter-hsk-ingredient", {
-      option_name: params.option_name,
+    .get<API.IResponseSearch>("/admin/manage-filters/search-filter-hsk-ingredient", {
+      limit: params.limit,
+      page: params.page,
+      keyword: params.option_name,
     })
     .then((response) => response.data);
 };
