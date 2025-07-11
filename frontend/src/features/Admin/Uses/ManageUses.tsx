@@ -1,6 +1,7 @@
 import { Loader2, Plus } from "lucide-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,7 @@ import { DataTable } from "../components/TableCustom";
 const ManageUses: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
-
+  const [searchParams, setSearchParams] = useSearchParams();
   // Use the new useFetchUses hook
   const { loading, data, fetchListUses, params, setParams } = useFetchUses();
 
@@ -28,23 +29,26 @@ const ManageUses: React.FC = () => {
   }, [data]);
 
   const handlePageChange = (page: number) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("page", page.toString());
+
+      return newParams;
+    });
     setParams((prevParams) => ({
       ...prevParams,
       page: page,
     }));
   };
-
-  // If useFetchUses also provides changeLimit, you can use it here
-  // const handleLimitChange = (limit: number) => {
-  //   setParams((prevParams) => ({
-  //     ...prevParams,
-  //     limit: limit,
-  //     page: 1, // Reset to first page when limit changes
-  //   }));
-  // };
-
   useEffect(() => {
-    setHeaderName("Quản Lý Công dụng"); // Set header name for Uses
+    const pageFromURL = Number(searchParams.get("page") || "1");
+    setParams((prev) => ({
+      ...prev,
+      page: pageFromURL,
+    }));
+  }, [searchParams]);
+  useEffect(() => {
+    setHeaderName("Quản Lý Công dụng");
   }, [setHeaderName]);
 
   return (
@@ -81,7 +85,7 @@ const ManageUses: React.FC = () => {
                   <Card className="w-full">
                     <div className="p-3">
                       <DataTable
-                        columns={usesColumn} // Use the new usesColumn
+                        columns={usesColumn(fetchListUses)} // Use the new usesColumn
                         data={data}
                         filterColumnId="option_name" // Filter by option_name for Uses
                         filterPlaceholder="Tìm Công dụng" // Updated placeholder

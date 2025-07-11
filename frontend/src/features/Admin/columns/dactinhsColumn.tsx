@@ -14,15 +14,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUpdateStatusDacTinh } from "@/hooks/Dactinh/useUpdateStatusDacTinh";
-// import { useUpdateStatusDacTinh } from "@/hooks/DacTinh/useUpdateStatusDacTinh";
-// Assuming you have a similar hook for DacTinh
 import type { DacTinh } from "@/types/Filter/dactinh";
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString("vi-VN");
 };
 
-export const DacTinhActionsCell = ({ row }: { row: { original: DacTinh } }) => {
+export const DacTinhActionsCell = ({ row, refetchData }: { row: { original: DacTinh }; refetchData: () => void }) => {
   const { _id, option_name, state } = row.original;
 
   const navigate = useNavigate();
@@ -78,7 +76,7 @@ export const DacTinhActionsCell = ({ row }: { row: { original: DacTinh } }) => {
   );
 };
 
-export const dacTinhColumn: ColumnDef<DacTinh>[] = [
+export const dacTinhColumn = (refetchData: () => void): ColumnDef<DacTinh>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -155,6 +153,6 @@ export const dacTinhColumn: ColumnDef<DacTinh>[] = [
 
   {
     id: "actions",
-    cell: ({ row }) => <DacTinhActionsCell row={row} />,
+    cell: ({ row }) => <DacTinhActionsCell row={row} refetchData={refetchData} />,
   },
 ];

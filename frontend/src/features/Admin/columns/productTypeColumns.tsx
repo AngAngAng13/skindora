@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button as ShadcnButton } from "@/components/ui/button";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,10 +18,12 @@ import {
 import { useUpdateStatusProductType } from "@/hooks/ProductType/useUpdateStatusProductType";
 import { type ProductType } from "@/types/Filter/productType";
 
-export const ActionsCell = ({ row }: { row: { original: ProductType } }) => {
+
+export const ActionsCell = ({ row, refetchData }: { row: { original: ProductType }; refetchData: () => void }) => {
   const { _id, option_name, state } = row.original;
 
   const navigate = useNavigate();
+
   const payload = {
     state: state === "ACTIVE" ? "INACTIVE" : "ACTIVE",
   };
@@ -30,24 +31,26 @@ export const ActionsCell = ({ row }: { row: { original: ProductType } }) => {
     id: String(_id),
     payload,
   });
-  const handleUpdateStatus = () => {
-    updateStateProductType();
-    window.location.reload();
+
+  const handleUpdateStatus = async () => {
+    await updateStateProductType();
+    refetchData();
   };
 
   return (
     <div className="text-right">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
+          <ShadcnButton variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Mở menu</span>
             <MoreHorizontal className="h-4 w-4" />
-          </Button>
+          </ShadcnButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>Copy tên hãng</DropdownMenuItem>
           <DropdownMenuSeparator />
+
           <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/product-type-detail`)}>
             Xem chi tiết
           </DropdownMenuItem>
@@ -55,7 +58,7 @@ export const ActionsCell = ({ row }: { row: { original: ProductType } }) => {
           {state === "ACTIVE" ? (
             <DropdownMenuItem
               disabled={loading}
-              onClick={() => handleUpdateStatus()}
+              onClick={handleUpdateStatus}
               className="font-bold text-red-600 focus:text-red-600"
             >
               {loading ? "Đang xử lý..." : "Vô hiệu hóa"}
@@ -63,7 +66,7 @@ export const ActionsCell = ({ row }: { row: { original: ProductType } }) => {
           ) : (
             <DropdownMenuItem
               disabled={loading}
-              onClick={() => handleUpdateStatus()}
+              onClick={handleUpdateStatus}
               className="font-bold text-green-600 focus:text-green-600"
             >
               {loading ? "Đang xử lý..." : "Kích hoạt"}
@@ -74,7 +77,9 @@ export const ActionsCell = ({ row }: { row: { original: ProductType } }) => {
     </div>
   );
 };
-export const productTypeColumn: ColumnDef<ProductType>[] = [
+
+
+export const productTypeColumn = (refetchData: () => void): ColumnDef<ProductType>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -109,7 +114,6 @@ export const productTypeColumn: ColumnDef<ProductType>[] = [
     ),
     cell: ({ row }) => <div className="capitalize">{row.getValue("_id")}</div>,
   },
-
   {
     accessorKey: "option_name",
     header: ({ column }) => (
@@ -121,7 +125,7 @@ export const productTypeColumn: ColumnDef<ProductType>[] = [
     cell: ({ row }) => <div className="capitalize">{row.getValue("option_name")}</div>,
   },
   {
-    accessorKey: "description", // Bao gồm trường description
+    accessorKey: "description",
     header: "Mô tả",
     cell: ({ row }) => <div>{row.getValue("description")}</div>,
   },
@@ -147,7 +151,7 @@ export const productTypeColumn: ColumnDef<ProductType>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      return <ActionsCell row={row} />;
+      return <ActionsCell row={row} refetchData={refetchData} />; // Pass refetchData here
     },
   },
 ];

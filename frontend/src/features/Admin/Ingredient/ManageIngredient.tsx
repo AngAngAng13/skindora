@@ -1,6 +1,7 @@
 import { Loader2, Plus } from "lucide-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
@@ -9,15 +10,13 @@ import { useHeader } from "@/contexts/header.context";
 import { useFetchFilterIngredient } from "@/hooks/Ingredient/useFetchFilterIngredient";
 
 import { ingredientColumn } from "../columns/ingredientsColumn";
-// Điều chỉnh đường dẫn này cho phù hợp
-
 import { PaginationDemo } from "../components/Pagination";
 import { DataTable } from "../components/TableCustom";
 
 const ManageIngredient: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const { loading, data, fetchFilterIngredient, params, setParams } = useFetchFilterIngredient();
 
   useEffect(() => {
@@ -29,6 +28,11 @@ const ManageIngredient: React.FC = () => {
   }, [data]);
 
   const handlePageChange = (page: number) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("page", page.toString());
+      return newParams;
+    });
     setParams((prevParams) => ({
       ...prevParams,
       page: page,
@@ -38,7 +42,13 @@ const ManageIngredient: React.FC = () => {
   useEffect(() => {
     setHeaderName("Quản Lý Ingredient");
   }, [setHeaderName]);
-
+  useEffect(() => {
+    const pageFromURL = Number(searchParams.get("page") || "1");
+    setParams((prev) => ({
+      ...prev,
+      page: pageFromURL,
+    }));
+  }, [searchParams]);
   return (
     <div className="">
       {loading ? (
@@ -73,7 +83,7 @@ const ManageIngredient: React.FC = () => {
                   <Card className="w-full">
                     <div className="p-3">
                       <DataTable
-                        columns={ingredientColumn} // Sử dụng ingredientColumn đã được import
+                        columns={ingredientColumn(fetchFilterIngredient)}
                         data={data}
                         filterColumnId="option_name"
                         filterPlaceholder="Tìm Ingredient"

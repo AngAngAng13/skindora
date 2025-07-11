@@ -20,7 +20,7 @@ import { useUpdateStatusOrigin } from "@/hooks/Origin/useUpdateStatusOrigin";
 import { type Origin } from "@/types/Filter/origin";
 
 // Ensure this path is correct
-export const ActionsCell = ({ row }: { row: { original: Origin } }) => {
+export const ActionsCell = ({ row, refetchData }: { row: { original: Origin }; refetchData: () => void }) => {
   const navigate = useNavigate();
   const { _id, state } = row.original;
   const payload = {
@@ -69,7 +69,7 @@ export const ActionsCell = ({ row }: { row: { original: Origin } }) => {
     </div>
   );
 };
-export const originColumn: ColumnDef<Origin>[] = [
+export const originColumn = (refetchData: () => void): ColumnDef<Origin>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -140,7 +140,7 @@ export const originColumn: ColumnDef<Origin>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      return <ActionsCell row={row} />;
+      return <ActionsCell row={row} refetchData={refetchData} />;
     },
   },
 ];

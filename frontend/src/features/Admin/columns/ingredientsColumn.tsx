@@ -18,7 +18,7 @@ import {
 import { useUpdateStatusIngredient } from "@/hooks/Ingredient/useUpdateStatusIngredient";
 import type { Ingredient } from "@/types/Filter/ingredient";
 
-export const ActionsCell = ({ row }: { row: { original: Ingredient } }) => {
+export const ActionsCell = ({ row, refetchData }: { row: { original: Ingredient }; refetchData: () => void }) => {
   const { _id, option_name, state } = row.original;
   const navigate = useNavigate();
   const payload = {
@@ -30,7 +30,7 @@ export const ActionsCell = ({ row }: { row: { original: Ingredient } }) => {
   });
   const handleUpdateStatus = () => {
     updateStateIngredient();
-    window.location.reload();
+    refetchData();
   };
 
   return (
@@ -70,7 +70,7 @@ export const ActionsCell = ({ row }: { row: { original: Ingredient } }) => {
     </div>
   );
 };
-export const ingredientColumn: ColumnDef<Ingredient>[] = [
+export const ingredientColumn = (refetchData: () => void): ColumnDef<Ingredient>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -132,6 +132,6 @@ export const ingredientColumn: ColumnDef<Ingredient>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => <ActionsCell row={row} />,
+    cell: ({ row }) => <ActionsCell row={row} refetchData={refetchData} />,
   },
 ];

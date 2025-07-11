@@ -2,6 +2,7 @@
 import { Loader2, Plus } from "lucide-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,7 @@ import { DataTable } from "../components/TableCustom";
 const ManageProductType: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const { loading, data, fetchListFilterProductType, params, setParams } = useFetchFilterProductType();
 
   useEffect(() => {
@@ -27,23 +28,41 @@ const ManageProductType: React.FC = () => {
     console.log("ProductType Data:", data);
   }, [data]);
 
-  // Xử lý thay đổi trang
   const handlePageChange = (page: number) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("page", page.toString());
+
+      return newParams;
+    });
+
     setParams((prevParams) => ({
       ...prevParams,
       page: page,
     }));
   };
+  useEffect(() => {
+    const pageFromURL = Number(searchParams.get("page") || "1");
+    setParams((prev) => ({
+      ...prev,
+      page: pageFromURL,
+    }));
+  }, [searchParams]);
 
-  // Cập nhật tên tiêu đề khi component mount
   useEffect(() => {
     setHeaderName("Quản Lý Loại Sản phẩm");
   }, [setHeaderName]);
+  useEffect(() => {
+    const pageFromURL = Number(searchParams.get("page") || "1");
+    setParams((prev) => ({
+      ...prev,
+      page: pageFromURL,
+    }));
+  }, [searchParams]);
 
   return (
     <div className="">
       {loading ? (
-        // Hiển thị loading spinner khi dữ liệu đang tải
         <div className="flex min-h-[60vh] items-center justify-center">
           <div className="text-muted-foreground flex items-center gap-2">
             <Loader2 className="text-primary h-8 w-8 animate-spin" />
@@ -57,7 +76,6 @@ const ManageProductType: React.FC = () => {
               <div className="mt-3 mb-6 flex justify-between">
                 <Typography className="text-2xl font-bold">{headerName}</Typography>
                 <div className="bg-primary hover:bg-primary/90 rounded-lg text-white">
-                  {/* Nút tạo Loại sản phẩm mới */}
                   <Button className="cursor-pointer p-5" onClick={() => navigate("/admin/create-product-type")}>
                     <div className="flex items-center gap-4">
                       <div>
@@ -75,15 +93,13 @@ const ManageProductType: React.FC = () => {
                 <div className="mt-6 w-5/5">
                   <Card className="w-full">
                     <div className="p-3">
-                      {/* Bảng dữ liệu */}
                       <DataTable
-                        columns={productTypeColumn} // Sử dụng cột đã định nghĩa
+                        columns={productTypeColumn(fetchListFilterProductType)}
                         data={data}
-                        filterColumnId="option_name" // ID cột để lọc
-                        filterPlaceholder="Tìm Loại sản phẩm" // Placeholder cho ô tìm kiếm
+                        filterColumnId="option_name"
+                        filterPlaceholder="Tìm Loại sản phẩm"
                       />
                       <div className="mt-4">
-                        {/* Component phân trang */}
                         <PaginationDemo
                           totalPages={params.totalPages ?? 1}
                           currentPage={params.page ?? 1}

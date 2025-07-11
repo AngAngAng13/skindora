@@ -19,10 +19,8 @@ import {
 import { useUpdateStatusSkinType } from "@/hooks/SkinType/useUpdateStatusSkinType";
 import type { SkinType } from "@/types/Filter/skinType";
 
-// Ensure this path is correct
-export const ActionsCell = ({ row }: { row: { original: SkinType } }) => {
+export const ActionsCell = ({ row, refetchData }: { row: { original: SkinType }; refetchData: () => void }) => {
   const { _id, option_name, state } = row.original;
-
   const navigate = useNavigate();
   const payload = {
     state: state === "ACTIVE" ? "INACTIVE" : "ACTIVE",
@@ -33,7 +31,7 @@ export const ActionsCell = ({ row }: { row: { original: SkinType } }) => {
   });
   const handleUpdateStatus = () => {
     updateStateSkinType();
-    window.location.reload();
+    refetchData();
   };
 
   return (
@@ -73,7 +71,7 @@ export const ActionsCell = ({ row }: { row: { original: SkinType } }) => {
     </div>
   );
 };
-export const skinTypeColumn: ColumnDef<SkinType>[] = [
+export const skinTypeColumn = (refetchData: () => void): ColumnDef<SkinType>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -141,6 +139,6 @@ export const skinTypeColumn: ColumnDef<SkinType>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => <ActionsCell row={row} />,
+    cell: ({ row }) => <ActionsCell row={row} refetchData={refetchData} />,
   },
 ];

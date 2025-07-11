@@ -6,37 +6,29 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-
 import { useFetchFilterProductTypeByID } from "@/hooks/ProductType/useFetchProductTypeByID";
-
 import { type ProductType } from "@/types/Filter/productType";
 
-
 const ProductTypeDetail = () => {
-  const { id } = useParams<{ id: string }>(); 
-  const navigate = useNavigate(); 
-
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const { data: productTypeData, fetchProductTypeByID, loading } = useFetchFilterProductTypeByID(String(id));
 
- 
   useEffect(() => {
     if (id) {
       fetchProductTypeByID();
     }
-  }, [id, fetchProductTypeByID]); 
+  }, [id, fetchProductTypeByID]);
 
- 
   useEffect(() => {
     console.log("ProductType Data:", productTypeData);
   }, [productTypeData]);
 
- 
   const handleGoBack = () => {
-    navigate(-1); 
+    navigate(-1);
   };
 
-  
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -48,10 +40,8 @@ const ProductTypeDetail = () => {
     );
   }
 
-
   const productType: ProductType | undefined = productTypeData;
 
-  
   if (!productType) {
     return (
       <div className="container mx-auto py-8 text-center">
@@ -64,7 +54,6 @@ const ProductTypeDetail = () => {
     );
   }
 
-  // Render chi tiết Loại sản phẩm
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6 flex items-center justify-between">
@@ -81,7 +70,6 @@ const ProductTypeDetail = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
-          {/* Mục Mô tả */}
           <div>
             <Label htmlFor="description" className="text-sm font-medium text-gray-700">
               Mô tả
@@ -91,7 +79,6 @@ const ProductTypeDetail = () => {
             </p>
           </div>
 
-          {/* Mục Danh mục */}
           <div>
             <Label htmlFor="category-info" className="text-sm font-medium text-gray-700">
               Danh mục

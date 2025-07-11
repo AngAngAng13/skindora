@@ -20,7 +20,7 @@ import { useUpdateStatusFilterUses } from "@/hooks/Uses/useUpdateStatusUses";
 import { type Uses } from "@/types/Filter/uses";
 
 // Ensure this path is correct
-export const ActionsCell = ({ row }: { row: { original: Uses } }) => {
+export const ActionsCell = ({ row, refetchData }: { row: { original: Uses }; refetchData: () => void }) => {
   const { _id, option_name, state } = row.original;
   const navigate = useNavigate();
   const payload = {
@@ -32,7 +32,7 @@ export const ActionsCell = ({ row }: { row: { original: Uses } }) => {
   });
   const handleUpdateStatus = () => {
     updateStateFilterUses();
-    window.location.reload();
+    refetchData();
   };
 
   return (
@@ -72,7 +72,7 @@ export const ActionsCell = ({ row }: { row: { original: Uses } }) => {
     </div>
   );
 };
-export const usesColumn: ColumnDef<Uses>[] = [
+export const usesColumn = (refetchData: () => void): ColumnDef<Uses>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -136,7 +136,7 @@ export const usesColumn: ColumnDef<Uses>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      return <ActionsCell row={row} />;
+      return <ActionsCell row={row} refetchData={refetchData} />;
     },
   },
 ];

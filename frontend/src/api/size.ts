@@ -26,7 +26,7 @@ export interface IDFilterSizeProps {
 }
 export const fetchFilterSizeByID = async (params: IDFilterSizeProps) => {
   return await httpClient
-    .get(`/admin/manage-filters/get-filter-hsk-size-detail/${params.id}`)
+    .get<API.IResponseAPI>(`/admin/manage-filters/get-filter-hsk-size-detail/${params.id}`)
     .then((response) => response.data);
 };
 //update-(filter_hsk_size)

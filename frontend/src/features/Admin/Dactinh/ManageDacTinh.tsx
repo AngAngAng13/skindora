@@ -1,14 +1,14 @@
 import { Loader2, Plus } from "lucide-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+// Import the DacTinh fetch hook
+import { useSearchParams } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchFilterDacTinh } from "@/hooks/Dactinh/useFetchFilterDacTinh";
-
-// Import the DacTinh fetch hook
 
 import { dacTinhColumn } from "../columns/dactinhsColumn";
 // Import the dacTinhColumn
@@ -18,7 +18,7 @@ import { DataTable } from "../components/TableCustom";
 const ManageDacTinh: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const { loading, data, fetchFilterDacTinh, params, setParams } = useFetchFilterDacTinh();
 
   useEffect(() => {
@@ -28,8 +28,20 @@ const ManageDacTinh: React.FC = () => {
   useEffect(() => {
     console.log("DacTinh Data:", data);
   }, [data]);
-
+  useEffect(() => {
+    const pageFromURL = Number(searchParams.get("page") || "1");
+    setParams((prev) => ({
+      ...prev,
+      page: pageFromURL,
+    }));
+  }, [searchParams]);
   const handlePageChange = (page: number) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("page", page.toString());
+
+      return newParams;
+    });
     setParams((prevParams) => ({
       ...prevParams,
       page: page,
@@ -39,7 +51,13 @@ const ManageDacTinh: React.FC = () => {
   useEffect(() => {
     setHeaderName("Quản Lý Đặc Tính");
   }, [setHeaderName]);
-
+  useEffect(() => {
+    const pageFromURL = Number(searchParams.get("page") || "1");
+    setParams((prev) => ({
+      ...prev,
+      page: pageFromURL,
+    }));
+  }, [searchParams]);
   return (
     <div className="">
       {loading ? (
@@ -74,7 +92,7 @@ const ManageDacTinh: React.FC = () => {
                   <Card className="w-full">
                     <div className="p-3">
                       <DataTable
-                        columns={dacTinhColumn}
+                        columns={dacTinhColumn(fetchFilterDacTinh)}
                         data={data}
                         filterColumnId="option_name"
                         filterPlaceholder="Tìm đặc tính"

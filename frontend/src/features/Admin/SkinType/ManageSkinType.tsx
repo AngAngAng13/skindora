@@ -1,6 +1,7 @@
 import { Loader2, Plus } from "lucide-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
@@ -16,19 +17,24 @@ import { DataTable } from "../components/TableCustom";
 const ManageSkinType: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
-
-  // Use the new useFetchSkinType hook
+  const [searchParams, setSearchParams] = useSearchParams();
   const { loading, data, fetchListSkin, params, setParams } = useFetchSkinType();
 
   useEffect(() => {
     fetchListSkin();
-  }, [params.page, fetchListSkin]); // Add params.limit if you plan to change limit dynamically
+  }, [params.page, fetchListSkin]);
 
   useEffect(() => {
     console.log("SkinType Data:", data);
   }, [data]);
-
   const handlePageChange = (page: number) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("page", page.toString());
+
+      return newParams;
+    });
+
     setParams((prevParams) => ({
       ...prevParams,
       page: page,
@@ -36,8 +42,15 @@ const ManageSkinType: React.FC = () => {
   };
 
   useEffect(() => {
-    setHeaderName("Quản Lý Loại da"); // Set header name for Skin Type
+    setHeaderName("Quản Lý Loại da");
   }, [setHeaderName]);
+  useEffect(() => {
+    const pageFromURL = Number(searchParams.get("page") || "1");
+    setParams((prev) => ({
+      ...prev,
+      page: pageFromURL,
+    }));
+  }, [searchParams]);
 
   return (
     <div className="">
@@ -73,7 +86,7 @@ const ManageSkinType: React.FC = () => {
                   <Card className="w-full">
                     <div className="p-3">
                       <DataTable
-                        columns={skinTypeColumn} // Use the new skinTypeColumn
+                        columns={skinTypeColumn(fetchListSkin)} // Use the new skinTypeColumn
                         data={data}
                         filterColumnId="option_name" // Filter by option_name for SkinType
                         filterPlaceholder="Tìm Loại da" // Updated placeholder

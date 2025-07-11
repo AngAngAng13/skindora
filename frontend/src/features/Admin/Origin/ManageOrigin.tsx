@@ -1,62 +1,59 @@
 import { Loader2, Plus } from "lucide-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
-// --- Import your Origin type ---
-// Adjust path if necessary
 
-// --- Import your useFetchOrigin hook ---
 import { useFetchOrigin } from "@/hooks/Origin/useFetchOrigin";
 
-// Adjust path if necessary
 
-// --- Import your originColumn ---
 import { originColumn } from "../columns/originColumns";
-// Adjust path if necessary
 
-// Import general components
 import { PaginationDemo } from "../components/Pagination";
 import { DataTable } from "../components/TableCustom";
 
 const ManageOrigin: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();
-
+  const [searchParams, setSearchParams] = useSearchParams();
   // Use the new useFetchOrigin hook
   const { loading, data, fetchListOrigin, params, setParams } = useFetchOrigin();
 
   useEffect(() => {
     fetchListOrigin();
-  }, [params.page, params.limit, fetchListOrigin]); // Ensure params.limit is also a dependency
+  }, [params.page, params.limit, fetchListOrigin]);
 
   useEffect(() => {
     console.log("Origin Data:", data);
   }, [data]);
 
   const handlePageChange = (page: number) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("page", page.toString());
+
+      return newParams;
+    });
     setParams((prevParams) => ({
       ...prevParams,
       page: page,
     }));
   };
 
-  // Assuming you might also have a handleLimitChange from useFetchOrigin
-  // const handleLimitChange = (limit: number) => {
-  //   setParams((prevParams) => ({
-  //     ...prevParams,
-  //     limit: limit,
-  //     page: 1, // Reset to first page when limit changes
-  //   }));
-  // };
-
   useEffect(() => {
-    setHeaderName("Quản Lý Xuất xứ"); // Set header name for Origin
+    setHeaderName("Quản Lý Xuất xứ");
   }, [setHeaderName]);
-
+  useEffect(() => {
+    const pageFromURL = Number(searchParams.get("page") || "1");
+    setParams((prev) => ({
+      ...prev,
+      page: pageFromURL,
+    }));
+  }, [searchParams]);
   return (
     <div className="">
       {loading ? (
@@ -91,7 +88,7 @@ const ManageOrigin: React.FC = () => {
                   <Card className="w-full">
                     <div className="p-3">
                       <DataTable
-                        columns={originColumn} // Use the new originColumn
+                        columns={originColumn(fetchListOrigin)} // Use the new originColumn
                         data={data}
                         filterColumnId="option_name" // Filter by option_name for Origin
                         filterPlaceholder="Tìm Xuất xứ" // Updated placeholder

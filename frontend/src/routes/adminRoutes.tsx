@@ -80,11 +80,6 @@ const adminRoutes: RouteObject[] = [
         element: <BrandDetail />,
       },
       {
-        path: "typeskin",
-        element: <ManageSkin />,
-      },
-
-      {
         path: "origin",
         element: <ManageOrigin />,
       },
