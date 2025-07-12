@@ -189,7 +189,7 @@ export const getAllProductController = async (req: Request, res: Response, next:
   await sendPaginatedResponse(res, next, databaseService.products, req.query)
 }
 
-export const userGetAllProductController = async (req: Request, res: Response, next: NextFunction) => {
+export const userGetAllProductControllerWithQ = async (req: Request, res: Response, next: NextFunction) => {
   const projection = {
     name_on_list: 1,
     engName_on_list: 1,
