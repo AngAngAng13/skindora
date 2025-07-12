@@ -9,7 +9,7 @@ export interface FilterProps {
 
   filter_dac_tinh: filter_dac_tinh_type_props[];
 
-  filter_hsk_ingredient: filter_hsk_ingredient_props[];
+  filter_hsk_ingredients: filter_hsk_ingredient_props[];
 
   filter_hsk_size: filter_hsk_size_props[];
 
@@ -51,12 +51,13 @@ export interface filter_origin_props {
   name: string;
 }
 
-export const useFetchFilter = () => {
+export const useFetchAllFilter = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<FilterProps>();
   const fetchFilter = useCallback(async () => {
     try {
       const response = await fetchListFilter();
+      console.log(response);
       setData(response as FilterProps);
       console.log(data);
     } catch (error) {

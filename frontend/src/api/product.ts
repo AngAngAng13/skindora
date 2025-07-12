@@ -7,8 +7,8 @@ export interface FetchProductProps {
   totalPages?: string | number;
   totalRecords?: number;
   filter_brand?: string;
-  filter_dactinh?: string;
-  filter_hsk_ingredient?: string;
+  filter_dac_tinh?: string;
+  filter_hsk_ingredients?: string;
   filter_hsk_product_type?: string;
   filter_hsk_size?: string;
   filter_hsk_skin_type?: string;
@@ -21,12 +21,12 @@ export interface FetchProductByIDProps {
 //get-all-product
 export const fetchProduct = async (params: FetchProductProps) => {
   return await httpClient
-    .get<API.IResponseSearch<ProductFE>>("/admin/manage-products/get-all", {
+    .get<API.IResponseSearch<ProductFE>>("/products/get-all", {
       limit: params.limit,
       page: params.page,
       filter_brand: params.filter_brand,
-      filter_dactinh: params.filter_dactinh,
-      filter_hsk_ingredient: params.filter_hsk_ingredient,
+      filter_dac_tinh: params.filter_dac_tinh,
+      filter_hsk_ingredients: params.filter_hsk_ingredients,
       filter_hsk_product_type: params.filter_hsk_product_type,
       filter_hsk_size: params.filter_hsk_size,
       filter_hsk_skin_type: params.filter_hsk_skin_type,

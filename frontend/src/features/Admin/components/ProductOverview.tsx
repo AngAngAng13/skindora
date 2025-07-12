@@ -25,48 +25,49 @@ import type {
   filter_hsk_uses_props,
   filter_origin_props,
 } from "@/hooks/Filter/useFetchAllFilter";
-import { useFetchFilter } from "@/hooks/Filter/useFetchAllFilter";
+import { useFetchAllFilter } from "@/hooks/Filter/useFetchAllFilter";
 import { useFetchLowStock } from "@/hooks/Product/useFetchLowStock";
 import { useFetchOnSale } from "@/hooks/Product/useFetchOnSaleProduct";
 import { useFetchProduct } from "@/hooks/Product/useFetchProduct";
 import { useFetchOutOfStock } from "@/hooks/Product/useFetchProductOutOfStock";
+import type { ProductFE } from "@/types/product";
 
 import { PaginationDemo } from "./Pagination";
 
-export interface Product {
-  _id: string;
-  name_on_list: string;
-  engName_on_list: string;
-  price_on_list: string;
-  image_on_list: string;
-  hover_image_on_list: string;
-  product_detail_url: string;
-  productName_detail: string;
-  engName_detail: string;
-  description_detail: {
-    rawHtml: string;
-    plainText: string;
-  };
-  ingredients_detail: {
-    rawHtml: string;
-    plainText: string;
-  };
-  guide_detail: {
-    rawHtml: string;
-    plainText: string;
-  };
-  specification_detail: {
-    rawHtml: string;
-    plainText: string;
-  };
-  main_images_detail: string[];
-  sub_images_detail: string[];
-  filter_hsk_ingredient: string;
-  filter_hsk_skin_type: string;
-  filter_hsk_uses: string;
-  filter_hsk_product_type: string;
-  filter_origin: string;
-}
+// export interface Product {
+//   _id: string;
+//   name_on_list: string;
+//   engName_on_list: string;
+//   price_on_list: string;
+//   image_on_list: string;
+//   hover_image_on_list: string;
+//   product_detail_url: string;
+//   productName_detail: string;
+//   engName_detail: string;
+//   description_detail: {
+//     rawHtml: string;
+//     plainText: string;
+//   };
+//   ingredients_detail: {
+//     rawHtml: string;
+//     plainText: string;
+//   };
+//   guide_detail: {
+//     rawHtml: string;
+//     plainText: string;
+//   };
+//   specification_detail: {
+//     rawHtml: string;
+//     plainText: string;
+//   };
+//   main_images_detail: string[];
+//   sub_images_detail: string[];
+//   filter_hsk_ingredient: string;
+//   filter_hsk_skin_type: string;
+//   filter_hsk_uses: string;
+//   filter_hsk_product_type: string;
+//   filter_origin: string;
+// }
 
 export function ProductOverview() {
   const navigate = useNavigate();
@@ -104,7 +105,7 @@ export function ProductOverview() {
   const [skinType, setSkinType] = useState<filter_hsk_skin_type_props[]>([]);
   const [origin, setOrigin] = useState<filter_origin_props[]>([]);
 
-  const { data: filter, fetchFilter } = useFetchFilter();
+  const { data: filter, fetchFilter } = useFetchAllFilter();
 
   const [expandedSection, setExpandedSection] = useState<string | null>("skin-type");
   const { fetchOutOfStockProduct, params: OutOfStockProductPagination } = useFetchOutOfStock();
@@ -179,8 +180,8 @@ export function ProductOverview() {
     params.limit,
     params.page,
     params.filter_brand,
-    params.filter_dactinh,
-    params.filter_hsk_ingredient,
+    params.filter_dac_tinh,
+    params.filter_hsk_ingredients,
     params.filter_hsk_product_type,
     params.filter_hsk_size,
     params.filter_hsk_skin_type,
@@ -230,8 +231,8 @@ export function ProductOverview() {
     if (filter?.filter_hsk_size) {
       setSize(filter.filter_hsk_size);
     }
-    if (filter?.filter_hsk_ingredient) {
-      setIngredient(filter.filter_hsk_ingredient);
+    if (filter?.filter_hsk_ingredients) {
+      setIngredient(filter.filter_hsk_ingredients);
     }
     if (filter?.filter_hsk_skin_type) {
       setSkinType(filter.filter_hsk_skin_type);
@@ -472,7 +473,7 @@ export function ProductOverview() {
               <CardContent>
                 <div className="space-y-4">
                   {data && data.length > 0 ? (
-                    data.map((product: Product) => (
+                    data.map((product: ProductFE) => (
                       <div
                         key={product._id}
                         className="flex items-center space-x-4 rounded-lg border p-4 transition-shadow hover:shadow-md"

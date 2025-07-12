@@ -22,7 +22,7 @@ export interface FilterProps {
   filter_hsk_skin_type: SkinType[];
   filter_hsk_uses: Uses[];
   filter_dac_tinh: DacTinh[];
-  filter_hsk_ingredient: Ingredient[];
+  filter_hsk_ingredients: Ingredient[];
   filter_hsk_size: Size[];
   filter_hsk_product_type: ProductType[];
   filter_origin: Origin[];
@@ -79,7 +79,7 @@ export const useFetchFilter = () => {
 
       const filterData: FilterProps = {
         filter_brand: brands.data as Brand[],
-        filter_hsk_ingredient: ingredients.data as Ingredient[],
+        filter_hsk_ingredients: ingredients.data as Ingredient[],
         filter_hsk_uses: uses.data as Uses[],
         filter_hsk_product_type: productTypes.data as ProductType[],
         filter_hsk_skin_type: skinTypes.data as SkinType[],

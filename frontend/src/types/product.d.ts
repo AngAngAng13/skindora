@@ -28,7 +28,7 @@ export interface ProductFE {
   main_images_detail: string[];
   sub_images_detail: string[];
   filter_brand: string;
-  filter_hsk_ingredient: string;
+  filter_hsk_ingredients: string;
   filter_hsk_skin_type: string;
   filter_hsk_uses: string;
   filter_hsk_product_type: string;
