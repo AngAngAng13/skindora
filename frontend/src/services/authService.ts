@@ -75,12 +75,13 @@ export const authService = {
       skipAuth: true,
     });
   },
-  changePassword: (oldPassword: string, newPassword: string) => {
-    return apiClient.put<{ message: string }, { old_password: string; password: string }>(
+  changePassword: (oldPassword: string, newPassword: string,confirm_password:string) => {
+    return apiClient.put<{ message: string }, { old_password: string; password: string,confirm_password:string }>(
       "/users/change-password",
       {
         old_password: oldPassword,
         password: newPassword,
+        confirm_password:confirm_password
       }
     );
   },
