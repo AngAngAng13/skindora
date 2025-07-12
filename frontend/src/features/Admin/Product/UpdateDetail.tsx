@@ -29,42 +29,42 @@ import type { Uses } from "@/types/Filter/uses";
 
 import TiptapEditor from "../components/TiptapEditor";
 
-const ImageUrlInput = ({ control, name, label, placeholder }: any) => (
-  <FormField
-    control={control}
-    name={name}
-    render={({ field }) => (
-      <FormItem>
-        <FormLabel>{label}</FormLabel>
-        <FormControl>
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <Input {...field} placeholder={placeholder} style={{ flex: 1 }} />
-            {field.value && typeof field.value === "string" && (
-              <img
-                src={field.value}
-                alt="Xem trước"
-                style={{
-                  width: "80px",
-                  height: "80px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                  border: "1px solid #e2e8f0",
-                }}
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
-                onLoad={(e) => {
-                  e.currentTarget.style.display = "block";
-                }}
-              />
-            )}
-          </div>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )}
-  />
-);
+// const ImageUrlInput = ({ control, name, label, placeholder }: any) => (
+//   <FormField
+//     control={control}
+//     name={name}
+//     render={({ field }) => (
+//       <FormItem>
+//         <FormLabel>{label}</FormLabel>
+//         <FormControl>
+//           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+//             <Input {...field} placeholder={placeholder} style={{ flex: 1 }} />
+//             {field.value && typeof field.value === "string" && (
+//               <img
+//                 src={field.value}
+//                 alt="Xem trước"
+//                 style={{
+//                   width: "80px",
+//                   height: "80px",
+//                   objectFit: "cover",
+//                   borderRadius: "8px",
+//                   border: "1px solid #e2e8f0",
+//                 }}
+//                 onError={(e) => {
+//                   e.currentTarget.style.display = "none";
+//                 }}
+//                 onLoad={(e) => {
+//                   e.currentTarget.style.display = "block";
+//                 }}
+//               />
+//             )}
+//           </div>
+//         </FormControl>
+//         <FormMessage />
+//       </FormItem>
+//     )}
+//   />
+// );
 
 const EditorWithPreview = ({ control, name, label, error }: any) => {
   return (
