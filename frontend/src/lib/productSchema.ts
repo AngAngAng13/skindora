@@ -42,7 +42,7 @@ export const productSchema = z.object({
   filter_hsk_uses: z.string().optional(),
   filter_hsk_product_type: z.string().optional(),
   filter_origin: z.string().optional(),
-  filter_hsk_ingredient: z.string().optional(),
+  filter_hsk_ingredients: z.string().optional(),
   filter_hsk_size: z.string().optional(),
   filter_dac_tinh: z.string().optional(),
 });

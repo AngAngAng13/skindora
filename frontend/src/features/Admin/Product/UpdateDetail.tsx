@@ -140,7 +140,7 @@ export default function UpdateProductPage() {
       filter_hsk_uses: product?.filter_hsk_uses || "",
       filter_hsk_product_type: product?.filter_hsk_product_type || "",
       filter_origin: product?.filter_origin || "",
-      filter_hsk_ingredient: product?.filter_hsk_ingredient || "",
+      filter_hsk_ingredients: product?.filter_hsk_ingredients || "",
       filter_dac_tinh: product?.filter_dac_tinh || "",
       filter_hsk_size: product?.filter_hsk_size || "",
     };
@@ -166,7 +166,7 @@ export default function UpdateProductPage() {
       if (filter.filter_hsk_product_type) setProductType(filter.filter_hsk_product_type);
       if (filter.filter_dac_tinh) setDactinh(filter.filter_dac_tinh);
       if (filter.filter_hsk_size) setSize(filter.filter_hsk_size);
-      if (filter.filter_hsk_ingredient) setIngredient(filter.filter_hsk_ingredient);
+      if (filter.filter_hsk_ingredients) setIngredient(filter.filter_hsk_ingredients);
       if (filter.filter_hsk_skin_type) setSkinType(filter.filter_hsk_skin_type);
       if (filter.filter_origin) setOrigin(filter.filter_origin);
     }
@@ -210,7 +210,7 @@ export default function UpdateProductPage() {
       "filter_hsk_uses",
       "filter_hsk_product_type",
       "filter_origin",
-      "filter_hsk_ingredient",
+      "filter_hsk_ingredients",
       "filter_dac_tinh",
       "filter_hsk_size",
     ];
@@ -767,11 +767,11 @@ export default function UpdateProductPage() {
 
                 <FormField
                   control={form.control}
-                  name="filter_hsk_ingredient"
+                  name="filter_hsk_ingredients"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg font-semibold text-blue-700">
-                        Thành phần-(filter_hsk_ingredient) <span className="text-sm text-gray-500">(Optional)</span>
+                        Thành phần-(filter_hsk_ingredients) <span className="text-sm text-gray-500">(Optional)</span>
                       </FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>

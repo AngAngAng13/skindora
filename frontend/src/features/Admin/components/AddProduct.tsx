@@ -61,9 +61,9 @@ export default function AddProductPage() {
       // Access .data here
       setSize(filter.filter_hsk_size);
     }
-    if (filter?.filter_hsk_ingredient) {
+    if (filter?.filter_hsk_ingredients) {
       // Access .data here
-      setIngredient(filter.filter_hsk_ingredient);
+      setIngredient(filter.filter_hsk_ingredients);
     }
     if (filter?.filter_hsk_skin_type) {
       // Access .data here - THIS IS THE PRIMARY FIX FOR YOUR ERROR
@@ -97,7 +97,7 @@ export default function AddProductPage() {
       filter_hsk_uses: "",
       filter_hsk_product_type: "",
       filter_origin: "",
-      filter_hsk_ingredient: "",
+      filter_hsk_ingredients: "",
       filter_dac_tinh: "",
       filter_hsk_size: "",
     },
@@ -771,11 +771,11 @@ export default function AddProductPage() {
                 {/* Ingredient Filter */}
                 <FormField
                   control={form.control}
-                  name="filter_hsk_ingredient"
+                  name="filter_hsk_ingredients"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg font-semibold text-blue-700">
-                        Thành phần-(filter_hsk_ingredient) <span className="text-sm text-gray-500">(Optional)</span>
+                        Thành phần-(filter_hsk_ingredients) <span className="text-sm text-gray-500">(Optional)</span>
                       </FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
